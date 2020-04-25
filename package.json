@@ -7,7 +7,7 @@
   "scripts": {
     "bootstrap": "lerna bootstrap",
     "docker:dev": "docker-compose -f ./docker/docker-compose.dev.yml up --build",
-    "docker:build": "lerna run docker:build --stream",
+    "docker:build": "docker build -t ohbug/server .",
     "start": "lerna run start --stream",
     "build": "lerna run build --stream",
     "prettier": "lerna run prettier",

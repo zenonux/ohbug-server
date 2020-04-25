@@ -1,7 +1,7 @@
 module.exports = {
   apps : [{
-    name: 'server',
-    script: 'npm run start:prod',
+    name: 'api',
+    script: 'yarn workspace @ohbug-server/api start:prod',
 
     instances: 1,
     autorestart: true,
