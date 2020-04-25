@@ -9,7 +9,6 @@
     "docker:dev": "docker-compose -f ./docker/docker-compose.dev.yml up --build",
     "docker:build": "lerna run docker:build --stream",
     "start": "lerna run start --stream",
-    "start:prod": "lerna run start:prod --stream",
     "build": "lerna run build --stream",
     "prettier": "lerna run prettier",
     "lint": "lerna run lint",

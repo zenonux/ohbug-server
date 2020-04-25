@@ -14,4 +14,5 @@ RUN yarn build
 
 EXPOSE 6666
 
-CMD [ "yarn", "start:prod" ]
+# api server
+CMD [ "pm2-runtime", "start" ,"./packages/api/ecosystem.config.js" ]
