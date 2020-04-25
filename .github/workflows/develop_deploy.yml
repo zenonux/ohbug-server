@@ -1,0 +1,32 @@
+name: develop_deploy
+
+on:
+  push:
+    branches: [ develop ]
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Build Image
+        env:
+          DOCKER_HOST_DEVELOP: ${{ secrets.DOCKER_HOST_DEVELOP }}
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+        run: |
+          docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD $DOCKER_HOST_DEVELOP
+          docker build -t $DOCKER_HOST_DEVELOP/ohbug/server-develop .
+          docker push $DOCKER_HOST_DEVELOP/ohbug/server-develop
+  deploy:
+    runs-on: ubuntu-latest
+    needs: [ publish ]
+    steps:
+      - uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST_DEVELOP }}
+          username: ${{ secrets.USERNAME_DEVELOP }}
+          key: ${{ secrets.KEY_DEVELOP }}
+          port: 22
+          script: |
+            ${{ secrets.DOCKER_DEPLOY_SCRIPT_DEVELOP }}

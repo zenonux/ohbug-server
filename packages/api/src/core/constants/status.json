@@ -1,0 +1,53 @@
+{
+  "400000": "创建用户失败",
+  "400001": "获取用户失败",
+  "400002": "oauth 登录失败，未传入 code",
+  "400003": "获取 GithubToken 失败",
+  "400004": "GithubToken 已过期",
+  "400005": "获取 GithubUser 失败",
+  "400006": "登录失败",
+  "400007": "创建 JWT TOKEN 失败",
+
+  "400100": "生成 organization object 失败",
+  "400101": "每位用户仅能关联一个 Organization",
+  "400102": "创建 organization 失败",
+  "400103": "查询 organization 失败",
+  "400104": "查询 organization 所对应的 projects 失败",
+
+  "400200": "生成 apiKey 失败",
+  "400201": "生成 project object 失败",
+  "400202": "创建 project 失败",
+  "400203": "根据 project_id 查询 project 失败",
+  "400204": "根据 apiKey 查询 project 失败",
+
+  "400300": "创建 event 失败",
+  "400301": "搜索 events 失败",
+  "400302": "根据 Intro 查询用户数失败",
+  "400303": "根据 event_id 查询用户失败",
+  "400304": "查询 events 数据统计信息失败",
+
+  "400400": "根据 intro 创建/更新 issue 失败",
+  "400401": "搜索 issues 失败",
+  "400402": "根据 issue_id 获取最近的 event 失败",
+
+  "400500": "创建 feedback 失败",
+  "400501": "搜索 feedback 失败",
+
+  "400600": "创建 performance 失败",
+  "400601": "根据 performance_id 获取 performance 失败",
+  "400602": "根据 project_id 获取 performance statistics 失败",
+
+  "400700": "创建 replay 失败",
+
+  "400800": "创建 view 失败",
+  "400801": "搜索 view 失败",
+  "400802": "根据 project_id 获取 PV 失败",
+  "400803": "根据 project_id 获取 UV 失败",
+
+  "400900": "创建 source map 失败",
+  "400901": "没有没有找到对应 project ，请确认 apiKey 是否正确",
+  "400902": "处理 source map 失败",
+  "400903": "根据 SourceMap 文件获取原始 code 失败",
+
+  "4001000": "处理 event 失败"
+}

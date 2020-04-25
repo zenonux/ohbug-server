@@ -1,0 +1,33 @@
+version: '3.7'
+
+services:
+  server_dev:
+    container_name: server_dev
+    build:
+      context: ../
+      dockerfile: Dockerfile.dev
+    env_file:
+      - ../packages/api/.env.local
+    volumes:
+      - ../:/usr/src/app
+      - /usr/src/app/node_modules
+    ports:
+      - 6666:6666
+    depends_on:
+      - postgres
+
+  postgres:
+    container_name: postgres
+    image: postgres:12
+    environment:
+      POSTGRES_DB: ${TYPEORM_DATABASE}
+      POSTGRES_USER: ${TYPEORM_USERNAME}
+      POSTGRES_PASSWORD: ${TYPEORM_PASSWORD}
+      PG_DATA: /var/lib/postgresql/data
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
+
+volumes:
+  pgdata:
