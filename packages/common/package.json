@@ -1,0 +1,24 @@
+{
+  "name": "@ohbug-server/common",
+  "version": "0.0.0",
+  "description": "ohbug server common",
+  "author": "chenyueban",
+  "files": [
+    "dist"
+  ],
+  "main": "dist/index.js",
+  "scripts": {
+    "prebuild": "rimraf dist",
+    "build": "tsc",
+    "start": "tsc -w",
+    "prettier": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
+    "lint": "tslint -p tsconfig.json -c tslint.json",
+    "test": "jest",
+    "test:watch": "jest --watch"
+  },
+  "dependencies": {
+    "@types/request-ip": "^0.0.35",
+    "raw-body": "^2.4.1",
+    "request-ip": "^2.1.3"
+  }
+}

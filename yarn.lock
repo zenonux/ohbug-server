@@ -1352,6 +1352,15 @@
     "@types/jsonwebtoken" "8.3.8"
     jsonwebtoken "8.5.1"
 
+"@nestjs/microservices@^7.0.9":
+  version "7.0.9"
+  resolved "https://registry.npmjs.org/@nestjs/microservices/-/microservices-7.0.9.tgz#290faaa46d0d61cbbd0a5b957c615af238e5e486"
+  integrity sha512-pSCWj/3wMHtqcJO5CayNRsTlsUzS480Yqd9UjMFJuSCSWyUGzYDSkkNkBfZupovKvJOUglV+jdlNDcWKZutosg==
+  dependencies:
+    iterare "1.2.0"
+    json-socket "0.3.0"
+    tslib "1.11.1"
+
 "@nestjs/passport@^7.0.0":
   version "7.0.0"
   resolved "https://registry.npmjs.org/@nestjs/passport/-/passport-7.0.0.tgz#c59617779b7e5888a0c72039a6980e28fd659518"
@@ -5094,7 +5103,7 @@ http-errors@1.7.2:
     statuses ">= 1.5.0 < 2"
     toidentifier "1.0.0"
 
-http-errors@~1.7.2:
+http-errors@1.7.3, http-errors@~1.7.2:
   version "1.7.3"
   resolved "https://registry.npmjs.org/http-errors/-/http-errors-1.7.3.tgz#6c619e4f9c60308c38519498c14fbb10aacebb06"
   integrity sha512-ZTTX0MWrsQ2ZAhA1cejAwDLycFsd7I7nVtnkT3Ol0aqodaKW+0CTZDQ1uBv5whptCnc8e8HeRRJxRs0kmm/Qfw==
@@ -6160,6 +6169,11 @@ json-schema@0.2.3:
   version "0.2.3"
   resolved "https://registry.npmjs.org/json-schema/-/json-schema-0.2.3.tgz#b480c892e59a2f05954ce727bd3f2a4e882f9e13"
   integrity sha1-tIDIkuWaLwWVTOcnvT8qTogvnhM=
+
+json-socket@0.3.0:
+  version "0.3.0"
+  resolved "https://registry.npmjs.org/json-socket/-/json-socket-0.3.0.tgz#f4b953c685bb8e8bd0b72438f5208d9a0799ae07"
+  integrity sha512-jc8ZbUnYIWdxERFWQKVgwSLkGSe+kyzvmYxwNaRgx/c8NNyuHes4UHnPM3LUrAFXUx1BhNJ94n1h/KCRlbvV0g==
 
 json-stringify-safe@^5.0.1, json-stringify-safe@~5.0.1:
   version "5.0.1"
@@ -8225,6 +8239,16 @@ raw-body@2.4.0:
     iconv-lite "0.4.24"
     unpipe "1.0.0"
 
+raw-body@^2.4.1:
+  version "2.4.1"
+  resolved "https://registry.npmjs.org/raw-body/-/raw-body-2.4.1.tgz#30ac82f98bb5ae8c152e67149dac8d55153b168c"
+  integrity sha512-9WmIKF6mkvA0SLmA2Knm9+qj89e+j1zqgyn8aXGd7+nAduPoqgI9lO57SAZNn/Byzo5P7JhXTyg9PzaJbH73bA==
+  dependencies:
+    bytes "3.1.0"
+    http-errors "1.7.3"
+    iconv-lite "0.4.24"
+    unpipe "1.0.0"
+
 react-is@^16.12.0:
   version "16.13.1"
   resolved "https://registry.npmjs.org/react-is/-/react-is-16.13.1.tgz#789729a4dc36de2999dc156dd6c1d9c18cea56a4"
@@ -9472,9 +9496,9 @@ terser-webpack-plugin@^1.4.3:
     worker-farm "^1.7.0"
 
 terser@^4.1.2:
-  version "4.6.11"
-  resolved "https://registry.npmjs.org/terser/-/terser-4.6.11.tgz#12ff99fdd62a26de2a82f508515407eb6ccd8a9f"
-  integrity sha512-76Ynm7OXUG5xhOpblhytE7X58oeNSmC8xnNhjWVo8CksHit0U0kO4hfNbPrrYwowLWFgM2n9L176VNx2QaHmtA==
+  version "4.6.12"
+  resolved "https://registry.npmjs.org/terser/-/terser-4.6.12.tgz#44b98aef8703fdb09a3491bf79b43faffc5b4fee"
+  integrity sha512-fnIwuaKjFPANG6MAixC/k1TDtnl1YlPLUlLVIxxGZUn1gfUx2+l3/zGNB72wya+lgsb50QBi2tUV75RiODwnww==
   dependencies:
     commander "^2.20.0"
     source-map "~0.6.1"
