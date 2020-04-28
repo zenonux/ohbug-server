@@ -49,5 +49,6 @@
   "400902": "处理 source map 失败",
   "400903": "根据 SourceMap 文件获取原始 code 失败",
 
-  "4001000": "处理 event 失败"
+  "4001000": "预处理 event 失败或向 mq 传递 event 时发生错误",
+  "4001001": "kafka 向 logstash 传递 event 时发生错误"
 }

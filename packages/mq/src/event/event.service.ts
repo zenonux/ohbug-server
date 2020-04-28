@@ -1,12 +1,10 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import { Client, ClientKafka, Transport } from '@nestjs/microservices';
 
-import { ForbiddenException, KAFKA_TOPIC_TRANSFER } from '@ohbug-server/common';
-
-// import type { OhbugEvent } from '@ohbug/types';
+import { ForbiddenException, KAFKA_TOPIC_LOGSTASH } from '@ohbug-server/common';
 
 @Injectable()
-export class ReportService implements OnModuleInit {
+export class EventService implements OnModuleInit {
   @Client({
     transport: Transport.KAFKA,
     options: {
@@ -18,29 +16,19 @@ export class ReportService implements OnModuleInit {
   private readonly client: ClientKafka;
 
   onModuleInit() {
-    const requestPatterns = [KAFKA_TOPIC_TRANSFER];
+    const requestPatterns = [KAFKA_TOPIC_LOGSTASH];
 
     requestPatterns.forEach((pattern) => {
       this.client.subscribeToResponseOf(pattern);
     });
   }
 
-  /**
-   * 对 event 进行预处理后传入 mq
-   *
-   * @param event 通过上报接口拿到的 event
-   * @param ip_address 用户 ip
-   */
-  async handleEvent(event: string, ip_address: string) {
+  async passEventToES(value: any) {
     try {
       // producer
-      const key = `${KAFKA_TOPIC_TRANSFER}_KEY`;
-      const value = {
-        event,
-        ip_address,
-      };
+      const key = `${KAFKA_TOPIC_LOGSTASH}_KEY`;
       return await this.client
-        .send(KAFKA_TOPIC_TRANSFER, {
+        .send(KAFKA_TOPIC_LOGSTASH, {
           key,
           value,
         })
