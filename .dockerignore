@@ -38,4 +38,5 @@ coverage
 .env.local
 
 docs
+temp
 .git

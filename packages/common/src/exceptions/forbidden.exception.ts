@@ -1,6 +1,6 @@
 import { HttpException } from '@nestjs/common';
 
-import { status } from '../';
+import status from '../constants/status.json';
 
 export class ForbiddenException extends HttpException {
   public readonly code: number;

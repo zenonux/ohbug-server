@@ -1,0 +1,1 @@
+export const KAFKA_TOPIC_EVENT = 'TOPIC_EVENT';

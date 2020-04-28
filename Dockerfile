@@ -4,9 +4,10 @@ USER root
 
 COPY package.json /usr/src/app/package.json
 COPY yarn.lock /usr/src/app/yarn.lock
-COPY packages/dashboard/package.json /usr/src/app/packages/dashboard/package.json
 COPY packages/common/package.json /usr/src/app/packages/common/package.json
 COPY packages/transfer/package.json /usr/src/app/packages/transfer/package.json
+COPY packages/mq/package.json /usr/src/app/packages/mq/package.json
+COPY packages/dashboard/package.json /usr/src/app/packages/dashboard/package.json
 COPY lerna.json /usr/src/app/lerna.json
 RUN yarn
 

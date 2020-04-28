@@ -1,12 +1,10 @@
-import { Controller, Get, Query, Post } from '@nestjs/common';
-
-import { PlainBody, IpAddress } from '@ohbug-server/common';
+import { Body, Controller, Get, Post, Query } from '@nestjs/common';
 
 import { ReportService } from './report.service';
 
 /**
  * 用于接收上报数据
- * 唯一对外暴露的接口，提供 GET/POST 两种方式
+ * 唯一对外暴露的接口
  */
 @Controller('report')
 export class ReportController {
@@ -15,28 +13,22 @@ export class ReportController {
   /**
    * 上报接口 (GET)
    *
-   * @param json 通过上报接口拿到的 json event
-   * @param ip_address 用户 ip
+   * @param event 通过上报接口拿到的 event
    */
   @Get()
-  async receiveEventFromGet(
-    @Query('event') json: string,
-    @IpAddress() ip_address: string,
-  ): Promise<void> {
-    await this.reportService.handleEvent(json, ip_address);
+  receiveEventFromGet(@Query('event') event: string): void {
+    const ip_address = null;
+    this.reportService.handleEvent(event, ip_address);
   }
 
   /**
-   * 上报接口 (POST)
+   * 上报接口 (Post)
    *
-   * @param json 通过上报接口拿到的 json event
-   * @param ip_address 用户 ip
+   * @param event 通过上报接口拿到的 event
    */
   @Post()
-  async receiveEventFromPost(
-    @PlainBody() json: string,
-    @IpAddress() ip_address: string,
-  ): Promise<void> {
-    await this.reportService.handleEvent(json, ip_address);
+  receiveEventFromPost(@Body() event: any): void {
+    const ip_address = null;
+    this.reportService.handleEvent(event, ip_address);
   }
 }
