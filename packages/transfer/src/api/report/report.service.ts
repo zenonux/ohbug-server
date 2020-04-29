@@ -11,7 +11,11 @@ export class ReportService implements OnModuleInit {
     transport: Transport.KAFKA,
     options: {
       client: {
+        clientId: 'mq',
         brokers: ['localhost:9092'],
+      },
+      consumer: {
+        groupId: 'mq-consumer',
       },
     },
   })
@@ -39,7 +43,7 @@ export class ReportService implements OnModuleInit {
         event,
         ip_address,
       };
-      return await this.client
+      await this.client
         .send(KAFKA_TOPIC_TRANSFER, {
           key,
           value,

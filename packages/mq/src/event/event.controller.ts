@@ -27,6 +27,6 @@ export class EventController {
    */
   @MessagePattern(KAFKA_TOPIC_TRANSFER)
   async getEventAndPassToES(@Payload() event: IncomingMessage) {
-    return await this.eventService.passEventToES(event.value);
+    return await this.eventService.passEventToLogstash(event.value);
   }
 }

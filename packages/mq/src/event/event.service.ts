@@ -9,7 +9,11 @@ export class EventService implements OnModuleInit {
     transport: Transport.KAFKA,
     options: {
       client: {
+        clientId: 'logstash',
         brokers: ['localhost:9092'],
+      },
+      consumer: {
+        groupId: 'logstash',
       },
     },
   })
@@ -23,18 +27,19 @@ export class EventService implements OnModuleInit {
     });
   }
 
-  async passEventToES(value: any) {
+  async passEventToLogstash(value: any) {
     try {
       // producer
       const key = `${KAFKA_TOPIC_LOGSTASH}_KEY`;
-      return await this.client
+      const result = await this.client
         .send(KAFKA_TOPIC_LOGSTASH, {
           key,
           value,
         })
         .toPromise();
+      return result;
     } catch (error) {
-      throw new ForbiddenException(4001000, error);
+      throw new ForbiddenException(4001001, error);
     }
   }
 }
