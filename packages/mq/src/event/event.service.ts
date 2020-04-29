@@ -19,25 +19,26 @@ export class EventService implements OnModuleInit {
   })
   private readonly client: ClientKafka;
 
-  onModuleInit() {
+  async onModuleInit() {
     const requestPatterns = [KAFKA_TOPIC_LOGSTASH];
 
     requestPatterns.forEach((pattern) => {
       this.client.subscribeToResponseOf(pattern);
     });
+
+    await this.client.connect();
   }
 
   async passEventToLogstash(value: any) {
     try {
       // producer
       const key = `${KAFKA_TOPIC_LOGSTASH}_KEY`;
-      const result = await this.client
-        .send(KAFKA_TOPIC_LOGSTASH, {
+      return await this.client
+        .emit(KAFKA_TOPIC_LOGSTASH, {
           key,
           value,
         })
         .toPromise();
-      return result;
     } catch (error) {
       throw new ForbiddenException(4001001, error);
     }

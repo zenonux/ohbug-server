@@ -69,12 +69,17 @@ services:
         source: ./logstash/pipeline
         target: /usr/share/logstash/pipeline
         read_only: true
+      - type: bind
+        source: ./logstash/templates/ohbug-events-template.json
+        target: /usr/share/logstash/templates/ohbug-events-template.json
+        read_only: true
     ports:
       - "9600:9600"
     environment:
       LS_JAVA_OPTS: "-Xmx256m -Xms256m"
     depends_on:
       - elasticsearch
+      - kafka1
   kibana:
     build:
       context: kibana/

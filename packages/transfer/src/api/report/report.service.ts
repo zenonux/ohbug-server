@@ -1,9 +1,10 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import { Client, ClientKafka, Transport } from '@nestjs/microservices';
+import type { OhbugEvent } from '@ohbug/types';
 
 import { ForbiddenException, KAFKA_TOPIC_TRANSFER } from '@ohbug-server/common';
 
-// import type { OhbugEvent } from '@ohbug/types';
+import { formatter } from '@/utils';
 
 @Injectable()
 export class ReportService implements OnModuleInit {
@@ -21,12 +22,24 @@ export class ReportService implements OnModuleInit {
   })
   private readonly client: ClientKafka;
 
-  onModuleInit() {
+  async onModuleInit() {
     const requestPatterns = [KAFKA_TOPIC_TRANSFER];
 
     requestPatterns.forEach((pattern) => {
       this.client.subscribeToResponseOf(pattern);
     });
+
+    await this.client.connect();
+  }
+
+  /**
+   * 将可能会变的字段转为 string
+   * `detail` `state` `actions`
+   *
+   * @param event
+   */
+  transferEvent(event: OhbugEvent<any>) {
+    return formatter(event, ['detail', 'state', 'actions']);
   }
 
   /**
@@ -35,14 +48,14 @@ export class ReportService implements OnModuleInit {
    * @param event 通过上报接口拿到的 event
    * @param ip_address 用户 ip
    */
-  async handleEvent(event: string, ip_address: string) {
+  async handleEvent(event: OhbugEvent<any>, ip_address: string) {
     try {
       // producer
       const key = `${KAFKA_TOPIC_TRANSFER}_KEY`;
-      const value = {
-        event,
+      const value = JSON.stringify({
+        event: this.transferEvent(event),
         ip_address,
-      };
+      });
       await this.client
         .send(KAFKA_TOPIC_TRANSFER, {
           key,

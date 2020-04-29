@@ -10,11 +10,11 @@ async function bootstrap() {
       transport: Transport.KAFKA,
       options: {
         client: {
-          clientId: 'logstash',
+          clientId: 'mq',
           brokers: ['localhost:9092'],
         },
         consumer: {
-          groupId: 'logstash',
+          groupId: 'mq-consumer',
         },
       },
     },
