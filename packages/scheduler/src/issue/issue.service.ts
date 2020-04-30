@@ -1,13 +1,33 @@
 import { Injectable } from '@nestjs/common';
-import { OhbugEventLike } from '@ohbug-server/common';
+
+import type { OhbugEventLikeWithIpAdress } from '@ohbug-server/common';
+
+import { OhbugEventDetail } from './issue.interface';
+import {
+  getMd5FromAggregationData,
+  switchErrorDetailAndGetAggregationData,
+} from './issue.core';
 
 @Injectable()
 export class IssueService {
   /**
    * 对 event 进行聚合 生成 issue
-   * @param event
+   * 根据堆栈信息进行 md5 加密得到 hash
+   *
+   * @param value
    */
-  eventAggregation(event: OhbugEventLike) {
-    console.log(event);
+  eventAggregation(value: OhbugEventLikeWithIpAdress) {
+    const {
+      event: { type, detail, apiKey },
+    } = value;
+    if (typeof detail === 'string') {
+      const formatDetail: OhbugEventDetail = JSON.parse(detail);
+      const aggregationData = switchErrorDetailAndGetAggregationData(
+        type,
+        formatDetail,
+      );
+      const hash = getMd5FromAggregationData(apiKey, ...aggregationData);
+      return hash;
+    }
   }
 }

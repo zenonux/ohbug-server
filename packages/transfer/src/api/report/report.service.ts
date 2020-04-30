@@ -1,12 +1,13 @@
-import { Injectable, OnModuleInit } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
+import type { OnModuleInit } from '@nestjs/common';
 import { Client, ClientKafka, Transport } from '@nestjs/microservices';
 import type { OhbugEvent } from '@ohbug/types';
 
 import {
   ForbiddenException,
   TOPIC_TRANSFER_KAFKA_EVENT,
-  OhbugEventLike,
 } from '@ohbug-server/common';
+import type { OhbugEventLike } from '@ohbug-server/common';
 
 import { formatter } from '@/utils';
 
@@ -24,16 +25,11 @@ export class ReportService implements OnModuleInit {
       },
     },
   })
-  private readonly client: ClientKafka;
+  private readonly mqClient: ClientKafka;
 
   async onModuleInit() {
-    const requestPatterns = [TOPIC_TRANSFER_KAFKA_EVENT];
-
-    requestPatterns.forEach((pattern) => {
-      this.client.subscribeToResponseOf(pattern);
-    });
-
-    await this.client.connect();
+    this.mqClient.subscribeToResponseOf(TOPIC_TRANSFER_KAFKA_EVENT);
+    await this.mqClient.connect();
   }
 
   /**
@@ -60,7 +56,7 @@ export class ReportService implements OnModuleInit {
         event: this.transferEvent(event),
         ip_address,
       });
-      await this.client
+      await this.mqClient
         .send(TOPIC_TRANSFER_KAFKA_EVENT, {
           key,
           value,

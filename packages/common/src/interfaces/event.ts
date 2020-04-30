@@ -12,3 +12,8 @@ export interface OhbugEventLike {
   state?: string;
   actions?: string;
 }
+
+export interface OhbugEventLikeWithIpAdress {
+  event: OhbugEventLike;
+  ip_address: string;
+}
