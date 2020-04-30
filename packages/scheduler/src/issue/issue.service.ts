@@ -7,6 +7,7 @@ import {
   getMd5FromAggregationData,
   switchErrorDetailAndGetAggregationData,
 } from './issue.core';
+import { ForbiddenException } from '@ohbug-server/common';
 
 @Injectable()
 export class IssueService {
@@ -17,17 +18,21 @@ export class IssueService {
    * @param value
    */
   eventAggregation(value: OhbugEventLikeWithIpAdress) {
-    const {
-      event: { type, detail, apiKey },
-    } = value;
-    if (typeof detail === 'string') {
-      const formatDetail: OhbugEventDetail = JSON.parse(detail);
-      const aggregationData = switchErrorDetailAndGetAggregationData(
-        type,
-        formatDetail,
-      );
-      const hash = getMd5FromAggregationData(apiKey, ...aggregationData);
-      return hash;
+    try {
+      const {
+        event: { type, detail, apiKey },
+      } = value;
+      if (typeof detail === 'string') {
+        const formatDetail: OhbugEventDetail = JSON.parse(detail);
+        const aggregationData = switchErrorDetailAndGetAggregationData(
+          type,
+          formatDetail,
+        );
+        const hash = getMd5FromAggregationData(apiKey, ...aggregationData);
+        return hash;
+      }
+    } catch (error) {
+      throw new ForbiddenException(4001002, error);
     }
   }
 }

@@ -1,27 +1,27 @@
 import { Controller } from '@nestjs/common';
 import { MessagePattern, Payload } from '@nestjs/microservices';
 
-import { TOPIC_KAFKA_SCHEDULER_ISSUE } from '@ohbug-server/common';
+import { TOPIC_TRANSFER_SCHEDULER_EVENT } from '@ohbug-server/common';
 import type {
   KafkaPayload,
   OhbugEventLikeWithIpAdress,
 } from '@ohbug-server/common';
 
-import { IssueService } from '@/issue/issue.service';
+import { EventService } from '@/event/event.service';
 
 @Controller()
 export class MessageController {
-  constructor(private readonly issueService: IssueService) {}
+  constructor(private readonly eventService: EventService) {}
 
   /**
-   * 接收 kafka 的聚合通知 开始聚合任务
+   * 接收到 event 并传递到 elk
+   * 同时若 category 为 error，准备进行聚合任务
    *
    * @param payload
    */
-  @MessagePattern(TOPIC_KAFKA_SCHEDULER_ISSUE)
-  getEvent(@Payload() payload: KafkaPayload) {
+  @MessagePattern(TOPIC_TRANSFER_SCHEDULER_EVENT)
+  async handleEvent(@Payload() payload: KafkaPayload) {
     const value: OhbugEventLikeWithIpAdress = payload.value;
-    const hash = this.issueService.eventAggregation(value);
-    console.log('scheduler', hash);
+    return await this.eventService.handleEvent(value);
   }
 }

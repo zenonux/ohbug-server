@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common';
 
-import { IssueModule } from '@/issue/issue.module';
+import { EventModule } from '@/event/event.module';
 import { MessageController } from './message.controller';
 
 @Module({
-  imports: [IssueModule],
+  imports: [EventModule],
   controllers: [MessageController],
 })
 export class MessageModule {}

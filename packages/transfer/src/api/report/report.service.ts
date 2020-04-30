@@ -5,7 +5,7 @@ import type { OhbugEvent } from '@ohbug/types';
 
 import {
   ForbiddenException,
-  TOPIC_TRANSFER_KAFKA_EVENT,
+  TOPIC_TRANSFER_SCHEDULER_EVENT,
 } from '@ohbug-server/common';
 import type { OhbugEventLike } from '@ohbug-server/common';
 
@@ -17,19 +17,19 @@ export class ReportService implements OnModuleInit {
     transport: Transport.KAFKA,
     options: {
       client: {
-        clientId: 'mq',
+        clientId: 'scheduler',
         brokers: ['localhost:9092'],
       },
       consumer: {
-        groupId: 'mq-consumer',
+        groupId: 'scheduler-consumer',
       },
     },
   })
-  private readonly mqClient: ClientKafka;
+  private readonly schedulerClient: ClientKafka;
 
   async onModuleInit() {
-    this.mqClient.subscribeToResponseOf(TOPIC_TRANSFER_KAFKA_EVENT);
-    await this.mqClient.connect();
+    this.schedulerClient.subscribeToResponseOf(TOPIC_TRANSFER_SCHEDULER_EVENT);
+    await this.schedulerClient.connect();
   }
 
   /**
@@ -43,7 +43,7 @@ export class ReportService implements OnModuleInit {
   }
 
   /**
-   * 对 event 进行预处理后传入 mq
+   * 对 event 进行预处理后传入 scheduler
    *
    * @param event 通过上报接口拿到的 event
    * @param ip_address 用户 ip
@@ -51,13 +51,13 @@ export class ReportService implements OnModuleInit {
   async handleEvent(event: OhbugEvent<any>, ip_address: string) {
     try {
       // producer
-      const key = `${TOPIC_TRANSFER_KAFKA_EVENT}_KEY`;
+      const key = `${TOPIC_TRANSFER_SCHEDULER_EVENT}_KEY`;
       const value = JSON.stringify({
         event: this.transferEvent(event),
         ip_address,
       });
-      await this.mqClient
-        .send(TOPIC_TRANSFER_KAFKA_EVENT, {
+      await this.schedulerClient
+        .send(TOPIC_TRANSFER_SCHEDULER_EVENT, {
           key,
           value,
         })
