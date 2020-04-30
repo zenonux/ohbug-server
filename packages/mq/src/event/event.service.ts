@@ -1,7 +1,11 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import { Client, ClientKafka, Transport } from '@nestjs/microservices';
 
-import { ForbiddenException, KAFKA_TOPIC_LOGSTASH } from '@ohbug-server/common';
+import {
+  ForbiddenException,
+  TOPIC_KAFKA_LOGSTASH_EVENT,
+  TOPIC_KAFKA_SCHEDULER_ISSUE,
+} from '@ohbug-server/common';
 
 @Injectable()
 export class EventService implements OnModuleInit {
@@ -20,7 +24,10 @@ export class EventService implements OnModuleInit {
   private readonly client: ClientKafka;
 
   async onModuleInit() {
-    const requestPatterns = [KAFKA_TOPIC_LOGSTASH];
+    const requestPatterns = [
+      TOPIC_KAFKA_LOGSTASH_EVENT,
+      TOPIC_KAFKA_SCHEDULER_ISSUE,
+    ];
 
     requestPatterns.forEach((pattern) => {
       this.client.subscribeToResponseOf(pattern);
@@ -31,11 +38,17 @@ export class EventService implements OnModuleInit {
 
   async passEventToLogstash(value: any) {
     try {
-      // producer
-      const key = `${KAFKA_TOPIC_LOGSTASH}_KEY`;
-      return await this.client
-        .emit(KAFKA_TOPIC_LOGSTASH, {
-          key,
+      // 1. event 传递给 logstash 存入 elasticsearch
+      await this.client
+        .emit(TOPIC_KAFKA_LOGSTASH_EVENT, {
+          key: `${TOPIC_KAFKA_LOGSTASH_EVENT}_KEY`,
+          value,
+        })
+        .toPromise();
+      // 2. 发 event 给 scheduler，进行聚合任务生成 issue
+      await this.client
+        .emit(TOPIC_KAFKA_SCHEDULER_ISSUE, {
+          key: `${TOPIC_KAFKA_SCHEDULER_ISSUE}_KEY`,
           value,
         })
         .toPromise();

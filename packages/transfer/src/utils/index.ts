@@ -1,8 +1,8 @@
-export function formatter(data: object, fields: string[]) {
+export function formatter<T extends {}>(data: object, fields: string[]): T {
   fields.forEach((field) => {
     if (data.hasOwnProperty(field)) {
       data[field] = JSON.stringify(data[field]);
     }
   });
-  return data;
+  return data as T;
 }

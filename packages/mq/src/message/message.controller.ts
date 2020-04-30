@@ -1,9 +1,9 @@
 import { Controller } from '@nestjs/common';
 import { MessagePattern, Payload } from '@nestjs/microservices';
 
-import { KAFKA_TOPIC_TRANSFER } from '@ohbug-server/common';
+import { TOPIC_TRANSFER_KAFKA_EVENT } from '@ohbug-server/common';
 
-import { EventService } from './event.service';
+import { EventService } from '@/event/event.service';
 
 interface IncomingMessage {
   topic: string;
@@ -17,15 +17,14 @@ interface IncomingMessage {
 }
 
 @Controller()
-export class EventController {
+export class MessageController {
   constructor(private readonly eventService: EventService) {}
-
   /**
    * 接收到 event 并传递到 es 存储
    * es 返回存储成功的消息后传消息给 controller，进行聚合
    * @param event
    */
-  @MessagePattern(KAFKA_TOPIC_TRANSFER)
+  @MessagePattern(TOPIC_TRANSFER_KAFKA_EVENT)
   async getEventAndPassToES(@Payload() event: IncomingMessage) {
     return await this.eventService.passEventToLogstash(event.value);
   }

@@ -2,7 +2,11 @@ import { Injectable, OnModuleInit } from '@nestjs/common';
 import { Client, ClientKafka, Transport } from '@nestjs/microservices';
 import type { OhbugEvent } from '@ohbug/types';
 
-import { ForbiddenException, KAFKA_TOPIC_TRANSFER } from '@ohbug-server/common';
+import {
+  ForbiddenException,
+  TOPIC_TRANSFER_KAFKA_EVENT,
+  OhbugEventLike,
+} from '@ohbug-server/common';
 
 import { formatter } from '@/utils';
 
@@ -23,7 +27,7 @@ export class ReportService implements OnModuleInit {
   private readonly client: ClientKafka;
 
   async onModuleInit() {
-    const requestPatterns = [KAFKA_TOPIC_TRANSFER];
+    const requestPatterns = [TOPIC_TRANSFER_KAFKA_EVENT];
 
     requestPatterns.forEach((pattern) => {
       this.client.subscribeToResponseOf(pattern);
@@ -38,8 +42,8 @@ export class ReportService implements OnModuleInit {
    *
    * @param event
    */
-  transferEvent(event: OhbugEvent<any>) {
-    return formatter(event, ['detail', 'state', 'actions']);
+  transferEvent(event: OhbugEvent<any>): OhbugEventLike {
+    return formatter<OhbugEventLike>(event, ['detail', 'state', 'actions']);
   }
 
   /**
@@ -51,13 +55,13 @@ export class ReportService implements OnModuleInit {
   async handleEvent(event: OhbugEvent<any>, ip_address: string) {
     try {
       // producer
-      const key = `${KAFKA_TOPIC_TRANSFER}_KEY`;
+      const key = `${TOPIC_TRANSFER_KAFKA_EVENT}_KEY`;
       const value = JSON.stringify({
         event: this.transferEvent(event),
         ip_address,
       });
       await this.client
-        .send(KAFKA_TOPIC_TRANSFER, {
+        .send(TOPIC_TRANSFER_KAFKA_EVENT, {
           key,
           value,
         })
