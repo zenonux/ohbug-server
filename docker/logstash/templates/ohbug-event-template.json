@@ -1,5 +1,5 @@
 {
-  "template": "ohbug-events-*",
+  "template": "ohbug-event-*",
   "order": 1,
   "settings": {
     "index": {

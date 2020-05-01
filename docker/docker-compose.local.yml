@@ -70,8 +70,8 @@ services:
         target: /usr/share/logstash/pipeline
         read_only: true
       - type: bind
-        source: ./logstash/templates/ohbug-events-template.json
-        target: /usr/share/logstash/templates/ohbug-events-template.json
+        source: ./logstash/templates
+        target: /usr/share/logstash/templates
         read_only: true
     ports:
       - "9600:9600"

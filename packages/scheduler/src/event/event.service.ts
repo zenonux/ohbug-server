@@ -1,16 +1,19 @@
 import { Injectable } from '@nestjs/common';
-import type { OnModuleInit } from '@nestjs/common';
 import { Client, ClientKafka, Transport } from '@nestjs/microservices';
 
 import {
   ForbiddenException,
-  TOPIC_SCHEDULER_LOGSTASH_EVENT,
+  TOPIC_SCHEDULER_LOGSTASH_EVENT_ERROR,
+  TOPIC_SCHEDULER_LOGSTASH_EVENT_MESSAGE,
+  TOPIC_SCHEDULER_LOGSTASH_EVENT_FEEDBACK,
+  TOPIC_SCHEDULER_LOGSTASH_EVENT_VIEW,
+  TOPIC_SCHEDULER_LOGSTASH_PERFORMANCE,
 } from '@ohbug-server/common';
 import type { OhbugEventLikeWithIpAdress } from '@ohbug-server/common';
 import { IssueService } from '@/issue/issue.service';
 
 @Injectable()
-export class EventService implements OnModuleInit {
+export class EventService {
   constructor(private readonly issueService: IssueService) {}
 
   @Client({
@@ -27,24 +30,41 @@ export class EventService implements OnModuleInit {
   })
   private readonly logstashClient: ClientKafka;
 
-  async onModuleInit() {
-    this.logstashClient.subscribeToResponseOf(TOPIC_SCHEDULER_LOGSTASH_EVENT);
-    await this.logstashClient.connect();
-  }
-
   /**
-   * 1. 接收到 event 并传递到 elk
+   * 1. 分类后传递到 elk
    *
    * @param value
    */
-  async passEventToLogstash(value: OhbugEventLikeWithIpAdress) {
+  async passToLogstash(value: OhbugEventLikeWithIpAdress) {
     try {
-      return await this.logstashClient
-        .emit(TOPIC_SCHEDULER_LOGSTASH_EVENT, {
-          key: `${TOPIC_SCHEDULER_LOGSTASH_EVENT}_KEY`,
-          value,
-        })
-        .toPromise();
+      const keyMap = [
+        // event
+        {
+          category: 'error',
+          key: TOPIC_SCHEDULER_LOGSTASH_EVENT_ERROR,
+        },
+        { category: 'message', key: TOPIC_SCHEDULER_LOGSTASH_EVENT_MESSAGE },
+        { category: 'feedback', key: TOPIC_SCHEDULER_LOGSTASH_EVENT_FEEDBACK },
+        { category: 'view', key: TOPIC_SCHEDULER_LOGSTASH_EVENT_VIEW },
+        // performance
+        { category: 'performance', key: TOPIC_SCHEDULER_LOGSTASH_PERFORMANCE },
+      ];
+      const key = keyMap.find(
+        (item) => item.category === value?.event?.category,
+      )?.key;
+      if (key) {
+        return await this.logstashClient
+          .emit(key, {
+            key,
+            value,
+          })
+          .toPromise();
+      }
+      throw new Error(
+        `传入 logstash 失败，请确认 category 是否为指定内容: 'error', 'message', 'feedback', 'view', 'performance'
+        ${JSON.stringify(value)}
+        `,
+      );
     } catch (error) {
       throw new ForbiddenException(4001001, error);
     }
@@ -67,7 +87,7 @@ export class EventService implements OnModuleInit {
    * @param value
    */
   async handleEvent(value: OhbugEventLikeWithIpAdress) {
-    await this.passEventToLogstash(value);
+    await this.passToLogstash(value);
     if (value.event.category === 'error') {
       await this.passEventToScheduler(value);
     }

@@ -34,12 +34,18 @@ export class ReportService implements OnModuleInit {
 
   /**
    * 将可能会变的字段转为 string
-   * `detail` `state` `actions`
+   * error: `detail` `state` `actions`
+   * performance: `data`
    *
    * @param event
    */
   transferEvent(event: OhbugEvent<any>): OhbugEventLike {
-    return formatter<OhbugEventLike>(event, ['detail', 'state', 'actions']);
+    return formatter<OhbugEventLike>(event, [
+      'detail',
+      'state',
+      'actions',
+      'data',
+    ]);
   }
 
   /**
@@ -51,7 +57,7 @@ export class ReportService implements OnModuleInit {
   async handleEvent(event: OhbugEvent<any>, ip_address: string) {
     try {
       // producer
-      const key = `${TOPIC_TRANSFER_SCHEDULER_EVENT}_KEY`;
+      const key = TOPIC_TRANSFER_SCHEDULER_EVENT;
       const value = JSON.stringify({
         event: this.transferEvent(event),
         ip_address,
