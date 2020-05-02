@@ -12,7 +12,7 @@ import type {
   OhbugCategory,
 } from '@ohbug/types';
 
-export class EventDto<T> implements OhbugEvent<T> {
+export class ReportDto<T> implements OhbugEvent<T> {
   @IsString()
   readonly apiKey: string;
 
