@@ -1,13 +1,13 @@
 import { Injectable } from '@nestjs/common';
 
 import type { OhbugEventLikeWithIpAdress } from '@ohbug-server/common';
+import { ForbiddenException } from '@ohbug-server/common';
 
 import { OhbugEventDetail } from './issue.interface';
 import {
   getMd5FromAggregationData,
   switchErrorDetailAndGetAggregationData,
 } from './issue.core';
-import { ForbiddenException } from '@ohbug-server/common';
 
 @Injectable()
 export class IssueService {
@@ -17,7 +17,7 @@ export class IssueService {
    *
    * @param value
    */
-  eventAggregation(value: OhbugEventLikeWithIpAdress) {
+  async eventAggregation(value: OhbugEventLikeWithIpAdress) {
     try {
       const {
         event: { type, detail, apiKey },
@@ -29,6 +29,8 @@ export class IssueService {
           formatDetail,
         );
         const hash = getMd5FromAggregationData(apiKey, ...aggregationData);
+        // TODO 生成存储 issue 重新设计下 issue 需要哪些字段 要考虑到 可查到 issue 对应的 event，包括上一条下一条的功能，默认查最新一条
+        console.log('scheduler->eventAggregation->hash', hash);
         return hash;
       }
     } catch (error) {

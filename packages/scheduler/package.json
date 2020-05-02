@@ -17,6 +17,7 @@
     "test:e2e": "jest --config ./test/jest-e2e.json"
   },
   "dependencies": {
-    "@ohbug-server/common": "^0.0.0"
+    "@ohbug-server/common": "^0.0.0",
+    "@ohbug-server/manager": "^0.0.0"
   }
 }

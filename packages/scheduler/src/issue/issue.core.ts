@@ -64,7 +64,6 @@ export function switchErrorDetailAndGetAggregationData(
 
 /**
  * 对 AggregationData 进行 md5 加密拿到聚合依据
- * 此依据不是最终结果，还需要根据 apiKey 再进行一次 md5 得到最终结果
  *
  * @param aggregationData
  */

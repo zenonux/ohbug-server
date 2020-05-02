@@ -1,0 +1,24 @@
+{
+  "name": "@ohbug-server/manager",
+  "version": "0.0.0",
+  "description": "ohbug server manager",
+  "author": "chenyueban",
+  "files": [
+    "dist"
+  ],
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "prebuild": "rimraf dist",
+    "build": "tsc",
+    "start": "tsc -w",
+    "prettier": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
+    "lint": "tslint -p tsconfig.json -c tslint.json",
+    "test": "jest",
+    "test:watch": "jest --watch"
+  },
+  "dependencies": {
+    "@elastic/elasticsearch": "^7.6.1",
+    "@nestjs/elasticsearch": "^7.1.0"
+  }
+}
