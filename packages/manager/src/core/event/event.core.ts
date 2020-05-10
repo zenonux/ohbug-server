@@ -2,7 +2,7 @@ import { types } from '@ohbug/core';
 
 import { md5 } from '@ohbug-server/common';
 
-import { OhbugEventDetail } from './issue.interface';
+import { OhbugEventDetail } from './event.interface';
 
 /**
  * 根据不同 error detail 返回可用于聚合的字段

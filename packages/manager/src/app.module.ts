@@ -5,5 +5,6 @@ import { SharedModule } from './shared/shared.module';
 
 @Module({
   imports: [CoreModule, SharedModule],
+  exports: [CoreModule],
 })
-export class ManagerModule {}
+export class AppModule {}

@@ -17,6 +17,3 @@ export const TOPIC_TRANSFER_LOGSTASH_EVENT_VIEW =
 // performance
 export const TOPIC_TRANSFER_LOGSTASH_PERFORMANCE =
   'TOPIC_TRANSFER_LOGSTASH_PERFORMANCE';
-
-// transfer 接收 logstash 的回调后，传递给 scheduler 准备聚合任务
-export const TOPIC_TRANSFER_SCHEDULER_EVENT = 'TOPIC_TRANSFER_SCHEDULER_EVENT';

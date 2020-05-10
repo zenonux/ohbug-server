@@ -11,17 +11,17 @@ async function bootstrap() {
       transport: Transport.KAFKA,
       options: {
         client: {
-          clientId: 'scheduler',
+          clientId: 'manager',
           brokers: ['localhost:9092'],
         },
         consumer: {
-          groupId: 'scheduler-consumer',
+          groupId: 'manager-consumer',
         },
       },
     },
   );
 
   // tslint:disable-next-line:no-console
-  app.listen(() => console.log(`Scheduler is running`));
+  app.listen(() => console.log(`Manager is running`));
 }
 bootstrap();

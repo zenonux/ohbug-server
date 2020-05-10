@@ -1,12 +1,29 @@
 import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
-import { Transform } from 'class-transformer';
-
-// import { Project } from '@ohbug-server/dashboard/api/project/project.entity';
+import { Exclude, Transform } from 'class-transformer';
 
 @Entity()
 export class Issue {
   @PrimaryGeneratedColumn()
   id: number;
+
+  /**
+   * 每个 event 的特征 hash
+   *
+   * @type {string}
+   * @memberof Issue
+   */
+  @Column({ type: 'text' })
+  intro: string;
+
+  /**
+   * issue 对应的 apiKey 通过它拿到所属的 project
+   *
+   * @type {string}
+   * @memberof Issue
+   */
+  @Exclude()
+  @Column({ type: 'text' })
+  apiKey: string;
 
   /**
    * issue type 对应 event 的 type
@@ -16,15 +33,6 @@ export class Issue {
    */
   @Column({ type: 'text' })
   type: string;
-
-  /**
-   * 每个 event 的特征
-   *
-   * @type {string}
-   * @memberof Issue
-   */
-  @Column({ type: 'text' })
-  intro: string;
 
   /**
    * 首条 event 的时间
@@ -43,16 +51,6 @@ export class Issue {
    */
   @Column({ type: 'date' })
   last_seen: Date;
-
-  // /**
-  //  * issue 所属的 project
-  //  *
-  //  * @type {Project}
-  //  * @memberof Issue
-  //  */
-  // @Exclude()
-  // @ManyToOne((_) => Project, (project) => project.issues)
-  // project: Project;
 
   // /**
   //  * issue 所对应的 events

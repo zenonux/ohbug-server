@@ -9,7 +9,6 @@ import {
   TOPIC_TRANSFER_LOGSTASH_EVENT_MESSAGE,
   TOPIC_TRANSFER_LOGSTASH_EVENT_VIEW,
   TOPIC_TRANSFER_LOGSTASH_PERFORMANCE,
-  TOPIC_TRANSFER_SCHEDULER_EVENT,
 } from '@ohbug-server/common';
 import type {
   OhbugEventLike,
@@ -34,19 +33,6 @@ export class ReportService {
     },
   })
   private readonly logstashClient: ClientKafka;
-  @Client({
-    transport: Transport.KAFKA,
-    options: {
-      client: {
-        clientId: 'scheduler',
-        brokers: ['localhost:9092'],
-      },
-      consumer: {
-        groupId: 'scheduler-consumer',
-      },
-    },
-  })
-  private readonly schedulerClient: ClientKafka;
 
   /**
    * 将可能会变的字段转为 string
@@ -108,7 +94,6 @@ export class ReportService {
 
   /**
    * 对 event 进行预处理后通过 kafka 传递到 logstash
-   * 接收到 kafka 的回调后通过 kafka 传递到 scheduler
    *
    * @param event 通过上报接口拿到的 event
    * @param ip_address 用户 ip
@@ -120,16 +105,7 @@ export class ReportService {
         event: this.transferEvent(event),
         ip_address,
       };
-      const kafkaCallback = await this.passEventToLogstash(value);
-      if (kafkaCallback && kafkaCallback.length) {
-        const key = TOPIC_TRANSFER_SCHEDULER_EVENT;
-        await this.schedulerClient
-          .emit(TOPIC_TRANSFER_SCHEDULER_EVENT, {
-            key,
-            value,
-          })
-          .toPromise<KafkaEmitCallback>();
-      }
+      await this.passEventToLogstash(value);
     } catch (error) {
       throw new ForbiddenException(4001000, error);
     }

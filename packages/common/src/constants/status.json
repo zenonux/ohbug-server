@@ -49,7 +49,8 @@
   "400902": "处理 source map 失败",
   "400903": "根据 SourceMap 文件获取原始 code 失败",
 
-  "4001000": "transfer: 预处理 event 失败 或向 scheduler 传递 event 时失败",
+  "4001000": "transfer: 预处理 event 失败 或向 manager 传递 event 时失败",
   "4001001": "transfer: 向 logstash 传递 event 时发生错误",
-  "4001002": "scheduler: event 聚合时发生错误"
+  "4001002": "manager: 从 elasticsearch 拉取 document 失败",
+  "4001003": "manager: event 聚合时发生错误"
 }

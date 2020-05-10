@@ -3,7 +3,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { config } from '@/config';
 
-export const DatabaseModule = [
-  ElasticsearchModule.register(config.elasticsearch),
-  TypeOrmModule.forRoot(config.orm),
-];
+export const ESModule = ElasticsearchModule.register(config.elasticsearch);
+
+export const databaseModules = [TypeOrmModule.forRoot(config.orm)];
