@@ -30,4 +30,8 @@ export const config: Config = {
       password: process.env.ELASTICSEARCH_PASSWORD,
     },
   },
+  redis: {
+    host: process.env.REDIS_HOST,
+    port: parseInt(process.env.REDIS_PORT, 10),
+  },
 };

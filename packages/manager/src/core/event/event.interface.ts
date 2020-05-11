@@ -19,3 +19,8 @@ export type OhbugEventDetail = UncaughtErrorDetail &
   WebsocketErrorDetail &
   ReactErrorDetail &
   VueErrorDetail;
+
+export interface OhbugDocument {
+  document_id: string;
+  index: string;
+}
