@@ -4,28 +4,12 @@ import type { Config } from './index';
 import { Organization } from '@/api/organization/organization.entity';
 import { Project } from '@/api/project/project.entity';
 import { User } from '@/api/user/user.entity';
-import { Event } from '@/api/event/event.entity';
-import { Performance } from '@/api/performance/performance.entity';
-import { Issue } from '@/api/issue/issue.entity';
 import { Replay } from '@/api/replay/replay.entity';
-import { Feedback } from '@/api/feedback/feedback.entity';
-import { View } from '@/api/view/view.entity';
 import { SourceMap } from '@/api/sourceMap/sourceMap.entity';
 
 dotenv.config();
 
-const entities = [
-  Organization,
-  Project,
-  User,
-  Event,
-  Performance,
-  Issue,
-  Replay,
-  Feedback,
-  View,
-  SourceMap,
-];
+const entities = [Organization, Project, User, Replay, SourceMap];
 
 export const config: Config = {
   orm: {

@@ -1,6 +1,6 @@
-import { View } from './view.entity';
+import { OhbugEventLike } from '@ohbug-server/common';
 
-export type ViewsResult = [View[], number];
+export type ViewsResult = [OhbugEventLike[], number];
 
 export interface SearchCondition {
   start?: Date;

@@ -20,7 +20,8 @@ export class AnalysisService {
    * @param project_id
    */
   async getStatisticsByProjectId(project_id: number | string, item: string) {
-    return this.eventService.dataAnalysisByItem(project_id, item);
+    console.log(project_id, item);
+    // return this.eventService.dataAnalysisByItem(project_id, item);
   }
 
   async getEventStatisticsByProjectId(

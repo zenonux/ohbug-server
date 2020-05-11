@@ -10,7 +10,6 @@ import {
 import { AuthGuard } from '@nestjs/passport';
 
 import { PerformanceService } from './performance.service';
-import { Performance } from './performance.entity';
 import {
   GetPerformanceByPerformanceIdDto,
   GetPerformancesDto,

@@ -5,7 +5,11 @@ import { Repository } from 'typeorm';
 import { ForbiddenException, unique } from '@ohbug-server/common';
 
 import { Issue } from './issue.entity';
-import type { CreateOrUpdateIssueByIntroParams } from './issue.interface';
+import type {
+  CreateOrUpdateIssueByIntroParams,
+  GetIssuesByProjectIdParams,
+} from './issue.interface';
+import { getWhereOptions } from './issue.core';
 
 @Injectable()
 export class IssueService {
@@ -56,6 +60,40 @@ export class IssueService {
       }
     } catch (error) {
       throw new ForbiddenException(400400, error);
+    }
+  }
+
+  /**
+   * 根据 project_id 取到对应 issues
+   *
+   * @param project_id
+   * @param searchCondition
+   * @param limit
+   * @param skip
+   */
+  async searchIssues({
+    project_id,
+    searchCondition,
+    limit,
+    skip,
+  }: GetIssuesByProjectIdParams) {
+    try {
+      const issues = await this.issueRepository.findAndCount({
+        where: {
+          project: {
+            id: project_id,
+          },
+          ...getWhereOptions(searchCondition),
+        },
+        order: {
+          id: 'DESC',
+        },
+        skip,
+        take: limit,
+      });
+      return issues;
+    } catch (error) {
+      throw new ForbiddenException(400401, error);
     }
   }
 }

@@ -21,6 +21,9 @@ export class IssueController {
    * 根据 project_id 取到对应 issues
    *
    * @param project_id
+   * @param page
+   * @param start
+   * @param end
    */
   @Get()
   @UseGuards(AuthGuard('jwt'))

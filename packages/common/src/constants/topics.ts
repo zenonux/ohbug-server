@@ -20,3 +20,10 @@ export const TOPIC_TRANSFER_LOGSTASH_PERFORMANCE =
 
 // transfer 接收 logstash 的回调后，传递给 manager 准备聚合任务
 export const TOPIC_TRANSFER_MANAGER_EVENT = 'TOPIC_TRANSFER_MANAGER_EVENT';
+
+// dashboard 向 manager 搜索 issues
+export const TOPIC_DASHBOARD_MANAGER_SEARCH_ISSUES =
+  'TOPIC_DASHBOARD_MANAGER_SEARCH_ISSUES';
+// dashboard 向 manager getLatestEventByIssueId
+export const TOPIC_DASHBOARD_MANAGER_GET_LATEST_EVENT =
+  'TOPIC_DASHBOARD_MANAGER_GET_LATEST_EVENT';

@@ -1,6 +1,6 @@
-import { Feedback } from './feedback.entity';
+import { OhbugEventLike } from '@ohbug-server/common';
 
-export type FeedbacksResult = [Feedback[], number];
+export type FeedbacksResult = [OhbugEventLike[], number];
 
 export interface SearchCondition {
   start?: Date;
