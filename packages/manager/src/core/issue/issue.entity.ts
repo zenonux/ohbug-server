@@ -1,4 +1,10 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  CreateDateColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 import { Exclude, Transform } from 'class-transformer';
 
 @Entity()
@@ -40,8 +46,8 @@ export class Issue {
    * @type {Date}
    * @memberof Issue
    */
-  @Column({ type: 'date' })
-  first_seen: Date;
+  @CreateDateColumn()
+  created_at: Date;
 
   /**
    * 最近一条 event 的时间
@@ -49,19 +55,19 @@ export class Issue {
    * @type {Date}
    * @memberof Issue
    */
-  @Column({ type: 'date' })
-  last_seen: Date;
+  @UpdateDateColumn()
+  updated_at: Date;
 
-  // /**
-  //  * issue 所对应的 events
-  //  * 这里只返回 events 数量
-  //  *
-  //  * @type {Event[]}
-  //  * @memberof Issue
-  //  */
-  // @Transform((value: string[]): number => value.length)
-  // @OneToMany((_) => Event, (event) => event.issue, { cascade: true })
-  // events: Event[];
+  /**
+   * issue 所对应的 events (id)
+   * 这里只返回 events 数量
+   *
+   * @type {string[]}
+   * @memberof Issue
+   */
+  @Transform((value: string[]): number => value.length)
+  @Column('simple-array')
+  events: string[];
 
   /**
    * 受此 issue 影响的用户
