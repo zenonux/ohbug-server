@@ -2,7 +2,10 @@ import { types } from '@ohbug/core';
 
 import { md5 } from '@ohbug-server/common';
 
-import { OhbugEventDetail } from './event.interface';
+import type {
+  AggregationDataAndMetaData,
+  OhbugEventDetail,
+} from './event.interface';
 
 /**
  * 根据不同 error detail 返回可用于聚合的字段
@@ -10,55 +13,123 @@ import { OhbugEventDetail } from './event.interface';
  * @param type 具体的 error 类型
  * @param detail error detail
  */
-export function switchErrorDetailAndGetAggregationData(
+export function switchErrorDetailAndGetAggregationDataAndMetaData(
   type,
   detail: OhbugEventDetail,
-): any[] {
+): AggregationDataAndMetaData {
   switch (type) {
     case types.UNCAUGHT_ERROR:
-      return [
-        detail.name,
-        detail.message,
-        detail.filename,
-        detail.lineno,
-        detail.colno,
-        detail.stack,
-      ];
+      return {
+        agg: [
+          detail.name,
+          detail.message,
+          detail.filename,
+          detail.lineno,
+          detail.colno,
+          detail.stack,
+        ],
+        metadata: {
+          type,
+          message: detail.message,
+          filename: detail.filename,
+          others: detail.stack,
+        },
+      };
     case types.UNHANDLEDREJECTION_ERROR:
-      return [detail.message];
+      return {
+        agg: [detail.message],
+        metadata: {
+          type,
+          message: detail.message,
+        },
+      };
     case types.UNKNOWN_ERROR:
-      return [detail.message];
+      return {
+        agg: [detail.message],
+        metadata: {
+          type,
+          message: detail.message,
+        },
+      };
     case types.RESOURCE_ERROR:
-      return [
-        detail.outerHTML,
-        detail.src,
-        detail.tagName,
-        detail.id,
-        detail.className,
-        detail.name,
-        detail.nodeType,
-        detail.selector,
-      ];
+      return {
+        agg: [
+          detail.outerHTML,
+          detail.src,
+          detail.tagName,
+          detail.id,
+          detail.className,
+          detail.name,
+          detail.nodeType,
+          detail.selector,
+        ],
+        metadata: {
+          type,
+          message: detail.message,
+          others: detail.selector,
+        },
+      };
     case types.AJAX_ERROR:
-      return [detail.req.url, detail.req.method, detail.req.data];
+      return {
+        agg: [detail.req.url, detail.req.method, detail.req.data],
+        metadata: {
+          type,
+          message: detail.req.url,
+          others: detail.req.method,
+        },
+      };
     case types.FETCH_ERROR:
-      return [detail.req.url, detail.req.method, detail.req.data];
+      return {
+        agg: [detail.req.url, detail.req.method, detail.req.data],
+        metadata: {
+          type,
+          message: detail.req.url,
+          others: detail.req.method,
+        },
+      };
     case types.WEBSOCKET_ERROR:
-      return [detail.url];
+      return {
+        agg: [detail.url],
+        metadata: {
+          type,
+          message: detail.url,
+        },
+      };
     case 'react':
-      return [detail.name, detail.message, detail.stack, detail.errorInfo];
+      return {
+        agg: [detail.name, detail.message, detail.stack, detail.errorInfo],
+        metadata: {
+          type,
+          message: detail.message,
+          others: detail.errorInfo,
+        },
+      };
     case 'vue':
-      return [
-        detail.name,
-        detail.message,
-        detail.stack,
-        detail.errorInfo,
-        detail.component,
-        detail.file,
-        detail.props,
-      ];
+      return {
+        agg: [
+          detail.name,
+          detail.message,
+          detail.stack,
+          detail.errorInfo,
+          detail.component,
+          detail.file,
+          detail.props,
+        ],
+        metadata: {
+          type,
+          message: detail.message,
+          filename: detail.file,
+          others: detail.errorInfo,
+        },
+      };
     default:
-      return [detail.message];
+      return {
+        agg: [detail.message],
+        metadata: {
+          type,
+          message: detail.message,
+        },
+      };
   }
 }
 

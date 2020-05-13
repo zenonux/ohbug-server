@@ -4,10 +4,14 @@ import { Client, ClientKafka, Transport } from '@nestjs/microservices';
 
 import { TOPIC_DASHBOARD_MANAGER_SEARCH_ISSUES } from '@ohbug-server/common';
 
+import { ProjectService } from '@/api/project/project.service';
+
 import type { GetIssuesByProjectIdParams } from './issue.interface';
 
 @Injectable()
 export class IssueService implements OnModuleInit {
+  constructor(private readonly projectService: ProjectService) {}
+
   @Client({
     transport: Transport.KAFKA,
     options: {
@@ -22,10 +26,11 @@ export class IssueService implements OnModuleInit {
   })
   private readonly managerClient: ClientKafka;
 
-  onModuleInit() {
+  async onModuleInit() {
     this.managerClient.subscribeToResponseOf(
       TOPIC_DASHBOARD_MANAGER_SEARCH_ISSUES,
     );
+    await this.managerClient.connect();
   }
 
   /**
@@ -42,11 +47,14 @@ export class IssueService implements OnModuleInit {
     limit,
     skip,
   }: GetIssuesByProjectIdParams) {
+    const { apiKey } = await this.projectService.getProjectByProjectId(
+      project_id,
+    );
     return await this.managerClient
       .send(TOPIC_DASHBOARD_MANAGER_SEARCH_ISSUES, {
         key: TOPIC_DASHBOARD_MANAGER_SEARCH_ISSUES,
         value: {
-          project_id,
+          apiKey,
           searchCondition,
           limit,
           skip,

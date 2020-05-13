@@ -7,6 +7,8 @@ import {
 } from 'typeorm';
 import { Exclude, Transform } from 'class-transformer';
 
+import type { MetaData, OhbugDocument } from '@/core/event/event.interface';
+
 @Entity()
 export class Issue {
   @PrimaryGeneratedColumn()
@@ -59,15 +61,32 @@ export class Issue {
   updated_at: Date;
 
   /**
+   * issue 所对应的 metadata
+   *
+   * @type {string}
+   * @memberof Issue
+   */
+  @Column({ type: 'jsonb' })
+  metadata: MetaData;
+
+  /**
    * issue 所对应的 events (id)
-   * 这里只返回 events 数量
    *
    * @type {string[]}
    * @memberof Issue
    */
-  @Transform((value: string[]): number => value.length)
-  @Column('simple-array')
-  events: string[];
+  @Exclude()
+  @Column({ type: 'jsonb', default: [] })
+  events: OhbugDocument[];
+
+  /**
+   * issue 所对应的 events count
+   *
+   * @type {number}
+   * @memberof Issue
+   */
+  @Column({ type: 'integer', default: 0 })
+  count: number;
 
   /**
    * 受此 issue 影响的用户
@@ -77,6 +96,6 @@ export class Issue {
    * @memberof Issue
    */
   @Transform((value: string[]): number => value.length)
-  @Column('simple-array')
+  @Column({ type: 'simple-array' })
   users: string[];
 }

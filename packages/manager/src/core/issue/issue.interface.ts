@@ -1,11 +1,18 @@
 import type { FindOperator } from 'typeorm';
+
 import type { OhbugEventLike } from '@ohbug-server/common';
 
+import type { MetaData } from '@/core/event/event.interface';
+import { Issue } from '@/core/issue/issue.entity';
+
 export interface CreateOrUpdateIssueByIntroParams {
-  intro: string;
-  document_id: string;
-  event: OhbugEventLike;
-  ip_address: string;
+  baseIssue?: Issue;
+  intro?: string;
+  ip_address?: string;
+  metadata?: MetaData;
+  document_id?: string;
+  index?: string;
+  event?: OhbugEventLike;
 }
 
 export interface SearchCondition {
@@ -14,12 +21,12 @@ export interface SearchCondition {
 }
 
 export interface GetIssuesByProjectIdParams {
-  project_id: number | string;
+  apiKey: string;
   searchCondition: SearchCondition;
   limit?: number;
   skip?: number;
 }
 
 export interface WhereOptions {
-  time?: FindOperator<number | string>;
+  updated_at?: FindOperator<number | string>;
 }

@@ -1,8 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { ElasticsearchService } from '@nestjs/elasticsearch';
 
 import { ForbiddenException, unique } from '@ohbug-server/common';
+
+import type { OhbugDocument } from '@/core/event/event.interface';
 
 import { Issue } from './issue.entity';
 import type {
@@ -16,6 +19,7 @@ export class IssueService {
   constructor(
     @InjectRepository(Issue)
     private readonly issueRepository: Repository<Issue>,
+    private readonly elasticsearchService: ElasticsearchService,
   ) {}
 
   /**
@@ -28,36 +32,56 @@ export class IssueService {
    */
   async CreateOrUpdateIssueByIntro({
     intro,
-    document_id,
-    event,
     ip_address,
+    baseIssue,
+    metadata,
+    document_id,
+    index,
+    event,
   }: CreateOrUpdateIssueByIntroParams): Promise<Issue> {
     try {
-      const issue = await this.issueRepository.findOne({
-        where: {
-          intro,
-        },
-      });
-
+      const issue =
+        baseIssue ||
+        (await this.issueRepository.findOne({
+          where: {
+            intro,
+          },
+        }));
       if (!issue) {
-        // 不存在 创建
+        // 不存在 创建 (intro, metadata, event, ip_address)
         const issueObject = this.issueRepository.create({
           intro,
           apiKey: event.apiKey,
           type: event.type,
-          events: [document_id],
+          metadata,
           users: [ip_address],
         });
-
         return await this.issueRepository.save(issueObject);
       } else {
-        // 已经存在 更新
-        return await this.issueRepository.save({
-          id: issue.id,
-          events: [...issue.events, document_id],
-          users: unique([...issue.users, ip_address]),
-        });
+        // 已经存在
+        if (document_id && index) {
+          // 步骤 4，更新 events (issue, document_id, index)
+          const documentEvent: OhbugDocument = {
+            document_id,
+            index,
+          };
+          // events 最多存储 100 条，超过后只更改 count
+          const MAX_EVENTS_NUMBER = 100;
+          const count = issue.events.length;
+          if (count < MAX_EVENTS_NUMBER) {
+            issue.events = [...(issue.events || []), documentEvent];
+            issue.count = issue.count + 1;
+          } else {
+            issue.count = issue.count + 1;
+          }
+          return await this.issueRepository.save(issue);
+        } else if (ip_address) {
+          // 步骤 2，更新 (intro, metadata, event, ip_address)
+          issue.users = unique([...issue.users, ip_address]);
+          return await this.issueRepository.save(issue);
+        }
       }
+      return issue;
     } catch (error) {
       throw new ForbiddenException(400400, error);
     }
@@ -72,17 +96,15 @@ export class IssueService {
    * @param skip
    */
   async searchIssues({
-    project_id,
+    apiKey,
     searchCondition,
     limit,
     skip,
   }: GetIssuesByProjectIdParams) {
     try {
-      const issues = await this.issueRepository.findAndCount({
+      return await this.issueRepository.findAndCount({
         where: {
-          project: {
-            id: project_id,
-          },
+          apiKey,
           ...getWhereOptions(searchCondition),
         },
         order: {
@@ -91,9 +113,24 @@ export class IssueService {
         skip,
         take: limit,
       });
-      return issues;
     } catch (error) {
       throw new ForbiddenException(400401, error);
     }
+  }
+
+  /**
+   * 根据 issue_id 获取 issue 对应的趋势信息
+   *
+   * @param id
+   */
+  async getTrendByIssueId(id: string[]) {
+    const issues = await this.issueRepository.findByIds(id);
+    return await Promise.all(
+      issues.map(async (issue) => {
+        // TODO 使用 es 聚合查最近一段时间的 event count，用于数据分析
+        await this.elasticsearchService.search();
+        console.log(issue);
+      }),
+    );
   }
 }

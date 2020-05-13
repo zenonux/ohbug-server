@@ -1,11 +1,4 @@
-import {
-  Controller,
-  Get,
-  UseGuards,
-  UseInterceptors,
-  ClassSerializerInterceptor,
-  Query,
-} from '@nestjs/common';
+import { Controller, Get, UseGuards, Query } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 
 import { IssueService } from './issue.service';
@@ -27,7 +20,6 @@ export class IssueController {
    */
   @Get()
   @UseGuards(AuthGuard('jwt'))
-  @UseInterceptors(ClassSerializerInterceptor)
   async searchIssues(
     @Query()
     { project_id, page, start, end }: GetIssueDto,

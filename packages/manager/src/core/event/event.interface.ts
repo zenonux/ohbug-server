@@ -24,3 +24,14 @@ export interface OhbugDocument {
   document_id: string;
   index: string;
 }
+
+export interface MetaData {
+  type: string;
+  message: string;
+  filename?: string;
+  others?: string;
+}
+export interface AggregationDataAndMetaData {
+  agg: any[];
+  metadata: MetaData;
+}
