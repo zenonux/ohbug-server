@@ -2,11 +2,14 @@ import { Injectable } from '@nestjs/common';
 import type { OnModuleInit } from '@nestjs/common';
 import { Client, ClientKafka, Transport } from '@nestjs/microservices';
 
-import { TOPIC_DASHBOARD_MANAGER_SEARCH_ISSUES } from '@ohbug-server/common';
+import {
+  TOPIC_DASHBOARD_MANAGER_SEARCH_ISSUES,
+  TOPIC_DASHBOARD_MANAGER_GET_TREND,
+} from '@ohbug-server/common';
 
 import { ProjectService } from '@/api/project/project.service';
 
-import type { GetIssuesByProjectIdParams } from './issue.interface';
+import type { GetIssuesByProjectIdParams, Period } from './issue.interface';
 
 @Injectable()
 export class IssueService implements OnModuleInit {
@@ -27,9 +30,13 @@ export class IssueService implements OnModuleInit {
   private readonly managerClient: ClientKafka;
 
   async onModuleInit() {
-    this.managerClient.subscribeToResponseOf(
+    const topics = [
       TOPIC_DASHBOARD_MANAGER_SEARCH_ISSUES,
-    );
+      TOPIC_DASHBOARD_MANAGER_GET_TREND,
+    ];
+    topics.forEach((topic) => {
+      this.managerClient.subscribeToResponseOf(topic);
+    });
     await this.managerClient.connect();
   }
 
@@ -59,6 +66,21 @@ export class IssueService implements OnModuleInit {
           limit,
           skip,
         },
+      })
+      .toPromise();
+  }
+
+  /**
+   * 根据 issue_id 获取 issue 对应的趋势信息
+   *
+   * @param ids
+   * @param period
+   */
+  async getTrendByIssueId(ids: string[], period: Period) {
+    return await this.managerClient
+      .send(TOPIC_DASHBOARD_MANAGER_GET_TREND, {
+        key: TOPIC_DASHBOARD_MANAGER_GET_TREND,
+        value: { ids, period },
       })
       .toPromise();
   }

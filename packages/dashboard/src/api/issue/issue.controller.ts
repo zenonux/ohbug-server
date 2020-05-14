@@ -2,7 +2,7 @@ import { Controller, Get, UseGuards, Query } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 
 import { IssueService } from './issue.service';
-import { GetIssueDto } from './issue.dto';
+import { GetIssueDto, GetTrendByIssueIdDto } from './issue.dto';
 
 const limit = 20;
 
@@ -32,5 +32,20 @@ export class IssueController {
       limit,
       skip,
     });
+  }
+
+  /**
+   * 根据 issue_id 获取 issue 对应的趋势信息
+   *
+   * @param ids
+   * @param period
+   */
+  @Get('trend')
+  @UseGuards(AuthGuard('jwt'))
+  async getTrendByIssueId(
+    @Query()
+    { ids, period }: GetTrendByIssueIdDto,
+  ) {
+    return await this.issueService.getTrendByIssueId(ids, period);
   }
 }

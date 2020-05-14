@@ -3,7 +3,11 @@ import {
   IsBooleanString,
   IsOptional,
   IsDateString,
+  IsArray,
+  IsString,
 } from 'class-validator';
+
+import type { Period } from './issue.interface';
 
 export class GetIssueDto {
   @IsNumberString()
@@ -19,6 +23,14 @@ export class GetIssueDto {
   @IsOptional()
   @IsDateString()
   readonly end?: Date;
+}
+
+export class GetTrendByIssueIdDto {
+  @IsArray()
+  readonly ids: string[];
+
+  @IsString()
+  readonly period: Period;
 }
 
 export class GetIssueByIssueIdDto {

@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { ElasticsearchService } from '@nestjs/elasticsearch';
+import dayjs from 'dayjs';
 
 import { ForbiddenException, unique } from '@ohbug-server/common';
 
@@ -121,15 +122,58 @@ export class IssueService {
   /**
    * 根据 issue_id 获取 issue 对应的趋势信息
    *
-   * @param id
+   * @param ids
+   * @param period
    */
-  async getTrendByIssueId(id: string[]) {
-    const issues = await this.issueRepository.findByIds(id);
+  async getTrendByIssueId({ ids, period = '24h' }) {
     return await Promise.all(
-      issues.map(async (issue) => {
-        // TODO 使用 es 聚合查最近一段时间的 event count，用于数据分析
-        await this.elasticsearchService.search();
-        console.log(issue);
+      ids.map(async (id) => {
+        if (period === '24h') {
+          const { body } = await this.elasticsearchService.search({
+            body: {
+              query: { match: { issue_id: id } },
+              aggs: {
+                trend: {
+                  date_histogram: {
+                    field: 'event.timestamp',
+                    calendar_interval: 'hour',
+                    format: 'yyyy-MM-dd HH',
+                    min_doc_count: 0,
+                    extended_bounds: {
+                      min: `${dayjs().format('YYYY-MM-DD')} 01`,
+                      max: `${dayjs().format('YYYY-MM-DD')} 23`,
+                    },
+                  },
+                },
+              },
+            },
+          });
+          return body;
+        }
+        if (period === '14d') {
+          const { body } = await this.elasticsearchService.search({
+            body: {
+              query: { match: { issue_id: id } },
+              aggs: {
+                trend: {
+                  date_histogram: {
+                    field: 'event.timestamp',
+                    calendar_interval: 'day',
+                    format: 'yyyy-MM-dd',
+                    min_doc_count: 0,
+                    extended_bounds: {
+                      min: `${dayjs()
+                        .subtract(13, 'day')
+                        .format('YYYY-MM-DD')}`,
+                      max: `${dayjs().format('YYYY-MM-DD')}`,
+                    },
+                  },
+                },
+              },
+            },
+          });
+          return body;
+        }
       }),
     );
   }

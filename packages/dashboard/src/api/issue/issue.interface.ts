@@ -15,3 +15,5 @@ export interface GetIssuesByProjectIdParams {
 export interface WhereOptions {
   time?: FindOperator<number | string>;
 }
+
+export type Period = '24h' | '14d';

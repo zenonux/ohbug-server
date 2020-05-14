@@ -190,7 +190,7 @@
               }
             },
             "timestamp": {
-              "type": "long"
+              "type": "date"
             },
             "type": {
               "type": "text",
