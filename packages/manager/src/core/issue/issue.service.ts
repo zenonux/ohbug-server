@@ -129,7 +129,13 @@ export class IssueService {
     return await Promise.all(
       ids.map(async (id) => {
         if (period === '24h') {
-          const { body } = await this.elasticsearchService.search({
+          const {
+            body: {
+              aggregations: {
+                trend: { buckets },
+              },
+            },
+          } = await this.elasticsearchService.search({
             body: {
               query: { match: { issue_id: id } },
               aggs: {
@@ -148,10 +154,22 @@ export class IssueService {
               },
             },
           });
-          return body;
+          return {
+            issue_id: id,
+            buckets: buckets.map((bucket) => ({
+              timestamp: bucket.key,
+              count: bucket.doc_count,
+            })),
+          };
         }
         if (period === '14d') {
-          const { body } = await this.elasticsearchService.search({
+          const {
+            body: {
+              aggregations: {
+                trend: { buckets },
+              },
+            },
+          } = await this.elasticsearchService.search({
             body: {
               query: { match: { issue_id: id } },
               aggs: {
@@ -172,7 +190,13 @@ export class IssueService {
               },
             },
           });
-          return body;
+          return {
+            issue_id: id,
+            buckets: buckets.map((bucket) => ({
+              timestamp: bucket.key,
+              count: bucket.doc_count,
+            })),
+          };
         }
       }),
     );
