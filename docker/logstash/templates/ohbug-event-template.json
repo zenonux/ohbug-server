@@ -167,6 +167,21 @@
                     }
                   }
                 },
+                "version": {
+                  "type": "text",
+                  "norms": false,
+                  "fields": {
+                    "keyword": {
+                      "type": "keyword",
+                      "ignore_above": 256
+                    }
+                  }
+                }
+              }
+            },
+            "user": {
+              "dynamic": true,
+              "properties": {
                 "uuid": {
                   "type": "text",
                   "norms": false,
@@ -177,7 +192,7 @@
                     }
                   }
                 },
-                "version": {
+                "ip_address": {
                   "type": "text",
                   "norms": false,
                   "fields": {
@@ -201,16 +216,6 @@
                   "ignore_above": 256
                 }
               }
-            }
-          }
-        },
-        "ip_address": {
-          "type": "text",
-          "norms": false,
-          "fields": {
-            "keyword": {
-              "type": "keyword",
-              "ignore_above": 256
             }
           }
         },

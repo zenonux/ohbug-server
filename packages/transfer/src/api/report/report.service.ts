@@ -6,10 +6,7 @@ import {
   ForbiddenException,
   TOPIC_TRANSFER_MANAGER_EVENT,
 } from '@ohbug-server/common';
-import type {
-  OhbugEventLike,
-  OhbugEventLikeWithIpAdress,
-} from '@ohbug-server/common';
+import type { OhbugEventLike } from '@ohbug-server/common';
 
 import { formatter } from '@/utils';
 
@@ -24,14 +21,24 @@ export class ReportService {
    * performance: `data`
    *
    * @param event
+   * @param ip_address
    */
-  transferEvent(event: OhbugEvent<any>): OhbugEventLike {
-    return formatter<OhbugEventLike>(event, [
+  transferEvent(event: OhbugEvent<any>, ip_address: string): OhbugEventLike {
+    const eventLike = formatter<OhbugEventLike>(event, [
       'detail',
       'state',
       'actions',
       'data',
     ]);
+    if (eventLike?.tags.uuid) delete eventLike.tags.uuid;
+
+    return {
+      ...eventLike,
+      user: {
+        ip_address,
+        uuid: event?.tags?.uuid,
+      },
+    };
   }
 
   /**
@@ -42,10 +49,7 @@ export class ReportService {
    */
   async handleEvent(event: OhbugEvent<any>, ip_address: string): Promise<void> {
     try {
-      const value: OhbugEventLikeWithIpAdress = {
-        event: this.transferEvent(event),
-        ip_address,
-      };
+      const value = this.transferEvent(event, ip_address);
       await this.managerClient
         .emit(TOPIC_TRANSFER_MANAGER_EVENT, {
           key: TOPIC_TRANSFER_MANAGER_EVENT,

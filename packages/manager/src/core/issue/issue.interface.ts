@@ -6,13 +6,12 @@ import type { MetaData } from '@/core/event/event.interface';
 import { Issue } from '@/core/issue/issue.entity';
 
 export interface CreateOrUpdateIssueByIntroParams {
+  event: OhbugEventLike;
   baseIssue?: Issue;
   intro?: string;
-  ip_address?: string;
   metadata?: MetaData;
   document_id?: string;
   index?: string;
-  event?: OhbugEventLike;
 }
 
 export interface SearchCondition {

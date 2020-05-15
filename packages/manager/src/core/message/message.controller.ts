@@ -11,10 +11,7 @@ import {
   TOPIC_DASHBOARD_MANAGER_GET_TREND,
   TOPIC_DASHBOARD_MANAGER_GET_LATEST_EVENT,
 } from '@ohbug-server/common';
-import type {
-  KafkaPayload,
-  OhbugEventLikeWithIpAdress,
-} from '@ohbug-server/common';
+import type { KafkaPayload, OhbugEventLike } from '@ohbug-server/common';
 
 import { EventService } from '@/core/event/event.service';
 import { IssueService } from '@/core/issue/issue.service';
@@ -29,9 +26,7 @@ export class MessageController {
 
   @MessagePattern(TOPIC_TRANSFER_MANAGER_EVENT)
   async handleEvent(@Payload() payload: KafkaPayload) {
-    return await this.eventService.handleEvent(
-      payload.value as OhbugEventLikeWithIpAdress,
-    );
+    return await this.eventService.handleEvent(payload.value as OhbugEventLike);
   }
 
   @UseInterceptors(ClassSerializerInterceptor)

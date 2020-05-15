@@ -3,8 +3,9 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { ElasticsearchService } from '@nestjs/elasticsearch';
 import dayjs from 'dayjs';
+import { uniq } from 'ramda';
 
-import { ForbiddenException, unique } from '@ohbug-server/common';
+import { ForbiddenException } from '@ohbug-server/common';
 
 import type { OhbugDocument } from '@/core/event/event.interface';
 
@@ -32,13 +33,12 @@ export class IssueService {
    * @param intro
    */
   async CreateOrUpdateIssueByIntro({
+    event,
     intro,
-    ip_address,
     baseIssue,
     metadata,
     document_id,
     index,
-    event,
   }: CreateOrUpdateIssueByIntroParams): Promise<Issue> {
     try {
       const issue =
@@ -49,40 +49,45 @@ export class IssueService {
           },
         }));
       if (!issue) {
-        // 不存在 创建 (intro, metadata, event, ip_address)
+        // 不存在 创建 (intro, metadata, event)
         const issueObject = this.issueRepository.create({
           intro,
           apiKey: event.apiKey,
           type: event.type,
           metadata,
-          users: [ip_address],
+          users: [event.user],
         });
         return await this.issueRepository.save(issueObject);
       } else {
         // 已经存在
+
+        // users 最多存储 1000，超过后只更改 users_count
+        const MAX_USERS_NUMBER = 1000;
+        const users_count = issue.users.length;
+        if (users_count < MAX_USERS_NUMBER) {
+          issue.users = uniq([...issue.users, event.user]);
+          issue.users_count = issue.users.length;
+        } else {
+          issue.users_count = issue.users_count + 1;
+        }
         if (document_id && index) {
           // 步骤 4，更新 events (issue, document_id, index)
           const documentEvent: OhbugDocument = {
             document_id,
             index,
           };
-          // events 最多存储 100 条，超过后只更改 count
-          const MAX_EVENTS_NUMBER = 100;
-          const count = issue.events.length;
-          if (count < MAX_EVENTS_NUMBER) {
+          // events 最多存储 100 条，超过后只更改 events_count
+          const MAX_ISSUES_NUMBER = 100;
+          const events_count = issue.events.length;
+          if (events_count < MAX_ISSUES_NUMBER) {
             issue.events = [...(issue.events || []), documentEvent];
-            issue.count = issue.count + 1;
+            issue.events_count = issue.events_count + 1;
           } else {
-            issue.count = issue.count + 1;
+            issue.events_count = issue.events_count + 1;
           }
-          return await this.issueRepository.save(issue);
-        } else if (ip_address) {
-          // 步骤 2，更新 (intro, metadata, event, ip_address)
-          issue.users = unique([...issue.users, ip_address]);
-          return await this.issueRepository.save(issue);
         }
+        return await this.issueRepository.save(issue);
       }
-      return issue;
     } catch (error) {
       throw new ForbiddenException(400400, error);
     }
@@ -136,25 +141,31 @@ export class IssueService {
                   trend: { buckets },
                 },
               },
-            } = await this.elasticsearchService.search({
-              body: {
-                query: { match: { issue_id: id } },
-                aggs: {
-                  trend: {
-                    date_histogram: {
-                      field: 'event.timestamp',
-                      calendar_interval: 'hour',
-                      format: 'yyyy-MM-dd HH',
-                      min_doc_count: 0,
-                      extended_bounds: {
-                        min: `${dayjs().format('YYYY-MM-DD')} 01`,
-                        max: `${dayjs().format('YYYY-MM-DD')} 23`,
+            } = await this.elasticsearchService.search(
+              {
+                body: {
+                  query: { match: { issue_id: id } },
+                  aggs: {
+                    trend: {
+                      date_histogram: {
+                        field: 'event.timestamp',
+                        calendar_interval: 'hour',
+                        format: 'yyyy-MM-dd HH',
+                        min_doc_count: 0,
+                        extended_bounds: {
+                          min: `${dayjs().format('YYYY-MM-DD')} 01`,
+                          max: `${dayjs().format('YYYY-MM-DD')} 23`,
+                        },
                       },
                     },
                   },
                 },
               },
-            });
+              {
+                ignore: [404],
+                maxRetries: 3,
+              },
+            );
             return {
               issue_id: id,
               buckets: buckets.map((bucket) => ({
@@ -170,27 +181,33 @@ export class IssueService {
                   trend: { buckets },
                 },
               },
-            } = await this.elasticsearchService.search({
-              body: {
-                query: { match: { issue_id: id } },
-                aggs: {
-                  trend: {
-                    date_histogram: {
-                      field: 'event.timestamp',
-                      calendar_interval: 'day',
-                      format: 'yyyy-MM-dd',
-                      min_doc_count: 0,
-                      extended_bounds: {
-                        min: `${dayjs()
-                          .subtract(13, 'day')
-                          .format('YYYY-MM-DD')}`,
-                        max: `${dayjs().format('YYYY-MM-DD')}`,
+            } = await this.elasticsearchService.search(
+              {
+                body: {
+                  query: { match: { issue_id: id } },
+                  aggs: {
+                    trend: {
+                      date_histogram: {
+                        field: 'event.timestamp',
+                        calendar_interval: 'day',
+                        format: 'yyyy-MM-dd',
+                        min_doc_count: 0,
+                        extended_bounds: {
+                          min: `${dayjs()
+                            .subtract(13, 'day')
+                            .format('YYYY-MM-DD')}`,
+                          max: `${dayjs().format('YYYY-MM-DD')}`,
+                        },
                       },
                     },
                   },
                 },
               },
-            });
+              {
+                ignore: [404],
+                maxRetries: 3,
+              },
+            );
             return {
               issue_id: id,
               buckets: buckets.map((bucket) => ({
@@ -220,10 +237,16 @@ export class IssueService {
         body: {
           _source: { event: eventLike, ip_address },
         },
-      } = await this.elasticsearchService.get({
-        index,
-        id: document_id,
-      });
+      } = await this.elasticsearchService.get(
+        {
+          index,
+          id: document_id,
+        },
+        {
+          ignore: [404],
+          maxRetries: 3,
+        },
+      );
       const event = eventLike;
       if (event.detail) {
         event.detail = JSON.parse(event.detail);
@@ -238,6 +261,7 @@ export class IssueService {
         ...event,
         user: {
           ip_address,
+          uuid: eventLike.tags.uuid,
         },
       };
     } catch (error) {

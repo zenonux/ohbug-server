@@ -17,6 +17,7 @@ export class ReportController {
    *
    * @param event 通过上报接口拿到的 event
    * @param ip_address
+   * @param req
    */
   @Post()
   async receiveEventFromPost(

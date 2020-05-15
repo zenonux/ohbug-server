@@ -5,9 +5,10 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { Exclude, Transform } from 'class-transformer';
+import { Exclude } from 'class-transformer';
 
 import type { MetaData, OhbugDocument } from '@/core/event/event.interface';
+import type { OhbugEventUser } from '@ohbug-server/common';
 
 @Entity()
 export class Issue {
@@ -86,16 +87,24 @@ export class Issue {
    * @memberof Issue
    */
   @Column({ type: 'integer', default: 0 })
-  count: number;
+  events_count: number;
 
   /**
    * 受此 issue 影响的用户
-   * 这里只返回 user 数量
    *
-   * @type {string[]}
+   * @type {OhbugEventUser[]}
    * @memberof Issue
    */
-  @Transform((value: string[]): number => value.length)
-  @Column({ type: 'simple-array' })
-  users: string[];
+  @Exclude()
+  @Column({ type: 'jsonb', default: [] })
+  users: OhbugEventUser[];
+
+  /**
+   * 受此 issue 影响的用户 count
+   *
+   * @type {number}
+   * @memberof Issue
+   */
+  @Column({ type: 'integer', default: 0 })
+  users_count: number;
 }

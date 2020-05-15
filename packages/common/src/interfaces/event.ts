@@ -1,5 +1,10 @@
 import type { OhbugCategory, OhbugTags } from '@ohbug/types';
 
+export interface OhbugEventUser {
+  ip_address: string;
+  uuid?: string;
+}
+
 export interface OhbugEventLike {
   apiKey: string;
   appVersion?: string;
@@ -11,9 +16,9 @@ export interface OhbugEventLike {
   detail: string;
   state?: string;
   actions?: string;
+  user: OhbugEventUser;
 }
-
-export interface OhbugEventLikeWithIpAdress {
+export interface OhbugEventLikeWithIssueId {
   event: OhbugEventLike;
-  ip_address: string;
+  issue_id: number;
 }
