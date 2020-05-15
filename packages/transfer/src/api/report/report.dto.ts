@@ -1,10 +1,4 @@
-import {
-  IsString,
-  ValidateNested,
-  IsOptional,
-  IsArray,
-  IsNumberString,
-} from 'class-validator';
+import { IsString, ValidateNested, IsOptional, IsArray } from 'class-validator';
 import type {
   OhbugTags,
   OhbugEvent,
@@ -24,8 +18,8 @@ export class ReportDto<T> implements OhbugEvent<T> {
   @IsString()
   readonly appType?: string;
 
-  @IsNumberString()
-  readonly timestamp: number | string;
+  @IsString()
+  readonly timestamp: string;
 
   @IsOptional()
   @IsString()

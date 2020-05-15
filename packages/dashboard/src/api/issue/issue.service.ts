@@ -1,6 +1,6 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import type { OnModuleInit } from '@nestjs/common';
-import { Client, ClientKafka, Transport } from '@nestjs/microservices';
+import { ClientKafka } from '@nestjs/microservices';
 
 import {
   TOPIC_DASHBOARD_MANAGER_SEARCH_ISSUES,
@@ -15,21 +15,10 @@ import type { GetIssuesByProjectIdParams, Period } from './issue.interface';
 export class IssueService implements OnModuleInit {
   constructor(private readonly projectService: ProjectService) {}
 
-  @Client({
-    transport: Transport.KAFKA,
-    options: {
-      client: {
-        clientId: 'manager',
-        brokers: ['localhost:9092'],
-      },
-      consumer: {
-        groupId: 'manager-consumer',
-      },
-    },
-  })
+  @Inject('KAFKA_DASHBOARD_MANAGER_CLIENT')
   private readonly managerClient: ClientKafka;
 
-  async onModuleInit() {
+  onModuleInit() {
     const topics = [
       TOPIC_DASHBOARD_MANAGER_SEARCH_ISSUES,
       TOPIC_DASHBOARD_MANAGER_GET_TREND,
@@ -37,7 +26,6 @@ export class IssueService implements OnModuleInit {
     topics.forEach((topic) => {
       this.managerClient.subscribeToResponseOf(topic);
     });
-    await this.managerClient.connect();
   }
 
   /**

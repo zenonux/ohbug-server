@@ -1,5 +1,5 @@
-import { Injectable } from '@nestjs/common';
-import { Client, ClientKafka, Transport } from '@nestjs/microservices';
+import { Inject, Injectable } from '@nestjs/common';
+import { ClientKafka } from '@nestjs/microservices';
 import type { OhbugEvent } from '@ohbug/types';
 
 import {
@@ -15,18 +15,7 @@ import { formatter } from '@/utils';
 
 @Injectable()
 export class ReportService {
-  @Client({
-    transport: Transport.KAFKA,
-    options: {
-      client: {
-        clientId: 'manager',
-        brokers: ['localhost:9092'],
-      },
-      consumer: {
-        groupId: 'manager-consumer',
-      },
-    },
-  })
+  @Inject('KAFKA_TRANSFER_MANAGER_CLIENT')
   private readonly managerClient: ClientKafka;
 
   /**

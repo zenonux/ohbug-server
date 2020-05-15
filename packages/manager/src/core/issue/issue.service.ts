@@ -126,79 +126,122 @@ export class IssueService {
    * @param period
    */
   async getTrendByIssueId({ ids, period = '24h' }) {
-    return await Promise.all(
-      ids.map(async (id) => {
-        if (period === '24h') {
-          const {
-            body: {
-              aggregations: {
-                trend: { buckets },
+    try {
+      return await Promise.all(
+        ids.map(async (id) => {
+          if (period === '24h') {
+            const {
+              body: {
+                aggregations: {
+                  trend: { buckets },
+                },
               },
-            },
-          } = await this.elasticsearchService.search({
-            body: {
-              query: { match: { issue_id: id } },
-              aggs: {
-                trend: {
-                  date_histogram: {
-                    field: 'event.timestamp',
-                    calendar_interval: 'hour',
-                    format: 'yyyy-MM-dd HH',
-                    min_doc_count: 0,
-                    extended_bounds: {
-                      min: `${dayjs().format('YYYY-MM-DD')} 01`,
-                      max: `${dayjs().format('YYYY-MM-DD')} 23`,
+            } = await this.elasticsearchService.search({
+              body: {
+                query: { match: { issue_id: id } },
+                aggs: {
+                  trend: {
+                    date_histogram: {
+                      field: 'event.timestamp',
+                      calendar_interval: 'hour',
+                      format: 'yyyy-MM-dd HH',
+                      min_doc_count: 0,
+                      extended_bounds: {
+                        min: `${dayjs().format('YYYY-MM-DD')} 01`,
+                        max: `${dayjs().format('YYYY-MM-DD')} 23`,
+                      },
                     },
                   },
                 },
               },
-            },
-          });
-          return {
-            issue_id: id,
-            buckets: buckets.map((bucket) => ({
-              timestamp: bucket.key,
-              count: bucket.doc_count,
-            })),
-          };
-        }
-        if (period === '14d') {
-          const {
-            body: {
-              aggregations: {
-                trend: { buckets },
+            });
+            return {
+              issue_id: id,
+              buckets: buckets.map((bucket) => ({
+                timestamp: bucket.key,
+                count: bucket.doc_count,
+              })),
+            };
+          }
+          if (period === '14d') {
+            const {
+              body: {
+                aggregations: {
+                  trend: { buckets },
+                },
               },
-            },
-          } = await this.elasticsearchService.search({
-            body: {
-              query: { match: { issue_id: id } },
-              aggs: {
-                trend: {
-                  date_histogram: {
-                    field: 'event.timestamp',
-                    calendar_interval: 'day',
-                    format: 'yyyy-MM-dd',
-                    min_doc_count: 0,
-                    extended_bounds: {
-                      min: `${dayjs()
-                        .subtract(13, 'day')
-                        .format('YYYY-MM-DD')}`,
-                      max: `${dayjs().format('YYYY-MM-DD')}`,
+            } = await this.elasticsearchService.search({
+              body: {
+                query: { match: { issue_id: id } },
+                aggs: {
+                  trend: {
+                    date_histogram: {
+                      field: 'event.timestamp',
+                      calendar_interval: 'day',
+                      format: 'yyyy-MM-dd',
+                      min_doc_count: 0,
+                      extended_bounds: {
+                        min: `${dayjs()
+                          .subtract(13, 'day')
+                          .format('YYYY-MM-DD')}`,
+                        max: `${dayjs().format('YYYY-MM-DD')}`,
+                      },
                     },
                   },
                 },
               },
-            },
-          });
-          return {
-            issue_id: id,
-            buckets: buckets.map((bucket) => ({
-              timestamp: bucket.key,
-              count: bucket.doc_count,
-            })),
-          };
-        }
-      }),
-    );
+            });
+            return {
+              issue_id: id,
+              buckets: buckets.map((bucket) => ({
+                timestamp: bucket.key,
+                count: bucket.doc_count,
+              })),
+            };
+          }
+        }),
+      );
+    } catch (error) {
+      throw new ForbiddenException(400402, error);
+    }
+  }
+
+  /**
+   * 根据 issue_id 获取 issue 最近的一条 event
+   *
+   * @param issue_id
+   */
+  async getLatestEventByIssueId(issue_id: number | string) {
+    try {
+      const issue = await this.issueRepository.findOne(issue_id);
+      const latestEventDocument = issue.events[issue.events.length - 1];
+      const { index, document_id } = latestEventDocument;
+      const {
+        body: {
+          _source: { event: eventLike, ip_address },
+        },
+      } = await this.elasticsearchService.get({
+        index,
+        id: document_id,
+      });
+      const event = eventLike;
+      if (event.detail) {
+        event.detail = JSON.parse(event.detail);
+      }
+      if (event.state) {
+        event.state = JSON.parse(event.state);
+      }
+      if (event.actions) {
+        event.actions = JSON.parse(event.actions);
+      }
+      return {
+        ...event,
+        user: {
+          ip_address,
+        },
+      };
+    } catch (error) {
+      throw new ForbiddenException(400403, error);
+    }
   }
 }

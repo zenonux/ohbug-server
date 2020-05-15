@@ -1,23 +1,12 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import type { OnModuleInit } from '@nestjs/common';
-import { Client, ClientKafka, Transport } from '@nestjs/microservices';
+import { ClientKafka } from '@nestjs/microservices';
 
 import { TOPIC_DASHBOARD_MANAGER_GET_LATEST_EVENT } from '@ohbug-server/common';
 
 @Injectable()
 export class EventService implements OnModuleInit {
-  @Client({
-    transport: Transport.KAFKA,
-    options: {
-      client: {
-        clientId: 'manager',
-        brokers: ['localhost:9092'],
-      },
-      consumer: {
-        groupId: 'manager-consumer',
-      },
-    },
-  })
+  @Inject('KAFKA_DASHBOARD_MANAGER_CLIENT')
   private readonly managerClient: ClientKafka;
 
   onModuleInit() {

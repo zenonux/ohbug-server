@@ -9,6 +9,7 @@ import {
   TOPIC_TRANSFER_MANAGER_EVENT,
   TOPIC_DASHBOARD_MANAGER_SEARCH_ISSUES,
   TOPIC_DASHBOARD_MANAGER_GET_TREND,
+  TOPIC_DASHBOARD_MANAGER_GET_LATEST_EVENT,
 } from '@ohbug-server/common';
 import type {
   KafkaPayload,
@@ -41,9 +42,15 @@ export class MessageController {
     );
   }
 
-  @UseInterceptors(ClassSerializerInterceptor)
   @MessagePattern(TOPIC_DASHBOARD_MANAGER_GET_TREND)
   async getTrendByIssueId(@Payload() payload: KafkaPayload) {
     return await this.issueService.getTrendByIssueId(payload.value);
+  }
+
+  @MessagePattern(TOPIC_DASHBOARD_MANAGER_GET_LATEST_EVENT)
+  async getLatestEventByIssueId(@Payload() payload: KafkaPayload) {
+    return await this.issueService.getLatestEventByIssueId(
+      payload.value as number | string,
+    );
   }
 }

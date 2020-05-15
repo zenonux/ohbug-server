@@ -4,7 +4,7 @@ export interface OhbugEventLike {
   apiKey: string;
   appVersion?: string;
   appType?: string;
-  timestamp: number | string;
+  timestamp: string;
   category?: OhbugCategory;
   type: string;
   tags: OhbugTags;
