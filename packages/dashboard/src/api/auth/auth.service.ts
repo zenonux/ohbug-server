@@ -1,8 +1,9 @@
-import { Injectable, HttpService } from '@nestjs/common';
+import { Injectable, HttpService, OnModuleInit } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { RedisService } from 'nestjs-redis';
 import SmsService from '@alicloud/pop-core';
 import dayjs from 'dayjs';
+import { Redis } from 'ioredis';
 
 import { User } from '@/api/user/user.entity';
 import { UserService } from '@/api/user/user.service';
@@ -16,6 +17,7 @@ import type {
   GithubUser,
   JwtToken,
   RedisCaptchaValue,
+  SignupParams,
 } from './auth.interface';
 import type { JwtPayload } from './auth.interface';
 
@@ -23,7 +25,9 @@ import type { JwtPayload } from './auth.interface';
 const CAPTCHA_EXPIRY_TIME = 300;
 
 @Injectable()
-export class AuthService {
+export class AuthService implements OnModuleInit {
+  redisClient: Redis;
+
   constructor(
     private readonly redisService: RedisService,
     private readonly httpService: HttpService,
@@ -31,13 +35,17 @@ export class AuthService {
     private readonly jwtService: JwtService,
   ) {}
 
+  async onModuleInit() {
+    this.redisClient = await this.redisService.getClient();
+  }
+
   /**
    * 发送短信 (使用阿里云短信服务)
    *
    * @param mobile
    * @param captcha
    */
-  async sendSms(mobile: string, captcha: number) {
+  private async sendSms(mobile: string, captcha: number) {
     const smsClient = new SmsService(config.sms.config);
 
     const params = {
@@ -53,18 +61,19 @@ export class AuthService {
     await smsClient.request('SendSms', params, requestOption);
   }
 
-  async createCaptcha(mobile: string) {
-    const redisClient = await this.redisService.getClient();
+  private async createCaptcha(mobile: string) {
     // 生成验证码
     const captcha = Math.floor(100000 + Math.random() * 900000);
     // 发送验证码
-    // await this.sendSms(mobile, captcha);
+    if (process.env.NODE_ENV === 'production') {
+      await this.sendSms(mobile, captcha);
+    }
     const value: RedisCaptchaValue = {
       captcha,
       timestamp: new Date().getTime(),
     };
     // 暂存验证码 有效期 CAPTCHA_EXPIRY_TIME
-    return await redisClient.set(
+    return await this.redisClient.set(
       mobile,
       JSON.stringify(value),
       'EX',
@@ -82,12 +91,11 @@ export class AuthService {
    */
   async getCaptcha(mobile: string): Promise<string> {
     try {
-      const redisClient = await this.redisService.getClient();
       // 验证手机号是否存在 redis
-      const result = await redisClient.get(mobile);
-      if (result) {
+      const value = await this.redisClient.get(mobile);
+      if (value) {
         // 存在，判断时间是否大于 sending_interval 秒
-        const { timestamp } = JSON.parse(result) as RedisCaptchaValue;
+        const { timestamp } = JSON.parse(value) as RedisCaptchaValue;
         if (
           dayjs().isBefore(
             dayjs(timestamp).add(config.sms.sending_interval, 'second'),
@@ -107,6 +115,57 @@ export class AuthService {
       }
     } catch (error) {
       throw new ForbiddenException(400010, error);
+    }
+  }
+
+  /**
+   * 校验验证码是否合法
+   *
+   * @param mobile
+   * @param captcha
+   */
+  private async verifyCaptcha(mobile: string, captcha: number) {
+    const value = await this.redisClient.get(mobile);
+    if (value) {
+      const { captcha: redisCaptcha } = JSON.parse(value) as RedisCaptchaValue;
+      if (captcha === redisCaptcha) {
+        return true;
+      } else {
+        throw new Error(`验证码不合法，请检查手机号与验证码是否对应`);
+      }
+    } else {
+      throw new Error(`验证码已过期，请重新生成验证码`);
+    }
+  }
+
+  /**
+   * 注册
+   *
+   * @param mobile
+   * @param captcha
+   */
+  async signup({ mobile, captcha }: SignupParams) {
+    try {
+      const verified = await this.verifyCaptcha(mobile, captcha);
+      if (verified) {
+        // 检测手机号是否已经注册
+        let user = await this.userService.getUserByMobile(mobile);
+        if (user) {
+          throw new Error(`手机号已经注册`);
+        }
+        // 未注册，开始创建 user
+        user = await this.userService.saveUser(null, {
+          name: mobile,
+          mobile,
+        });
+        if (user) {
+          return true;
+        } else {
+          throw new Error(`创建用户 ${mobile} 失败`);
+        }
+      }
+    } catch (error) {
+      throw new ForbiddenException(400020, error);
     }
   }
 
@@ -180,12 +239,10 @@ export class AuthService {
       if (type === 'github') {
         // 判断是否已经注册
         const user = await this.userService.getUserByOauthId(type, detail.id);
-        console.log({ user });
         // 用户已注册
         return user;
       }
     } catch (error) {
-      console.log(error);
       if (error.code && error.code === 400001) {
         // 用户未注册
         return await this.userService.saveUser(type, detail);

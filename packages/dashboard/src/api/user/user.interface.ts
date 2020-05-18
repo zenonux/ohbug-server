@@ -1,4 +1,4 @@
-export type OAuthType = 'github';
+export type OAuthType = 'github' | null;
 
 export type OAuth = Record<
   OAuthType,

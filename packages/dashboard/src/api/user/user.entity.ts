@@ -44,7 +44,7 @@ export class User {
    * @memberof User
    */
   @Column({ type: 'text', nullable: true })
-  email: string;
+  email?: string;
 
   /**
    * 用户头像 可修改 默认是 oauth2 里的 avatar
@@ -53,7 +53,7 @@ export class User {
    * @memberof User
    */
   @Column({ type: 'text', nullable: true })
-  avatar: string;
+  avatar?: string;
 
   /**
    * 用户创建时间
@@ -82,8 +82,8 @@ export class User {
    * @memberof User
    */
   @Exclude()
-  @Column({ type: 'jsonb' })
-  oauth: OAuth;
+  @Column({ type: 'jsonb', nullable: true })
+  oauth?: OAuth;
 
   /**
    * user 所属的 organization (多对一)

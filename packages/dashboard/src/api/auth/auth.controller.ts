@@ -4,7 +4,7 @@ import { config } from '@/config';
 import { ForbiddenException } from '@ohbug-server/common';
 
 import { AuthService } from './auth.service';
-import { CaptchaDto } from './auth.dto';
+import { CaptchaDto, SignupDto } from './auth.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -18,6 +18,17 @@ export class AuthController {
   @Get('captcha')
   async captcha(@Query() { mobile }: CaptchaDto): Promise<string> {
     return await this.authService.getCaptcha(mobile);
+  }
+
+  /**
+   * 注册
+   *
+   * @param mobile
+   * @param captcha
+   */
+  @Post('signup')
+  async signup(@Body() { mobile, captcha }: SignupDto) {
+    return await this.authService.signup({ mobile, captcha });
   }
 
   /**

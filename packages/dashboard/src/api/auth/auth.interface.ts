@@ -3,6 +3,11 @@ export interface RedisCaptchaValue {
   timestamp: number;
 }
 
+export interface SignupParams {
+  mobile: string;
+  captcha: number;
+}
+
 export type GithubToken = {
   access_token: string;
   token_type: string;
@@ -13,6 +18,12 @@ export type GithubToken = {
   error_uri: string;
 };
 
+export interface NormalUser {
+  mobile: string;
+  name: string;
+  email?: string;
+  avatar?: string;
+}
 export interface GithubUser {
   login: string;
   id: number | string;
@@ -46,6 +57,7 @@ export interface GithubUser {
   created_at: string;
   updated_at: string;
 }
+export type UserDetail = NormalUser | GithubUser;
 
 export interface JwtPayload {
   id: string;
