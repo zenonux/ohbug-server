@@ -3,9 +3,11 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
 import { ForbiddenException } from '@ohbug-server/common';
-import type { GithubUser } from '@/api/auth/auth.interface';
 
-import { User, From } from './user.entity';
+import type { GithubUser } from '@/api/auth/auth.interface';
+import type { OAuth, OAuthType } from '@/api/user/user.interface';
+
+import { User } from './user.entity';
 
 @Injectable()
 export class UserService {
@@ -20,40 +22,46 @@ export class UserService {
    * @param from
    * @param detail
    */
-  private createUser(from: From, detail: GithubUser): User {
+  private createUser(type: OAuthType, detail: GithubUser): User {
     let name: string;
     let email: string;
     let avatar: string;
-    let oauth_id: number;
-    switch (from) {
+    let oauth_id: string;
+    switch (type) {
       case 'github':
         name = detail.name || detail.login || detail.id.toString();
         email = detail.email;
         avatar = detail.avatar_url;
-        oauth_id = detail.id;
+        oauth_id = detail.id.toString();
         break;
       default:
         break;
     }
+    const oauth: OAuth = {
+      [type]: {
+        id: oauth_id,
+        detail,
+      },
+    };
     const user = this.userRepository.create({
-      oauth_id,
       name,
       email,
       avatar,
-      from,
+      oauth,
     });
     return user;
   }
 
   /**
-   * 对 oauth2 拿到的用户数据进行处理后入库
+   * 对 oauth2 拿到的用
+   * 户数据进行处理后入库
    *
-   * @param from oauth2 来源
+   * @param type
    * @param detail oauth2 拿到的用户数据
    */
-  async saveUser(from: From, detail: GithubUser): Promise<User> {
+  async saveUser(type: OAuthType, detail: GithubUser): Promise<User> {
     try {
-      const user = this.createUser(from, detail);
+      const user = this.createUser(type, detail);
       const result = await this.userRepository.save(user);
       return result;
     } catch (error) {
@@ -82,18 +90,16 @@ export class UserService {
    *
    * @param oauth_id 用户 oauth_id
    */
-  async getUserByOauthId(oauth_id: number): Promise<User> {
-    // typeorm 中 findOne 如果 id 为 undefined，会返回表中第一项，所以这里手动验证参数
-    // https://github.com/typeorm/typeorm/issues/2500
-    if (!oauth_id) {
-      throw new Error(
-        `getUserByOauthId: 期望参数 "oauth_id" 类型为 number | string, 收到参数 ${oauth_id}`,
-      );
-    }
+  async getUserByOauthId(type: OAuthType, oauth_id: number): Promise<User> {
     try {
-      const user = await this.userRepository.findOneOrFail({
-        oauth_id,
-      });
+      const user = await this.userRepository
+        .createQueryBuilder()
+        .where('oauth -> :type -> id = :oauth_id', {
+          type,
+          oauth_id,
+        })
+        .getOne();
+      if (!user) throw new Error(`getUserByOauthId: 用户未注册`);
       return user;
     } catch (error) {
       throw new ForbiddenException(400001, error);

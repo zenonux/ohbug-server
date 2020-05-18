@@ -39,4 +39,22 @@ export const config: Config = {
       expiresIn: process.env.JWT_EXPIRES_IN,
     },
   },
+  redis: {
+    host: process.env.REDIS_HOST,
+    port: parseInt(process.env.REDIS_PORT, 10),
+  },
+  sms: {
+    sending_interval: parseInt(process.env.SMS_SENDING_INTERVAL, 10),
+    config: {
+      accessKeyId: process.env.SMS_CONFIG_ACCESS_KEY_ID,
+      accessKeySecret: process.env.SMS_CONFIG_ACCESS_KEY_SECRET,
+      endpoint: process.env.SMS_CONFIG_ENDPOINT,
+      apiVersion: process.env.SMS_CONFIG_API_VERSION,
+    },
+    params: {
+      RegionId: process.env.SMS_PARAMS_REGION_ID,
+      SignName: process.env.SMS_PARAMS_SIGN_NAME,
+      TemplateCode: process.env.SMS_PARAMS_TEMPLATE_CODE,
+    },
+  },
 };

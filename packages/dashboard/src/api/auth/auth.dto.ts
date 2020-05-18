@@ -1,3 +1,3 @@
-export class AuthDto {
-  readonly code: string;
+export class CaptchaDto {
+  readonly mobile: string;
 }

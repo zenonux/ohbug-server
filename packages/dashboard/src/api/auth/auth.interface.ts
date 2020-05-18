@@ -1,3 +1,8 @@
+export interface RedisCaptchaValue {
+  captcha: number;
+  timestamp: number;
+}
+
 export type GithubToken = {
   access_token: string;
   token_type: string;
@@ -10,7 +15,7 @@ export type GithubToken = {
 
 export interface GithubUser {
   login: string;
-  id: number;
+  id: number | string;
   node_id: string;
   avatar_url: string;
   gravatar_id: string;

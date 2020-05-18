@@ -1,19 +1,31 @@
-import { Controller, Post, Body, Res } from '@nestjs/common';
+import { Controller, Get, Post, Query, Body, Res } from '@nestjs/common';
 
 import { config } from '@/config';
 import { ForbiddenException } from '@ohbug-server/common';
 
 import { AuthService } from './auth.service';
+import { CaptchaDto } from './auth.dto';
 
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   /**
+   * 获取短信验证码
+   *
+   * @param mobile
+   */
+  @Get('captcha')
+  async captcha(@Query() { mobile }: CaptchaDto): Promise<string> {
+    return await this.authService.getCaptcha(mobile);
+  }
+
+  /**
    * 用于 登录/注册
    * 由于只提供 oauth2 登录，所以将注册与登录二合一
    *
    * @param code
+   * @param res
    */
   @Post('github')
   async github(@Body('code') code, @Res() res) {

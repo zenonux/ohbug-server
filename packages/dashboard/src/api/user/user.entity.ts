@@ -12,7 +12,7 @@ import { Exclude } from 'class-transformer';
 import { Organization } from '@/api/organization/organization.entity';
 import { Project } from '@/api/project/project.entity';
 
-export type From = 'github';
+import type { OAuth } from './user.interface';
 
 @Entity()
 export class User {
@@ -20,14 +20,13 @@ export class User {
   id: number;
 
   /**
-   * 通过 oauth2 拿到的用户数据里的唯一 id
+   * 用户手机号
    *
-   * @type {number}
+   * @type {string}
    * @memberof User
    */
-  @Exclude()
-  @Column({ type: 'integer' })
-  oauth_id: number;
+  @Column({ type: 'text' })
+  mobile: string;
 
   /**
    * 用户昵称 可修改 默认是 oauth2 里的 name
@@ -53,7 +52,7 @@ export class User {
    * @type {string}
    * @memberof User
    */
-  @Column({ type: 'text' })
+  @Column({ type: 'text', nullable: true })
   avatar: string;
 
   /**
@@ -77,23 +76,14 @@ export class User {
   updated_at: Date;
 
   /**
-   * 用户 oauth2 来源
+   * 用户绑定的第三方登录信息
    *
-   * @type {From}
+   * @type {OAuth}
    * @memberof User
    */
-  @Column({ type: 'text' })
-  from: From;
-
-  // /**
-  //  * oauth2 拿到的用户数据
-  //  *
-  //  * @type {GithubUser}
-  //  * @memberof User
-  //  */
-  // @Exclude()
-  // @Column()
-  // detail: GithubUser;
+  @Exclude()
+  @Column({ type: 'jsonb' })
+  oauth: OAuth;
 
   /**
    * user 所属的 organization (多对一)
