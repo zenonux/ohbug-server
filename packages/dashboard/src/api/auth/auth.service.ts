@@ -47,7 +47,7 @@ export class AuthService implements OnModuleInit {
    * @param mobile
    * @param captcha
    */
-  private async sendSms(mobile: string, captcha: number) {
+  private async sendSms(mobile: string, captcha: number): Promise<void> {
     const smsClient = new SmsService(
       this.configService.get('service.sms.config'),
     );
@@ -65,7 +65,7 @@ export class AuthService implements OnModuleInit {
     await smsClient.request('SendSms', params, requestOption);
   }
 
-  private async createCaptcha(mobile: string) {
+  private async createCaptcha(mobile: string): Promise<'OK'> {
     // 生成验证码
     const captcha = Math.floor(100000 + Math.random() * 900000);
     // 发送验证码
@@ -129,7 +129,10 @@ export class AuthService implements OnModuleInit {
    * @param mobile
    * @param captcha
    */
-  private async verifyCaptcha(mobile: string, captcha: number) {
+  private async verifyCaptcha(
+    mobile: string,
+    captcha: number,
+  ): Promise<boolean> {
     const value = await this.redisClient.get(mobile);
     if (value) {
       const { captcha: redisCaptcha } = JSON.parse(value) as RedisCaptchaValue;
@@ -149,7 +152,7 @@ export class AuthService implements OnModuleInit {
    * @param mobile
    * @param captcha
    */
-  async signup({ mobile, captcha }: SignupParams) {
+  async signup({ mobile, captcha }: SignupParams): Promise<boolean> {
     try {
       const verified = await this.verifyCaptcha(mobile, captcha);
       if (verified) {
@@ -232,19 +235,26 @@ export class AuthService implements OnModuleInit {
   }
 
   /**
-   * 登录 目前只提供 github 的 oauth2 方式，以后考虑接入微信、QQ 登录
+   * 登录 包含 oauth2 和普通手机号验证登录
    * 此方法会根据 `from` `detail` 的不同做不同的处理
    *
    * @param type
    * @param detail oauth2 拿到的用户信息
    */
-  async loginIn(type: OAuthType, detail: any) {
+  async login(type: OAuthType, detail: any) {
     try {
       if (type === 'github') {
         // 判断是否已经注册
         const user = await this.userService.getUserByOauthId(type, detail.id);
         // 用户已注册
         return user;
+      } else {
+        // 手机号验证登录
+        const { mobile, captcha } = detail;
+        const verified = await this.verifyCaptcha(mobile, captcha);
+        if (verified) {
+          return await this.userService.getUserByMobile(mobile);
+        }
       }
     } catch (error) {
       if (error.code && error.code === 400001) {
