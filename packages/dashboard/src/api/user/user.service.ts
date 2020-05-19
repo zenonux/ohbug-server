@@ -9,7 +9,11 @@ import type {
   NormalUser,
   UserDetail,
 } from '@/api/auth/auth.interface';
-import type { OAuth, OAuthType } from '@/api/user/user.interface';
+import type {
+  BindOAuthParams,
+  OAuth,
+  OAuthType,
+} from '@/api/user/user.interface';
 
 import { User } from './user.entity';
 
@@ -79,6 +83,31 @@ export class UserService {
     }
   }
 
+  async bindOAuth({
+    baseUser,
+    mobile,
+    type,
+    detail,
+  }: BindOAuthParams): Promise<User> {
+    let user = baseUser;
+    if (user) {
+      // 已有账号 仅更新 oauth 字段
+      user.oauth = {
+        ...baseUser.oauth,
+        [type]: {
+          id: detail.id.toString(),
+          detail,
+        },
+      };
+    } else {
+      // 没有账号 生成用户
+      user = this.createUser(type, detail);
+      user.mobile = mobile;
+    }
+    const result = await this.userRepository.save(user);
+    return result;
+  }
+
   /**
    * 根据 id 获取库里的指定用户
    *
@@ -119,13 +148,9 @@ export class UserService {
   async getUserByOauthId(type: OAuthType, oauth_id: number): Promise<User> {
     try {
       const user = await this.userRepository
-        .createQueryBuilder()
-        .where('oauth -> :type -> id = :oauth_id', {
-          type,
-          oauth_id,
-        })
+        .createQueryBuilder('user')
+        .where(`user.oauth -> '${type}' ->> 'id' = '${oauth_id}'`)
         .getOne();
-      if (!user) throw new Error(`getUserByOauthId: 用户未注册`);
       return user;
     } catch (error) {
       throw new ForbiddenException(400001, error);

@@ -3,6 +3,8 @@ import {
   ValidatorConstraintInterface,
   Validate,
   IsNumber,
+  IsNotEmpty,
+  IsString,
 } from 'class-validator';
 
 @ValidatorConstraint()
@@ -26,4 +28,26 @@ export class SignupDto {
 
   @IsNumber()
   readonly captcha: number;
+}
+
+export class LoginDto {
+  @Validate(ValidateMobile)
+  readonly mobile: string;
+
+  @IsNumber()
+  readonly captcha: number;
+}
+
+export class BindUserDto {
+  @Validate(ValidateMobile)
+  readonly mobile: string;
+
+  @IsNumber()
+  readonly captcha: number;
+
+  @IsString()
+  readonly oauthType: 'github';
+
+  @IsNotEmpty()
+  readonly oauthUserDetail: any;
 }

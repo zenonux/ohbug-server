@@ -19,6 +19,7 @@ import type {
   JwtToken,
   RedisCaptchaValue,
   SignupParams,
+  BindUserParams,
 } from './auth.interface';
 import type { JwtPayload } from './auth.interface';
 
@@ -152,7 +153,7 @@ export class AuthService implements OnModuleInit {
    * @param mobile
    * @param captcha
    */
-  async signup({ mobile, captcha }: SignupParams): Promise<boolean> {
+  async signup({ mobile, captcha }: SignupParams): Promise<User> {
     try {
       const verified = await this.verifyCaptcha(mobile, captcha);
       if (verified) {
@@ -167,7 +168,7 @@ export class AuthService implements OnModuleInit {
           mobile,
         });
         if (user) {
-          return true;
+          return user;
         } else {
           throw new Error(`创建用户 ${mobile} 失败`);
         }
@@ -190,18 +191,19 @@ export class AuthService implements OnModuleInit {
       } = oauth;
 
       const { data } = await this.httpService
-        .get(`https://github.com/login/oauth/access_token`, {
+        .post(`http://github.com/login/oauth/access_token`, null, {
           params: {
             client_id,
             client_secret,
             code,
+            state: 'github',
           },
           headers: { accept: 'application/json' },
         })
         .toPromise();
       // 获取 token 出错 (通常是 token 过期)
       if (data.error) {
-        throw new ForbiddenException(400004);
+        throw new ForbiddenException(400004, `获取 github access_token 失败`);
       }
       return data;
     } catch (error) {
@@ -221,7 +223,7 @@ export class AuthService implements OnModuleInit {
   async getGithubUser(accessToken: string): Promise<GithubUser> {
     try {
       const { data } = await this.httpService
-        .get(`https://api.github.com/user`, {
+        .get(`http://api.github.com/user`, {
           headers: {
             accept: 'application/json',
             Authorization: `token ${accessToken}`,
@@ -246,8 +248,10 @@ export class AuthService implements OnModuleInit {
       if (type === 'github') {
         // 判断是否已经注册
         const user = await this.userService.getUserByOauthId(type, detail.id);
-        // 用户已注册
-        return user;
+        if (user) {
+          return user;
+        }
+        return null;
       } else {
         // 手机号验证登录
         const { mobile, captcha } = detail;
@@ -257,12 +261,50 @@ export class AuthService implements OnModuleInit {
         }
       }
     } catch (error) {
-      if (error.code && error.code === 400001) {
-        // 用户未注册
-        return await this.userService.saveUser(type, detail);
-      } else {
-        throw new ForbiddenException(400006, error);
+      throw new ForbiddenException(400006, error);
+    }
+  }
+
+  /**
+   * 绑定用户
+   *
+   * @param mobile
+   * @param captcha
+   * @param oauthType
+   * @param oauthUserDetail
+   */
+  async bindUser({
+    mobile,
+    captcha,
+    oauthType,
+    oauthUserDetail,
+  }: BindUserParams) {
+    try {
+      // 手机号验证
+      const verified = await this.verifyCaptcha(mobile, captcha);
+      if (verified) {
+        // 判断手机号是否已经注册
+        const user = await this.userService.getUserByMobile(mobile);
+        if (user) {
+          // 判断手机号是否绑定了相同 oauth 账号
+          if (user.oauth?.[oauthType]) {
+            const oauthTextMap = {
+              github: 'Github',
+              wechat: '微信',
+            };
+            throw new Error(`该手机号已绑定 ${oauthTextMap[oauthType]}`);
+          }
+        }
+        // 开始绑定 oauth 信息
+        return await this.userService.bindOAuth({
+          baseUser: user,
+          mobile,
+          type: oauthType,
+          detail: oauthUserDetail,
+        });
       }
+    } catch (error) {
+      throw new ForbiddenException(400030, error);
     }
   }
 

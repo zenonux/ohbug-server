@@ -1,3 +1,5 @@
+import { OAuthType } from '@/api/user/user.interface';
+
 export interface RedisCaptchaValue {
   captcha: number;
   timestamp: number;
@@ -6,6 +8,12 @@ export interface RedisCaptchaValue {
 export interface SignupParams {
   mobile: string;
   captcha: number;
+}
+export interface BindUserParams {
+  mobile: string;
+  captcha: number;
+  oauthType: OAuthType;
+  oauthUserDetail: any;
 }
 
 export type GithubToken = {
@@ -58,6 +66,7 @@ export interface GithubUser {
   updated_at: string;
 }
 export type UserDetail = NormalUser | GithubUser;
+export type OAuthDetail = GithubUser;
 
 export interface JwtPayload {
   id: string;
