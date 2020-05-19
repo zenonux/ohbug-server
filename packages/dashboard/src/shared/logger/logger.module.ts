@@ -1,3 +1,4 @@
+import { Module } from '@nestjs/common';
 import {
   utilities as nestWinstonModuleUtilities,
   WinstonModule,
@@ -23,4 +24,7 @@ export const LoggerConfig = {
   ],
 };
 
-export const LoggerModule = WinstonModule.forRoot(LoggerConfig);
+@Module({
+  imports: [WinstonModule.forRoot(LoggerConfig)],
+})
+export class LoggerModule {}

@@ -1,14 +1,6 @@
-import * as dotenv from 'dotenv';
+import { registerAs } from '@nestjs/config';
 
-import { Issue } from '@/core/issue/issue.entity';
-
-import type { Config } from './index';
-
-dotenv.config();
-
-const entities = [Issue];
-
-export const config: Config = {
+export const databaseConfig = registerAs('database', () => ({
   orm: {
     type: 'postgres',
     host: process.env.TYPEORM_HOST,
@@ -16,12 +8,13 @@ export const config: Config = {
     database: process.env.TYPEORM_DATABASE,
     username: process.env.TYPEORM_USERNAME,
     password: process.env.TYPEORM_PASSWORD,
+    entities: ['dist/**/*.entity{.ts,.js}'],
+    autoLoadEntities: true,
     synchronize: true,
     cache: {
       duration: 30000, // 30 seconds
     },
-    entities,
-    logging: false,
+    logging: process.env.NODE_ENV === 'production' ? false : true,
   },
   elasticsearch: {
     node: process.env.ELASTICSEARCH_NODE,
@@ -34,4 +27,4 @@ export const config: Config = {
     host: process.env.REDIS_HOST,
     port: parseInt(process.env.REDIS_PORT, 10),
   },
-};
+}));

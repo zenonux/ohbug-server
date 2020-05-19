@@ -4,11 +4,12 @@ import { RedisService } from 'nestjs-redis';
 import SmsService from '@alicloud/pop-core';
 import dayjs from 'dayjs';
 import { Redis } from 'ioredis';
+import { ConfigService } from '@nestjs/config';
+
+import { ForbiddenException } from '@ohbug-server/common';
 
 import { User } from '@/api/user/user.entity';
 import { UserService } from '@/api/user/user.service';
-import { ForbiddenException } from '@ohbug-server/common';
-import { config } from '@/config';
 
 import type { OAuthType } from '@/api/user/user.interface';
 
@@ -29,6 +30,7 @@ export class AuthService implements OnModuleInit {
   redisClient: Redis;
 
   constructor(
+    private readonly configService: ConfigService,
     private readonly redisService: RedisService,
     private readonly httpService: HttpService,
     private readonly userService: UserService,
@@ -46,10 +48,12 @@ export class AuthService implements OnModuleInit {
    * @param captcha
    */
   private async sendSms(mobile: string, captcha: number) {
-    const smsClient = new SmsService(config.sms.config);
+    const smsClient = new SmsService(
+      this.configService.get('service.sms.config'),
+    );
 
     const params = {
-      ...config.sms.params,
+      ...this.configService.get('service.sms.params'),
       PhoneNumbers: mobile,
       TemplateParam: `{"code":"${captcha}"}`,
     };
@@ -96,14 +100,15 @@ export class AuthService implements OnModuleInit {
       if (value) {
         // 存在，判断时间是否大于 sending_interval 秒
         const { timestamp } = JSON.parse(value) as RedisCaptchaValue;
+        const sending_interval = this.configService.get<number>(
+          'service.sms.sending_interval',
+        );
         if (
-          dayjs().isBefore(
-            dayjs(timestamp).add(config.sms.sending_interval, 'second'),
-          )
+          dayjs().isBefore(dayjs(timestamp).add(sending_interval, 'second'))
         ) {
           // 小于
           throw new Error(
-            `每 ${config.sms.sending_interval} 秒只能获取一次验证码，请稍后重试`,
+            `每 ${sending_interval} 秒只能获取一次验证码，请稍后重试`,
           );
         } else {
           // 大于 生成 captcha
@@ -176,11 +181,10 @@ export class AuthService implements OnModuleInit {
    */
   async getGithubToken(code: string): Promise<GithubToken> {
     try {
+      const oauth = this.configService.get('others.oauth');
       const {
-        oauth: {
-          github: { client_id, client_secret },
-        },
-      } = config;
+        github: { client_id, client_secret },
+      } = oauth;
 
       const { data } = await this.httpService
         .get(`https://github.com/login/oauth/access_token`, {

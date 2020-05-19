@@ -1,6 +1,6 @@
 import { Controller, Get, Post, Query, Body, Res } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 
-import { config } from '@/config';
 import { ForbiddenException } from '@ohbug-server/common';
 
 import { AuthService } from './auth.service';
@@ -8,7 +8,10 @@ import { CaptchaDto, SignupDto } from './auth.dto';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private readonly configService: ConfigService,
+    private readonly authService: AuthService,
+  ) {}
 
   /**
    * 获取短信验证码
@@ -51,12 +54,15 @@ export class AuthController {
         // 返回 token
         if (user) {
           const token = this.authService.createToken(user.id);
+          const maxAge = this.configService.get<string>(
+            'others.jwt.signOptions.expiresIn',
+          );
           res.cookie('authorization', token, {
-            maxAge: config.jwt.signOptions.expiresIn,
+            maxAge,
             httpOnly: true,
           });
           res.cookie('id', user.id.toString(), {
-            maxAge: config.jwt.signOptions.expiresIn,
+            maxAge,
           });
           res.send({
             success: true,
