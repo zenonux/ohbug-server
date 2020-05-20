@@ -235,7 +235,7 @@ export class IssueService {
       const { index, document_id } = latestEventDocument;
       const {
         body: {
-          _source: { event: eventLike, ip_address },
+          _source: { event: eventLike },
         },
       } = await this.elasticsearchService.get(
         {
@@ -257,13 +257,7 @@ export class IssueService {
       if (event.actions) {
         event.actions = JSON.parse(event.actions);
       }
-      return {
-        ...event,
-        user: {
-          ip_address,
-          uuid: eventLike.tags.uuid,
-        },
-      };
+      return event;
     } catch (error) {
       throw new ForbiddenException(400403, error);
     }
