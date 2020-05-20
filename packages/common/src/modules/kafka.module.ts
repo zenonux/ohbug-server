@@ -6,11 +6,7 @@ export const DashboardKafkaModule = ClientsModule.register([
     transport: Transport.KAFKA,
     options: {
       client: {
-        clientId: 'manager',
         brokers: ['localhost:9092'],
-      },
-      consumer: {
-        groupId: 'manager-consumer',
       },
     },
   },
@@ -22,11 +18,7 @@ export const TransferKafkaModule = ClientsModule.register([
     transport: Transport.KAFKA,
     options: {
       client: {
-        clientId: 'manager',
         brokers: ['localhost:9092'],
-      },
-      consumer: {
-        groupId: 'manager-consumer',
       },
     },
   },
