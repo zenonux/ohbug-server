@@ -33,6 +33,7 @@
   "400401": "搜索 issues 失败",
   "400402": "根据 issue_id 获取 issue 对应的趋势信息 失败",
   "400403": "根据 issue_id 获取最近的 event 失败",
+  "400410": "根据 issue_id 获取 issue 失败",
 
   "400500": "创建 feedback 失败",
   "400501": "搜索 feedback 失败",

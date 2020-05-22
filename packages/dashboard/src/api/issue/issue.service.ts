@@ -1,15 +1,20 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Get, Inject, Injectable } from '@nestjs/common';
 import type { OnModuleInit } from '@nestjs/common';
 import { ClientKafka } from '@nestjs/microservices';
 
 import {
+  TOPIC_DASHBOARD_MANAGER_GET_ISSUE,
   TOPIC_DASHBOARD_MANAGER_SEARCH_ISSUES,
   TOPIC_DASHBOARD_MANAGER_GET_TREND,
 } from '@ohbug-server/common';
 
 import { ProjectService } from '@/api/project/project.service';
 
-import type { GetIssuesByProjectIdParams, Period } from './issue.interface';
+import type {
+  GetIssueByIssueIdParams,
+  GetIssuesByProjectIdParams,
+  Period,
+} from './issue.interface';
 
 @Injectable()
 export class IssueService implements OnModuleInit {
@@ -20,12 +25,34 @@ export class IssueService implements OnModuleInit {
 
   onModuleInit() {
     const topics = [
+      TOPIC_DASHBOARD_MANAGER_GET_ISSUE,
       TOPIC_DASHBOARD_MANAGER_SEARCH_ISSUES,
       TOPIC_DASHBOARD_MANAGER_GET_TREND,
     ];
     topics.forEach((topic) => {
       this.managerClient.subscribeToResponseOf(topic);
     });
+  }
+
+  /**
+   * 根据 issue_id 取到对应 issue
+   *
+   * @param project_id
+   * @param issue_id
+   */
+  @Get('/:issue_id')
+  async getIssueByIssueId({ project_id, issue_id }: GetIssueByIssueIdParams) {
+    const project = await this.projectService.getProjectByProjectId(project_id);
+    if (project) {
+      return await this.managerClient
+        .send(TOPIC_DASHBOARD_MANAGER_GET_ISSUE, {
+          key: TOPIC_DASHBOARD_MANAGER_GET_ISSUE,
+          value: {
+            issue_id,
+          },
+        })
+        .toPromise();
+    }
   }
 
   /**

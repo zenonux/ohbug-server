@@ -7,6 +7,7 @@ import { MessagePattern, Payload } from '@nestjs/microservices';
 
 import {
   TOPIC_TRANSFER_MANAGER_EVENT,
+  TOPIC_DASHBOARD_MANAGER_GET_ISSUE,
   TOPIC_DASHBOARD_MANAGER_SEARCH_ISSUES,
   TOPIC_DASHBOARD_MANAGER_GET_TREND,
   TOPIC_DASHBOARD_MANAGER_GET_LATEST_EVENT,
@@ -27,6 +28,12 @@ export class MessageController {
   @MessagePattern(TOPIC_TRANSFER_MANAGER_EVENT)
   async handleEvent(@Payload() payload: KafkaPayload) {
     return await this.eventService.handleEvent(payload.value as OhbugEventLike);
+  }
+
+  @UseInterceptors(ClassSerializerInterceptor)
+  @MessagePattern(TOPIC_DASHBOARD_MANAGER_GET_ISSUE)
+  async getIssueByIssueId(@Payload() payload: KafkaPayload) {
+    return await this.issueService.getIssueByIssueId(payload.value);
   }
 
   @UseInterceptors(ClassSerializerInterceptor)

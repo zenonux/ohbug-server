@@ -1,14 +1,47 @@
-import { Controller, Get, UseGuards, Query } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  UseGuards,
+  Query,
+  Param,
+  Post,
+  Body,
+} from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 
 import { IssueService } from './issue.service';
-import { GetIssueDto, GetTrendByIssueIdDto } from './issue.dto';
+import {
+  GetDto,
+  GetIssueByIssueIdDto,
+  GetIssueDto,
+  GetTrendByIssueIdDto,
+} from './issue.dto';
 
 const limit = 20;
 
 @Controller('issue')
 export class IssueController {
   constructor(private readonly issueService: IssueService) {}
+
+  /**
+   * 根据 issue_id 取到对应 issue
+   *
+   * @param project_id
+   * @param issue_id
+   */
+  @Get('/:issue_id')
+  @UseGuards(AuthGuard('jwt'))
+  async getIssueByIssueId(
+    @Param()
+    { issue_id }: GetIssueByIssueIdDto,
+    @Query()
+    { project_id }: GetDto,
+  ) {
+    return await this.issueService.getIssueByIssueId({
+      project_id,
+      issue_id,
+    });
+  }
 
   /**
    * 根据 project_id 取到对应 issues
@@ -40,10 +73,10 @@ export class IssueController {
    * @param ids
    * @param period
    */
-  @Get('trend')
+  @Post('trend')
   @UseGuards(AuthGuard('jwt'))
   async getTrendByIssueId(
-    @Query()
+    @Body()
     { ids, period }: GetTrendByIssueIdDto,
   ) {
     return await this.issueService.getTrendByIssueId(ids, period);

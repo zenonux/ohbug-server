@@ -1,5 +1,10 @@
 import type { FindOperator } from 'typeorm';
 
+export interface GetIssueByIssueIdParams {
+  project_id: number | string;
+  issue_id: number | string;
+}
+
 export interface SearchCondition {
   start?: Date;
   end?: Date;
@@ -16,4 +21,4 @@ export interface WhereOptions {
   time?: FindOperator<number | string>;
 }
 
-export type Period = '24h' | '14d';
+export type Period = '24h' | '14d' | 'all';

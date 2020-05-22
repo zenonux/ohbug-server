@@ -14,6 +14,10 @@ export interface CreateOrUpdateIssueByIntroParams {
   index?: string;
 }
 
+export interface GetIssueByIssueIdParams {
+  issue_id: number | string;
+}
+
 export interface SearchCondition {
   start?: Date;
   end?: Date;

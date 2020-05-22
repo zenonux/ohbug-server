@@ -12,6 +12,7 @@ import type { OhbugDocument } from '@/core/event/event.interface';
 import { Issue } from './issue.entity';
 import type {
   CreateOrUpdateIssueByIntroParams,
+  GetIssueByIssueIdParams,
   GetIssuesByProjectIdParams,
 } from './issue.interface';
 import { getWhereOptions } from './issue.core';
@@ -94,6 +95,19 @@ export class IssueService {
   }
 
   /**
+   * 根据 issue_id 取到对应 issue
+   *
+   * @param issue_id
+   */
+  async getIssueByIssueId({ issue_id }: GetIssueByIssueIdParams) {
+    try {
+      return await this.issueRepository.findOneOrFail(issue_id);
+    } catch (error) {
+      throw new ForbiddenException(400410, error);
+    }
+  }
+
+  /**
    * 根据 project_id 取到对应 issues
    *
    * @param project_id
@@ -124,6 +138,63 @@ export class IssueService {
     }
   }
 
+  private async getTrend(id, period = '24h') {
+    const now = dayjs();
+    const configMap = {
+      '14d': {
+        date_histogram: {
+          field: 'event.timestamp',
+          calendar_interval: 'day',
+          format: 'yyyy-MM-dd',
+          min_doc_count: 0,
+          extended_bounds: {
+            min: `${now.subtract(13, 'day').format('YYYY-MM-DD')}`,
+            max: `${now.format('YYYY-MM-DD')}`,
+          },
+        },
+      },
+      '24h': {
+        date_histogram: {
+          field: 'event.timestamp',
+          calendar_interval: 'hour',
+          format: 'yyyy-MM-dd HH',
+          min_doc_count: 0,
+          extended_bounds: {
+            min: `${now.format('YYYY-MM-DD')} 01`,
+            max: `${now.format('YYYY-MM-DD')} 23`,
+          },
+        },
+      },
+    };
+    const {
+      body: {
+        aggregations: {
+          trend: { buckets },
+        },
+      },
+    } = await this.elasticsearchService.search(
+      {
+        body: {
+          query: { match: { issue_id: id } },
+          aggs: {
+            trend: configMap[period],
+          },
+        },
+      },
+      {
+        ignore: [404],
+        maxRetries: 3,
+      },
+    );
+    return {
+      issue_id: id,
+      buckets: buckets.map((bucket) => ({
+        timestamp: bucket.key,
+        count: bucket.doc_count,
+      })),
+    };
+  }
+
   /**
    * 根据 issue_id 获取 issue 对应的趋势信息
    *
@@ -134,87 +205,13 @@ export class IssueService {
     try {
       return await Promise.all(
         ids.map(async (id) => {
-          if (period === '24h') {
-            const {
-              body: {
-                aggregations: {
-                  trend: { buckets },
-                },
-              },
-            } = await this.elasticsearchService.search(
-              {
-                body: {
-                  query: { match: { issue_id: id } },
-                  aggs: {
-                    trend: {
-                      date_histogram: {
-                        field: 'event.timestamp',
-                        calendar_interval: 'hour',
-                        format: 'yyyy-MM-dd HH',
-                        min_doc_count: 0,
-                        extended_bounds: {
-                          min: `${dayjs().format('YYYY-MM-DD')} 01`,
-                          max: `${dayjs().format('YYYY-MM-DD')} 23`,
-                        },
-                      },
-                    },
-                  },
-                },
-              },
-              {
-                ignore: [404],
-                maxRetries: 3,
-              },
-            );
+          if (period === 'all') {
             return {
-              issue_id: id,
-              buckets: buckets.map((bucket) => ({
-                timestamp: bucket.key,
-                count: bucket.doc_count,
-              })),
+              '14d': await this.getTrend(id, '14d'),
+              '24h': await this.getTrend(id, '24h'),
             };
-          }
-          if (period === '14d') {
-            const {
-              body: {
-                aggregations: {
-                  trend: { buckets },
-                },
-              },
-            } = await this.elasticsearchService.search(
-              {
-                body: {
-                  query: { match: { issue_id: id } },
-                  aggs: {
-                    trend: {
-                      date_histogram: {
-                        field: 'event.timestamp',
-                        calendar_interval: 'day',
-                        format: 'yyyy-MM-dd',
-                        min_doc_count: 0,
-                        extended_bounds: {
-                          min: `${dayjs()
-                            .subtract(13, 'day')
-                            .format('YYYY-MM-DD')}`,
-                          max: `${dayjs().format('YYYY-MM-DD')}`,
-                        },
-                      },
-                    },
-                  },
-                },
-              },
-              {
-                ignore: [404],
-                maxRetries: 3,
-              },
-            );
-            return {
-              issue_id: id,
-              buckets: buckets.map((bucket) => ({
-                timestamp: bucket.key,
-                count: bucket.doc_count,
-              })),
-            };
+          } else {
+            return await this.getTrend(id, period);
           }
         }),
       );

@@ -21,6 +21,9 @@ export const TOPIC_MANAGER_LOGSTASH_PERFORMANCE =
 // transfer 接收 logstash 的回调后，传递给 manager 准备聚合任务
 export const TOPIC_TRANSFER_MANAGER_EVENT = 'TOPIC_TRANSFER_MANAGER_EVENT';
 
+// dashboard 向 manager 查询 issue
+export const TOPIC_DASHBOARD_MANAGER_GET_ISSUE =
+  'TOPIC_DASHBOARD_MANAGER_GET_ISSUE';
 // dashboard 向 manager 搜索 issues
 export const TOPIC_DASHBOARD_MANAGER_SEARCH_ISSUES =
   'TOPIC_DASHBOARD_MANAGER_SEARCH_ISSUES';
