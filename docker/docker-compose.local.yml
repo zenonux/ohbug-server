@@ -37,6 +37,9 @@ services:
       KAFKA_ZOOKEEPER_CONNECT: "zoo1:2181,zoo2:2182"
       KAFKA_BROKER_ID: 1
       KAFKA_LOG4J_LOGGERS: "kafka.controller=INFO,kafka.producer.async.DefaultEventHandler=INFO,state.change.logger=INFO"
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_FETCH_MAX_WAIT_MS: 100
+      KAFKA_FETCH_MIN_BYTES: 1
     volumes:
       - ./temp/kafka1/data:/var/lib/kafka/data
     depends_on:
@@ -54,6 +57,9 @@ services:
       KAFKA_ZOOKEEPER_CONNECT: "zoo1:2181,zoo2:2182"
       KAFKA_BROKER_ID: 2
       KAFKA_LOG4J_LOGGERS: "kafka.controller=INFO,kafka.producer.async.DefaultEventHandler=INFO,state.change.logger=INFO"
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_FETCH_MAX_WAIT_MS: 100
+      KAFKA_FETCH_MIN_BYTES: 1
     volumes:
       - ./temp/kafka2/data:/var/lib/kafka/data
     depends_on:
