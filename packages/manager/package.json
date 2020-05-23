@@ -20,13 +20,13 @@
     "test:watch": "jest --watch"
   },
   "dependencies": {
-    "@elastic/elasticsearch": "^7.6.1",
+    "@elastic/elasticsearch": "^7.7.1",
     "@nestjs/bull": "^0.1.1",
     "@nestjs/elasticsearch": "^7.1.0",
     "@ohbug-server/common": "^0.0.0",
     "bull": "^3.14.0"
   },
   "devDependencies": {
-    "@types/bull": "^3.12.2"
+    "@types/bull": "^3.13.0"
   }
 }

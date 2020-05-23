@@ -14,6 +14,7 @@ import type {
   CreateOrUpdateIssueByIntroParams,
   GetIssueByIssueIdParams,
   GetIssuesByProjectIdParams,
+  GetTrendByIssueIdParams,
 } from './issue.interface';
 import { getWhereOptions } from './issue.core';
 
@@ -201,7 +202,7 @@ export class IssueService {
    * @param ids
    * @param period
    */
-  async getTrendByIssueId({ ids, period = '24h' }) {
+  async getTrendByIssueId({ ids, period = '24h' }: GetTrendByIssueIdParams) {
     try {
       return await Promise.all(
         ids.map(async (id) => {

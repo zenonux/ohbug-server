@@ -1,1 +1,1 @@
-export * from './kafka.module';
+export * from './microserviceClient.module';

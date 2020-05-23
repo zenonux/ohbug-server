@@ -12,11 +12,15 @@ import {
   TOPIC_DASHBOARD_MANAGER_GET_TREND,
   TOPIC_DASHBOARD_MANAGER_GET_LATEST_EVENT,
 } from '@ohbug-server/common';
-import type { KafkaPayload, OhbugEventLike } from '@ohbug-server/common';
+import type { OhbugEventLike } from '@ohbug-server/common';
 
 import { EventService } from '@/core/event/event.service';
 import { IssueService } from '@/core/issue/issue.service';
-import type { GetIssuesByProjectIdParams } from '@/core/issue/issue.interface';
+import type {
+  GetIssueByIssueIdParams,
+  GetIssuesByProjectIdParams,
+  GetTrendByIssueIdParams,
+} from '@/core/issue/issue.interface';
 
 @Controller()
 export class MessageController {
@@ -26,33 +30,29 @@ export class MessageController {
   ) {}
 
   @MessagePattern(TOPIC_TRANSFER_MANAGER_EVENT)
-  async handleEvent(@Payload() payload: KafkaPayload) {
-    return await this.eventService.handleEvent(payload.value as OhbugEventLike);
+  async handleEvent(@Payload() payload: OhbugEventLike) {
+    return await this.eventService.handleEvent(payload);
   }
 
   @UseInterceptors(ClassSerializerInterceptor)
   @MessagePattern(TOPIC_DASHBOARD_MANAGER_GET_ISSUE)
-  async getIssueByIssueId(@Payload() payload: KafkaPayload) {
-    return await this.issueService.getIssueByIssueId(payload.value);
+  async getIssueByIssueId(@Payload() payload: GetIssueByIssueIdParams) {
+    return await this.issueService.getIssueByIssueId(payload);
   }
 
   @UseInterceptors(ClassSerializerInterceptor)
   @MessagePattern(TOPIC_DASHBOARD_MANAGER_SEARCH_ISSUES)
-  async searchIssues(@Payload() payload: KafkaPayload) {
-    return await this.issueService.searchIssues(
-      payload.value as GetIssuesByProjectIdParams,
-    );
+  async searchIssues(@Payload() payload: GetIssuesByProjectIdParams) {
+    return await this.issueService.searchIssues(payload);
   }
 
   @MessagePattern(TOPIC_DASHBOARD_MANAGER_GET_TREND)
-  async getTrendByIssueId(@Payload() payload: KafkaPayload) {
-    return await this.issueService.getTrendByIssueId(payload.value);
+  async getTrendByIssueId(@Payload() payload: GetTrendByIssueIdParams) {
+    return await this.issueService.getTrendByIssueId(payload);
   }
 
   @MessagePattern(TOPIC_DASHBOARD_MANAGER_GET_LATEST_EVENT)
-  async getLatestEventByIssueId(@Payload() payload: KafkaPayload) {
-    return await this.issueService.getLatestEventByIssueId(
-      payload.value as number | string,
-    );
+  async getLatestEventByIssueId(@Payload() payload: number | string) {
+    return await this.issueService.getLatestEventByIssueId(payload);
   }
 }

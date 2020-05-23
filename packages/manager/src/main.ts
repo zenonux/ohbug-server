@@ -8,16 +8,7 @@ async function bootstrap() {
   const app = await NestFactory.createMicroservice<MicroserviceOptions>(
     AppModule,
     {
-      transport: Transport.KAFKA,
-      options: {
-        client: {
-          clientId: 'manager',
-          brokers: ['localhost:9092', 'localhost:9093'],
-        },
-        consumer: {
-          groupId: 'manager-consumer',
-        },
-      },
+      transport: Transport.TCP,
     },
   );
 

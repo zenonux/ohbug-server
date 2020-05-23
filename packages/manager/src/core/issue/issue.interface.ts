@@ -30,6 +30,11 @@ export interface GetIssuesByProjectIdParams {
   skip?: number;
 }
 
+export interface GetTrendByIssueIdParams {
+  ids: number[];
+  period: '24h' | '14d' | 'all';
+}
+
 export interface WhereOptions {
   updated_at?: FindOperator<number | string>;
 }

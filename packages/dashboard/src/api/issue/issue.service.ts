@@ -1,6 +1,5 @@
 import { Get, Inject, Injectable } from '@nestjs/common';
-import type { OnModuleInit } from '@nestjs/common';
-import { ClientKafka } from '@nestjs/microservices';
+import { ClientProxy } from '@nestjs/microservices';
 
 import {
   TOPIC_DASHBOARD_MANAGER_GET_ISSUE,
@@ -17,22 +16,11 @@ import type {
 } from './issue.interface';
 
 @Injectable()
-export class IssueService implements OnModuleInit {
+export class IssueService {
   constructor(private readonly projectService: ProjectService) {}
 
-  @Inject('KAFKA_DASHBOARD_MANAGER_CLIENT')
-  private readonly managerClient: ClientKafka;
-
-  onModuleInit() {
-    const topics = [
-      TOPIC_DASHBOARD_MANAGER_GET_ISSUE,
-      TOPIC_DASHBOARD_MANAGER_SEARCH_ISSUES,
-      TOPIC_DASHBOARD_MANAGER_GET_TREND,
-    ];
-    topics.forEach((topic) => {
-      this.managerClient.subscribeToResponseOf(topic);
-    });
-  }
+  @Inject('MICROSERVICE_CLIENT')
+  private readonly managerClient: ClientProxy;
 
   /**
    * 根据 issue_id 取到对应 issue
@@ -46,10 +34,7 @@ export class IssueService implements OnModuleInit {
     if (project) {
       return await this.managerClient
         .send(TOPIC_DASHBOARD_MANAGER_GET_ISSUE, {
-          key: TOPIC_DASHBOARD_MANAGER_GET_ISSUE,
-          value: {
-            issue_id,
-          },
+          issue_id,
         })
         .toPromise();
     }
@@ -74,13 +59,10 @@ export class IssueService implements OnModuleInit {
     );
     return await this.managerClient
       .send(TOPIC_DASHBOARD_MANAGER_SEARCH_ISSUES, {
-        key: TOPIC_DASHBOARD_MANAGER_SEARCH_ISSUES,
-        value: {
-          apiKey,
-          searchCondition,
-          limit,
-          skip,
-        },
+        apiKey,
+        searchCondition,
+        limit,
+        skip,
       })
       .toPromise();
   }
@@ -93,10 +75,7 @@ export class IssueService implements OnModuleInit {
    */
   async getTrendByIssueId(ids: string[], period: Period) {
     return await this.managerClient
-      .send(TOPIC_DASHBOARD_MANAGER_GET_TREND, {
-        key: TOPIC_DASHBOARD_MANAGER_GET_TREND,
-        value: { ids, period },
-      })
+      .send(TOPIC_DASHBOARD_MANAGER_GET_TREND, { ids, period })
       .toPromise();
   }
 }
