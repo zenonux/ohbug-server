@@ -52,6 +52,7 @@ export class AuthController {
    *
    * @param mobile
    * @param captcha
+   * @param res
    */
   @Post('signup')
   async signup(@Body() { mobile, captcha }: SignupDto, @Res() res) {
@@ -64,6 +65,7 @@ export class AuthController {
    *
    * @param mobile
    * @param captcha
+   * @param res
    */
   @Post('login')
   async login(@Body() { mobile, captcha }: LoginDto, @Res() res) {
@@ -73,8 +75,9 @@ export class AuthController {
       return this.returnWithJwtCookie(res, user);
     } else {
       res.send({
-        success: true,
-        data: false,
+        errorMessage: '用户未注册',
+        errorCode: 400008,
+        success: false,
       });
       return;
     }
@@ -122,7 +125,9 @@ export class AuthController {
    *
    * @param mobile
    * @param captcha
+   * @param oauthType
    * @param oauthUserDetail
+   * @param res
    */
   @Post('bindUser')
   async bindUser(
