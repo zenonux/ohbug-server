@@ -138,6 +138,7 @@ export class AuthService implements OnModuleInit {
     if (value) {
       const { captcha: redisCaptcha } = JSON.parse(value) as RedisCaptchaValue;
       if (captcha === redisCaptcha) {
+        await this.redisClient.del(mobile);
         return true;
       } else {
         throw new Error(`验证码不合法，请检查手机号与验证码是否对应`);
