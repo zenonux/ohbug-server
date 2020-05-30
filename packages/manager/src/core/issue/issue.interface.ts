@@ -35,6 +35,12 @@ export interface GetTrendByIssueIdParams {
   period: '24h' | '14d' | 'all';
 }
 
+export interface GetProjectTrendByApiKeyParams {
+  apiKey: string;
+  start: Date;
+  end: Date;
+}
+
 export interface WhereOptions {
   updated_at?: FindOperator<number | string>;
 }

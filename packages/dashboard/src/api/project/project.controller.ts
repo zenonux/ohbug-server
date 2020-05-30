@@ -5,6 +5,7 @@ import { ProjectService } from './project.service';
 import {
   CreateProjectDto,
   GetAllProjectsByOrganizationIdDto,
+  GetTrendByProjectIdDto,
 } from './project.dto';
 import { Project } from './project.entity';
 
@@ -35,6 +36,11 @@ export class ProjectController {
     });
   }
 
+  /**
+   * 根据 id 获取库里的指定 Organization 所对应的 projects
+   *
+   * @param id organization id
+   */
   @Get()
   @UseGuards(AuthGuard('jwt'))
   async getAllProjectsByOrganizationId(
@@ -44,5 +50,25 @@ export class ProjectController {
     return await this.projectService.getAllProjectsByOrganizationId(
       organization_id,
     );
+  }
+
+  /**
+   * 根据 project_id 获取指定时间段内的 trend
+   *
+   * @param project_id
+   * @param start
+   * @param end
+   */
+  @Get('trend')
+  @UseGuards(AuthGuard('jwt'))
+  async getProjectTrendByProjectId(
+    @Query()
+    { project_id, start, end }: GetTrendByProjectIdDto,
+  ) {
+    return await this.projectService.getProjectTrendByProjectId({
+      project_id,
+      start,
+      end,
+    });
   }
 }

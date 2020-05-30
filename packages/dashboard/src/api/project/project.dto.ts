@@ -29,3 +29,14 @@ export class GetAllProjectsByOrganizationIdDto {
   @IsNumberString()
   readonly organization_id: number;
 }
+
+export class GetTrendByProjectIdDto {
+  @IsNumberString()
+  readonly project_id: number;
+
+  @IsString()
+  readonly start: Date;
+
+  @IsString()
+  readonly end: Date;
+}

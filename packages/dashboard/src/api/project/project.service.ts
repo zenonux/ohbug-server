@@ -1,14 +1,18 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
+import { ClientProxy } from '@nestjs/microservices';
 import * as crypto from 'crypto';
 
 import { UserService } from '@/api/user/user.service';
 import { OrganizationService } from '@/api/organization/organization.service';
-import { ForbiddenException } from '@ohbug-server/common';
+import {
+  ForbiddenException,
+  TOPIC_DASHBOARD_MANAGER_GET_PROJECT_TREND,
+} from '@ohbug-server/common';
 
 import { Project } from './project.entity';
-import { CreateProjectDto } from './project.dto';
+import { CreateProjectDto, GetTrendByProjectIdDto } from './project.dto';
 
 @Injectable()
 export class ProjectService {
@@ -18,6 +22,9 @@ export class ProjectService {
     private readonly userService: UserService,
     private readonly organizationService: OrganizationService,
   ) {}
+
+  @Inject('MICROSERVICE_CLIENT')
+  private readonly managerClient: ClientProxy;
 
   private createApiKey({
     name,
@@ -139,5 +146,28 @@ export class ProjectService {
     id: number | string,
   ): Promise<Project[]> {
     return await this.organizationService.getAllProjectsByOrganizationId(id);
+  }
+
+  /**
+   * 根据 project_id 获取指定时间段内的 trend
+   *
+   * @param project_id
+   * @param start
+   * @param end
+   */
+  async getProjectTrendByProjectId({
+    project_id,
+    start,
+    end,
+  }: GetTrendByProjectIdDto) {
+    const { apiKey } = await this.getProjectByProjectId(project_id);
+
+    return await this.managerClient
+      .send(TOPIC_DASHBOARD_MANAGER_GET_PROJECT_TREND, {
+        apiKey,
+        start,
+        end,
+      })
+      .toPromise();
   }
 }

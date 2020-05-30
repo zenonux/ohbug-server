@@ -17,6 +17,7 @@ import type {
   GetTrendByIssueIdParams,
 } from './issue.interface';
 import { getWhereOptions } from './issue.core';
+import { GetProjectTrendByApiKeyParams } from './issue.interface';
 
 @Injectable()
 export class IssueService {
@@ -139,34 +140,7 @@ export class IssueService {
     }
   }
 
-  private async getTrend(id, period = '24h') {
-    const now = dayjs();
-    const configMap = {
-      '14d': {
-        date_histogram: {
-          field: 'event.timestamp',
-          calendar_interval: 'day',
-          format: 'yyyy-MM-dd',
-          min_doc_count: 0,
-          extended_bounds: {
-            min: `${now.subtract(13, 'day').format('YYYY-MM-DD')}`,
-            max: `${now.format('YYYY-MM-DD')}`,
-          },
-        },
-      },
-      '24h': {
-        date_histogram: {
-          field: 'event.timestamp',
-          calendar_interval: 'hour',
-          format: 'yyyy-MM-dd HH',
-          min_doc_count: 0,
-          extended_bounds: {
-            min: `${now.format('YYYY-MM-DD')} 01`,
-            max: `${now.format('YYYY-MM-DD')} 23`,
-          },
-        },
-      },
-    };
+  private async getTrend(query: any, trend: object, others?: object) {
     const {
       body: {
         aggregations: {
@@ -176,10 +150,11 @@ export class IssueService {
     } = await this.elasticsearchService.search(
       {
         body: {
-          query: { match: { issue_id: id } },
+          query,
           aggs: {
-            trend: configMap[period],
+            trend,
           },
+          ...others,
         },
       },
       {
@@ -188,10 +163,10 @@ export class IssueService {
       },
     );
     return {
-      issue_id: id,
+      ...query?.match,
       buckets: buckets.map((bucket) => ({
         timestamp: bucket.key,
-        count: bucket.doc_count,
+        count: bucket?.distinct?.value || bucket.doc_count,
       })),
     };
   }
@@ -204,15 +179,46 @@ export class IssueService {
    */
   async getTrendByIssueId({ ids, period = '24h' }: GetTrendByIssueIdParams) {
     try {
+      const now = dayjs();
+      const configMap = {
+        '14d': {
+          date_histogram: {
+            field: 'event.timestamp',
+            calendar_interval: 'day',
+            format: 'yyyy-MM-dd',
+            min_doc_count: 0,
+            extended_bounds: {
+              min: now.subtract(13, 'day').format('YYYY-MM-DD'),
+              max: now.format('YYYY-MM-DD'),
+            },
+          },
+        },
+        '24h': {
+          date_histogram: {
+            field: 'event.timestamp',
+            calendar_interval: 'hour',
+            format: 'yyyy-MM-dd HH',
+            min_doc_count: 0,
+            extended_bounds: {
+              min: `${now.format('YYYY-MM-DD')} 01`,
+              max: `${now.format('YYYY-MM-DD')} 23`,
+            },
+          },
+        },
+      };
+
       return await Promise.all(
         ids.map(async (id) => {
+          const query = {
+            match: { issue_id: id },
+          };
           if (period === 'all') {
             return {
-              '14d': await this.getTrend(id, '14d'),
-              '24h': await this.getTrend(id, '24h'),
+              '14d': await this.getTrend(query, configMap['14d']),
+              '24h': await this.getTrend(query, configMap['24h']),
             };
           } else {
-            return await this.getTrend(id, period);
+            return await this.getTrend(query, configMap[period]);
           }
         }),
       );
@@ -259,5 +265,49 @@ export class IssueService {
     } catch (error) {
       throw new ForbiddenException(400403, error);
     }
+  }
+
+  /**
+   * 根据 apiKey 获取指定时间段内的 trend
+   *
+   * @param apiKey
+   * @param start
+   * @param end
+   */
+  async getProjectTrendByApiKey({
+    apiKey,
+    start,
+    end,
+  }: GetProjectTrendByApiKeyParams) {
+    const query = {
+      match: {
+        'event.apiKey': apiKey,
+      },
+    };
+    const trend = {
+      date_histogram: {
+        field: 'event.timestamp',
+        calendar_interval: 'day',
+        format: 'yyyy-MM-dd',
+        min_doc_count: 0,
+        extended_bounds: {
+          min: dayjs(start).format('YYYY-MM-DD'),
+          max: dayjs(end).format('YYYY-MM-DD'),
+        },
+      },
+      aggs: {
+        distinct: {
+          cardinality: {
+            field: 'issue_id',
+          },
+        },
+      },
+    };
+    const other = {
+      collapse: {
+        field: 'issue_id',
+      },
+    };
+    return await this.getTrend(query, trend, other);
   }
 }
