@@ -16,7 +16,10 @@ import type {
   GetIssuesByProjectIdParams,
   GetTrendByIssueIdParams,
 } from './issue.interface';
-import { getWhereOptions } from './issue.core';
+import {
+  getWhereOptions,
+  switchTimeRangeAndGetDateHistogram,
+} from './issue.core';
 import { GetProjectTrendByApiKeyParams } from './issue.interface';
 
 @Injectable()
@@ -150,11 +153,11 @@ export class IssueService {
     } = await this.elasticsearchService.search(
       {
         body: {
+          size: 0,
           query,
           aggs: {
             trend,
           },
-          ...others,
         },
       },
       {
@@ -163,7 +166,7 @@ export class IssueService {
       },
     );
     return {
-      ...query?.match,
+      ...others,
       buckets: buckets.map((bucket) => ({
         timestamp: bucket.key,
         count: bucket?.distinct?.value || bucket.doc_count,
@@ -180,7 +183,7 @@ export class IssueService {
   async getTrendByIssueId({ ids, period = '24h' }: GetTrendByIssueIdParams) {
     try {
       const now = dayjs();
-      const configMap = {
+      const trendMap = {
         '14d': {
           date_histogram: {
             field: 'event.timestamp',
@@ -209,16 +212,55 @@ export class IssueService {
 
       return await Promise.all(
         ids.map(async (id) => {
-          const query = {
-            match: { issue_id: id },
+          const queryMap = {
+            '14d': {
+              bool: {
+                must: [
+                  {
+                    match: { issue_id: id },
+                  },
+                ],
+                filter: {
+                  range: {
+                    'event.timestamp': {
+                      gte: now.subtract(13, 'day').toDate(),
+                      lte: now.toDate(),
+                    },
+                  },
+                },
+              },
+            },
+            '24h': {
+              bool: {
+                must: [
+                  {
+                    match: { issue_id: id },
+                  },
+                ],
+                filter: {
+                  range: {
+                    'event.timestamp': {
+                      gte: now.subtract(23, 'hour').toDate(),
+                      lte: now.toDate(),
+                    },
+                  },
+                },
+              },
+            },
           };
           if (period === 'all') {
             return {
-              '14d': await this.getTrend(query, configMap['14d']),
-              '24h': await this.getTrend(query, configMap['24h']),
+              '14d': await this.getTrend(queryMap['14d'], trendMap['14d'], {
+                issue_id: id,
+              }),
+              '24h': await this.getTrend(queryMap['24h'], trendMap['24h'], {
+                issue_id: id,
+              }),
             };
           } else {
-            return await this.getTrend(query, configMap[period]);
+            return await this.getTrend(queryMap[period], trendMap[period], {
+              issue_id: id,
+            });
           }
         }),
       );
@@ -280,20 +322,29 @@ export class IssueService {
     end,
   }: GetProjectTrendByApiKeyParams) {
     const query = {
-      match: {
-        'event.apiKey': apiKey,
+      bool: {
+        must: [
+          {
+            match: {
+              'event.apiKey': apiKey,
+            },
+          },
+        ],
+        filter: {
+          range: {
+            'event.timestamp': {
+              gte: dayjs(start).toDate(),
+              lte: dayjs(end).toDate(),
+            },
+          },
+        },
       },
     };
     const trend = {
       date_histogram: {
         field: 'event.timestamp',
-        calendar_interval: 'day',
-        format: 'yyyy-MM-dd',
         min_doc_count: 0,
-        extended_bounds: {
-          min: dayjs(start).format('YYYY-MM-DD'),
-          max: dayjs(end).format('YYYY-MM-DD'),
-        },
+        ...switchTimeRangeAndGetDateHistogram(start, end),
       },
       aggs: {
         distinct: {
@@ -303,11 +354,7 @@ export class IssueService {
         },
       },
     };
-    const other = {
-      collapse: {
-        field: 'issue_id',
-      },
-    };
-    return await this.getTrend(query, trend, other);
+
+    return await this.getTrend(query, trend);
   }
 }

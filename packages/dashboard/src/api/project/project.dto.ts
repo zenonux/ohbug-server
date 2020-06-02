@@ -4,6 +4,7 @@ import {
   ValidateIf,
   IsNotEmpty,
   IsNumberString,
+  IsDateString,
 } from 'class-validator';
 import type { ProjectType } from './project.interface';
 
@@ -34,9 +35,9 @@ export class GetTrendByProjectIdDto {
   @IsNumberString()
   readonly project_id: number;
 
-  @IsString()
+  @IsDateString()
   readonly start: Date;
 
-  @IsString()
+  @IsDateString()
   readonly end: Date;
 }
