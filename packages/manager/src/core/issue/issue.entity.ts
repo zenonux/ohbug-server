@@ -50,7 +50,7 @@ export class Issue {
    * @memberof Issue
    */
   @CreateDateColumn()
-  created_at: Date;
+  createdAt: Date;
 
   /**
    * 最近一条 event 的时间
@@ -59,7 +59,7 @@ export class Issue {
    * @memberof Issue
    */
   @UpdateDateColumn()
-  updated_at: Date;
+  updatedAt: Date;
 
   /**
    * issue 所对应的 metadata
@@ -87,7 +87,7 @@ export class Issue {
    * @memberof Issue
    */
   @Column({ type: 'integer', default: 0 })
-  events_count: number;
+  eventsCount: number;
 
   /**
    * 受此 issue 影响的用户
@@ -106,5 +106,5 @@ export class Issue {
    * @memberof Issue
    */
   @Column({ type: 'integer', default: 0 })
-  users_count: number;
+  usersCount: number;
 }

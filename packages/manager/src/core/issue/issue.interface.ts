@@ -42,5 +42,5 @@ export interface GetProjectTrendByApiKeyParams {
 }
 
 export interface WhereOptions {
-  updated_at?: FindOperator<number | string>;
+  updatedAt?: FindOperator<number | string>;
 }

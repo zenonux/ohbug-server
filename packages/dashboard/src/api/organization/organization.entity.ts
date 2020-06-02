@@ -45,7 +45,7 @@ export class Organization {
    */
   @Exclude()
   @CreateDateColumn()
-  created_at: Date;
+  createdAt: Date;
 
   /**
    * organization 更新时间
@@ -55,7 +55,7 @@ export class Organization {
    */
   @Exclude()
   @UpdateDateColumn()
-  updated_at: Date;
+  updatedAt: Date;
 
   /**
    * organization 所拥有的 user (多对多)

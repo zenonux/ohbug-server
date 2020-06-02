@@ -63,7 +63,7 @@ export class User {
    */
   @Exclude()
   @CreateDateColumn()
-  created_at: Date;
+  createdAt: Date;
 
   /**
    * 用户更新时间
@@ -73,7 +73,7 @@ export class User {
    */
   @Exclude()
   @UpdateDateColumn()
-  updated_at: Date;
+  updatedAt: Date;
 
   /**
    * 用户绑定的第三方登录信息

@@ -9,7 +9,7 @@ export function getWhereOptions(searchCondition: SearchCondition) {
   if (searchCondition.start && searchCondition.end) {
     const start = dayjs(searchCondition.start).format('YYYY-MM-DD HH:mm:ss');
     const end = dayjs(searchCondition.end).format('YYYY-MM-DD HH:mm:ss');
-    result.updated_at = Between(start, end);
+    result.updatedAt = Between(start, end);
   }
 
   return result;

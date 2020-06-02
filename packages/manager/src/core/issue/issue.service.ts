@@ -67,14 +67,14 @@ export class IssueService {
       } else {
         // 已经存在
 
-        // users 最多存储 1000，超过后只更改 users_count
+        // users 最多存储 1000，超过后只更改 usersCount
         const MAX_USERS_NUMBER = 1000;
-        const users_count = issue.users.length;
-        if (users_count < MAX_USERS_NUMBER) {
+        const usersCount = issue.users.length;
+        if (usersCount < MAX_USERS_NUMBER) {
           issue.users = uniq([...issue.users, event.user]);
-          issue.users_count = issue.users.length;
+          issue.usersCount = issue.users.length;
         } else {
-          issue.users_count = issue.users_count + 1;
+          issue.usersCount = issue.usersCount + 1;
         }
         if (document_id && index) {
           // 步骤 4，更新 events (issue, document_id, index)
@@ -82,14 +82,14 @@ export class IssueService {
             document_id,
             index,
           };
-          // events 最多存储 100 条，超过后只更改 events_count
+          // events 最多存储 100 条，超过后只更改 eventsCount
           const MAX_ISSUES_NUMBER = 100;
-          const events_count = issue.events.length;
-          if (events_count < MAX_ISSUES_NUMBER) {
+          const eventsCount = issue.events.length;
+          if (eventsCount < MAX_ISSUES_NUMBER) {
             issue.events = [...(issue.events || []), documentEvent];
-            issue.events_count = issue.events_count + 1;
+            issue.eventsCount = issue.eventsCount + 1;
           } else {
-            issue.events_count = issue.events_count + 1;
+            issue.eventsCount = issue.eventsCount + 1;
           }
         }
         return await this.issueRepository.save(issue);
