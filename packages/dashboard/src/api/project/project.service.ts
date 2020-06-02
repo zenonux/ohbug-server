@@ -74,6 +74,7 @@ export class ProjectService {
         name,
         type,
         admin,
+        users: [admin],
         organization,
       });
       return project;

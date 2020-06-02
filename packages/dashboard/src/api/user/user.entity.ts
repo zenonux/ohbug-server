@@ -2,10 +2,10 @@ import {
   Entity,
   PrimaryGeneratedColumn,
   Column,
-  ManyToOne,
   ManyToMany,
   CreateDateColumn,
   UpdateDateColumn,
+  JoinTable,
 } from 'typeorm';
 import { Exclude } from 'class-transformer';
 
@@ -86,13 +86,16 @@ export class User {
   oauth?: OAuth;
 
   /**
-   * user 所属的 organization (多对一)
+   * user 所属的 organization (多对多)
    *
-   * @type {Organization}
+   * @type {Organization[]}
    * @memberof User
    */
-  @ManyToOne((_) => Organization, (organization) => organization.users)
-  organization: Organization;
+  @ManyToMany((_) => Organization, (organization) => organization.users, {
+    cascade: true,
+  })
+  @JoinTable()
+  organizations: Organization[];
 
   /**
    * user 所属的 project (多对多)
@@ -100,6 +103,7 @@ export class User {
    * @type {Project[]}
    * @memberof User
    */
-  @ManyToMany((_) => Project, (project) => project.users)
+  @ManyToMany((_) => Project, (project) => project.users, { cascade: true })
+  @JoinTable()
   projects: Project[];
 }

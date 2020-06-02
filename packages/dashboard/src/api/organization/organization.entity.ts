@@ -7,6 +7,7 @@ import {
   JoinColumn,
   CreateDateColumn,
   UpdateDateColumn,
+  ManyToMany,
 } from 'typeorm';
 import { Exclude } from 'class-transformer';
 
@@ -57,13 +58,13 @@ export class Organization {
   updated_at: Date;
 
   /**
-   * organization 所拥有的 user (一对多)
+   * organization 所拥有的 user (多对多)
    *
    * @type {User[]}
    * @memberof Organization
    */
   @Exclude()
-  @OneToMany((_) => User, (user) => user.organization)
+  @ManyToMany((_) => User, (user) => user.organizations)
   users: User[];
 
   /**
