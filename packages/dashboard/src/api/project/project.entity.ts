@@ -5,12 +5,15 @@ import {
   JoinColumn,
   ManyToOne,
   ManyToMany,
+  CreateDateColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 
 import { Organization } from '@/api/organization/organization.entity';
 import { User } from '@/api/user/user.entity';
 
 import type { ProjectType } from './project.interface';
+import { Exclude } from 'class-transformer';
 
 @Entity()
 export class Project {
@@ -37,6 +40,25 @@ export class Project {
    */
   @Column({ type: 'text' })
   type: ProjectType;
+
+  /**
+   * project 创建时间
+   *
+   * @type {Date}
+   * @memberof Project
+   */
+  @CreateDateColumn()
+  createdAt: Date;
+
+  /**
+   * project 更新时间
+   *
+   * @type {Date}
+   * @memberof Project
+   */
+  @Exclude()
+  @UpdateDateColumn()
+  updatedAt: Date;
 
   /**
    * project 的管理员用户 (一对一)

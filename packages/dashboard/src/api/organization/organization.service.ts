@@ -23,11 +23,13 @@ export class OrganizationService {
    * @param name 组织名
    * @param avatar 组织头像
    * @param admin_id 管理员 id (对应 user 表)
+   * @param introduction
    */
   private async createOrganizationObject({
     name,
     avatar = '',
     admin_id,
+    introduction,
   }: CreateOrganizationDto): Promise<Organization> {
     try {
       const admin = await this.userService.getUserById(admin_id);
@@ -36,6 +38,7 @@ export class OrganizationService {
         name,
         avatar,
         admin,
+        introduction,
         users,
       });
       return org;
@@ -49,20 +52,22 @@ export class OrganizationService {
    *
    * @param name 组织名
    * @param admin_id 管理员 id (对应 user 表)
+   * @param introduction
    */
   async saveOrganization({
     name,
     admin_id,
+    introduction,
   }: CreateOrganizationDto): Promise<Organization> {
     try {
-      const org = await this.createOrganizationObject({ name, admin_id });
+      const org = await this.createOrganizationObject({
+        name,
+        admin_id,
+        introduction,
+      });
       return await this.organizationRepository.save(org);
     } catch (error) {
-      if (error.code === 23505) {
-        throw new ForbiddenException(400101, error);
-      } else {
-        throw new ForbiddenException(400102, error);
-      }
+      throw new ForbiddenException(400102, error);
     }
   }
 

@@ -1,4 +1,13 @@
-import { Controller, Post, Body, Get, Query, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  Get,
+  Query,
+  UseGuards,
+  UseInterceptors,
+  ClassSerializerInterceptor,
+} from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 
 import { ProjectService } from './project.service';
@@ -43,6 +52,7 @@ export class ProjectController {
    */
   @Get()
   @UseGuards(AuthGuard('jwt'))
+  @UseInterceptors(ClassSerializerInterceptor)
   async getAllProjectsByOrganizationId(
     @Query()
     { organization_id }: GetAllProjectsByOrganizationIdDto,

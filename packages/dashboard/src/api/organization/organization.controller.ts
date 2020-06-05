@@ -21,17 +21,19 @@ export class OrganizationController {
    *
    * @param name organization 名称
    * @param admin_id 管理员 id (对应 user 表)
+   * @param introduction
    */
   @Post('create')
   @UseGuards(AuthGuard('jwt'))
   @UseInterceptors(ClassSerializerInterceptor)
   async createOrganization(
     @Body()
-    { name, admin_id }: CreateOrganizationDto,
+    { name, admin_id, introduction }: CreateOrganizationDto,
   ): Promise<Organization> {
     return await this.organizationService.saveOrganization({
       name,
       admin_id,
+      introduction,
     });
   }
 }

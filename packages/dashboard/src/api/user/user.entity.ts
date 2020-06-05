@@ -61,7 +61,6 @@ export class User {
    * @type {Date}
    * @memberof User
    */
-  @Exclude()
   @CreateDateColumn()
   createdAt: Date;
 

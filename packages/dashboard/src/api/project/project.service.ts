@@ -26,7 +26,7 @@ export class ProjectService {
   @Inject('MICROSERVICE_CLIENT')
   private readonly managerClient: ClientProxy;
 
-  private createApiKey({
+  private static createApiKey({
     name,
     type,
     admin_id,
@@ -34,11 +34,10 @@ export class ProjectService {
   }: CreateProjectDto): string {
     try {
       const secret = process.env.APP_SECRET;
-      const hash = crypto
+      return crypto
         .createHmac('sha256', secret)
         .update(`${name}-${type}-${admin_id}-${organization_id}`)
         .digest('hex');
-      return hash;
     } catch (error) {
       throw new ForbiddenException(400200, error);
     }
@@ -63,7 +62,7 @@ export class ProjectService {
       const organization = await this.organizationService.getOrganizationById(
         organization_id,
       );
-      const apiKey = this.createApiKey({
+      const apiKey = ProjectService.createApiKey({
         name,
         type,
         admin_id,
@@ -146,7 +145,12 @@ export class ProjectService {
   async getAllProjectsByOrganizationId(
     id: number | string,
   ): Promise<Project[]> {
-    return await this.organizationService.getAllProjectsByOrganizationId(id);
+    return await this.projectRepository.find({
+      where: {
+        organization: id,
+      },
+      relations: ['users'],
+    });
   }
 
   /**

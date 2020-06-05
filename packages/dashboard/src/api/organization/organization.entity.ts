@@ -3,7 +3,7 @@ import {
   PrimaryGeneratedColumn,
   Column,
   OneToMany,
-  OneToOne,
+  ManyToOne,
   JoinColumn,
   CreateDateColumn,
   UpdateDateColumn,
@@ -38,12 +38,20 @@ export class Organization {
   avatar: string;
 
   /**
+   * organization 简介 可修改
+   *
+   * @type {string}
+   * @memberof Organization
+   */
+  @Column({ type: 'text', nullable: true })
+  introduction?: string;
+
+  /**
    * organization 创建时间
    *
    * @type {Date}
    * @memberof User
    */
-  @Exclude()
   @CreateDateColumn()
   createdAt: Date;
 
@@ -63,7 +71,6 @@ export class Organization {
    * @type {User[]}
    * @memberof Organization
    */
-  @Exclude()
   @ManyToMany((_) => User, (user) => user.organizations)
   users: User[];
 
@@ -74,7 +81,7 @@ export class Organization {
    * @memberof Organization
    */
   @Exclude()
-  @OneToOne((_) => User)
+  @ManyToOne((_) => User)
   @JoinColumn()
   admin: User;
 
