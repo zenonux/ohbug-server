@@ -13,7 +13,7 @@
   "400030": "绑定用户失败",
 
   "400100": "生成 organization object 失败",
-  "400101": "TODO",
+  "400101": "更新 organization 基本信息失败",
   "400102": "创建 organization 失败",
   "400103": "查询 organization 失败",
   "400104": "查询 organization 所对应的 projects 失败",

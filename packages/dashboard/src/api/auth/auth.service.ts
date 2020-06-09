@@ -1,7 +1,7 @@
 import { Injectable, HttpService, OnModuleInit } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { RedisService } from 'nestjs-redis';
-import SmsService from '@alicloud/pop-core';
+import alicloudService from '@alicloud/pop-core';
 import dayjs from 'dayjs';
 import { Redis } from 'ioredis';
 import { ConfigService } from '@nestjs/config';
@@ -29,6 +29,8 @@ const CAPTCHA_EXPIRY_TIME = 300;
 @Injectable()
 export class AuthService implements OnModuleInit {
   redisClient: Redis;
+  smsClient: alicloudService;
+  ossClient: alicloudService;
 
   constructor(
     private readonly configService: ConfigService,
@@ -40,6 +42,24 @@ export class AuthService implements OnModuleInit {
 
   async onModuleInit() {
     this.redisClient = await this.redisService.getClient();
+    this.smsClient = new alicloudService(
+      this.configService.get('service.sms.config'),
+    );
+    this.ossClient = new alicloudService(
+      this.configService.get('service.oss.config'),
+    );
+  }
+
+  async getSTS() {
+    const params = this.configService.get('service.oss.params');
+    const result: any = await this.ossClient.request('AssumeRole', params);
+    return {
+      region: 'oss-cn-hangzhou',
+      accessKeyId: result.Credentials.AccessKeyId,
+      accessKeySecret: result.Credentials.AccessKeySecret,
+      stsToken: result.Credentials.SecurityToken,
+      bucket: 'ohbug-test',
+    };
   }
 
   /**
@@ -49,10 +69,6 @@ export class AuthService implements OnModuleInit {
    * @param captcha
    */
   private async sendSms(mobile: string, captcha: number): Promise<void> {
-    const smsClient = new SmsService(
-      this.configService.get('service.sms.config'),
-    );
-
     const params = {
       ...this.configService.get('service.sms.params'),
       PhoneNumbers: mobile,
@@ -63,7 +79,7 @@ export class AuthService implements OnModuleInit {
       method: 'POST',
     };
 
-    await smsClient.request('SendSms', params, requestOption);
+    await this.smsClient.request('SendSms', params, requestOption);
   }
 
   private async createCaptcha(mobile: string): Promise<'OK'> {

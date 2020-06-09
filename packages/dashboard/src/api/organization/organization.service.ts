@@ -7,7 +7,10 @@ import { Project } from '@/api/project/project.entity';
 import { UserService } from '@/api/user/user.service';
 
 import { Organization } from './organization.entity';
-import { CreateOrganizationDto } from './organization.dto';
+import {
+  CreateOrganizationDto,
+  UpdateOrganizationDto,
+} from './organization.dto';
 
 @Injectable()
 export class OrganizationService {
@@ -72,6 +75,31 @@ export class OrganizationService {
   }
 
   /**
+   * 更新 organization 基本信息
+   *
+   * @param name 组织名
+   * @param introduction
+   * @param avatar
+   * @param organization_id
+   */
+  async updateOrganization({
+    name,
+    introduction,
+    avatar,
+    organization_id,
+  }: UpdateOrganizationDto): Promise<Organization> {
+    try {
+      const org = await this.getOrganizationById(organization_id);
+      if (name) org.name = name;
+      if (introduction) org.introduction = introduction;
+      if (avatar) org.avatar = avatar;
+      return await this.organizationRepository.save(org);
+    } catch (error) {
+      throw new ForbiddenException(400101, error);
+    }
+  }
+
+  /**
    * 根据 id 获取库里的指定 Organization
    *
    * @param id organization id
@@ -85,7 +113,9 @@ export class OrganizationService {
       );
     }
     try {
-      const organization = await this.organizationRepository.findOneOrFail(id);
+      const organization = await this.organizationRepository.findOneOrFail(id, {
+        relations: ['users'],
+      });
       return organization;
     } catch (error) {
       throw new ForbiddenException(400103, error);

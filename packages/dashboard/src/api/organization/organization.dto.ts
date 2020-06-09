@@ -4,6 +4,8 @@ export class CreateOrganizationDto {
   @IsString()
   readonly name: string;
 
+  @IsString()
+  @IsOptional()
   readonly avatar?: string;
 
   @IsString()
@@ -12,4 +14,21 @@ export class CreateOrganizationDto {
 
   @IsNumber()
   readonly admin_id: number;
+}
+
+export class UpdateOrganizationDto {
+  @IsString()
+  @IsOptional()
+  readonly name?: string;
+
+  @IsString()
+  @IsOptional()
+  readonly avatar?: string;
+
+  @IsString()
+  @IsOptional()
+  readonly introduction?: string;
+
+  @IsNumber()
+  readonly organization_id: number;
 }

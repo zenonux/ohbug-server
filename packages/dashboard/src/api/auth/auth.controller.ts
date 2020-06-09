@@ -1,8 +1,16 @@
-import { Controller, Get, Post, Query, Body, Res } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Query,
+  Body,
+  Res,
+  UseGuards,
+} from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { AuthGuard } from '@nestjs/passport';
 
 import { ForbiddenException } from '@ohbug-server/common';
-
 import { AuthService } from './auth.service';
 import { CaptchaDto, SignupDto, LoginDto, BindUserDto } from './auth.dto';
 
@@ -12,6 +20,15 @@ export class AuthController {
     private readonly configService: ConfigService,
     private readonly authService: AuthService,
   ) {}
+
+  /**
+   * 获取 STS
+   */
+  @Get('sts')
+  @UseGuards(AuthGuard('jwt'))
+  async sts() {
+    return await this.authService.getSTS();
+  }
 
   /**
    * 抽出来用于注册 cookie
