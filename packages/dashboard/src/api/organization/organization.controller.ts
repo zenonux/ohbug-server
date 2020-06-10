@@ -11,6 +11,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { OrganizationService } from './organization.service';
 import {
   CreateOrganizationDto,
+  DeleteOrganizationDto,
   UpdateOrganizationDto,
 } from './organization.dto';
 import { Organization } from './organization.entity';
@@ -59,6 +60,23 @@ export class OrganizationController {
       name,
       introduction,
       avatar,
+      organization_id,
+    });
+  }
+
+  /**
+   * 删除 organization
+   *
+   * @param organization_id
+   */
+  @Post('delete')
+  @UseGuards(AuthGuard('jwt'))
+  @UseInterceptors(ClassSerializerInterceptor)
+  async deleteOrganization(
+    @Body()
+    { organization_id }: DeleteOrganizationDto,
+  ): Promise<Organization> {
+    return await this.organizationService.deleteOrganization({
       organization_id,
     });
   }

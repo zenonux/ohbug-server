@@ -76,7 +76,9 @@ export class Project {
    * @type {Organization}
    * @memberof Project
    */
-  @ManyToOne((_) => Organization, (organization) => organization.projects)
+  @ManyToOne((_) => Organization, (organization) => organization.projects, {
+    onDelete: 'CASCADE',
+  })
   organization: Organization;
 
   /**

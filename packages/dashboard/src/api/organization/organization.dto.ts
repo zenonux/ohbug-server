@@ -32,3 +32,8 @@ export class UpdateOrganizationDto {
   @IsNumber()
   readonly organization_id: number;
 }
+
+export class DeleteOrganizationDto {
+  @IsNumber()
+  readonly organization_id: number;
+}

@@ -9,6 +9,7 @@ import { UserService } from '@/api/user/user.service';
 import { Organization } from './organization.entity';
 import {
   CreateOrganizationDto,
+  DeleteOrganizationDto,
   UpdateOrganizationDto,
 } from './organization.dto';
 
@@ -94,6 +95,22 @@ export class OrganizationService {
       if (introduction) org.introduction = introduction;
       if (avatar) org.avatar = avatar;
       return await this.organizationRepository.save(org);
+    } catch (error) {
+      throw new ForbiddenException(400105, error);
+    }
+  }
+
+  /**
+   * 删除 organization
+   *
+   * @param organization_id
+   */
+  async deleteOrganization({
+    organization_id,
+  }: DeleteOrganizationDto): Promise<Organization> {
+    try {
+      const org = await this.getOrganizationById(organization_id);
+      return await this.organizationRepository.remove(org);
     } catch (error) {
       throw new ForbiddenException(400101, error);
     }
