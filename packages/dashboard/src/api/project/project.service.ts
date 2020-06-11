@@ -12,7 +12,11 @@ import {
 } from '@ohbug-server/common';
 
 import { Project } from './project.entity';
-import { CreateProjectDto, GetTrendByProjectIdDto } from './project.dto';
+import {
+  CreateProjectDto,
+  GetTrendByProjectIdDto,
+  UpdateProjectDto,
+} from './project.dto';
 
 @Injectable()
 export class ProjectService {
@@ -106,6 +110,28 @@ export class ProjectService {
       return await this.projectRepository.save(project);
     } catch (error) {
       throw new ForbiddenException(400202, error);
+    }
+  }
+
+  /**
+   * 更新 project 基本信息
+   *
+   * @param name project 名称
+   * @param type project 类别
+   * @param project_id project id
+   */
+  async updateProject({
+    name,
+    type,
+    project_id,
+  }: UpdateProjectDto): Promise<Project> {
+    try {
+      const project = await this.getProjectByProjectId(project_id);
+      if (name) project.name = name;
+      if (type) project.type = type;
+      return await this.projectRepository.save(project);
+    } catch (error) {
+      throw new ForbiddenException(400205, error);
     }
   }
 

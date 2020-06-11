@@ -116,7 +116,11 @@ export class UserService {
   async getUserById(id: number | string): Promise<User> {
     try {
       const user = await this.userRepository.findOneOrFail(id, {
-        relations: ['organizations', 'organizations.users'],
+        relations: [
+          'organizations',
+          'organizations.users',
+          'organizations.projects',
+        ],
       });
       return user;
     } catch (error) {

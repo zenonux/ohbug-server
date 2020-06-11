@@ -24,6 +24,7 @@
   "400202": "创建 project 失败",
   "400203": "根据 project_id 查询 project 失败",
   "400204": "根据 apiKey 查询 project 失败",
+  "400205": "更新 project 失败",
 
   "400300": "创建 event 失败",
   "400301": "搜索 events 失败",

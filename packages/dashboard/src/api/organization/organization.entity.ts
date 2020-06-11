@@ -91,7 +91,6 @@ export class Organization {
    * @type {Project[]}
    * @memberof Organization
    */
-  @Exclude()
   @OneToMany((_) => Project, (project) => project.organization)
   projects: Project[];
 

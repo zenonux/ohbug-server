@@ -26,6 +26,18 @@ export class CreateProjectDto {
   readonly organization_id: number;
 }
 
+export class UpdateProjectDto {
+  @IsString()
+  readonly name: string;
+
+  @ValidateIf(validateType)
+  @IsNotEmpty()
+  readonly type: ProjectType;
+
+  @IsNumberString()
+  readonly project_id: number;
+}
+
 export class GetAllProjectsByOrganizationIdDto {
   @IsNumberString()
   readonly organization_id: number;

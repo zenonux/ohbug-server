@@ -13,6 +13,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { ProjectService } from './project.service';
 import {
   CreateProjectDto,
+  UpdateProjectDto,
   GetAllProjectsByOrganizationIdDto,
   GetTrendByProjectIdDto,
 } from './project.dto';
@@ -42,6 +43,26 @@ export class ProjectController {
       type,
       admin_id,
       organization_id,
+    });
+  }
+
+  /**
+   * 更新 project 基本信息
+   *
+   * @param name project 名称
+   * @param type project 类别
+   * @param project_id project id
+   */
+  @Post('update')
+  @UseGuards(AuthGuard('jwt'))
+  async updateProject(
+    @Body()
+    { name, type, project_id }: UpdateProjectDto,
+  ): Promise<Project> {
+    return await this.projectService.updateProject({
+      name,
+      type,
+      project_id,
     });
   }
 
