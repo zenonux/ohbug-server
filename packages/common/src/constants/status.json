@@ -61,5 +61,7 @@
   "4001001": "transfer: 向 logstash 传递 event 时发生错误",
   "4001002": "manager: 从 elasticsearch 拉取 document 失败",
   "4001003": "manager: event 聚合时发生错误",
-  "4001004": "manager: event 任务调度时发生错误"
+  "4001004": "manager: event 任务调度时发生错误",
+
+  "4001100": "创建 notice 失败"
 }

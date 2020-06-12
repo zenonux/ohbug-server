@@ -5,15 +5,17 @@ import {
   JoinColumn,
   ManyToOne,
   ManyToMany,
+  OneToMany,
   CreateDateColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { Exclude } from 'class-transformer';
 
 import { Organization } from '@/api/organization/organization.entity';
 import { User } from '@/api/user/user.entity';
 
+import { Notice } from '@/api/notice/notice.entity';
 import type { ProjectType } from './project.interface';
-import { Exclude } from 'class-transformer';
 
 @Entity()
 export class Project {
@@ -89,4 +91,13 @@ export class Project {
    */
   @ManyToMany((_) => User, (user) => user.projects)
   users: User[];
+
+  /**
+   * project 所拥有的 notices (一对多)
+   *
+   * @type {Notice[]}
+   * @memberof Project
+   */
+  @OneToMany((_) => Notice, (notice) => notice.project)
+  notices: Notice[];
 }
