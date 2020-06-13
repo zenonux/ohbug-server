@@ -12,14 +12,14 @@ import { UserService } from './user.service';
 import { User } from './user.entity';
 import { GetUserDto } from './user.dto';
 
-@Controller('user')
+@Controller('users')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-  @Get(':id')
+  @Get(':user_id')
   @UseGuards(AuthGuard('jwt'))
   @UseInterceptors(ClassSerializerInterceptor)
-  async getUserById(@Param() params: GetUserDto): Promise<User> {
-    return await this.userService.getUserById(params.id);
+  async get(@Param() { user_id }: GetUserDto): Promise<User> {
+    return await this.userService.getUserById(user_id);
   }
 }

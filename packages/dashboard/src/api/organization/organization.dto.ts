@@ -1,5 +1,10 @@
 import { IsString, IsNumberString, IsOptional } from 'class-validator';
 
+export class BaseOrganizationDto {
+  @IsNumberString()
+  readonly organization_id: number | string;
+}
+
 export class CreateOrganizationDto {
   @IsString()
   readonly name: string;
@@ -28,12 +33,4 @@ export class UpdateOrganizationDto {
   @IsString()
   @IsOptional()
   readonly introduction?: string;
-
-  @IsNumberString()
-  readonly organization_id: number | string;
-}
-
-export class DeleteOrganizationDto {
-  @IsNumberString()
-  readonly organization_id: number | string;
 }

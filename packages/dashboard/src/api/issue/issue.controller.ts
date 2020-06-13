@@ -19,7 +19,7 @@ import {
 
 const limit = 20;
 
-@Controller('issue')
+@Controller('issues')
 export class IssueController {
   constructor(private readonly issueService: IssueService) {}
 
@@ -31,7 +31,7 @@ export class IssueController {
    */
   @Get('/:issue_id')
   @UseGuards(AuthGuard('jwt'))
-  async getIssueByIssueId(
+  async get(
     @Param()
     { issue_id }: GetIssueByIssueIdDto,
     @Query()
@@ -53,7 +53,7 @@ export class IssueController {
    */
   @Get()
   @UseGuards(AuthGuard('jwt'))
-  async searchIssues(
+  async getAll(
     @Query()
     { project_id, page, start, end }: GetIssueDto,
   ) {

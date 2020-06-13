@@ -8,10 +8,10 @@ import { ProjectService } from '@/api/project/project.service';
 import { NotificationRule } from './notification.rule.entity';
 import { NotificationSetting } from './notification.setting.entity';
 import {
+  NotificationRuleDto,
+  BaseNotificationRuleDto,
   CreateNotificationRuleDto,
   GetNotificationRulesDto,
-  UpdateNotificationRuleDto,
-  DeleteNotificationRuleDto,
   NotificationSettingDto,
 } from './notification.dto';
 
@@ -112,7 +112,7 @@ export class NotificationService {
     level,
     interval,
     open,
-  }: UpdateNotificationRuleDto): Promise<NotificationRule> {
+  }: NotificationRuleDto & BaseNotificationRuleDto): Promise<NotificationRule> {
     try {
       const rule = await this.notificationRuleRepository.findOneOrFail(rule_id);
       if (name) rule.name = name;
@@ -135,7 +135,7 @@ export class NotificationService {
    */
   async deleteNotificationRule({
     rule_id,
-  }: DeleteNotificationRuleDto): Promise<NotificationRule> {
+  }: BaseNotificationRuleDto): Promise<NotificationRule> {
     try {
       const rule = await this.notificationRuleRepository.findOneOrFail(rule_id);
       return await this.notificationRuleRepository.remove(rule);

@@ -14,6 +14,7 @@ import {
 
 import { Project } from './project.entity';
 import {
+  BaseProjectDto,
   CreateProjectDto,
   GetTrendByProjectIdDto,
   UpdateProjectDto,
@@ -135,7 +136,7 @@ export class ProjectService {
     name,
     type,
     project_id,
-  }: UpdateProjectDto): Promise<Project> {
+  }: UpdateProjectDto & BaseProjectDto): Promise<Project> {
     try {
       const project = await this.getProjectByProjectId(project_id);
       if (name) project.name = name;
@@ -201,7 +202,7 @@ export class ProjectService {
     project_id,
     start,
     end,
-  }: GetTrendByProjectIdDto) {
+  }: GetTrendByProjectIdDto & BaseProjectDto) {
     const { apiKey } = await this.getProjectByProjectId(project_id);
 
     return await this.managerClient

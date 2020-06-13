@@ -14,7 +14,7 @@ import { OhbugEventLike } from '@ohbug-server/common';
 import { EventService } from './event.service';
 import { GetEventByEventIdDto, GetEventsDto } from './event.dto';
 
-@Controller('event')
+@Controller('events')
 export class EventController {
   constructor(private readonly eventService: EventService) {}
 
@@ -28,7 +28,7 @@ export class EventController {
   @Get('/:event_id')
   @UseGuards(AuthGuard('jwt'))
   @UseInterceptors(ClassSerializerInterceptor)
-  async getEventByEventId(
+  async get(
     @Param()
     { event_id }: GetEventByEventIdDto,
     @Query()

@@ -8,8 +8,8 @@ import { UserService } from '@/api/user/user.service';
 
 import { Organization } from './organization.entity';
 import {
+  BaseOrganizationDto,
   CreateOrganizationDto,
-  DeleteOrganizationDto,
   UpdateOrganizationDto,
 } from './organization.dto';
 
@@ -88,7 +88,7 @@ export class OrganizationService {
     introduction,
     avatar,
     organization_id,
-  }: UpdateOrganizationDto): Promise<Organization> {
+  }: UpdateOrganizationDto & BaseOrganizationDto): Promise<Organization> {
     try {
       const org = await this.getOrganizationById(organization_id);
       if (name) org.name = name;
@@ -107,7 +107,7 @@ export class OrganizationService {
    */
   async deleteOrganization({
     organization_id,
-  }: DeleteOrganizationDto): Promise<Organization> {
+  }: BaseOrganizationDto): Promise<Organization> {
     try {
       const org = await this.getOrganizationById(organization_id);
       return await this.organizationRepository.remove(org);

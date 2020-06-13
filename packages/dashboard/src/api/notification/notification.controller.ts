@@ -1,8 +1,11 @@
 import {
   Controller,
   Post,
-  Body,
   Get,
+  Put,
+  Delete,
+  Body,
+  Param,
   Query,
   UseGuards,
   UseInterceptors,
@@ -12,10 +15,10 @@ import { AuthGuard } from '@nestjs/passport';
 
 import { NotificationService } from './notification.service';
 import {
+  BaseNotificationRuleDto,
+  NotificationRuleDto,
   CreateNotificationRuleDto,
   GetNotificationRulesDto,
-  UpdateNotificationRuleDto,
-  DeleteNotificationRuleDto,
 } from './notification.dto';
 import { NotificationRule } from './notification.rule.entity';
 
@@ -35,7 +38,7 @@ export class NotificationController {
    * @param interval
    * @param open
    */
-  @Post('rule/create')
+  @Post('rules')
   @UseGuards(AuthGuard('jwt'))
   @UseInterceptors(ClassSerializerInterceptor)
   async createNotificationRule(
@@ -89,13 +92,13 @@ export class NotificationController {
    * @param interval
    * @param open
    */
-  @Post('rule/update')
+  @Put('rules/:rule_id')
   @UseGuards(AuthGuard('jwt'))
   @UseInterceptors(ClassSerializerInterceptor)
   async updateNotificationRule(
+    @Param() { rule_id }: BaseNotificationRuleDto,
     @Body()
     {
-      rule_id,
       name,
       data,
       whiteList,
@@ -103,7 +106,7 @@ export class NotificationController {
       level,
       interval,
       open,
-    }: UpdateNotificationRuleDto,
+    }: NotificationRuleDto,
   ): Promise<NotificationRule> {
     return await this.notificationService.updateNotificationRule({
       rule_id,
@@ -122,12 +125,12 @@ export class NotificationController {
    *
    * @param rule_id
    */
-  @Post('rule/delete')
+  @Delete('rules/:rule_id')
   @UseGuards(AuthGuard('jwt'))
   @UseInterceptors(ClassSerializerInterceptor)
   async deleteNotificationRule(
-    @Body()
-    { rule_id }: DeleteNotificationRuleDto,
+    @Param()
+    { rule_id }: BaseNotificationRuleDto,
   ): Promise<NotificationRule> {
     return await this.notificationService.deleteNotificationRule({
       rule_id,

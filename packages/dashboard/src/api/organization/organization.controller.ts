@@ -1,22 +1,25 @@
 import {
   Controller,
   Post,
+  Put,
+  Delete,
   Body,
   UseGuards,
   UseInterceptors,
   ClassSerializerInterceptor,
+  Param,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 
 import { OrganizationService } from './organization.service';
 import {
+  BaseOrganizationDto,
   CreateOrganizationDto,
-  DeleteOrganizationDto,
   UpdateOrganizationDto,
 } from './organization.dto';
 import { Organization } from './organization.entity';
 
-@Controller('organization')
+@Controller('organizations')
 export class OrganizationController {
   constructor(private readonly organizationService: OrganizationService) {}
 
@@ -27,10 +30,10 @@ export class OrganizationController {
    * @param admin_id 管理员 id (对应 user 表)
    * @param introduction
    */
-  @Post('create')
+  @Post()
   @UseGuards(AuthGuard('jwt'))
   @UseInterceptors(ClassSerializerInterceptor)
-  async createOrganization(
+  async create(
     @Body()
     { name, admin_id, introduction }: CreateOrganizationDto,
   ): Promise<Organization> {
@@ -49,12 +52,13 @@ export class OrganizationController {
    * @param avatar
    * @param organization_id
    */
-  @Post('update')
+  @Put(':organization_id')
   @UseGuards(AuthGuard('jwt'))
   @UseInterceptors(ClassSerializerInterceptor)
-  async updateOrganization(
+  async update(
+    @Param() { organization_id }: BaseOrganizationDto,
     @Body()
-    { name, introduction, avatar, organization_id }: UpdateOrganizationDto,
+    { name, introduction, avatar }: UpdateOrganizationDto,
   ): Promise<Organization> {
     return await this.organizationService.updateOrganization({
       name,
@@ -69,12 +73,12 @@ export class OrganizationController {
    *
    * @param organization_id
    */
-  @Post('delete')
+  @Delete(':organization_id')
   @UseGuards(AuthGuard('jwt'))
   @UseInterceptors(ClassSerializerInterceptor)
-  async deleteOrganization(
-    @Body()
-    { organization_id }: DeleteOrganizationDto,
+  async delete(
+    @Param()
+    { organization_id }: BaseOrganizationDto,
   ): Promise<Organization> {
     return await this.organizationService.deleteOrganization({
       organization_id,

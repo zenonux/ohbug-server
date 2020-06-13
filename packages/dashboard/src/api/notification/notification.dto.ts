@@ -17,7 +17,12 @@ import type {
   NotificationSettingWebHooks,
 } from './notification.interface';
 
-class BaseNotificationRuleDto {
+export class BaseNotificationRuleDto {
+  @IsNumberString()
+  readonly rule_id: number | string;
+}
+
+export class NotificationRuleDto {
   @IsString()
   readonly name: string;
 
@@ -41,21 +46,15 @@ class BaseNotificationRuleDto {
   @IsBoolean()
   readonly open: boolean;
 }
-export class CreateNotificationRuleDto extends BaseNotificationRuleDto {
+
+export class CreateNotificationRuleDto extends NotificationRuleDto {
   @IsNumberString()
   readonly project_id: number | string;
 }
+
 export class GetNotificationRulesDto {
   @IsNumberString()
   readonly project_id: number | string;
-}
-export class UpdateNotificationRuleDto extends BaseNotificationRuleDto {
-  @IsNumberString()
-  readonly rule_id: number | string;
-}
-export class DeleteNotificationRuleDto {
-  @IsNumberString()
-  readonly rule_id: number | string;
 }
 
 export class NotificationSettingDto {

@@ -11,6 +11,11 @@ import type { ProjectType } from './project.interface';
 const types: ProjectType[] = ['JavaScript', 'NodeJS'];
 const validateType = (dto: CreateProjectDto) => types.includes(dto.type);
 
+export class BaseProjectDto {
+  @IsNumberString()
+  readonly project_id: number;
+}
+
 export class CreateProjectDto {
   @IsString()
   readonly name: string;
@@ -33,9 +38,6 @@ export class UpdateProjectDto {
   @ValidateIf(validateType)
   @IsNotEmpty()
   readonly type: ProjectType;
-
-  @IsNumberString()
-  readonly project_id: number;
 }
 
 export class GetAllProjectsByOrganizationIdDto {
@@ -44,9 +46,6 @@ export class GetAllProjectsByOrganizationIdDto {
 }
 
 export class GetTrendByProjectIdDto {
-  @IsNumberString()
-  readonly project_id: number;
-
   @IsDateString()
   readonly start: Date;
 
