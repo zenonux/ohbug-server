@@ -11,127 +11,127 @@ import { Exclude } from 'class-transformer';
 
 import { Project } from '@/api/project/project.entity';
 import type {
-  NoticeData,
-  NoticeWhiteList,
-  NoticeBlackList,
-  NoticeLevel,
-} from './notice.interface';
+  NotificationRuleData,
+  NotificationRuleWhiteList,
+  NotificationRuleBlackList,
+  NotificationRuleLevel,
+} from './notification.interface';
 
 @Entity()
-export class Notice {
+export class NotificationRule {
   @PrimaryGeneratedColumn()
   id: number;
 
   /**
-   * notice 名称
+   * notification 名称
    *
    * @type {string}
-   * @memberof Notice
+   * @memberof NotificationRule
    */
   @Column({ type: 'text' })
   name: string;
 
   /**
-   * notice 规则
+   * notification 规则
    *
-   * @type {NoticeData}
-   * @memberof Notice
+   * @type {NotificationRuleData}
+   * @memberof NotificationRule
    */
   @Column({ type: 'jsonb' })
-  data: NoticeData;
+  data: NotificationRuleData;
 
   /**
-   * notice 白名单
+   * notification 白名单
    *
-   * @type {NoticeWhiteList}
-   * @memberof Notice
+   * @type {NotificationRuleWhiteList}
+   * @memberof NotificationRule
    */
   @Column({ type: 'jsonb', nullable: true })
-  whiteList?: NoticeWhiteList;
+  whiteList?: NotificationRuleWhiteList;
 
   /**
-   * notice 黑名单
+   * notification 黑名单
    *
-   * @type {NoticeBlackList}
-   * @memberof Notice
+   * @type {NotificationRuleBlackList}
+   * @memberof NotificationRule
    */
   @Column({ type: 'jsonb', nullable: true })
-  blackList?: NoticeBlackList;
+  blackList?: NotificationRuleBlackList;
 
   /**
-   * notice 级别
+   * notification 级别
    *
-   * @type {NoticeBlackList}
-   * @memberof Notice
+   * @type {NotificationRuleLevel}
+   * @memberof NotificationRule
    */
   @Column({ type: 'text', default: 'default' })
-  level: NoticeLevel;
+  level: NotificationRuleLevel;
 
   /**
-   * notice 静默期
+   * notification 静默期
    * 默认 30 分钟
    *
    * @type {number}
-   * @memberof Notice
+   * @memberof NotificationRule
    */
   @Column({ type: 'integer', default: 1800000 })
   interval: number;
 
   /**
-   * notice 开关
+   * notification 开关
    *
    * @type {boolean}
-   * @memberof Notice
+   * @memberof NotificationRule
    */
   @Column({ type: 'bool', default: true })
   open: boolean;
 
   /**
-   * notice 最近通知的日期
+   * notification 最近通知的日期
    *
    * @type {Date}
-   * @memberof Notice
+   * @memberof NotificationRule
    */
   @Column({ type: 'date', nullable: true })
   recently?: Date;
 
   /**
-   * notice 通知总数
+   * notification 通知总数
    *
    * @type {number}
-   * @memberof Notice
+   * @memberof NotificationRule
    */
   @Column({ type: 'integer', default: 0 })
   count: number;
 
   /**
-   * notice 创建时间
+   * notification 创建时间
    *
    * @type {Date}
-   * @memberof Notice
+   * @memberof NotificationRule
    */
   @Exclude()
   @CreateDateColumn()
   createdAt: Date;
 
   /**
-   * notice 更新时间
+   * notification 更新时间
    *
    * @type {Date}
-   * @memberof Notice
+   * @memberof NotificationRule
    */
   @Exclude()
   @UpdateDateColumn()
   updatedAt: Date;
 
   /**
-   * notice 的 project (多对一)
+   * notification 的 project (多对一)
    *
    * @type {Project}
-   * @memberof Notice
+   * @memberof NotificationRule
    */
   @Exclude()
-  @ManyToOne((_) => Project, (project) => project.notices, {
+  @ManyToOne((_) => Project, (project) => project.notificationRules, {
     onDelete: 'CASCADE',
   })
   @JoinColumn()

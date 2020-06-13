@@ -8,16 +8,16 @@ import {
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 
-import { NoticeService } from './notice.service';
-import { CreateNoticeDto } from './notice.dto';
-import { Notice } from './notice.entity';
+import { NotificationService } from './notification.service';
+import { CreateNotificationRuleDto } from './notification.dto';
+import { NotificationRule } from './notification.rule.entity';
 
-@Controller('notice')
-export class NoticeController {
-  constructor(private readonly noticeService: NoticeService) {}
+@Controller('notification')
+export class NotificationController {
+  constructor(private readonly notificationService: NotificationService) {}
 
   /**
-   * 创建 notice
+   * 创建 notification rule
    *
    * @param project_id
    * @param name
@@ -28,10 +28,10 @@ export class NoticeController {
    * @param interval
    * @param open
    */
-  @Post('create')
+  @Post('rule/create')
   @UseGuards(AuthGuard('jwt'))
   @UseInterceptors(ClassSerializerInterceptor)
-  async createNotice(
+  async createNotificationRule(
     @Body()
     {
       project_id,
@@ -42,9 +42,9 @@ export class NoticeController {
       level,
       interval,
       open,
-    }: CreateNoticeDto,
-  ): Promise<Notice> {
-    return await this.noticeService.createNotice({
+    }: CreateNotificationRuleDto,
+  ): Promise<NotificationRule> {
+    return await this.notificationService.createNotificationRule({
       project_id,
       name,
       data,

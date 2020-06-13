@@ -63,5 +63,6 @@
   "4001003": "manager: event 聚合时发生错误",
   "4001004": "manager: event 任务调度时发生错误",
 
-  "4001100": "创建 notice 失败"
+  "4001100": "创建 notification 规则失败",
+  "4001101": "创建 notification 设置对象失败"
 }

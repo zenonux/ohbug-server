@@ -8,13 +8,15 @@ import {
   OneToMany,
   CreateDateColumn,
   UpdateDateColumn,
+  OneToOne,
 } from 'typeorm';
 import { Exclude } from 'class-transformer';
 
 import { Organization } from '@/api/organization/organization.entity';
 import { User } from '@/api/user/user.entity';
 
-import { Notice } from '@/api/notice/notice.entity';
+import { NotificationRule } from '@/api/notification/notification.rule.entity';
+import { NotificationSetting } from '@/api/notification/notification.setting.entity';
 import type { ProjectType } from './project.interface';
 
 @Entity()
@@ -63,7 +65,7 @@ export class Project {
   updatedAt: Date;
 
   /**
-   * project 的管理员用户 (一对一)
+   * project 的管理员用户 (多对一)
    *
    * @type {User}
    * @memberof Organization
@@ -93,11 +95,24 @@ export class Project {
   users: User[];
 
   /**
-   * project 所拥有的 notices (一对多)
+   * project 所拥有的 notification rules (一对多)
    *
-   * @type {Notice[]}
+   * @type {NotificationRule[]}
    * @memberof Project
    */
-  @OneToMany((_) => Notice, (notice) => notice.project)
-  notices: Notice[];
+  @OneToMany((_) => NotificationRule, (notification) => notification.project)
+  notificationRules: Notification[];
+
+  /**
+   * project 所拥有的 notification settings (一对一)
+   *
+   * @type {NotificationSetting}
+   * @memberof Project
+   */
+  @OneToOne(
+    (_) => NotificationSetting,
+    (notification) => notification.project,
+    { cascade: true },
+  )
+  notificationSetting: NotificationSetting;
 }

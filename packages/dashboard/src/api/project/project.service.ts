@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, forwardRef } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ClientProxy } from '@nestjs/microservices';
@@ -6,6 +6,7 @@ import * as crypto from 'crypto';
 
 import { UserService } from '@/api/user/user.service';
 import { OrganizationService } from '@/api/organization/organization.service';
+import { NotificationService } from '@/api/notification/notification.service';
 import {
   ForbiddenException,
   TOPIC_DASHBOARD_MANAGER_GET_PROJECT_TREND,
@@ -25,6 +26,8 @@ export class ProjectService {
     private readonly projectRepository: Repository<Project>,
     private readonly userService: UserService,
     private readonly organizationService: OrganizationService,
+    @Inject(forwardRef(() => NotificationService))
+    private readonly notificationService: NotificationService,
   ) {}
 
   @Inject('MICROSERVICE_CLIENT')
@@ -72,13 +75,21 @@ export class ProjectService {
         admin_id,
         organization_id,
       });
-      const project = await this.projectRepository.create({
+      const notificationSetting = this.notificationService.createNotificationSetting(
+        {
+          emails: admin.email ? [{ email: admin.email, open: true }] : [],
+          browser: false,
+          webhooks: [],
+        },
+      );
+      const project = this.projectRepository.create({
         apiKey,
         name,
         type,
         admin,
         users: [admin],
         organization,
+        notificationSetting,
       });
       return project;
     } catch (error) {
