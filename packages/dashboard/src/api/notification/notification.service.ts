@@ -9,6 +9,9 @@ import { NotificationRule } from './notification.rule.entity';
 import { NotificationSetting } from './notification.setting.entity';
 import {
   CreateNotificationRuleDto,
+  GetNotificationRulesDto,
+  UpdateNotificationRuleDto,
+  DeleteNotificationRuleDto,
   NotificationSettingDto,
 } from './notification.dto';
 
@@ -64,6 +67,80 @@ export class NotificationService {
       return await this.notificationRuleRepository.save(notificationRule);
     } catch (error) {
       throw new ForbiddenException(4001100, error);
+    }
+  }
+
+  /**
+   * 查询 notification rules
+   *
+   * @param project_id
+   */
+  async getNotificationRules({
+    project_id,
+  }: GetNotificationRulesDto): Promise<NotificationRule[]> {
+    try {
+      const project = await this.projectService.getProjectByProjectId(
+        project_id,
+      );
+      const rules = await this.notificationRuleRepository.find({
+        project,
+      });
+      return rules;
+    } catch (error) {
+      throw new ForbiddenException(4001101, error);
+    }
+  }
+
+  /**
+   * 更新 notification rule
+   *
+   * @param rule_id
+   * @param name
+   * @param data
+   * @param whiteList
+   * @param blackList
+   * @param level
+   * @param interval
+   * @param open
+   */
+  async updateNotificationRule({
+    rule_id,
+    name,
+    data,
+    whiteList,
+    blackList,
+    level,
+    interval,
+    open,
+  }: UpdateNotificationRuleDto): Promise<NotificationRule> {
+    try {
+      const rule = await this.notificationRuleRepository.findOneOrFail(rule_id);
+      if (name) rule.name = name;
+      if (data) rule.data = data;
+      if (whiteList) rule.whiteList = whiteList;
+      if (blackList) rule.blackList = blackList;
+      if (level) rule.level = level;
+      if (interval) rule.interval = interval;
+      if (open) rule.open = open;
+      return await this.notificationRuleRepository.save(rule);
+    } catch (error) {
+      throw new ForbiddenException(4001102, error);
+    }
+  }
+
+  /**
+   * 删除 notification rule
+   *
+   * @param rule_id
+   */
+  async deleteNotificationRule({
+    rule_id,
+  }: DeleteNotificationRuleDto): Promise<NotificationRule> {
+    try {
+      const rule = await this.notificationRuleRepository.findOneOrFail(rule_id);
+      return await this.notificationRuleRepository.remove(rule);
+    } catch (error) {
+      throw new ForbiddenException(4001103, error);
     }
   }
 
