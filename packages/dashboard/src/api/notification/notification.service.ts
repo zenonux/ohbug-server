@@ -13,6 +13,8 @@ import {
   CreateNotificationRuleDto,
   GetNotificationRulesDto,
   NotificationSettingDto,
+  BaseNotificationSettingDto,
+  UpdateNotificationSettingDto,
 } from './notification.dto';
 
 @Injectable()
@@ -164,7 +166,55 @@ export class NotificationService {
       });
       return notificationSetting;
     } catch (error) {
-      throw new ForbiddenException(4001101, error);
+      throw new ForbiddenException(4001110, error);
+    }
+  }
+
+  /**
+   * 获取 notification setting
+   *
+   * @param project_id
+   */
+  async getNotificationSetting({ project_id }: BaseNotificationSettingDto) {
+    try {
+      const project = await this.projectService.getProjectByProjectId(
+        project_id,
+      );
+      const notificationSetting = await this.notificationSettingRepository.findOneOrFail(
+        {
+          project,
+        },
+      );
+      return notificationSetting;
+    } catch (error) {
+      throw new ForbiddenException(4001111, error);
+    }
+  }
+
+  /**
+   * 更新 notification setting
+   *
+   * @param project_id
+   * @param emails
+   * @param browser
+   * @param webhooks
+   */
+  async updateNotificationSetting({
+    project_id,
+    emails,
+    browser,
+    webhooks,
+  }: UpdateNotificationSettingDto & BaseNotificationSettingDto) {
+    try {
+      const notificationSetting = await this.getNotificationSetting({
+        project_id,
+      });
+      if (emails) notificationSetting.emails = emails;
+      if (browser) notificationSetting.browser = browser;
+      if (webhooks) notificationSetting.webhooks = webhooks;
+      return await this.notificationSettingRepository.save(notificationSetting);
+    } catch (error) {
+      throw new ForbiddenException(4001112, error);
     }
   }
 }

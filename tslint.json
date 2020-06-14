@@ -16,7 +16,7 @@
     "variable-name": {
       "options": ["allow-snake-case", "allow-pascal-case"]
     },
-    "max-classes-per-file": [true, 6]
+    "max-classes-per-file": [true, 10]
   },
   "rulesDirectory": []
 }

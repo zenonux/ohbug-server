@@ -3,6 +3,7 @@ import {
   Post,
   Get,
   Put,
+  Patch,
   Delete,
   Body,
   Param,
@@ -19,6 +20,8 @@ import {
   NotificationRuleDto,
   CreateNotificationRuleDto,
   GetNotificationRulesDto,
+  BaseNotificationSettingDto,
+  UpdateNotificationSettingDto,
 } from './notification.dto';
 import { NotificationRule } from './notification.rule.entity';
 
@@ -134,6 +137,45 @@ export class NotificationController {
   ): Promise<NotificationRule> {
     return await this.notificationService.deleteNotificationRule({
       rule_id,
+    });
+  }
+
+  /**
+   * 获取 notification setting
+   *
+   * @param project_id
+   */
+  @Get('setting')
+  @UseGuards(AuthGuard('jwt'))
+  @UseInterceptors(ClassSerializerInterceptor)
+  async getNotificationSetting(
+    @Query() { project_id }: BaseNotificationSettingDto,
+  ) {
+    return await this.notificationService.getNotificationSetting({
+      project_id,
+    });
+  }
+
+  /**
+   * 更新 notification setting
+   *
+   * @param project_id
+   * @param emails
+   * @param browser
+   * @param webhooks
+   */
+  @Patch('setting')
+  @UseGuards(AuthGuard('jwt'))
+  @UseInterceptors(ClassSerializerInterceptor)
+  async updateNotificationSetting(
+    @Query() { project_id }: BaseNotificationSettingDto,
+    @Body() { emails, browser, webhooks }: UpdateNotificationSettingDto,
+  ) {
+    return await this.notificationService.updateNotificationSetting({
+      project_id,
+      emails,
+      browser,
+      webhooks,
     });
   }
 }

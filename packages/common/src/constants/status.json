@@ -67,5 +67,7 @@
   "4001101": "查询 notification rules 失败",
   "4001102": "更新 notification rule 失败",
   "4001103": "删除 notification rule 失败",
-  "4001110": "创建 notification 设置对象失败"
+  "4001110": "创建 notification setting object 失败",
+  "4001111": "查询 notification setting 失败",
+  "4001112": "更新 notification setting 失败"
 }

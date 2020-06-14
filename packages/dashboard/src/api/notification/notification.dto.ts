@@ -62,3 +62,22 @@ export class NotificationSettingDto {
   readonly browser: NotificationSettingBrowser;
   readonly webhooks: NotificationSettingWebHooks;
 }
+
+export class BaseNotificationSettingDto {
+  @IsNumberString()
+  readonly project_id: number | string;
+}
+
+export class UpdateNotificationSettingDto {
+  @IsArray()
+  @IsOptional()
+  readonly emails?: NotificationSettingEmails;
+
+  @IsBoolean()
+  @IsOptional()
+  readonly browser?: NotificationSettingBrowser;
+
+  @IsArray()
+  @IsOptional()
+  readonly webhooks?: NotificationSettingWebHooks;
+}
