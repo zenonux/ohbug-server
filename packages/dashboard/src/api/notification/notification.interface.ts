@@ -5,7 +5,12 @@ interface NotificationRuleIndicator {
   interval: number; // 间隔时间
   percentage: number; // 增长百分比
 }
-type NotificationRuleRange = number[];
+type NotificationRuleRange = {
+  range1: number;
+  range2: number;
+  range3: number;
+  range4: number;
+};
 export type NotificationRuleData =
   | NotificationRuleIndicator
   | NotificationRuleRange;

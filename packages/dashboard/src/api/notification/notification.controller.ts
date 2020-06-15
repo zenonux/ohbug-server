@@ -2,7 +2,6 @@ import {
   Controller,
   Post,
   Get,
-  Put,
   Patch,
   Delete,
   Body,
@@ -95,7 +94,7 @@ export class NotificationController {
    * @param interval
    * @param open
    */
-  @Put('rules/:rule_id')
+  @Patch('rules/:rule_id')
   @UseGuards(AuthGuard('jwt'))
   @UseInterceptors(ClassSerializerInterceptor)
   async updateNotificationRule(

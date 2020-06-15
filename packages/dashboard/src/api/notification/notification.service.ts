@@ -56,17 +56,23 @@ export class NotificationService {
       const project = await this.projectService.getProjectByProjectId(
         project_id,
       );
-      const notificationRule = this.notificationRuleRepository.create({
-        name,
-        data,
-        whiteList,
-        blackList,
-        level,
-        interval,
-        open,
-        project,
-      });
-      return await this.notificationRuleRepository.save(notificationRule);
+      const rules = await this.getNotificationRules({ project_id: project.id });
+      const MAX_RULES_NUMBER = 10;
+      if (!rules || rules.length < MAX_RULES_NUMBER) {
+        const notificationRule = this.notificationRuleRepository.create({
+          name,
+          data,
+          whiteList,
+          blackList,
+          level,
+          interval,
+          open,
+          project,
+        });
+        return await this.notificationRuleRepository.save(notificationRule);
+      } else {
+        throw new Error(`每个项目最多拥有 ${MAX_RULES_NUMBER} 条通知规则`);
+      }
     } catch (error) {
       throw new ForbiddenException(4001100, error);
     }
@@ -85,7 +91,12 @@ export class NotificationService {
         project_id,
       );
       const rules = await this.notificationRuleRepository.find({
-        project,
+        where: {
+          project,
+        },
+        order: {
+          id: 'ASC',
+        },
       });
       return rules;
     } catch (error) {
@@ -117,13 +128,13 @@ export class NotificationService {
   }: NotificationRuleDto & BaseNotificationRuleDto): Promise<NotificationRule> {
     try {
       const rule = await this.notificationRuleRepository.findOneOrFail(rule_id);
-      if (name) rule.name = name;
-      if (data) rule.data = data;
-      if (whiteList) rule.whiteList = whiteList;
-      if (blackList) rule.blackList = blackList;
-      if (level) rule.level = level;
-      if (interval) rule.interval = interval;
-      if (open) rule.open = open;
+      if (name !== undefined) rule.name = name;
+      if (data !== undefined) rule.data = data;
+      if (whiteList !== undefined) rule.whiteList = whiteList;
+      if (blackList !== undefined) rule.blackList = blackList;
+      if (level !== undefined) rule.level = level;
+      if (interval !== undefined) rule.interval = interval;
+      if (open !== undefined) rule.open = open;
       return await this.notificationRuleRepository.save(rule);
     } catch (error) {
       throw new ForbiddenException(4001102, error);

@@ -6,6 +6,7 @@ import {
   IsArray,
   ValidateIf,
   IsBoolean,
+  IsObject,
 } from 'class-validator';
 import type {
   NotificationRuleData,
@@ -23,32 +24,39 @@ export class BaseNotificationRuleDto {
 }
 
 export class NotificationRuleDto {
-  @IsString()
-  readonly name: string;
+  @IsString({ message: '通知名称错误' })
+  @IsOptional()
+  readonly name?: string;
 
-  @IsString()
-  readonly data: NotificationRuleData;
+  @IsObject({ message: '通知规则内容错误' })
+  @IsOptional()
+  readonly data?: NotificationRuleData;
 
-  @IsArray()
+  @IsArray({ message: '通知白名单格式错误' })
   @IsOptional()
   readonly whiteList?: NotificationRuleWhiteList;
 
-  @IsArray()
+  @IsArray({ message: '通知黑名单格式错误' })
   @IsOptional()
   readonly blackList?: NotificationRuleBlackList;
 
-  @ValidateIf((v) => ['serious', 'warning', 'default'].includes(v.level))
-  readonly level: NotificationRuleLevel;
+  @ValidateIf((v) => ['serious', 'warning', 'default'].includes(v.level), {
+    message: '通知级别错误',
+  })
+  @IsOptional()
+  readonly level?: NotificationRuleLevel;
 
-  @IsNumber()
-  readonly interval: number;
+  @IsNumber({}, { message: '通知静默期错误' })
+  @IsOptional()
+  readonly interval?: number;
 
-  @IsBoolean()
-  readonly open: boolean;
+  @IsBoolean({ message: '通知开关设置错误' })
+  @IsOptional()
+  readonly open?: boolean;
 }
 
 export class CreateNotificationRuleDto extends NotificationRuleDto {
-  @IsNumberString()
+  @IsNumberString({}, { message: '通知项目 id 格式错误' })
   readonly project_id: number | string;
 }
 
