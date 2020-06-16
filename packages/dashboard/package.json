@@ -32,6 +32,7 @@
     "source-map-trace": "^0.0.1",
     "stack-parser": "^0.0.1",
     "ua-device": "^0.1.10",
+    "uuid": "^8.1.0",
     "winston": "^3.2.1"
   },
   "devDependencies": {

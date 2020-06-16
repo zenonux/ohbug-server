@@ -30,11 +30,16 @@ interface NotificationSettingEmail {
 }
 export type NotificationSettingEmails = NotificationSettingEmail[];
 export type NotificationSettingBrowser = boolean;
-type NotificationSettingWebHookType = 'dingtalk' | 'wechat_work' | 'others';
-interface NotificationSettingWebHook {
+export type NotificationSettingWebHookType =
+  | 'dingtalk'
+  | 'wechat_work'
+  | 'others';
+export interface NotificationSettingWebHook {
+  id: string;
   type: NotificationSettingWebHookType;
   name: string;
   link: string;
-  at?: string[];
+  open: boolean;
+  at?: { value: string }[];
 }
 export type NotificationSettingWebHooks = NotificationSettingWebHook[];

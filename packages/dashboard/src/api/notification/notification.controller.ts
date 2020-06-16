@@ -21,8 +21,11 @@ import {
   GetNotificationRulesDto,
   BaseNotificationSettingDto,
   UpdateNotificationSettingDto,
+  NotificationSettingWebhookDto,
+  BaseNotificationSettingWebhookDto,
 } from './notification.dto';
 import { NotificationRule } from './notification.rule.entity';
+import { NotificationSetting } from './notification.setting.entity';
 
 @Controller('notification')
 export class NotificationController {
@@ -133,7 +136,7 @@ export class NotificationController {
   async deleteNotificationRule(
     @Param()
     { rule_id }: BaseNotificationRuleDto,
-  ): Promise<NotificationRule> {
+  ): Promise<boolean> {
     return await this.notificationService.deleteNotificationRule({
       rule_id,
     });
@@ -149,7 +152,7 @@ export class NotificationController {
   @UseInterceptors(ClassSerializerInterceptor)
   async getNotificationSetting(
     @Query() { project_id }: BaseNotificationSettingDto,
-  ) {
+  ): Promise<NotificationSetting> {
     return await this.notificationService.getNotificationSetting({
       project_id,
     });
@@ -169,12 +172,90 @@ export class NotificationController {
   async updateNotificationSetting(
     @Query() { project_id }: BaseNotificationSettingDto,
     @Body() { emails, browser, webhooks }: UpdateNotificationSettingDto,
-  ) {
+  ): Promise<NotificationSetting> {
     return await this.notificationService.updateNotificationSetting({
       project_id,
       emails,
       browser,
       webhooks,
+    });
+  }
+
+  /**
+   * 创建 notification setting webhooks
+   *
+   * @param project_id
+   * @param type
+   * @param name
+   * @param link
+   * @param open
+   * @param at
+   */
+  @Post('setting/webhooks')
+  @UseGuards(AuthGuard('jwt'))
+  @UseInterceptors(ClassSerializerInterceptor)
+  async createNotificationSettingWebhook(
+    @Query() { project_id }: BaseNotificationSettingDto,
+    @Body()
+    { type, name, link, open, at }: NotificationSettingWebhookDto,
+  ) {
+    return await this.notificationService.createNotificationSettingWebhook({
+      project_id,
+      type,
+      name,
+      link,
+      open,
+      at,
+    });
+  }
+
+  /**
+   * 更新 notification setting webhooks
+   *
+   * @param id
+   * @param project_id
+   * @param type
+   * @param name
+   * @param link
+   * @param open
+   * @param at
+   */
+  @Patch('setting/webhooks/:id')
+  @UseGuards(AuthGuard('jwt'))
+  @UseInterceptors(ClassSerializerInterceptor)
+  async updateNotificationSettingWebhook(
+    @Query() { project_id }: BaseNotificationSettingDto,
+    @Param() { id }: BaseNotificationSettingWebhookDto,
+    @Body()
+    { type, name, link, open, at }: NotificationSettingWebhookDto,
+  ) {
+    return await this.notificationService.updateNotificationSettingWebhook({
+      project_id,
+      id,
+      type,
+      name,
+      link,
+      open,
+      at,
+    });
+  }
+
+  /**
+   * 删除 notification setting webhooks
+   *
+   * @param project_id
+   * @param id
+   */
+  @Delete('setting/webhooks/:id')
+  @UseGuards(AuthGuard('jwt'))
+  @UseInterceptors(ClassSerializerInterceptor)
+  async deleteNotificationSettingWebhook(
+    @Query() { project_id }: BaseNotificationSettingDto,
+    @Param() { id }: BaseNotificationSettingWebhookDto,
+  ) {
+    return await this.notificationService.deleteNotificationSettingWebhook({
+      project_id,
+      id,
     });
   }
 }

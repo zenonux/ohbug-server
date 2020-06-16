@@ -1,6 +1,7 @@
 import { Injectable, Inject, forwardRef } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
+import { v4 as uuid } from 'uuid';
 
 import { ForbiddenException } from '@ohbug-server/common';
 import { ProjectService } from '@/api/project/project.service';
@@ -15,7 +16,14 @@ import {
   NotificationSettingDto,
   BaseNotificationSettingDto,
   UpdateNotificationSettingDto,
+  NotificationSettingWebhookDto,
+  BaseNotificationSettingWebhookDto,
 } from './notification.dto';
+import { NotificationSettingWebHook } from '@/api/notification/notification.interface';
+
+const MAX_RULES_NUMBER = 10;
+const MAX_EMAILS_NUMBER = 3;
+const MAX_WEBHOOKS_NUMBER = 10;
 
 @Injectable()
 export class NotificationService {
@@ -57,7 +65,6 @@ export class NotificationService {
         project_id,
       );
       const rules = await this.getNotificationRules({ project_id: project.id });
-      const MAX_RULES_NUMBER = 10;
       if (!rules || rules.length < MAX_RULES_NUMBER) {
         const notificationRule = this.notificationRuleRepository.create({
           name,
@@ -148,10 +155,10 @@ export class NotificationService {
    */
   async deleteNotificationRule({
     rule_id,
-  }: BaseNotificationRuleDto): Promise<NotificationRule> {
+  }: BaseNotificationRuleDto): Promise<boolean> {
     try {
       const rule = await this.notificationRuleRepository.findOneOrFail(rule_id);
-      return await this.notificationRuleRepository.remove(rule);
+      return Boolean(await this.notificationRuleRepository.remove(rule));
     } catch (error) {
       throw new ForbiddenException(4001103, error);
     }
@@ -186,7 +193,9 @@ export class NotificationService {
    *
    * @param project_id
    */
-  async getNotificationSetting({ project_id }: BaseNotificationSettingDto) {
+  async getNotificationSetting({
+    project_id,
+  }: BaseNotificationSettingDto): Promise<NotificationSetting> {
     try {
       const project = await this.projectService.getProjectByProjectId(
         project_id,
@@ -215,17 +224,146 @@ export class NotificationService {
     emails,
     browser,
     webhooks,
-  }: UpdateNotificationSettingDto & BaseNotificationSettingDto) {
+  }: UpdateNotificationSettingDto & BaseNotificationSettingDto): Promise<
+    NotificationSetting
+  > {
     try {
       const notificationSetting = await this.getNotificationSetting({
         project_id,
       });
-      if (emails) notificationSetting.emails = emails;
-      if (browser) notificationSetting.browser = browser;
-      if (webhooks) notificationSetting.webhooks = webhooks;
+      if (emails !== undefined) {
+        if (emails.length > MAX_EMAILS_NUMBER) {
+          throw new Error(`每个项目最多拥有 ${MAX_EMAILS_NUMBER} 个邮箱通知`);
+        }
+        notificationSetting.emails = emails;
+      }
+      if (browser !== undefined) notificationSetting.browser = browser;
+      if (webhooks !== undefined) notificationSetting.webhooks = webhooks;
       return await this.notificationSettingRepository.save(notificationSetting);
     } catch (error) {
       throw new ForbiddenException(4001112, error);
+    }
+  }
+
+  /**
+   * 创建 notification setting webhooks
+   *
+   * @param project_id
+   * @param type
+   * @param name
+   * @param link
+   * @param open
+   * @param at
+   */
+  async createNotificationSettingWebhook({
+    project_id,
+    type,
+    name,
+    link,
+    open,
+    at,
+  }: NotificationSettingWebhookDto & BaseNotificationSettingDto): Promise<
+    NotificationSettingWebHook
+  > {
+    try {
+      const notificationSetting = await this.getNotificationSetting({
+        project_id,
+      });
+      if (
+        !notificationSetting.webhooks ||
+        notificationSetting.webhooks.length < MAX_WEBHOOKS_NUMBER
+      ) {
+        const id = uuid();
+        const webhook: NotificationSettingWebHook = {
+          id,
+          type,
+          name,
+          link,
+          open,
+          at,
+        };
+        notificationSetting.webhooks = [
+          ...notificationSetting.webhooks,
+          webhook,
+        ];
+        await this.notificationSettingRepository.save(notificationSetting);
+        return webhook;
+      } else {
+        throw new Error(`每个项目最多拥有 ${MAX_WEBHOOKS_NUMBER} 条第三方通知`);
+      }
+    } catch (error) {
+      throw new ForbiddenException(4001113, error);
+    }
+  }
+
+  /**
+   * 更新 notification setting
+   *
+   * @param id
+   * @param project_id
+   * @param type
+   * @param name
+   * @param link
+   * @param open
+   * @param at
+   */
+  async updateNotificationSettingWebhook({
+    project_id,
+    id,
+    type,
+    name,
+    link,
+    open,
+    at,
+  }: NotificationSettingWebhookDto &
+    BaseNotificationSettingDto &
+    BaseNotificationSettingWebhookDto): Promise<NotificationSettingWebHook> {
+    try {
+      const notificationSetting = await this.getNotificationSetting({
+        project_id,
+      });
+      let result: NotificationSettingWebHook = null;
+      notificationSetting.webhooks.forEach((item) => {
+        if (item.id === id) {
+          if (type !== undefined) item.type = type;
+          if (name !== undefined) item.name = name;
+          if (link !== undefined) item.link = link;
+          if (open !== undefined) item.open = open;
+          if (at !== undefined) item.at = at;
+          result = item;
+        }
+      });
+      await this.notificationSettingRepository.save(notificationSetting);
+      return result;
+    } catch (error) {
+      throw new ForbiddenException(4001114, error);
+    }
+  }
+
+  /**
+   * 删除 notification setting
+   *
+   * @param project_id
+   * @param id
+   */
+  async deleteNotificationSettingWebhook({
+    project_id,
+    id,
+  }: BaseNotificationSettingDto & BaseNotificationSettingWebhookDto): Promise<
+    boolean
+  > {
+    try {
+      const notificationSetting = await this.getNotificationSetting({
+        project_id,
+      });
+      notificationSetting.webhooks = notificationSetting.webhooks.filter(
+        (item) => item.id !== id,
+      );
+      return Boolean(
+        await this.notificationSettingRepository.save(notificationSetting),
+      );
+    } catch (error) {
+      throw new ForbiddenException(4001115, error);
     }
   }
 }

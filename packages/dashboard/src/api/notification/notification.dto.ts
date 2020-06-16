@@ -7,6 +7,7 @@ import {
   ValidateIf,
   IsBoolean,
   IsObject,
+  IsUUID,
 } from 'class-validator';
 import type {
   NotificationRuleData,
@@ -16,6 +17,7 @@ import type {
   NotificationSettingEmails,
   NotificationSettingBrowser,
   NotificationSettingWebHooks,
+  NotificationSettingWebHookType,
 } from './notification.interface';
 
 export class BaseNotificationRuleDto {
@@ -88,4 +90,31 @@ export class UpdateNotificationSettingDto {
   @IsArray()
   @IsOptional()
   readonly webhooks?: NotificationSettingWebHooks;
+}
+
+export class NotificationSettingWebhookDto {
+  @IsString({ message: '第三方通知类型错误' })
+  @IsOptional()
+  type?: NotificationSettingWebHookType;
+
+  @IsString({ message: '第三方通知名称错误' })
+  @IsOptional()
+  name?: string;
+
+  @IsString({ message: '第三方通知链接错误' })
+  @IsOptional()
+  link?: string;
+
+  @IsBoolean({ message: '第三方通知开启类型错误' })
+  @IsOptional()
+  open?: boolean;
+
+  @IsArray({ message: '第三方通知负责人格式错误' })
+  @IsOptional()
+  at?: { value: string }[];
+}
+
+export class BaseNotificationSettingWebhookDto {
+  @IsUUID()
+  readonly id: string;
 }

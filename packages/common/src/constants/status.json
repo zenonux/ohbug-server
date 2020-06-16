@@ -69,5 +69,8 @@
   "4001103": "删除 notification rule 失败",
   "4001110": "创建 notification setting object 失败",
   "4001111": "查询 notification setting 失败",
-  "4001112": "更新 notification setting 失败"
+  "4001112": "更新 notification setting 失败",
+  "4001113": "创建 notification setting webhook 失败",
+  "4001114": "更新 notification setting webhook 失败",
+  "4001115": "删除 notification setting webhook 失败"
 }
