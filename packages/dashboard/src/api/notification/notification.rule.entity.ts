@@ -9,13 +9,13 @@ import {
 } from 'typeorm';
 import { Exclude } from 'class-transformer';
 
-import { Project } from '@/api/project/project.entity';
 import type {
   NotificationRuleData,
   NotificationRuleWhiteList,
   NotificationRuleBlackList,
   NotificationRuleLevel,
-} from './notification.interface';
+} from '@ohbug-server/common';
+import { Project } from '@/api/project/project.entity';
 
 @Entity()
 export class NotificationRule {
@@ -92,7 +92,7 @@ export class NotificationRule {
    * @type {Date}
    * @memberof NotificationRule
    */
-  @Column({ type: 'date', nullable: true })
+  @Column({ type: 'timestamp', nullable: true })
   recently?: Date;
 
   /**

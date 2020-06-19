@@ -8,6 +8,10 @@ import type {
 } from '@ohbug-server/common';
 
 import { IssueService } from '@/core/issue/issue.service';
+import {
+  getNotificationByApiKey,
+  judgingStatus,
+} from '@/core/issue/notification.core';
 
 import { EventService } from './event.service';
 import type { OhbugDocument } from './event.interface';
@@ -25,6 +29,8 @@ export class EventProcessor {
    * 2. 创建 issue (postgres)
    * 3. 创建 event (elastic)
    * 4. 更新 issue 的 events (postgres)
+   * 5. 根据 apiKey 拿到对应的 notification 配置
+   * 6. 判断当前状态十分符合 notification 配置的要求，符合则通知 notifier 开始任务
    *
    * @param job
    */
@@ -37,7 +43,7 @@ export class EventProcessor {
         const { intro, metadata } = this.eventService.aggregation(eventLike);
 
         // 2. 创建 issue (postgres)
-        const issue = await this.issueService.CreateOrUpdateIssueByIntro({
+        const baseIssue = await this.issueService.CreateOrUpdateIssueByIntro({
           event: eventLike,
           intro,
           metadata,
@@ -49,7 +55,7 @@ export class EventProcessor {
         );
         const value: OhbugEventLikeWithIssueId = {
           event: eventLike,
-          issue_id: issue.id,
+          issue_id: baseIssue.id,
         };
         const [
           { topicName, partition, baseOffset },
@@ -60,11 +66,22 @@ export class EventProcessor {
           document_id,
           index,
         };
-        return await this.issueService.CreateOrUpdateIssueByIntro({
+        const issue = await this.issueService.CreateOrUpdateIssueByIntro({
           event: eventLike,
-          baseIssue: issue,
+          baseIssue,
           ...document,
         });
+
+        // 5. 根据 apiKey 拿到对应的 notification 配置
+        const notification = await getNotificationByApiKey(issue.apiKey);
+        // 6. 判断当前状态十分符合 notification 配置的要求，符合则通知 notifier 开始任务
+        judgingStatus(
+          eventLike,
+          issue,
+          notification.notificationRules,
+          // tslint:disable-next-line:no-console
+          console.log,
+        );
       }
     } catch (error) {
       throw new ForbiddenException(4001004, error);

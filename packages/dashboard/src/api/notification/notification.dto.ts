@@ -18,7 +18,7 @@ import type {
   NotificationSettingBrowser,
   NotificationSettingWebHooks,
   NotificationSettingWebHookType,
-} from './notification.interface';
+} from '@ohbug-server/common';
 
 export class BaseNotificationRuleDto {
   @IsNumberString()

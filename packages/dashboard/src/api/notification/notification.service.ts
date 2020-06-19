@@ -4,6 +4,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { v4 as uuid } from 'uuid';
 
 import { ForbiddenException } from '@ohbug-server/common';
+import type { NotificationSettingWebHook } from '@ohbug-server/common';
 import { ProjectService } from '@/api/project/project.service';
 
 import { NotificationRule } from './notification.rule.entity';
@@ -19,7 +20,6 @@ import {
   NotificationSettingWebhookDto,
   BaseNotificationSettingWebhookDto,
 } from './notification.dto';
-import { NotificationSettingWebHook } from '@/api/notification/notification.interface';
 
 const MAX_RULES_NUMBER = 10;
 const MAX_EMAILS_NUMBER = 3;

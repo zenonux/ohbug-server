@@ -13,7 +13,7 @@ export interface OhbugEventLike {
   category?: OhbugCategory;
   type: string;
   tags: OhbugTags;
-  detail: string;
+  detail: any;
   state?: string;
   actions?: string;
   user: OhbugEventUser;

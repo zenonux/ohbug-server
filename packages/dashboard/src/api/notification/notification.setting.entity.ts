@@ -9,12 +9,12 @@ import {
 } from 'typeorm';
 import { Exclude } from 'class-transformer';
 
-import { Project } from '@/api/project/project.entity';
 import type {
   NotificationSettingEmails,
   NotificationSettingBrowser,
   NotificationSettingWebHooks,
-} from './notification.interface';
+} from '@ohbug-server/common';
+import { Project } from '@/api/project/project.entity';
 
 @Entity()
 export class NotificationSetting {
