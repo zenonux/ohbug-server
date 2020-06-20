@@ -27,4 +27,11 @@ export const databaseConfig = registerAs('database', () => ({
     host: process.env.REDIS_HOST,
     port: parseInt(process.env.REDIS_PORT, 10),
   },
+  influx: {
+    host: process.env.INFLUXDB_HOST,
+    port: parseInt(process.env.INFLUXDB_PORT, 10),
+    database: process.env.INFLUXDB_DATABASE,
+    username: process.env.INFLUXDB_USERNAME,
+    password: process.env.INFLUXDB_PASSWORD,
+  },
 }));

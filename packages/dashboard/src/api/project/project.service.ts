@@ -31,7 +31,7 @@ export class ProjectService {
     private readonly notificationService: NotificationService,
   ) {}
 
-  @Inject('MICROSERVICE_CLIENT')
+  @Inject('MICROSERVICE_MANAGER_CLIENT')
   private readonly managerClient: ClientProxy;
 
   private static createApiKey({

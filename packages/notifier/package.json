@@ -1,0 +1,31 @@
+{
+  "name": "@ohbug-server/notifier",
+  "version": "0.0.0",
+  "description": "ohbug server notifier",
+  "author": "chenyueban",
+  "files": [
+    "dist"
+  ],
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "prebuild": "rimraf dist",
+    "build": "cross-env NODE_ENV=production nest build",
+    "start": "cross-env NODE_ENV=development nest start --watch",
+    "start:debug": "cross-env NODE_ENV=development nest start --debug --watch",
+    "start:prod": "cross-env NODE_ENV=production node dist/main",
+    "prettier": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
+    "lint": "tslint -p tsconfig.json -c tslint.json",
+    "test": "jest",
+    "test:watch": "jest --watch"
+  },
+  "dependencies": {
+    "@ohbug-server/common": "^0.0.0",
+    "markdown-it": "^11.0.0",
+    "nodemailer": "^6.4.10"
+  },
+  "devDependencies": {
+    "@types/markdown-it": "^10.0.1",
+    "@types/nodemailer": "^6.4.0"
+  }
+}

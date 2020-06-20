@@ -2,7 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import { Transport } from '@nestjs/microservices';
 import type { MicroserviceOptions } from '@nestjs/microservices';
 
-import { MICROSERVICE_MANAGER_PORT } from '@ohbug-server/common';
+import { MICROSERVICE_NOTIFIER_PORT } from '@ohbug-server/common';
 
 import { AppModule } from './app.module';
 
@@ -12,12 +12,12 @@ async function bootstrap() {
     {
       transport: Transport.TCP,
       options: {
-        port: MICROSERVICE_MANAGER_PORT,
+        port: MICROSERVICE_NOTIFIER_PORT,
       },
     },
   );
 
   // tslint:disable-next-line:no-console
-  app.listen(() => console.log(`Manager is running`));
+  app.listen(() => console.log(`Notifier is running`));
 }
 bootstrap();

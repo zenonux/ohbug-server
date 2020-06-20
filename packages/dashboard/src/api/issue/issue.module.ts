@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 
-import { MicroserviceClientModule } from '@ohbug-server/common';
+import { MicroserviceManagerClientModule } from '@ohbug-server/common';
 
 import { ProjectModule } from '@/api/project/project.module';
 
@@ -8,7 +8,7 @@ import { IssueController } from './issue.controller';
 import { IssueService } from './issue.service';
 
 @Module({
-  imports: [MicroserviceClientModule, ProjectModule],
+  imports: [MicroserviceManagerClientModule, ProjectModule],
   controllers: [IssueController],
   providers: [IssueService],
   exports: [IssueService],

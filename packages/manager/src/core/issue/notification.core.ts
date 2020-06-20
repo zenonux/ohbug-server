@@ -32,7 +32,7 @@ export async function getNotificationByApiKey(apiKey: string) {
   `,
     [apiKey],
   );
-  const notificationSetting = await manager.query(
+  const [notificationSetting] = await manager.query(
     `
     SELECT
       "setting"."id",
@@ -151,7 +151,7 @@ function judgingInterval(rule: NotificationRule) {
     // 判断当前时间是否大于静默期
     const now = dayjs();
     const last = dayjs(rule.recently);
-    if (now.isAfter(last.add(rule.interval, 'ms'))) return true;
+    if (now.isBefore(last.add(rule.interval, 'ms'))) return true;
   }
   return false;
 }
@@ -174,7 +174,7 @@ export function judgingStatus(
       if (!judgingInterval(rule)) {
         if (judgingRangeData(event, issue, rule)) {
           const result = {
-            name: rule.name,
+            rule,
             event,
             issue,
           };

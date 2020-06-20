@@ -138,6 +138,17 @@ services:
       - ./temp/redis/redis.conf:/etc/redis/redis.conf
     command: redis-server /etc/redis/redis.conf
 
+  influxdb:
+    image: influxdb:1.8
+    ports:
+      - "8086:8086"
+    environment:
+      INFLUXDB_ADMIN_USER: influx
+      INFLUXDB_ADMIN_PASSWORD: ohbug_influx_password
+    volumes:
+      - influx:/var/lib/influxdb
+
 volumes:
   pgdata:
   elasticsearch:
+  influx:

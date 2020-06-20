@@ -12,7 +12,7 @@ import { formatter } from '@/utils';
 
 @Injectable()
 export class ReportService {
-  @Inject('MICROSERVICE_CLIENT')
+  @Inject('MICROSERVICE_MANAGER_CLIENT')
   private readonly managerClient: ClientProxy;
 
   /**
