@@ -7,6 +7,7 @@ import { DispatchNotice } from '@/core/notice/notice.interface';
 interface Content {
   title: string;
   text: string;
+  link: string;
   markdown?: string;
   html?: string;
 }
@@ -115,6 +116,7 @@ export function getNotificationContent({
   return {
     title,
     text,
+    link,
     markdown,
     html,
   };

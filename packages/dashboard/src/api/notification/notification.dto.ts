@@ -83,7 +83,7 @@ export class UpdateNotificationSettingDto {
   @IsOptional()
   readonly emails?: NotificationSettingEmails;
 
-  @IsBoolean()
+  @IsObject()
   @IsOptional()
   readonly browser?: NotificationSettingBrowser;
 

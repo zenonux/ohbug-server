@@ -36,7 +36,7 @@ export class NotificationSetting {
    * @type {NotificationSettingBrowser}
    * @memberof NotificationSetting
    */
-  @Column({ type: 'bool', default: false })
+  @Column({ type: 'jsonb', default: { open: false, data: null } })
   browser: NotificationSettingBrowser;
 
   /**

@@ -79,7 +79,10 @@ export class ProjectService {
       const notificationSetting = this.notificationService.createNotificationSetting(
         {
           emails: admin.email ? [{ email: admin.email, open: true }] : [],
-          browser: false,
+          browser: {
+            open: false,
+            data: null,
+          },
           webhooks: [],
         },
       );

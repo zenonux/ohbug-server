@@ -22,10 +22,12 @@
   "dependencies": {
     "@ohbug-server/common": "^0.0.0",
     "markdown-it": "^11.0.0",
-    "nodemailer": "^6.4.10"
+    "nodemailer": "^6.4.10",
+    "web-push": "^3.4.4"
   },
   "devDependencies": {
     "@types/markdown-it": "^10.0.1",
-    "@types/nodemailer": "^6.4.0"
+    "@types/nodemailer": "^6.4.0",
+    "@types/web-push": "^3.3.0"
   }
 }
