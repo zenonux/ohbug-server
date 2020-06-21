@@ -1,4 +1,9 @@
-import { IsString, IsNumberString, IsOptional } from 'class-validator';
+import {
+  IsString,
+  IsNumber,
+  IsNumberString,
+  IsOptional,
+} from 'class-validator';
 
 export class BaseOrganizationDto {
   @IsNumberString()
@@ -17,8 +22,8 @@ export class CreateOrganizationDto {
   @IsOptional()
   readonly introduction?: string;
 
-  @IsNumberString()
-  readonly admin_id: number | string;
+  @IsNumber()
+  readonly admin_id: number;
 }
 
 export class UpdateOrganizationDto {
