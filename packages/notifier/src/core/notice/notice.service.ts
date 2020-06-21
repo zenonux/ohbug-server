@@ -16,7 +16,7 @@ export class NoticeService {
   ) {}
 
   async dispatchNotice({ setting, rule, issue, event }: DispatchNotice) {
-    const { title, text, link, markdown, html } = getNotificationContent({
+    const { title, text, link, lite, markdown, html } = getNotificationContent({
       setting,
       rule,
       issue,
@@ -58,7 +58,7 @@ export class NoticeService {
         await sendBrowserNotification({
           subscription,
           title,
-          body: text,
+          body: lite,
           link,
         });
       }

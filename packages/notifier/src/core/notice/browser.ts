@@ -23,9 +23,6 @@ async function main({
       icon,
       link,
     }),
-    {
-      proxy: 'http://localhost:1086',
-    },
   );
 }
 

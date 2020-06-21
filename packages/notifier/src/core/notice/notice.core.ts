@@ -8,6 +8,7 @@ interface Content {
   title: string;
   text: string;
   link: string;
+  lite: string;
   markdown?: string;
   html?: string;
 }
@@ -113,10 +114,14 @@ export function getNotificationContent({
   [查看详情](${link})
   `;
   const html = md.render(markdown);
+  const lite = `总事件数：${statistics.eventsCount} 总用户数：${
+    statistics.usersCount
+  } 时间：${dayjs(statistics.time).format(`YYYY-MM-DD HH:mm:ss`)}`;
   return {
     title,
     text,
     link,
+    lite,
     markdown,
     html,
   };
