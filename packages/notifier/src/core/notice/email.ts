@@ -1,20 +1,18 @@
 import nodemailer from 'nodemailer';
 
 interface SendMail {
+  auth: any;
   to: string;
   title: string;
   text: string;
   html: string;
 }
-async function main({ to, title, text, html }: SendMail) {
+async function main({ auth, to, title, text, html }: SendMail) {
   const transporter = nodemailer.createTransport({
     host: 'smtp.exmail.qq.com',
     port: 465,
     secure: true,
-    auth: {
-      user: 'notice@ohbug.net',
-      pass: '3oKXfbW9wTbYNvf6',
-    },
+    auth,
   });
 
   const info = {

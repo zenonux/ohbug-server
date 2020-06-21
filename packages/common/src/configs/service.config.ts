@@ -27,4 +27,8 @@ export const serviceConfig = registerAs('service', () => ({
       RoleSessionName: process.env.OSS_PARAMS_SESSION_NAME,
     },
   },
+  email: {
+    user: process.env.EMAIL_NOTICE_USER,
+    pass: process.env.EMAIL_NOTICE_PASS,
+  },
 }));
