@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
+import { uniq } from 'ramda';
 
 import { ForbiddenException } from '@ohbug-server/common';
 import { Project } from '@/api/project/project.entity';
@@ -12,6 +13,7 @@ import {
   CreateOrganizationDto,
   UpdateOrganizationDto,
 } from './organization.dto';
+import { User } from '@/api/user/user.entity';
 
 @Injectable()
 export class OrganizationService {
@@ -159,6 +161,22 @@ export class OrganizationService {
       return organization.projects;
     } catch (error) {
       throw new ForbiddenException(400104, error);
+    }
+  }
+
+  /**
+   * 给团队添加用户
+   *
+   * @param organization
+   * @param user
+   */
+  async addUser(organization: Organization, user: User) {
+    try {
+      const result = organization;
+      result.users = uniq([...result.users, user]);
+      return await this.organizationRepository.save(result);
+    } catch (error) {
+      throw new ForbiddenException(400106, error);
     }
   }
 }

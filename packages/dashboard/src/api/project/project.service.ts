@@ -3,6 +3,7 @@ import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ClientProxy } from '@nestjs/microservices';
 import * as crypto from 'crypto';
+import { uniq } from 'ramda';
 
 import { UserService } from '@/api/user/user.service';
 import { OrganizationService } from '@/api/organization/organization.service';
@@ -19,6 +20,7 @@ import {
   GetTrendByProjectIdDto,
   UpdateProjectDto,
 } from './project.dto';
+import { User } from '@/api/user/user.entity';
 
 @Injectable()
 export class ProjectService {
@@ -164,6 +166,19 @@ export class ProjectService {
   }
 
   /**
+   * 根据 ids 获取库里的指定 projects
+   *
+   * @param ids project_ids
+   */
+  async getProjectsByProjectIds(ids: (number | string)[]): Promise<Project[]> {
+    try {
+      return await this.projectRepository.findByIds(ids);
+    } catch (error) {
+      throw new ForbiddenException(400206, error);
+    }
+  }
+
+  /**
    * 根据 apiKey 获取库里的指定 project
    *
    * @param apiKey apiKey
@@ -186,12 +201,16 @@ export class ProjectService {
   async getAllProjectsByOrganizationId(
     id: number | string,
   ): Promise<Project[]> {
-    return await this.projectRepository.find({
-      where: {
-        organization: id,
-      },
-      relations: ['users'],
-    });
+    try {
+      return await this.projectRepository.find({
+        where: {
+          organization: id,
+        },
+        relations: ['users', 'admin'],
+      });
+    } catch (error) {
+      throw new ForbiddenException(400207, error);
+    }
   }
 
   /**
@@ -215,5 +234,21 @@ export class ProjectService {
         end,
       })
       .toPromise();
+  }
+
+  /**
+   * 给项目添加用户
+   *
+   * @param project
+   * @param user
+   */
+  async addUser(project: Project, user: User) {
+    try {
+      const result = project;
+      result.users = uniq([...result.users, user]);
+      return await this.projectRepository.save(result);
+    } catch (error) {
+      throw new ForbiddenException(400208, error);
+    }
   }
 }

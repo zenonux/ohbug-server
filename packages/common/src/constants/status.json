@@ -18,6 +18,7 @@
   "400103": "查询 organization 失败",
   "400104": "查询 organization 所对应的 projects 失败",
   "400105": "更新 organization 基本信息失败",
+  "400106": "organization 添加用户失败",
 
   "400200": "生成 apiKey 失败",
   "400201": "生成 project object 失败",
@@ -25,6 +26,9 @@
   "400203": "根据 project_id 查询 project 失败",
   "400204": "根据 apiKey 查询 project 失败",
   "400205": "更新 project 失败",
+  "400206": "根据 project_ids 查询 projects 失败",
+  "400207": "根据 id 获取库里的指定 Organization 所对应的 projects 失败",
+  "400208": "project 添加用户 失败",
 
   "400300": "创建 event 失败",
   "400301": "搜索 events 失败",
@@ -72,5 +76,9 @@
   "4001112": "更新 notification setting 失败",
   "4001113": "创建 notification setting webhook 失败",
   "4001114": "更新 notification setting webhook 失败",
-  "4001115": "删除 notification setting webhook 失败"
+  "4001115": "删除 notification setting webhook 失败",
+
+  "4001200": "创建 invite 失败",
+  "4001201": "获取 invite 信息失败",
+  "4001202": "根据 invite 为 团队/项目 绑定用户失败"
 }
