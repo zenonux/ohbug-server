@@ -118,11 +118,33 @@ export class UserService {
       const user = await this.userRepository.findOneOrFail(id, {
         relations: [
           'organizations',
+          'organizations.admin',
           'organizations.users',
           'organizations.projects',
         ],
       });
       return user;
+    } catch (error) {
+      throw new ForbiddenException(400001, error);
+    }
+  }
+
+  /**
+   * 根据 id 获取库里的指定用户
+   *
+   * @param ids
+   */
+  async getUserByIds(ids: (number | string)[]): Promise<User[]> {
+    try {
+      const users = await this.userRepository.findByIds(ids, {
+        relations: [
+          'organizations',
+          'organizations.admin',
+          'organizations.users',
+          'organizations.projects',
+        ],
+      });
+      return users;
     } catch (error) {
       throw new ForbiddenException(400001, error);
     }
@@ -147,6 +169,7 @@ export class UserService {
   /**
    * 根据 oauth_id 获取库里的指定用户
    *
+   * @param type
    * @param oauth_id 用户 oauth_id
    */
   async getUserByOauthId(type: OAuthType, oauth_id: number): Promise<User> {

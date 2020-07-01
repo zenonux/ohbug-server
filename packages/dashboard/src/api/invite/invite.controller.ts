@@ -10,7 +10,12 @@ import {
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 
-import { CreateInviteUrlDto, GetInviteDto, BindUserDto } from './invite.dto';
+import {
+  CreateInviteUrlDto,
+  GetInviteDto,
+  BindUserDto,
+  BindProjectDto,
+} from './invite.dto';
 import { InviteService } from './invite.service';
 
 @Controller('invite')
@@ -60,5 +65,18 @@ export class InviteController {
   @UseInterceptors(ClassSerializerInterceptor)
   async bindUser(@Body() { user_id, uuid }: BindUserDto) {
     return await this.inviteService.bindUser({ user_id, uuid });
+  }
+
+  /**
+   * 绑定用户与项目
+   *
+   * @param users
+   * @param project_id
+   */
+  @Post('bindProject')
+  @UseGuards(AuthGuard('jwt'))
+  @UseInterceptors(ClassSerializerInterceptor)
+  async bindProject(@Body() { users, project_id }: BindProjectDto) {
+    return await this.inviteService.bindProject({ users, project_id });
   }
 }

@@ -159,7 +159,9 @@ export class ProjectService {
    */
   async getProjectByProjectId(id: number | string): Promise<Project> {
     try {
-      return await this.projectRepository.findOneOrFail(id);
+      return await this.projectRepository.findOneOrFail(id, {
+        relations: ['users'],
+      });
     } catch (error) {
       throw new ForbiddenException(400203, error);
     }
@@ -240,12 +242,12 @@ export class ProjectService {
    * 给项目添加用户
    *
    * @param project
-   * @param user
+   * @param users
    */
-  async addUser(project: Project, user: User) {
+  async addUser(project: Project, users: User[]) {
     try {
       const result = project;
-      result.users = uniq([...result.users, user]);
+      result.users = uniq([...result.users, ...users]);
       return await this.projectRepository.save(result);
     } catch (error) {
       throw new ForbiddenException(400208, error);

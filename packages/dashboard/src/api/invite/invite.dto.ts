@@ -29,3 +29,11 @@ export class BindUserDto {
   @IsString()
   readonly uuid: string;
 }
+
+export class BindProjectDto {
+  @IsArray()
+  users: number[];
+
+  @IsNumber()
+  project_id: number;
+}

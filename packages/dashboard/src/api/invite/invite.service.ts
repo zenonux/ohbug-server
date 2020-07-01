@@ -10,7 +10,12 @@ import { OrganizationService } from '@/api/organization/organization.service';
 import { UserService } from '@/api/user/user.service';
 
 import { Invite } from './invite.entity';
-import { BindUserDto, CreateInviteUrlDto, GetInviteDto } from './invite.dto';
+import {
+  BindProjectDto,
+  BindUserDto,
+  CreateInviteUrlDto,
+  GetInviteDto,
+} from './invite.dto';
 
 const host = `http://localhost:8888`;
 const expire = 14;
@@ -101,13 +106,31 @@ export class InviteService {
     try {
       const { projects, organization } = await this.getInviteByUUID({ uuid });
       const user = await this.userService.getUserById(user_id);
-      await this.organizationService.addUser(organization, user);
+      await this.organizationService.addUser(organization, [user]);
       for (const project of projects) {
-        await this.projectService.addUser(project, user);
+        await this.projectService.addUser(project, [user]);
       }
       return user;
     } catch (error) {
       throw new ForbiddenException(4001202, error);
+    }
+  }
+
+  /**
+   * 绑定用户与项目
+   *
+   * @param users
+   * @param project_id
+   */
+  async bindProject({ users, project_id }: BindProjectDto) {
+    try {
+      const user = await this.userService.getUserByIds(users);
+      const project = await this.projectService.getProjectByProjectId(
+        project_id,
+      );
+      return await this.projectService.addUser(project, user);
+    } catch (error) {
+      throw new ForbiddenException(4001203, error);
     }
   }
 }

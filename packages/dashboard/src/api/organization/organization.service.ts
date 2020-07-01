@@ -168,12 +168,12 @@ export class OrganizationService {
    * 给团队添加用户
    *
    * @param organization
-   * @param user
+   * @param users
    */
-  async addUser(organization: Organization, user: User) {
+  async addUser(organization: Organization, users: User[]) {
     try {
       const result = organization;
-      result.users = uniq([...result.users, user]);
+      result.users = uniq([...result.users, ...users]);
       return await this.organizationRepository.save(result);
     } catch (error) {
       throw new ForbiddenException(400106, error);

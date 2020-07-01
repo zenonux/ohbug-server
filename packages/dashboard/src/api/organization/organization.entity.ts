@@ -80,7 +80,6 @@ export class Organization {
    * @type {User}
    * @memberof Organization
    */
-  @Exclude()
   @ManyToOne((_) => User)
   @JoinColumn()
   admin: User;
