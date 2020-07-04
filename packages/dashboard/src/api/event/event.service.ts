@@ -9,10 +9,9 @@ export class EventService {
   private readonly managerClient: ClientProxy;
 
   // TODO
-  async getEventByEventId(event_id: string, project_id: number | string) {
+  async getEventByEventId(event_id: string) {
     return {
       event_id,
-      project_id,
     } as any;
   }
 

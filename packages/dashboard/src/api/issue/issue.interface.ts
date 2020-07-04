@@ -1,7 +1,6 @@
 import type { FindOperator } from 'typeorm';
 
 export interface GetIssueByIssueIdParams {
-  project_id: number | string;
   issue_id: number | string;
 }
 

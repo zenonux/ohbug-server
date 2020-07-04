@@ -11,7 +11,6 @@ import { AuthGuard } from '@nestjs/passport';
 
 import { IssueService } from './issue.service';
 import {
-  GetDto,
   GetIssueByIssueIdDto,
   GetIssueDto,
   GetTrendByIssueIdDto,
@@ -34,11 +33,8 @@ export class IssueController {
   async get(
     @Param()
     { issue_id }: GetIssueByIssueIdDto,
-    @Query()
-    { project_id }: GetDto,
   ) {
     return await this.issueService.getIssueByIssueId({
-      project_id,
       issue_id,
     });
   }

@@ -33,10 +33,6 @@ export class GetTrendByIssueIdDto {
   readonly period: Period;
 }
 
-export class GetDto {
-  @IsNumberString()
-  readonly project_id: number | string;
-}
 export class GetIssueByIssueIdDto {
   @IsNumberString()
   readonly issue_id: number | string;

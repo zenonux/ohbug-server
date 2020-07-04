@@ -6,9 +6,6 @@ export class GetEventByEventIdDto {
 }
 
 export class GetEventsDto {
-  @IsNumberString()
-  readonly project_id: number | string;
-
   @IsOptional()
   @IsNumberString()
   readonly issue_id?: number | string;

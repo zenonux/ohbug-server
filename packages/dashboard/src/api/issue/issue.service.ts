@@ -29,15 +29,12 @@ export class IssueService {
    * @param issue_id
    */
   @Get('/:issue_id')
-  async getIssueByIssueId({ project_id, issue_id }: GetIssueByIssueIdParams) {
-    const project = await this.projectService.getProjectByProjectId(project_id);
-    if (project) {
-      return await this.managerClient
-        .send(TOPIC_DASHBOARD_MANAGER_GET_ISSUE, {
-          issue_id,
-        })
-        .toPromise();
-    }
+  async getIssueByIssueId({ issue_id }: GetIssueByIssueIdParams) {
+    return await this.managerClient
+      .send(TOPIC_DASHBOARD_MANAGER_GET_ISSUE, {
+        issue_id,
+      })
+      .toPromise();
   }
 
   /**

@@ -32,11 +32,11 @@ export class EventController {
     @Param()
     { event_id }: GetEventByEventIdDto,
     @Query()
-    { project_id, issue_id }: GetEventsDto,
+    { issue_id }: GetEventsDto,
   ): Promise<OhbugEventLike> {
     if (event_id === 'latest' && issue_id) {
       return await this.eventService.getLatestEventByIssueId(issue_id);
     }
-    return await this.eventService.getEventByEventId(event_id, project_id);
+    return await this.eventService.getEventByEventId(event_id);
   }
 }
