@@ -5,15 +5,7 @@ import { ClientKafka } from '@nestjs/microservices';
 import { OhbugEvent } from '@ohbug/types';
 import dayjs from 'dayjs';
 
-import {
-  ForbiddenException,
-  KafkaEmitCallback,
-  TOPIC_MANAGER_LOGSTASH_EVENT_ERROR,
-  TOPIC_MANAGER_LOGSTASH_EVENT_FEEDBACK,
-  TOPIC_MANAGER_LOGSTASH_EVENT_MESSAGE,
-  TOPIC_MANAGER_LOGSTASH_EVENT_VIEW,
-  TOPIC_MANAGER_LOGSTASH_PERFORMANCE,
-} from '@ohbug-server/common';
+import { ForbiddenException, KafkaEmitCallback } from '@ohbug-server/common';
 import type {
   OhbugEventLike,
   OhbugEventLikeWithIssueId,
@@ -23,11 +15,16 @@ import type { OhbugEventDetail } from './event.interface';
 import {
   getMd5FromAggregationData,
   switchErrorDetailAndGetAggregationDataAndMetaData,
+  eventIndices,
 } from './event.core';
+import { ElasticsearchService } from '@nestjs/elasticsearch';
 
 @Injectable()
 export class EventService {
-  constructor(@InjectQueue('document') private documentQueue: Queue) {}
+  constructor(
+    @InjectQueue('document') private documentQueue: Queue,
+    private readonly elasticsearchService: ElasticsearchService,
+  ) {}
 
   @Inject('KAFKA_MANAGER_LOGSTASH_CLIENT')
   private readonly logstashClient: ClientKafka;
@@ -59,36 +56,7 @@ export class EventService {
   }
 
   getIndexOrKeyByEvent(event: OhbugEvent<any> | OhbugEventLike) {
-    const keyMap = [
-      // event
-      {
-        category: 'error',
-        key: TOPIC_MANAGER_LOGSTASH_EVENT_ERROR,
-        index: 'ohbug-event-error',
-      },
-      {
-        category: 'message',
-        key: TOPIC_MANAGER_LOGSTASH_EVENT_MESSAGE,
-        index: 'ohbug-event-message',
-      },
-      {
-        category: 'feedback',
-        key: TOPIC_MANAGER_LOGSTASH_EVENT_FEEDBACK,
-        index: 'ohbug-event-feedback',
-      },
-      {
-        category: 'view',
-        key: TOPIC_MANAGER_LOGSTASH_EVENT_VIEW,
-        index: 'ohbug-event-view',
-      },
-      // performance
-      {
-        category: 'performance',
-        key: TOPIC_MANAGER_LOGSTASH_PERFORMANCE,
-        index: 'ohbug-performance',
-      },
-    ];
-    const { category, key, index } = keyMap.find(
+    const { category, key, index } = eventIndices.find(
       (item) => item.category === event?.category,
     );
     return {
@@ -130,5 +98,31 @@ export class EventService {
     await this.documentQueue.add('event', eventLike, {
       delay: 3000,
     });
+  }
+
+  /**
+   * 删除 index
+   *
+   * @param interval
+   * @param index
+   */
+  async deleteEvents(interval: string, index: string | string[]) {
+    try {
+      return await this.elasticsearchService.delete_by_query({
+        index,
+        body: {
+          query: {
+            range: {
+              '@timestamp': {
+                lt: `now-${interval}d`,
+                format: 'epoch_millis',
+              },
+            },
+          },
+        },
+      });
+    } catch (error) {
+      throw new ForbiddenException(4001005, error);
+    }
   }
 }

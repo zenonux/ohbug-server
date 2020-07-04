@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import type { FindConditions } from 'typeorm';
 import { ElasticsearchService } from '@nestjs/elasticsearch';
 import dayjs from 'dayjs';
 import { uniq } from 'ramda';
@@ -15,12 +16,12 @@ import type {
   GetIssueByIssueIdParams,
   GetIssuesByProjectIdParams,
   GetTrendByIssueIdParams,
+  GetProjectTrendByApiKeyParams,
 } from './issue.interface';
 import {
   getWhereOptions,
   switchTimeRangeAndGetDateHistogram,
 } from './issue.core';
-import { GetProjectTrendByApiKeyParams } from './issue.interface';
 
 @Injectable()
 export class IssueService {
@@ -356,5 +357,18 @@ export class IssueService {
     };
 
     return await this.getTrend(query, trend);
+  }
+
+  /**
+   * 删除 issue
+   *
+   * @param conditions
+   */
+  async deleteIssue(conditions: FindConditions<any>) {
+    try {
+      return await this.issueRepository.delete(conditions);
+    } catch (error) {
+      throw new ForbiddenException(400404, error);
+    }
   }
 }

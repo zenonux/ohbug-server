@@ -1461,6 +1461,14 @@
     multer "1.4.2"
     tslib "1.11.2"
 
+"@nestjs/schedule@^0.4.0":
+  version "0.4.0"
+  resolved "https://registry.npm.taobao.org/@nestjs/schedule/download/@nestjs/schedule-0.4.0.tgz#03dfd38b6699bcf7dd467278ffd7c05dfd41a5e7"
+  integrity sha1-A9/Ti2aZvPfdRnJ4/9fAXf1Bpec=
+  dependencies:
+    cron "1.7.2"
+    uuid "8.0.0"
+
 "@nestjs/schematics@^7.0.0":
   version "7.0.0"
   resolved "https://registry.npmjs.org/@nestjs/schematics/-/schematics-7.0.0.tgz#7b48bdcd50dad430957b2c112d555a5147c2e60e"
@@ -3818,6 +3826,13 @@ cron-parser@^2.13.0:
   dependencies:
     is-nan "^1.2.1"
     moment-timezone "^0.5.25"
+
+cron@1.7.2:
+  version "1.7.2"
+  resolved "https://registry.npm.taobao.org/cron/download/cron-1.7.2.tgz#2ea1f35c138a07edac2ac5af5084ed6fee5723db"
+  integrity sha1-LqHzXBOKB+2sKsWvUITtb+5XI9s=
+  dependencies:
+    moment-timezone "^0.5.x"
 
 cross-env@^7.0.2:
   version "7.0.2"
@@ -7488,6 +7503,13 @@ moment-timezone@^0.5.25:
   version "0.5.28"
   resolved "https://registry.npmjs.org/moment-timezone/-/moment-timezone-0.5.28.tgz#f093d789d091ed7b055d82aa81a82467f72e4338"
   integrity sha512-TDJkZvAyKIVWg5EtVqRzU97w0Rb0YVbfpqyjgu6GwXCAohVRqwZjf4fOzDE6p1Ch98Sro/8hQQi65WDXW5STPw==
+  dependencies:
+    moment ">= 2.9.0"
+
+moment-timezone@^0.5.x:
+  version "0.5.31"
+  resolved "https://registry.npm.taobao.org/moment-timezone/download/moment-timezone-0.5.31.tgz#9c40d8c5026f0c7ab46eda3d63e49c155148de05"
+  integrity sha1-nEDYxQJvDHq0bto9Y+ScFVFI3gU=
   dependencies:
     moment ">= 2.9.0"
 

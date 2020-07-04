@@ -40,6 +40,7 @@
   "400401": "搜索 issues 失败",
   "400402": "根据 issue_id 获取 issue 对应的趋势信息 失败",
   "400403": "根据 issue_id 获取最近的 event 失败",
+  "400404": "删除 issue 失败",
   "400410": "根据 issue_id 获取 issue 失败",
 
   "400500": "创建 feedback 失败",
@@ -66,6 +67,8 @@
   "4001002": "manager: 从 elasticsearch 拉取 document 失败",
   "4001003": "manager: event 聚合时发生错误",
   "4001004": "manager: event 任务调度时发生错误",
+  "4001005": "manager: event 删除 index 失败",
+  "4001010": "manager: 定时任务 定时删除过期数据执行失败",
 
   "4001100": "创建 notification rule 失败",
   "4001101": "查询 notification rules 失败",

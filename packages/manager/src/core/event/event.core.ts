@@ -1,6 +1,13 @@
 import { types } from '@ohbug/core';
 
-import { md5 } from '@ohbug-server/common';
+import {
+  md5,
+  TOPIC_MANAGER_LOGSTASH_EVENT_ERROR,
+  TOPIC_MANAGER_LOGSTASH_EVENT_FEEDBACK,
+  TOPIC_MANAGER_LOGSTASH_EVENT_MESSAGE,
+  TOPIC_MANAGER_LOGSTASH_EVENT_VIEW,
+  TOPIC_MANAGER_LOGSTASH_PERFORMANCE,
+} from '@ohbug-server/common';
 
 import type {
   AggregationDataAndMetaData,
@@ -142,3 +149,33 @@ export function getMd5FromAggregationData(...aggregationData: any[]): string {
   const data = aggregationData.join(',');
   return md5(data);
 }
+
+export const eventIndices = [
+  // event
+  {
+    category: 'error',
+    key: TOPIC_MANAGER_LOGSTASH_EVENT_ERROR,
+    index: 'ohbug-event-error',
+  },
+  {
+    category: 'message',
+    key: TOPIC_MANAGER_LOGSTASH_EVENT_MESSAGE,
+    index: 'ohbug-event-message',
+  },
+  {
+    category: 'feedback',
+    key: TOPIC_MANAGER_LOGSTASH_EVENT_FEEDBACK,
+    index: 'ohbug-event-feedback',
+  },
+  {
+    category: 'view',
+    key: TOPIC_MANAGER_LOGSTASH_EVENT_VIEW,
+    index: 'ohbug-event-view',
+  },
+  // performance
+  {
+    category: 'performance',
+    key: TOPIC_MANAGER_LOGSTASH_PERFORMANCE,
+    index: 'ohbug-performance',
+  },
+];

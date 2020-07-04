@@ -14,4 +14,7 @@ export const othersConfig = registerAs('others', () => ({
       expiresIn: process.env.JWT_EXPIRES_IN,
     },
   },
+  expiredData: {
+    interval: process.env.TIME_INTERVAL_FOR_CLEANING_UP_EXPIRED_DATA,
+  },
 }));
