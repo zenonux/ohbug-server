@@ -49,7 +49,7 @@ export class Issue {
    * @type {Date}
    * @memberof Issue
    */
-  @CreateDateColumn()
+  @CreateDateColumn({ type: 'timestamp with time zone' })
   createdAt: Date;
 
   /**
@@ -58,7 +58,7 @@ export class Issue {
    * @type {Date}
    * @memberof Issue
    */
-  @UpdateDateColumn()
+  @UpdateDateColumn({ type: 'timestamp with time zone' })
   updatedAt: Date;
 
   /**

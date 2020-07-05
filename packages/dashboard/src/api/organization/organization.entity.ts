@@ -52,7 +52,7 @@ export class Organization {
    * @type {Date}
    * @memberof User
    */
-  @CreateDateColumn()
+  @CreateDateColumn({ type: 'timestamp with time zone' })
   createdAt: Date;
 
   /**

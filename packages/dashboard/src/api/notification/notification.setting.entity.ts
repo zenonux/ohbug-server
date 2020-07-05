@@ -55,7 +55,7 @@ export class NotificationSetting {
    * @memberof NotificationSetting
    */
   @Exclude()
-  @CreateDateColumn()
+  @CreateDateColumn({ type: 'timestamp with time zone' })
   createdAt: Date;
 
   /**

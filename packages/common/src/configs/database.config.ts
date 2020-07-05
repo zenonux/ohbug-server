@@ -14,7 +14,7 @@ export const databaseConfig = registerAs('database', () => ({
     cache: {
       duration: 30000, // 30 seconds
     },
-    logging: process.env.NODE_ENV === 'production' ? false : true,
+    logging: process.env.NODE_ENV !== 'production',
   },
   elasticsearch: {
     node: process.env.ELASTICSEARCH_NODE,

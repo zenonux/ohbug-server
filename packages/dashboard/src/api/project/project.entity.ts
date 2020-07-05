@@ -51,7 +51,7 @@ export class Project {
    * @type {Date}
    * @memberof Project
    */
-  @CreateDateColumn()
+  @CreateDateColumn({ type: 'timestamp with time zone' })
   createdAt: Date;
 
   /**

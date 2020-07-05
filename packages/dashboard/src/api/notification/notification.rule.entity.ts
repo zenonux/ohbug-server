@@ -111,7 +111,7 @@ export class NotificationRule {
    * @memberof NotificationRule
    */
   @Exclude()
-  @CreateDateColumn()
+  @CreateDateColumn({ type: 'timestamp with time zone' })
   createdAt: Date;
 
   /**
