@@ -30,7 +30,6 @@ const CAPTCHA_EXPIRY_TIME = 300;
 export class AuthService implements OnModuleInit {
   redisClient: Redis;
   smsClient: alicloudService;
-  ossClient: alicloudService;
 
   constructor(
     private readonly configService: ConfigService,
@@ -45,21 +44,6 @@ export class AuthService implements OnModuleInit {
     this.smsClient = new alicloudService(
       this.configService.get('service.sms.config'),
     );
-    this.ossClient = new alicloudService(
-      this.configService.get('service.oss.config'),
-    );
-  }
-
-  async getSTS() {
-    const params = this.configService.get('service.oss.params');
-    const result: any = await this.ossClient.request('AssumeRole', params);
-    return {
-      region: 'oss-cn-hangzhou',
-      accessKeyId: result.Credentials.AccessKeyId,
-      accessKeySecret: result.Credentials.AccessKeySecret,
-      stsToken: result.Credentials.SecurityToken,
-      bucket: 'ohbug-test',
-    };
   }
 
   /**

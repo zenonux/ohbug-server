@@ -15,18 +15,6 @@ export const serviceConfig = registerAs('service', () => ({
       TemplateCode: process.env.SMS_PARAMS_TEMPLATE_CODE,
     },
   },
-  oss: {
-    config: {
-      accessKeyId: process.env.OSS_CONFIG_ACCESS_KEY_ID,
-      accessKeySecret: process.env.OSS_CONFIG_ACCESS_KEY_SECRET,
-      endpoint: process.env.OSS_CONFIG_ENDPOINT,
-      apiVersion: process.env.OSS_CONFIG_API_VERSION,
-    },
-    params: {
-      RoleArn: process.env.OSS_PARAMS_ARN,
-      RoleSessionName: process.env.OSS_PARAMS_SESSION_NAME,
-    },
-  },
   email: {
     user: process.env.EMAIL_NOTICE_USER,
     pass: process.env.EMAIL_NOTICE_PASS,
