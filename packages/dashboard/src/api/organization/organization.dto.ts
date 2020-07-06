@@ -16,10 +16,6 @@ export class CreateOrganizationDto {
 
   @IsString()
   @IsOptional()
-  readonly avatar?: string;
-
-  @IsString()
-  @IsOptional()
   readonly introduction?: string;
 
   @IsNumber()
@@ -30,10 +26,6 @@ export class UpdateOrganizationDto {
   @IsString()
   @IsOptional()
   readonly name?: string;
-
-  @IsString()
-  @IsOptional()
-  readonly avatar?: string;
 
   @IsString()
   @IsOptional()

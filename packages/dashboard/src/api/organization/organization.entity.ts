@@ -29,15 +29,6 @@ export class Organization {
   name: string;
 
   /**
-   * organization 头像 url 可修改
-   *
-   * @type {string}
-   * @memberof Organization
-   */
-  @Column({ type: 'text' })
-  avatar: string;
-
-  /**
    * organization 简介 可修改
    *
    * @type {string}

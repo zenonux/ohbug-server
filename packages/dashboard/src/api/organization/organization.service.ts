@@ -27,13 +27,11 @@ export class OrganizationService {
    * 创建 organization object
    *
    * @param name 组织名
-   * @param avatar 组织头像
    * @param admin_id 管理员 id (对应 user 表)
    * @param introduction
    */
   private async createOrganizationObject({
     name,
-    avatar = '',
     admin_id,
     introduction,
   }: CreateOrganizationDto): Promise<Organization> {
@@ -42,7 +40,6 @@ export class OrganizationService {
       const users = [admin];
       const org = await this.organizationRepository.create({
         name,
-        avatar,
         admin,
         introduction,
         users,
@@ -88,14 +85,12 @@ export class OrganizationService {
   async updateOrganization({
     name,
     introduction,
-    avatar,
     organization_id,
   }: UpdateOrganizationDto & BaseOrganizationDto): Promise<Organization> {
     try {
       const org = await this.getOrganizationById(organization_id);
       if (name) org.name = name;
       if (introduction) org.introduction = introduction;
-      if (avatar) org.avatar = avatar;
       return await this.organizationRepository.save(org);
     } catch (error) {
       throw new ForbiddenException(400105, error);

@@ -58,12 +58,11 @@ export class OrganizationController {
   async update(
     @Param() { organization_id }: BaseOrganizationDto,
     @Body()
-    { name, introduction, avatar }: UpdateOrganizationDto,
+    { name, introduction }: UpdateOrganizationDto,
   ): Promise<Organization> {
     return await this.organizationService.updateOrganization({
       name,
       introduction,
-      avatar,
       organization_id,
     });
   }
