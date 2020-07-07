@@ -130,14 +130,14 @@ export class AuthService implements OnModuleInit {
    * @param mobile
    * @param captcha
    */
-  private async verifyCaptcha(
+  async verifyCaptcha(
     mobile: string,
-    captcha: number,
+    captcha: number | string,
   ): Promise<boolean> {
     const value = await this.redisClient.get(mobile);
     if (value) {
       const { captcha: redisCaptcha } = JSON.parse(value) as RedisCaptchaValue;
-      if (captcha === redisCaptcha) {
+      if (Number(captcha) === redisCaptcha) {
         await this.redisClient.del(mobile);
         return true;
       } else {

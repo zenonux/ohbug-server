@@ -1,17 +1,19 @@
 import { OAuthType } from '@/api/user/user.interface';
 
+export type Captcha = number | string;
+
 export interface RedisCaptchaValue {
-  captcha: number;
+  captcha: Captcha;
   timestamp: number;
 }
 
 export interface SignupParams {
   mobile: string;
-  captcha: number;
+  captcha: Captcha;
 }
 export interface BindUserParams {
   mobile: string;
-  captcha: number;
+  captcha: Captcha;
   oauthType: OAuthType;
   oauthUserDetail: any;
 }

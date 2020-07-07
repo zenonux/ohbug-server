@@ -2,7 +2,7 @@ import {
   ValidatorConstraint,
   ValidatorConstraintInterface,
   Validate,
-  IsNumber,
+  IsNumberString,
   IsNotEmpty,
   IsString,
 } from 'class-validator';
@@ -10,10 +10,7 @@ import {
 @ValidatorConstraint()
 export class ValidateMobile implements ValidatorConstraintInterface {
   validate(text: string) {
-    if (!/^1[3456789]\d{9}$/.test(text)) {
-      return false;
-    }
-    return true;
+    return /^1[3456789]\d{9}$/.test(text);
   }
 }
 
@@ -22,29 +19,19 @@ export class CaptchaDto {
   readonly mobile: string;
 }
 
-export class SignupDto {
+export class BaseAuthDto {
   @Validate(ValidateMobile)
   readonly mobile: string;
 
-  @IsNumber()
-  readonly captcha: number;
+  @IsNumberString()
+  readonly captcha: number | string;
 }
 
-export class LoginDto {
-  @Validate(ValidateMobile)
-  readonly mobile: string;
+export class SignupDto extends BaseAuthDto {}
 
-  @IsNumber()
-  readonly captcha: number;
-}
+export class LoginDto extends BaseAuthDto {}
 
-export class BindUserDto {
-  @Validate(ValidateMobile)
-  readonly mobile: string;
-
-  @IsNumber()
-  readonly captcha: number;
-
+export class BindUserDto extends BaseAuthDto {
   @IsString()
   readonly oauthType: 'github';
 

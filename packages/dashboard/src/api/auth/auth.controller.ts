@@ -3,7 +3,13 @@ import { ConfigService } from '@nestjs/config';
 
 import { ForbiddenException } from '@ohbug-server/common';
 import { AuthService } from './auth.service';
-import { CaptchaDto, SignupDto, LoginDto, BindUserDto } from './auth.dto';
+import {
+  CaptchaDto,
+  BaseAuthDto,
+  SignupDto,
+  LoginDto,
+  BindUserDto,
+} from './auth.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -44,6 +50,19 @@ export class AuthController {
   @Get('captcha')
   async captcha(@Query() { mobile }: CaptchaDto): Promise<string> {
     return await this.authService.getCaptcha(mobile);
+  }
+
+  /**
+   * 校验验证码是否合法
+   *
+   * @param mobile
+   * @param captcha
+   */
+  @Get('verify')
+  async verifyCaptcha(
+    @Query() { mobile, captcha }: BaseAuthDto,
+  ): Promise<boolean> {
+    return await this.authService.verifyCaptcha(mobile, captcha);
   }
 
   /**
