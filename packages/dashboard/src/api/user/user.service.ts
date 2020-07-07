@@ -9,13 +9,10 @@ import type {
   NormalUser,
   UserDetail,
 } from '@/api/auth/auth.interface';
-import type {
-  BindOAuthParams,
-  OAuth,
-  OAuthType,
-} from '@/api/user/user.interface';
 
+import type { BindOAuthParams, OAuth, OAuthType } from './user.interface';
 import { User } from './user.entity';
+import { GetUserDto, UpdateUserDto } from './user.dto';
 
 @Injectable()
 export class UserService {
@@ -181,6 +178,33 @@ export class UserService {
       return user;
     } catch (error) {
       throw new ForbiddenException(400001, error);
+    }
+  }
+
+  /**
+   * 更新用户信息
+   *
+   * @param user_id
+   * @param name
+   * @param email
+   * @param avatar
+   */
+  async updateUser({
+    user_id,
+    name,
+    email,
+    avatar,
+  }: GetUserDto & UpdateUserDto) {
+    try {
+      const user = await this.getUserById(user_id);
+      if (user) {
+        if (name) user.name = name;
+        if (email) user.email = email;
+        if (avatar) user.avatar = avatar;
+      }
+      return await this.userRepository.save(user);
+    } catch (error) {
+      throw new ForbiddenException(400009, error);
     }
   }
 }
