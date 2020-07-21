@@ -3,9 +3,9 @@ version: '3.7'
 services:
   server:
     container_name: server
-    image: ohbug/server
+    image: ohbug/server-test
     env_file:
-      - ../packages/common/.env.production
+      - ../packages/common/.env.test
     volumes:
       - /usr/src/app
     ports:

@@ -35,7 +35,7 @@ coverage
 
 # config
 .env
-.env.local
+.env*
 
 docs
 temp

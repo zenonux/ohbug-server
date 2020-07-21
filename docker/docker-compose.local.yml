@@ -141,4 +141,3 @@ services:
 volumes:
   pgdata:
   elasticsearch:
-  influx:

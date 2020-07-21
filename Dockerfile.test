@@ -20,4 +20,4 @@ EXPOSE 6660
 EXPOSE 6666
 
 # dashboard server
-CMD [ "pm2-runtime", "start" ,"./ecosystem.config.js", "--env", "production" ]
+CMD [ "pm2-runtime", "start" ,"./ecosystem.config.js", "--env", "test" ]
