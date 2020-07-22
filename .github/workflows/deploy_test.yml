@@ -15,9 +15,10 @@ jobs:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
         run: |
+          sudo docker build -f Dockerfile.test -t ohbug-server-test .
           sudo docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD $DOCKER_HOST
-          sudo docker build -f Dockerfile.test -t $DOCKER_HOST/ohbug-server-test .
-          sudo docker push $DOCKER_HOST/ohbug-server-test
+          sudo docker tag ohbug-server-test $DOCKER_HOST/ohbug/ohbug-server-test
+          sudo docker push $DOCKER_HOST/ohbug/ohbug-server-test
   deploy:
     runs-on: ubuntu-latest
     needs: [ publish ]
