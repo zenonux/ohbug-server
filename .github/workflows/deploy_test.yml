@@ -1,0 +1,32 @@
+name: deploy_test
+
+on:
+  push:
+    branches: [ test ]
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Build Image
+        env:
+          DOCKER_HOST: ${{ secrets.DOCKER_HOST }}
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+        run: |
+          docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD $DOCKER_HOST
+          docker build -t $DOCKER_HOST/ohbug/server-test .
+          docker push $DOCKER_HOST/ohbug/server-test
+  deploy:
+    runs-on: ubuntu-latest
+    needs: [ publish ]
+    steps:
+      - uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SERVER_HOST_TEST }}
+          username: ${{ secrets.SERVER_USERNAME_TEST }}
+          key: ${{ secrets.SERVER_KEY_TEST }}
+          port: 22
+          script: |
+            ${{ secrets.DOCKER_DEPLOY_SCRIPT_TEST }}
