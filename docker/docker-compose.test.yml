@@ -5,7 +5,7 @@ services:
     container_name: server
     image: ohbug/server-test
     env_file:
-      - ../packages/common/.env.test
+      - ../.env.test
     volumes:
       - /usr/src/app
     ports:

@@ -10,7 +10,7 @@ import { othersConfig } from './others.config';
   imports: [
     ConfigBaseModule.forRoot({
       envFilePath: [
-        path.resolve(__dirname, `../../.env.${process.env.NODE_ENV}`),
+        path.resolve(__dirname, `../../../../.env.${process.env.NODE_ENV}`),
       ],
       load: [databaseConfig, serviceConfig, othersConfig],
       isGlobal: true,
