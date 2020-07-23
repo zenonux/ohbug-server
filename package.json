@@ -6,9 +6,9 @@
   ],
   "scripts": {
     "bootstrap": "lerna bootstrap",
-    "docker:local": "docker-compose -f ./docker/docker-compose.local.yml up --build",
-    "docker:build:test": "docker build -t ohbug/server-test .",
-    "docker:build:prod": "docker build -t ohbug/server .",
+    "docker:local": "docker-compose -f docker-compose.local.yml up --build",
+    "docker:build:test": "docker build -t ohbug-server-test .",
+    "docker:build:prod": "docker build -t ohbug-server .",
     "start": "lerna run start --parallel",
     "start:prod": "lerna run start:prod --parallel",
     "build": "lerna run build --stream",

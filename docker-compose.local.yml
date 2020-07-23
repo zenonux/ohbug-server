@@ -54,13 +54,13 @@ services:
 
   elasticsearch:
     build:
-      context: elasticsearch/
+      context: docker/elasticsearch/
       args:
         ELK_VERSION: 7.6.2
     hostname: elasticsearch
     volumes:
       - type: bind
-        source: ./elasticsearch/config/elasticsearch.yml
+        source: ./docker/elasticsearch/config/elasticsearch.yml
         target: /usr/share/elasticsearch/config/elasticsearch.yml
         read_only: true
       - type: volume
@@ -77,21 +77,21 @@ services:
       discovery.type: single-node
   logstash:
     build:
-      context: logstash/
+      context: docker/logstash/
       args:
         ELK_VERSION: 7.6.2
     hostname: logstash
     volumes:
       - type: bind
-        source: ./logstash/config/logstash.yml
+        source: ./docker/logstash/config/logstash.yml
         target: /usr/share/logstash/config/logstash.yml
         read_only: true
       - type: bind
-        source: ./logstash/pipeline
+        source: ./docker/logstash/pipeline
         target: /usr/share/logstash/pipeline
         read_only: true
       - type: bind
-        source: ./logstash/templates
+        source: ./docker/logstash/templates
         target: /usr/share/logstash/templates
         read_only: true
     ports:
@@ -103,13 +103,13 @@ services:
       - kafka1
 #  kibana:
 #    build:
-#      context: kibana/
+#      context: docker/kibana/
 #      args:
 #        ELK_VERSION: 7.6.2
 #    hostname: kibana
 #    volumes:
 #      - type: bind
-#        source: ./kibana/config/kibana.yml
+#        source: ./docker/kibana/config/kibana.yml
 #        target: /usr/share/kibana/config/kibana.yml
 #        read_only: true
 #    ports:
