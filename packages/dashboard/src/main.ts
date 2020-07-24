@@ -36,4 +36,8 @@ async function bootstrap() {
   /* tslint:disable-next-line */
   console.log(`Dashboard is running on: ${await app.getUrl()}`);
 }
-bootstrap();
+bootstrap().catch((error) => {
+  // tslint:disable-next-line:no-console
+  console.error(error);
+  process.exit(1);
+});
