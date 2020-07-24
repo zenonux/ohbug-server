@@ -2,8 +2,7 @@ module.exports = {
   apps: [
     {
       name: 'ohbug-server',
-      script: 'yarn start:prod',
-
+      script: 'npm run start:prod',
       instances: 1,
       autorestart: true,
       watch: false,
