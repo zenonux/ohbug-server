@@ -15,6 +15,6 @@ jobs:
           port: 22
           script: |
             ${{ secrets.SERVER_CLONE_SCRIPT_TEST }}
-            echo ${{ secrets.SERVER_ENV_TEST }} > .env.test
+            echo "${{ secrets.SERVER_ENV_TEST }}" > .env.test
             npm run build
             pm2 start ./ecosystem.config.js --env test
