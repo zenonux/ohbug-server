@@ -20,4 +20,8 @@ async function bootstrap() {
   // tslint:disable-next-line:no-console
   app.listen(() => console.log(`Manager is running`));
 }
-bootstrap();
+bootstrap().catch((error) => {
+  // tslint:disable-next-line:no-console
+  console.error(error);
+  process.exit(1);
+});

@@ -1,8 +1,8 @@
 module.exports = {
   apps: [
     {
-      name: 'ohbug-server',
-      script: 'npm run start:prod',
+      name: '@ohbug-server/dashboard',
+      script: 'dist/main.js',
       instances: 1,
       autorestart: true,
       watch: false,
