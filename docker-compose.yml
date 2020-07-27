@@ -58,3 +58,12 @@ services:
     volumes:
       - ./temp/redis/redis.conf:/etc/redis/redis.conf
     command: redis-server /etc/redis/redis.conf
+
+  nginx:
+    image: nginx:latest
+    restart: always
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - ./docker/nginx/conf.d:/etc/nginx/conf.d
