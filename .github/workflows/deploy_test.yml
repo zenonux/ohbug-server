@@ -16,4 +16,6 @@ jobs:
           script: |
             ${{ secrets.SERVER_CLONE_SCRIPT_TEST }}
             echo "${{ secrets.SERVER_ENV_TEST }}" > .env.test
+            echo "${{ secrets.SERVER_DOCKER_ENV_TEST }}" > docker_env.sh
+            source docker_env.sh
             npm run deploy:test
