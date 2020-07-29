@@ -30,13 +30,11 @@ export class ReportService {
       'actions',
       'data',
     ]);
-    if (eventLike?.tags.uuid) delete eventLike.tags.uuid;
 
     return {
       ...eventLike,
       user: {
         ip_address,
-        uuid: event?.tags?.uuid,
       },
     };
   }
