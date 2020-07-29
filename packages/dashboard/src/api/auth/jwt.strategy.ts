@@ -6,14 +6,6 @@ import { ConfigService } from '@nestjs/config';
 import { AuthService } from './auth.service';
 import type { JwtPayload } from './auth.interface';
 
-function cookieExtractor(req) {
-  let token = null;
-  if (req && req.headers) {
-    token = req.headers.authorization;
-  }
-  return token;
-}
-
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor(
@@ -21,7 +13,8 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     private readonly authService: AuthService,
   ) {
     super({
-      jwtFromRequest: ExtractJwt.fromExtractors([cookieExtractor]),
+      jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+      ignoreExpiration: false,
       secretOrKey: configService.get('others.jwt').secret,
     });
   }
@@ -30,7 +23,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     const user = await this.authService.validateUser(payload.id);
 
     if (!user) {
-      throw new UnauthorizedException();
+      throw new UnauthorizedException(new Error('登录状态失效，请重新登录'));
     }
 
     return user;
