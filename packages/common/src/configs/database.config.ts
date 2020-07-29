@@ -23,6 +23,9 @@ export const databaseConfig = registerAs('database', () => ({
       password: process.env.ELASTICSEARCH_PASSWORD,
     },
   },
+  logstash: {
+    node: process.env.LOGSTASH_NODE,
+  },
   redis: {
     host: process.env.REDIS_HOST,
     port: parseInt(process.env.REDIS_PORT, 10),
