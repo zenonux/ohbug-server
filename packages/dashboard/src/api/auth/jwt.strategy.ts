@@ -8,8 +8,8 @@ import type { JwtPayload } from './auth.interface';
 
 function cookieExtractor(req) {
   let token = null;
-  if (req && req.cookies) {
-    token = req.cookies.authorization;
+  if (req && req.headers) {
+    token = req.headers.authorization;
   }
   return token;
 }
@@ -26,12 +26,13 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     });
   }
 
-  async validate(payload: JwtPayload, done: (arg0: any, arg1: any) => void) {
-    const user = await this.authService.validateUser(payload);
+  async validate(payload: JwtPayload) {
+    const user = await this.authService.validateUser(payload.id);
 
     if (!user) {
-      return done(new UnauthorizedException(), false);
+      throw new UnauthorizedException();
     }
-    done(null, user);
+
+    return user;
   }
 }

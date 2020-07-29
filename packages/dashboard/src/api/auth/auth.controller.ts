@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Query, Body, Res } from '@nestjs/common';
+import { Controller, Get, Post, Query, Body } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
 import { ForbiddenException } from '@ohbug-server/common';
@@ -19,27 +19,19 @@ export class AuthController {
   ) {}
 
   /**
-   * 抽出来用于注册 cookie
+   * 抽出来用于 createToken
    *
-   * @param res
    * @param user
    */
-  returnWithJwtCookie(res, user) {
-    const token = this.authService.createToken(user.id);
+  returnJwt(user) {
     const maxAge = this.configService.get<string>(
       'others.jwt.signOptions.expiresIn',
     );
-    res.cookie('authorization', token, {
-      maxAge,
-      httpOnly: true,
-    });
-    res.cookie('id', user.id.toString(), {
-      maxAge,
-    });
-    res.send({
-      success: true,
-      data: true,
-    });
+    const token = this.authService.createToken(user.id, maxAge);
+    return {
+      token,
+      id: user.id,
+    };
   }
 
   /**
@@ -70,12 +62,11 @@ export class AuthController {
    *
    * @param mobile
    * @param captcha
-   * @param res
    */
   @Post('signup')
-  async signup(@Body() { mobile, captcha }: SignupDto, @Res() res) {
+  async signup(@Body() { mobile, captcha }: SignupDto) {
     const user = await this.authService.signup({ mobile, captcha });
-    return this.returnWithJwtCookie(res, user);
+    return this.returnJwt(user);
   }
 
   /**
@@ -83,21 +74,15 @@ export class AuthController {
    *
    * @param mobile
    * @param captcha
-   * @param res
    */
   @Post('login')
-  async login(@Body() { mobile, captcha }: LoginDto, @Res() res) {
+  async login(@Body() { mobile, captcha }: LoginDto) {
     const user = await this.authService.login(null, { mobile, captcha });
     // 返回 token
     if (user) {
-      return this.returnWithJwtCookie(res, user);
+      return this.returnJwt(user);
     } else {
-      res.send({
-        errorMessage: '用户未注册',
-        errorCode: 400008,
-        success: false,
-      });
-      return;
+      throw new ForbiddenException(400008);
     }
   }
 
@@ -106,10 +91,9 @@ export class AuthController {
    * 由于只提供 oauth2 登录，所以将注册与登录二合一
    *
    * @param code
-   * @param res
    */
   @Post('github')
-  async github(@Body('code') code, @Res() res) {
+  async github(@Body('code') code) {
     if (code) {
       const data = await this.authService.getGithubToken(code);
       if (data.access_token && data.token_type === 'bearer') {
@@ -120,17 +104,13 @@ export class AuthController {
         const user = await this.authService.login('github', userDetail);
         // 返回 token
         if (user) {
-          return this.returnWithJwtCookie(res, user);
+          return this.returnJwt(user);
         } else {
-          res.send({
-            success: true,
-            data: {
-              id: userDetail.id,
-              name: userDetail.name,
-              avatar_url: userDetail.avatar_url,
-            },
-          });
-          return;
+          return {
+            id: userDetail.id,
+            name: userDetail.name,
+            avatar_url: userDetail.avatar_url,
+          };
         }
       }
     } else {
@@ -145,12 +125,10 @@ export class AuthController {
    * @param captcha
    * @param oauthType
    * @param oauthUserDetail
-   * @param res
    */
   @Post('bindUser')
   async bindUser(
     @Body() { mobile, captcha, oauthType, oauthUserDetail }: BindUserDto,
-    @Res() res,
   ) {
     const user = await this.authService.bindUser({
       mobile,
@@ -158,16 +136,6 @@ export class AuthController {
       oauthType,
       oauthUserDetail,
     });
-    return this.returnWithJwtCookie(res, user);
-  }
-
-  @Post('logout')
-  async logout(@Res() res) {
-    res.clearCookie('authorization');
-    res.clearCookie('id');
-    res.send({
-      success: true,
-      data: true,
-    });
+    return this.returnJwt(user);
   }
 }

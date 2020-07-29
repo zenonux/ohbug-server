@@ -312,19 +312,20 @@ export class AuthService implements OnModuleInit {
   /**
    * 根据 id 创建 jwt token
    *
-   * @param id user id
+   * @param id userId
+   * @param maxAge
    */
-  createToken(id: string | number): JwtToken {
+  createToken(id: string | number, maxAge: string): JwtToken {
     try {
-      const user: JwtPayload = { id: id.toString() };
-      const accessToken = this.jwtService.sign(user);
+      const payload: JwtPayload = { id: id.toString() };
+      const accessToken = this.jwtService.sign(payload, { expiresIn: maxAge });
       return accessToken;
     } catch (error) {
       throw new ForbiddenException(400007, error);
     }
   }
 
-  async validateUser(payload: JwtPayload): Promise<User> {
-    return await this.userService.getUserById(payload.id);
+  async validateUser(id: string): Promise<User> {
+    return await this.userService.getUserById(id);
   }
 }
