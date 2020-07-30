@@ -3,6 +3,7 @@ version: '3.7'
 services:
   zoo1:
     image: zookeeper:3.4.9
+    restart: always
     hostname: zoo1
     ports:
       - "2181:2181"
@@ -15,6 +16,7 @@ services:
       - ./temp/zoo1/datalog:/datalog
   kafka1:
     image: confluentinc/cp-kafka:5.5.0
+    restart: always
     hostname: kafka1
     ports:
       - "9092:9092"
@@ -34,6 +36,7 @@ services:
       - zoo1
   kafka2:
     image: confluentinc/cp-kafka:5.5.0
+    restart: always
     hostname: kafka2
     ports:
       - "9093:9093"
@@ -41,7 +44,7 @@ services:
       KAFKA_ADVERTISED_LISTENERS: LISTENER_DOCKER_INTERNAL://kafka2:19093,LISTENER_DOCKER_EXTERNAL://${DOCKER_HOST_IP:-127.0.0.1}:9093
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: LISTENER_DOCKER_INTERNAL:PLAINTEXT,LISTENER_DOCKER_EXTERNAL:PLAINTEXT
       KAFKA_INTER_BROKER_LISTENER_NAME: LISTENER_DOCKER_INTERNAL
-      KAFKA_ZOOKEEPER_CONNECT: "zoo1:2181,zoo2:2182"
+      KAFKA_ZOOKEEPER_CONNECT: "zoo1:2181"
       KAFKA_BROKER_ID: 2
       KAFKA_LOG4J_LOGGERS: "kafka.controller=INFO,kafka.producer.async.DefaultEventHandler=INFO,state.change.logger=INFO"
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
@@ -57,6 +60,7 @@ services:
       context: docker/elasticsearch/
       args:
         ELK_VERSION: 7.6.2
+    restart: always
     hostname: elasticsearch
     volumes:
       - type: bind
@@ -80,6 +84,7 @@ services:
       context: docker/logstash/
       args:
         ELK_VERSION: 7.6.2
+    restart: always
     hostname: logstash
     volumes:
       - type: bind
@@ -101,24 +106,10 @@ services:
     depends_on:
       - elasticsearch
       - kafka1
-#  kibana:
-#    build:
-#      context: docker/kibana/
-#      args:
-#        ELK_VERSION: 7.6.2
-#    hostname: kibana
-#    volumes:
-#      - type: bind
-#        source: ./docker/kibana/config/kibana.yml
-#        target: /usr/share/kibana/config/kibana.yml
-#        read_only: true
-#    ports:
-#      - "5601:5601"
-#    depends_on:
-#      - elasticsearch
 
   postgres:
     image: postgres:12
+    restart: always
     hostname: postgres
     ports:
       - "5432:5432"
@@ -132,6 +123,7 @@ services:
 
   redis:
     image: redis:6.0.1
+    restart: always
     ports:
       - "6379:6379"
     volumes:
