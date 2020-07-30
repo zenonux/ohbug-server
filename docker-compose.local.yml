@@ -34,26 +34,6 @@ services:
       - ./temp/kafka1/data:/var/lib/kafka/data
     depends_on:
       - zoo1
-  kafka2:
-    image: confluentinc/cp-kafka:5.5.0
-    restart: always
-    hostname: kafka2
-    ports:
-      - "9093:9093"
-    environment:
-      KAFKA_ADVERTISED_LISTENERS: LISTENER_DOCKER_INTERNAL://kafka2:19093,LISTENER_DOCKER_EXTERNAL://${DOCKER_HOST_IP:-127.0.0.1}:9093
-      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: LISTENER_DOCKER_INTERNAL:PLAINTEXT,LISTENER_DOCKER_EXTERNAL:PLAINTEXT
-      KAFKA_INTER_BROKER_LISTENER_NAME: LISTENER_DOCKER_INTERNAL
-      KAFKA_ZOOKEEPER_CONNECT: "zoo1:2181"
-      KAFKA_BROKER_ID: 2
-      KAFKA_LOG4J_LOGGERS: "kafka.controller=INFO,kafka.producer.async.DefaultEventHandler=INFO,state.change.logger=INFO"
-      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
-      KAFKA_FETCH_MAX_WAIT_MS: 100
-      KAFKA_FETCH_MIN_BYTES: 1
-    volumes:
-      - ./temp/kafka2/data:/var/lib/kafka/data
-    depends_on:
-      - zoo1
 
   elasticsearch:
     build:
@@ -105,7 +85,6 @@ services:
       LS_JAVA_OPTS: "-Xmx256m -Xms256m"
     depends_on:
       - elasticsearch
-      - kafka1
 
   postgres:
     image: postgres:12
