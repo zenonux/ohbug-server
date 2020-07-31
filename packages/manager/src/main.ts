@@ -17,8 +17,10 @@ async function bootstrap() {
     },
   );
 
-  // tslint:disable-next-line:no-console
-  app.listen(() => console.log(`Manager is running`));
+  app.listen(() =>
+    // tslint:disable-next-line:no-console
+    console.log(`Manager is running on: ${MICROSERVICE_MANAGER_PORT}`),
+  );
 }
 bootstrap().catch((error) => {
   // tslint:disable-next-line:no-console

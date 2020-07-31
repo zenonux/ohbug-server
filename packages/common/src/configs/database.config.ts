@@ -23,8 +23,8 @@ export const databaseConfig = registerAs('database', () => ({
       password: process.env.ELASTICSEARCH_PASSWORD,
     },
   },
-  logstash: {
-    node: process.env.LOGSTASH_NODE,
+  kafka: {
+    nodes: process.env.KAFKA_NODES.split(','),
   },
   redis: {
     host: process.env.REDIS_HOST,

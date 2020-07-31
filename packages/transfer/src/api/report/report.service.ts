@@ -17,7 +17,7 @@ export class ReportService {
 
   /**
    * 将可能会变的字段转为 string
-   * error: `detail` `state` `actions`
+   * error: `detail` `actions` `metaData`
    * performance: `data`
    *
    * @param event
@@ -26,17 +26,16 @@ export class ReportService {
   transferEvent(event: OhbugEvent<any>, ip_address: string): OhbugEventLike {
     const eventLike = formatter<OhbugEventLike>(event, [
       'detail',
-      'state',
       'actions',
+      'metaData',
       'data',
     ]);
 
-    return {
-      ...eventLike,
+    return Object.assign(eventLike, {
       user: {
         ip_address,
       },
-    };
+    });
   }
 
   /**

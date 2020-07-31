@@ -16,8 +16,10 @@ async function bootstrap() {
       },
     },
   );
-  // tslint:disable-next-line:no-console
-  app.listen(() => console.log(`Notifier is running`));
+  app.listen(() =>
+    // tslint:disable-next-line:no-console
+    console.log(`Notifier is running on: ${MICROSERVICE_NOTIFIER_PORT}`),
+  );
 }
 bootstrap().catch((error) => {
   // tslint:disable-next-line:no-console

@@ -24,13 +24,13 @@ import { EventProcessor } from './event.processor';
     {
       provide: 'KAFKA_MANAGER_LOGSTASH_CLIENT',
       useFactory: (configService: ConfigService) => {
-        const { node } = configService.get('database.logstash');
+        const { nodes } = configService.get('database.kafka');
         return ClientProxyFactory.create({
           transport: Transport.KAFKA,
           options: {
             client: {
               clientId: 'logstash',
-              brokers: [node],
+              brokers: nodes,
             },
             consumer: {
               groupId: 'logstash-consumer',
