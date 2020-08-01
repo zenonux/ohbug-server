@@ -9,7 +9,7 @@ import {
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 
-import { OhbugEventLike } from '@ohbug-server/common';
+import type { OhbugEventLike } from '@ohbug-server/common';
 
 import { EventService } from './event.service';
 import { GetEventByEventIdDto, GetEventsDto } from './event.dto';

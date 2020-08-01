@@ -22,7 +22,7 @@ import { EventService } from './event.service';
 import type { OhbugDocument } from './event.interface';
 
 @Processor('document')
-export class EventProcessor {
+export class EventConsumer {
   constructor(
     private readonly eventService: EventService,
     private readonly issueService: IssueService,

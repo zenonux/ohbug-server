@@ -8,7 +8,7 @@ import {
 import { Exclude } from 'class-transformer';
 
 import type { MetaData, OhbugDocument } from '@/core/event/event.interface';
-import type { OhbugEventUser } from '@ohbug-server/common';
+import type { OhbugUser } from '@ohbug-server/common';
 
 @Entity()
 export class Issue {
@@ -92,12 +92,12 @@ export class Issue {
   /**
    * 受此 issue 影响的用户
    *
-   * @type {OhbugEventUser[]}
+   * @type {OhbugUser[]}
    * @memberof Issue
    */
   @Exclude()
   @Column({ type: 'jsonb', default: [] })
-  users: OhbugEventUser[];
+  users: OhbugUser[];
 
   /**
    * 受此 issue 影响的用户 count

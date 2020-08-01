@@ -1,5 +1,3 @@
-import { types } from '@ohbug/core';
-
 import {
   md5,
   TOPIC_MANAGER_LOGSTASH_EVENT_ERROR,
@@ -14,6 +12,13 @@ import type {
   OhbugEventDetail,
 } from './event.interface';
 
+const UNCAUGHT_ERROR = 'uncaughtError';
+const RESOURCE_ERROR = 'resourceError';
+const UNHANDLEDREJECTION_ERROR = 'unhandledrejectionError';
+const AJAX_ERROR = 'ajaxError';
+const FETCH_ERROR = 'fetchError';
+const WEBSOCKET_ERROR = 'websocketError';
+const UNKNOWN_ERROR = 'unknownError';
 /**
  * 根据不同 error detail 返回可用于聚合的字段
  *
@@ -25,7 +30,7 @@ export function switchErrorDetailAndGetAggregationDataAndMetaData(
   detail: OhbugEventDetail,
 ): AggregationDataAndMetaData {
   switch (type) {
-    case types.UNCAUGHT_ERROR:
+    case UNCAUGHT_ERROR:
       return {
         agg: [
           detail.name,
@@ -42,7 +47,7 @@ export function switchErrorDetailAndGetAggregationDataAndMetaData(
           others: detail.stack,
         },
       };
-    case types.UNHANDLEDREJECTION_ERROR:
+    case UNHANDLEDREJECTION_ERROR:
       return {
         agg: [detail.message],
         metadata: {
@@ -50,7 +55,7 @@ export function switchErrorDetailAndGetAggregationDataAndMetaData(
           message: detail.message,
         },
       };
-    case types.UNKNOWN_ERROR:
+    case UNKNOWN_ERROR:
       return {
         agg: [detail.message],
         metadata: {
@@ -58,7 +63,7 @@ export function switchErrorDetailAndGetAggregationDataAndMetaData(
           message: detail.message,
         },
       };
-    case types.RESOURCE_ERROR:
+    case RESOURCE_ERROR:
       return {
         agg: [
           detail.outerHTML,
@@ -76,7 +81,7 @@ export function switchErrorDetailAndGetAggregationDataAndMetaData(
           others: detail.selector,
         },
       };
-    case types.AJAX_ERROR:
+    case AJAX_ERROR:
       return {
         agg: [detail.req.url, detail.req.method, detail.req.data],
         metadata: {
@@ -85,7 +90,7 @@ export function switchErrorDetailAndGetAggregationDataAndMetaData(
           others: detail.req.method,
         },
       };
-    case types.FETCH_ERROR:
+    case FETCH_ERROR:
       return {
         agg: [detail.req.url, detail.req.method, detail.req.data],
         metadata: {
@@ -94,7 +99,7 @@ export function switchErrorDetailAndGetAggregationDataAndMetaData(
           others: detail.req.method,
         },
       };
-    case types.WEBSOCKET_ERROR:
+    case WEBSOCKET_ERROR:
       return {
         agg: [detail.url],
         metadata: {

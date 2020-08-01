@@ -10,9 +10,3 @@ export interface ReceiveSourceMapFile {
 }
 
 export type SourceMapData = ReceiveSourceMapFile[];
-
-export interface GetSourceByAppVersionParams {
-  apiKey: string;
-  appVersion: string;
-  stack: string;
-}

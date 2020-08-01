@@ -27,7 +27,7 @@ export function getNotificationContent({
   rule,
 }: DispatchNotice): Content {
   const {
-    tags: { platform, url },
+    device: { platform, url },
   } = event;
   const {
     id,

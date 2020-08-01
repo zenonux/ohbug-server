@@ -4,13 +4,23 @@ import {
   UseInterceptors,
   UploadedFile,
   Body,
+  Get,
+  UseGuards,
+  ClassSerializerInterceptor,
+  Param,
+  Delete,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { AuthGuard } from '@nestjs/passport';
 
 import { SourceMapService } from './sourceMap.service';
-import { ReceiveSourceMapDto } from './sourceMap.dto';
-import { SourceMap } from './sourceMap.entity';
+import {
+  ReceiveSourceMapDto,
+  GetSourceMapsDto,
+  DeleteSourceMapsDto,
+} from './sourceMap.dto';
 import type { ReceiveSourceMapFile } from './sourceMap.interface';
+import { SourceMap } from './sourceMap.entity';
 
 /**
  * 用于接受上报 SourceMap，经过处理后入库
@@ -30,10 +40,39 @@ export class SourceMapController {
   async receiveSourceMap(
     @UploadedFile() file: ReceiveSourceMapFile,
     @Body() receiveSourceMapDto: ReceiveSourceMapDto,
-  ): Promise<SourceMap> {
+  ): Promise<void> {
     return await this.sourceMapService.handleSourceMap(
       file,
       receiveSourceMapDto,
     );
+  }
+
+  /**
+   * 根据 apiKey 获取 sourceMaps
+   *
+   * @param apiKey
+   */
+  @Get(':apiKey')
+  @UseGuards(AuthGuard('jwt'))
+  @UseInterceptors(ClassSerializerInterceptor)
+  async get(@Param() { apiKey }: GetSourceMapsDto): Promise<SourceMap[]> {
+    return await this.sourceMapService.getSourceMapsByApiKey({ apiKey });
+  }
+
+  /**
+   * 根据 id 删除 sourceMap
+   *
+   * @param id
+   */
+  @Delete(':id')
+  @UseGuards(AuthGuard('jwt'))
+  @UseInterceptors(ClassSerializerInterceptor)
+  async delete(
+    @Param()
+    { id }: DeleteSourceMapsDto,
+  ): Promise<boolean> {
+    return await this.sourceMapService.deleteSourceMapById({
+      id,
+    });
   }
 }

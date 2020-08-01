@@ -1,11 +1,16 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  CreateDateColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 import { Exclude } from 'class-transformer';
 
 import type { SourceMapData } from './sourceMap.interface';
 
 @Entity()
 export class SourceMap {
-  @Exclude()
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -44,4 +49,23 @@ export class SourceMap {
    */
   @Column({ type: 'jsonb' })
   data: SourceMapData;
+
+  /**
+   * sourceMap 创建时间
+   *
+   * @type {Date}
+   * @memberof SourceMap
+   */
+  @CreateDateColumn({ type: 'timestamp with time zone' })
+  createdAt: Date;
+
+  /**
+   * sourceMap 更新时间
+   *
+   * @type {Date}
+   * @memberof SourceMap
+   */
+  @Exclude()
+  @UpdateDateColumn()
+  updatedAt: Date;
 }

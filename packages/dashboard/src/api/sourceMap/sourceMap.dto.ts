@@ -1,4 +1,4 @@
-import { IsString, IsOptional } from 'class-validator';
+import { IsString, IsOptional, IsNumberString } from 'class-validator';
 
 export class ReceiveSourceMapDto {
   @IsString()
@@ -10,4 +10,14 @@ export class ReceiveSourceMapDto {
   @IsOptional()
   @IsString()
   readonly appType?: string;
+}
+
+export class GetSourceMapsDto {
+  @IsString()
+  readonly apiKey: string;
+}
+
+export class DeleteSourceMapsDto {
+  @IsNumberString()
+  readonly id: number | string;
 }

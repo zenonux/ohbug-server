@@ -295,14 +295,14 @@ export class IssueService {
         },
       );
       const event = eventLike;
-      if (event.detail) {
+      if (typeof event.detail === 'string') {
         event.detail = JSON.parse(event.detail);
       }
-      if (event.state) {
-        event.state = JSON.parse(event.state);
-      }
-      if (event.actions) {
+      if (typeof event.actions === 'string') {
         event.actions = JSON.parse(event.actions);
+      }
+      if (typeof event.metaData === 'string') {
+        event.metaData = JSON.parse(event.metaData);
       }
       return event;
     } catch (error) {

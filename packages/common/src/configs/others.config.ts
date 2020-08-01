@@ -17,4 +17,7 @@ export const othersConfig = registerAs('others', () => ({
   expiredData: {
     interval: process.env.TIME_INTERVAL_FOR_CLEANING_UP_EXPIRED_DATA,
   },
+  sourceMap: {
+    max: 10,
+  },
 }));

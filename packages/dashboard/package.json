@@ -5,7 +5,7 @@
   "author": "chenyueban",
   "scripts": {
     "prebuild": "rimraf dist",
-    "start": "cross-env NODE_ENV=development nest start --watch",
+    "start": "cross-env NODE_ENV=development nest start --watch --preserveWatchOutput\t",
     "build": "nest build",
     "start:debug": "nest start --debug --watch",
     "start:test": "cross-env pm2 start ./ecosystem.config.js --env test",
@@ -29,9 +29,7 @@
     "passport": "^0.4.1",
     "passport-jwt": "^4.0.0",
     "passport-local": "^1.0.0",
-    "source-map": "^0.7.3",
-    "source-map-trace": "^0.0.1",
-    "stack-parser": "^0.0.1",
+    "source-map-trace": "^0.1.2",
     "ua-device": "^0.1.10",
     "uuid": "^8.1.0",
     "winston": "^3.2.1"

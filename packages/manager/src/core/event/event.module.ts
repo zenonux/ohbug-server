@@ -3,24 +3,32 @@ import { BullModule } from '@nestjs/bull';
 import { Transport, ClientProxyFactory } from '@nestjs/microservices';
 import { ConfigService } from '@nestjs/config';
 
-import { MicroserviceNotifierClientModule } from '@ohbug-server/common';
+import {
+  ConfigModule,
+  MicroserviceNotifierClientModule,
+} from '@ohbug-server/common';
 
 import { IssueModule } from '@/core/issue/issue.module';
 
 import { EventService } from './event.service';
-import { EventProcessor } from './event.processor';
+import { EventConsumer } from './event.processor';
 
 @Module({
   imports: [
     MicroserviceNotifierClientModule,
-    BullModule.registerQueue({
+    BullModule.registerQueueAsync({
       name: 'document',
+      imports: [ConfigModule],
+      useFactory: async (configService: ConfigService) => ({
+        redis: configService.get('database.redis'),
+      }),
+      inject: [ConfigService],
     }),
     IssueModule,
   ],
   providers: [
     EventService,
-    EventProcessor,
+    EventConsumer,
     {
       provide: 'KAFKA_MANAGER_LOGSTASH_CLIENT',
       useFactory: (configService: ConfigService) => {

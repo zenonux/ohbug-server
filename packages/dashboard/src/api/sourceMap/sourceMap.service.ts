@@ -1,57 +1,31 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import SourceMapTrace from 'source-map-trace';
-import * as stackParse from 'stack-parser';
+import { InjectQueue } from '@nestjs/bull';
+import type { Queue } from 'bull';
+import { getStackFrame, getTheSourceByError } from 'source-map-trace';
+import { unlinkSync } from 'fs';
 
 import { ForbiddenException } from '@ohbug-server/common';
+import type { OhbugEventLike } from '@ohbug-server/common';
 import { ProjectService } from '@/api/project/project.service';
 
 import { SourceMap } from './sourceMap.entity';
-import { ReceiveSourceMapDto } from './sourceMap.dto';
-import type {
-  ReceiveSourceMapFile,
-  GetSourceByAppVersionParams,
-} from './sourceMap.interface';
+import {
+  DeleteSourceMapsDto,
+  GetSourceMapsDto,
+  ReceiveSourceMapDto,
+} from './sourceMap.dto';
+import type { ReceiveSourceMapFile } from './sourceMap.interface';
 
 @Injectable()
 export class SourceMapService {
   constructor(
+    @InjectQueue('sourceMap') private sourceMapQueue: Queue,
     @InjectRepository(SourceMap)
     private readonly sourceMapRepository: Repository<SourceMap>,
     private readonly projectService: ProjectService,
   ) {}
-
-  async createSourceMap(
-    file: ReceiveSourceMapFile,
-    receiveSourceMapDto: ReceiveSourceMapDto,
-  ): Promise<SourceMap> {
-    try {
-      const { apiKey, appVersion, appType } = receiveSourceMapDto;
-      let sourceMapObject: SourceMap;
-      // 先查有没有已经存的
-      sourceMapObject = await this.sourceMapRepository.findOne({
-        apiKey,
-        appVersion,
-      });
-      if (sourceMapObject) {
-        // 如果有则合并 data
-        // TODO 相同版本的 sourceMap 可能需要覆盖并删除掉 uploads 文件夹内的 map 文件
-        sourceMapObject.data = sourceMapObject.data.concat(file);
-      } else {
-        // 如果没有则新建
-        sourceMapObject = await this.sourceMapRepository.create({
-          apiKey,
-          appVersion,
-          appType,
-          data: [file],
-        });
-      }
-      return await this.sourceMapRepository.save(sourceMapObject);
-    } catch (error) {
-      throw new ForbiddenException(400900, error);
-    }
-  }
 
   /**
    * 接受上传的 sourceMap 文件和相关 app 信息并存储
@@ -69,7 +43,10 @@ export class SourceMapService {
         receiveSourceMapDto.apiKey,
       );
       if (project) {
-        return await this.createSourceMap(file, receiveSourceMapDto);
+        await this.sourceMapQueue.add('sourceMapFile', {
+          file,
+          receiveSourceMapDto,
+        });
       }
     } catch (error) {
       if (error.name === 'EntityNotFound') {
@@ -83,36 +60,67 @@ export class SourceMapService {
   /**
    * 根据 SourceMap 文件获取原始 code
    *
-   * @param sourceMapFilePath
-   * @param line
-   * @param column
+   * @param apiKey
+   * @param appVersion
+   * @param appType
+   * @param event
    */
-  async getSourceByAppVersion({
-    apiKey,
-    appVersion,
-    stack,
-  }: GetSourceByAppVersionParams) {
+  async getSource({ apiKey, appVersion, appType, detail }: OhbugEventLike) {
     try {
       const sourceMap = await this.sourceMapRepository.findOne({
         apiKey,
         appVersion,
+        appType,
       });
+      if (sourceMap) {
+        const stackFrame = getStackFrame(detail);
+        if (stackFrame) {
+          const sourceMapTarget = sourceMap.data.find(({ originalname }) => {
+            const sourceFileName = originalname.split('.map')[0];
+            return stackFrame.fileName.includes(sourceFileName);
+          });
 
-      const ast = stackParse.parse(stack);
-      const stack0 = ast[0];
-      const sourceMapTarget = sourceMap.data.find((s) => {
-        const sourceFileName = s.originalname.split('.map')[0];
-        return stack0.file.includes(sourceFileName);
-      });
-      const source = await SourceMapTrace(
-        sourceMapTarget.path,
-        parseInt(stack0.line, 10),
-        parseInt(stack0.column, 10),
-      );
-
-      return source;
+          if (sourceMapTarget) {
+            return await getTheSourceByError(sourceMapTarget.path, detail);
+          }
+        }
+      }
     } catch (error) {
       throw new ForbiddenException(400903, error);
+    }
+  }
+
+  /**
+   * 根据 apiKey 获取 sourceMaps
+   *
+   * @param apiKey
+   */
+  async getSourceMapsByApiKey({ apiKey }: GetSourceMapsDto) {
+    try {
+      const sourceMaps = await this.sourceMapRepository.find({ apiKey });
+      return sourceMaps;
+    } catch (error) {
+      throw new ForbiddenException(400904, error);
+    }
+  }
+
+  /**
+   * 根据 id 删除 sourceMap
+   *
+   * @param id
+   */
+  async deleteSourceMapById({ id }: DeleteSourceMapsDto) {
+    try {
+      const sourceMap = await this.sourceMapRepository.findOneOrFail(id);
+
+      sourceMap.data.forEach(({ path }) => {
+        unlinkSync(path);
+        // tslint:disable-next-line:no-console
+        console.log(`successfully deleted ${path}`);
+      });
+      return Boolean(await this.sourceMapRepository.remove(sourceMap));
+    } catch (error) {
+      throw new ForbiddenException(400905, error);
     }
   }
 }
