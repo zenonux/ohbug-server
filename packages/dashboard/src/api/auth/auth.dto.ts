@@ -27,8 +27,6 @@ export class BaseAuthDto {
   readonly captcha: number | string;
 }
 
-export class SignupDto extends BaseAuthDto {}
-
 export class LoginDto extends BaseAuthDto {}
 
 export class BindUserDto extends BaseAuthDto {

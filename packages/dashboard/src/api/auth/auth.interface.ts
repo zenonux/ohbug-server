@@ -9,7 +9,6 @@ export interface RedisCaptchaValue {
 
 export interface SignupParams {
   mobile: string;
-  captcha: Captcha;
 }
 export interface BindUserParams {
   mobile: string;

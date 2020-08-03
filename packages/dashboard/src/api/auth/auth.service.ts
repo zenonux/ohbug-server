@@ -154,25 +154,22 @@ export class AuthService implements OnModuleInit {
    * @param mobile
    * @param captcha
    */
-  async signup({ mobile, captcha }: SignupParams): Promise<User> {
+  async signup({ mobile }: SignupParams): Promise<User> {
     try {
-      const verified = await this.verifyCaptcha(mobile, captcha);
-      if (verified) {
-        // 检测手机号是否已经注册
-        let user = await this.userService.getUserByMobile(mobile);
-        if (user) {
-          throw new Error(`手机号已经注册`);
-        }
-        // 未注册，开始创建 user
-        user = await this.userService.saveUser(null, {
-          name: mobile,
-          mobile,
-        });
-        if (user) {
-          return user;
-        } else {
-          throw new Error(`创建用户 ${mobile} 失败`);
-        }
+      // 检测手机号是否已经注册
+      let user = await this.userService.getUserByMobile(mobile);
+      if (user) {
+        throw new Error(`手机号已经注册`);
+      }
+      // 未注册，开始创建 user
+      user = await this.userService.saveUser(null, {
+        name: mobile,
+        mobile,
+      });
+      if (user) {
+        return user;
+      } else {
+        throw new Error(`创建用户 ${mobile} 失败`);
       }
     } catch (error) {
       throw new ForbiddenException(400020, error);

@@ -3,13 +3,7 @@ import { ConfigService } from '@nestjs/config';
 
 import { ForbiddenException } from '@ohbug-server/common';
 import { AuthService } from './auth.service';
-import {
-  CaptchaDto,
-  BaseAuthDto,
-  SignupDto,
-  LoginDto,
-  BindUserDto,
-} from './auth.dto';
+import { CaptchaDto, BaseAuthDto, LoginDto, BindUserDto } from './auth.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -58,32 +52,21 @@ export class AuthController {
   }
 
   /**
-   * 注册
-   *
-   * @param mobile
-   * @param captcha
-   */
-  @Post('signup')
-  async signup(@Body() { mobile, captcha }: SignupDto) {
-    const user = await this.authService.signup({ mobile, captcha });
-    return this.returnJwt(user);
-  }
-
-  /**
-   * 登录
+   * 登录/注册
    *
    * @param mobile
    * @param captcha
    */
   @Post('login')
   async login(@Body() { mobile, captcha }: LoginDto) {
-    const user = await this.authService.login(null, { mobile, captcha });
-    // 返回 token
-    if (user) {
-      return this.returnJwt(user);
-    } else {
-      throw new ForbiddenException(400008);
+    let user = await this.authService.login(null, { mobile, captcha });
+
+    if (!user) {
+      // 若未注册则注册
+      user = await this.authService.signup({ mobile });
     }
+
+    return this.returnJwt(user);
   }
 
   /**
