@@ -71,5 +71,6 @@ services:
       - 443:443
     volumes:
       - ./docker/nginx/conf.d/:/etc/nginx/conf.d
+      - ./docker/nginx/certs/:/etc/ssl/certs
     extra_hosts:
       - "host.docker.internal:172.17.0.1"
