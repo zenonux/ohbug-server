@@ -5,6 +5,7 @@ import {
   IsNotEmpty,
   IsNumberString,
   IsDateString,
+  IsOptional,
 } from 'class-validator';
 import type { ProjectType } from './project.interface';
 
@@ -43,6 +44,10 @@ export class UpdateProjectDto {
 export class GetAllProjectsByOrganizationIdDto {
   @IsNumberString()
   readonly organization_id: number;
+
+  @IsOptional()
+  @IsNumberString()
+  readonly user_id?: number;
 }
 
 export class GetTrendByProjectIdDto {

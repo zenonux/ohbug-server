@@ -198,18 +198,29 @@ export class ProjectService {
   /**
    * 根据 id 获取库里的指定 Organization 所对应的 projects
    *
-   * @param id organization id
+   * @param organization_id
+   * @param user_id
    */
   async getAllProjectsByOrganizationId(
-    id: number | string,
+    organization_id: number | string,
+    user_id: number | string,
   ): Promise<Project[]> {
     try {
-      return await this.projectRepository.find({
+      const projects = await this.projectRepository.find({
         where: {
-          organization: id,
+          organization: organization_id,
         },
         relations: ['users', 'admin'],
       });
+
+      if (user_id) {
+        return projects.filter((project) =>
+          // tslint:disable-next-line:triple-equals
+          Boolean(project.users.find((user) => user.id == user_id)),
+        );
+      }
+
+      return projects;
     } catch (error) {
       throw new ForbiddenException(400207, error);
     }

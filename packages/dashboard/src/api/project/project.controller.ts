@@ -80,10 +80,11 @@ export class ProjectController {
   @UseInterceptors(ClassSerializerInterceptor)
   async getAll(
     @Query()
-    { organization_id }: GetAllProjectsByOrganizationIdDto,
+    { organization_id, user_id }: GetAllProjectsByOrganizationIdDto,
   ): Promise<Project[]> {
     return await this.projectService.getAllProjectsByOrganizationId(
       organization_id,
+      user_id,
     );
   }
 
