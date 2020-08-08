@@ -38,11 +38,15 @@ export class EventService {
       .send(TOPIC_DASHBOARD_MANAGER_GET_LATEST_EVENT, issue_id)
       .toPromise();
 
-    const source = await this.sourceMapService.getSource(event);
-    if (source) {
-      return Object.assign(event, {
-        source,
-      });
+    try {
+      const source = await this.sourceMapService.getSource(event);
+      if (source) {
+        return Object.assign(event, {
+          source,
+        });
+      }
+    } catch (error) {
+      return event;
     }
 
     return event;
