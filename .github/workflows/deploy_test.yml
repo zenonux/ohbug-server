@@ -17,7 +17,10 @@ jobs:
             ${{ secrets.SERVER_CLONE_SCRIPT_TEST }}
             echo "${{ secrets.SERVER_ENV_TEST }}" > .env.test
             echo "${{ secrets.SERVER_DOCKER_ENV_TEST }}" > docker_env.sh
-            echo "${{ secrets.SERVER_CERT_KEY_TEST }}" > ./docker/nginx/certs/ohbug_server_cert.key
-            echo "${{ secrets.SERVER_CERT_PEM_TEST }}" > ./docker/nginx/certs/ohbug_server_cert.pem
+            echo "${{ secrets.SERVER_CERT_KEY_TEST }}" > ohbug_server_cert.key
+            echo "${{ secrets.SERVER_CERT_PEM_TEST }}" > ohbug_server_cert.pem
+            mkdir ./docker/nginx/certs
+            mv ohbug_server_cert.key ./docker/nginx/certs/
+            mv ohbug_server_cert.pem ./docker/nginx/certs/
             source docker_env.sh
             npm run deploy:test
