@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import type { FindConditions } from 'typeorm';
@@ -8,6 +8,7 @@ import { uniq } from 'ramda';
 
 import { ForbiddenException } from '@ohbug-server/common';
 
+import { EventService } from '@/core/event/event.service';
 import type { OhbugDocument } from '@/core/event/event.interface';
 
 import { Issue } from './issue.entity';
@@ -29,6 +30,8 @@ export class IssueService {
     @InjectRepository(Issue)
     private readonly issueRepository: Repository<Issue>,
     private readonly elasticsearchService: ElasticsearchService,
+    @Inject(forwardRef(() => EventService))
+    private readonly eventService: EventService,
   ) {}
 
   /**
@@ -279,31 +282,11 @@ export class IssueService {
     try {
       const issue = await this.issueRepository.findOne(issue_id);
       const latestEventDocument = issue.events[issue.events.length - 1];
-      const { index, document_id } = latestEventDocument;
-      const {
-        body: {
-          _source: { event: eventLike },
-        },
-      } = await this.elasticsearchService.get(
-        {
-          index,
-          id: document_id,
-        },
-        {
-          ignore: [404],
-          maxRetries: 3,
-        },
-      );
-      const event = eventLike;
-      if (typeof event.detail === 'string') {
-        event.detail = JSON.parse(event.detail);
-      }
-      if (typeof event.actions === 'string') {
-        event.actions = JSON.parse(event.actions);
-      }
-      if (typeof event.metaData === 'string') {
-        event.metaData = JSON.parse(event.metaData);
-      }
+      const { document_id } = latestEventDocument;
+      const event = await this.eventService.getEventByEventId({
+        event_id: document_id,
+        issue_id,
+      });
       return event;
     } catch (error) {
       throw new ForbiddenException(400403, error);

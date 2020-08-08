@@ -35,3 +35,8 @@ export interface AggregationDataAndMetaData {
   agg: any[];
   metadata: MetaData;
 }
+
+export interface GetEventByEventId {
+  event_id: string;
+  issue_id: string | number;
+}

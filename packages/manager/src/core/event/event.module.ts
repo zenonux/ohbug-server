@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { BullModule } from '@nestjs/bull';
 import { Transport, ClientProxyFactory } from '@nestjs/microservices';
 import { ConfigService } from '@nestjs/config';
@@ -24,7 +24,7 @@ import { EventConsumer } from './event.processor';
       }),
       inject: [ConfigService],
     }),
-    IssueModule,
+    forwardRef(() => IssueModule),
   ],
   providers: [
     EventService,

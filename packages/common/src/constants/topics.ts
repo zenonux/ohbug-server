@@ -33,6 +33,9 @@ export const TOPIC_DASHBOARD_MANAGER_GET_TREND =
 // dashboard 向 manager getLatestEventByIssueId
 export const TOPIC_DASHBOARD_MANAGER_GET_LATEST_EVENT =
   'TOPIC_DASHBOARD_MANAGER_GET_LATEST_EVENT';
+// dashboard 向 manager getEventByEventId
+export const TOPIC_DASHBOARD_MANAGER_GET_EVENT =
+  'TOPIC_DASHBOARD_MANAGER_GET_EVENT';
 // dashboard 向 manager 查询 project 对应的趋势图
 export const TOPIC_DASHBOARD_MANAGER_GET_PROJECT_TREND =
   'TOPIC_DASHBOARD_MANAGER_GET_PROJECT_TREND';

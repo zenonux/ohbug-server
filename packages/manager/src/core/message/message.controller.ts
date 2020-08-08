@@ -11,6 +11,7 @@ import {
   TOPIC_DASHBOARD_MANAGER_SEARCH_ISSUES,
   TOPIC_DASHBOARD_MANAGER_GET_TREND,
   TOPIC_DASHBOARD_MANAGER_GET_LATEST_EVENT,
+  TOPIC_DASHBOARD_MANAGER_GET_EVENT,
   TOPIC_DASHBOARD_MANAGER_GET_PROJECT_TREND,
 } from '@ohbug-server/common';
 import type { OhbugEventLike } from '@ohbug-server/common';
@@ -23,6 +24,7 @@ import type {
   GetTrendByIssueIdParams,
   GetProjectTrendByApiKeyParams,
 } from '@/core/issue/issue.interface';
+import type { GetEventByEventId } from '@/core/event/event.interface';
 
 @Controller()
 export class MessageController {
@@ -56,6 +58,11 @@ export class MessageController {
   @MessagePattern(TOPIC_DASHBOARD_MANAGER_GET_LATEST_EVENT)
   async getLatestEventByIssueId(@Payload() payload: number | string) {
     return await this.issueService.getLatestEventByIssueId(payload);
+  }
+
+  @MessagePattern(TOPIC_DASHBOARD_MANAGER_GET_EVENT)
+  async getEventByEventId(@Payload() payload: GetEventByEventId) {
+    return await this.eventService.getEventByEventId(payload);
   }
 
   @MessagePattern(TOPIC_DASHBOARD_MANAGER_GET_PROJECT_TREND)

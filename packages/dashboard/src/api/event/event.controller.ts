@@ -22,8 +22,8 @@ export class EventController {
    * 根据 event_id 取到对应 event 以及受影响的用户数
    *
    * @param event_id
-   * @param project_id
    * @param issue_id
+   * @param event_index
    */
   @Get('/:event_id')
   @UseGuards(AuthGuard('jwt'))
@@ -37,6 +37,6 @@ export class EventController {
     if (event_id === 'latest' && issue_id) {
       return await this.eventService.getLatestEventByIssueId(issue_id);
     }
-    return await this.eventService.getEventByEventId(event_id);
+    return await this.eventService.getEventByEventId(event_id, issue_id);
   }
 }

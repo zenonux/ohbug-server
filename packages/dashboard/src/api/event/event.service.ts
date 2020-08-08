@@ -1,7 +1,10 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 
-import { TOPIC_DASHBOARD_MANAGER_GET_LATEST_EVENT } from '@ohbug-server/common';
+import {
+  TOPIC_DASHBOARD_MANAGER_GET_LATEST_EVENT,
+  TOPIC_DASHBOARD_MANAGER_GET_EVENT,
+} from '@ohbug-server/common';
 import { SourceMapService } from '@/api/sourceMap/sourceMap.service';
 
 @Injectable()
@@ -11,11 +14,18 @@ export class EventService {
   @Inject('MICROSERVICE_MANAGER_CLIENT')
   private readonly managerClient: ClientProxy;
 
-  // TODO
-  async getEventByEventId(event_id: string) {
-    return {
-      event_id,
-    } as any;
+  /**
+   * 根据 event_id 查询 event
+   *
+   * @param event_id
+   * @param issue_id
+   */
+  async getEventByEventId(event_id: string, issue_id: string | number) {
+    const event = await this.managerClient
+      .send(TOPIC_DASHBOARD_MANAGER_GET_EVENT, { event_id, issue_id })
+      .toPromise();
+
+    return event;
   }
 
   /**
