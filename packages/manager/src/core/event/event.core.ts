@@ -38,13 +38,13 @@ export function switchErrorDetailAndGetAggregationDataAndMetaData(
           detail.filename,
           detail.lineno,
           detail.colno,
-          detail.stack,
+          // detail.stack,
         ],
         metadata: {
           type,
           message: detail.message,
           filename: detail.filename,
-          others: detail.stack,
+          // others: detail.stack,
         },
       };
     case UNHANDLEDREJECTION_ERROR:
@@ -109,7 +109,12 @@ export function switchErrorDetailAndGetAggregationDataAndMetaData(
       };
     case 'react':
       return {
-        agg: [detail.name, detail.message, detail.stack, detail.errorInfo],
+        agg: [
+          detail.name,
+          detail.message,
+          detail.errorInfo,
+          // detail.stack
+        ],
         metadata: {
           type,
           message: detail.message,
@@ -121,7 +126,7 @@ export function switchErrorDetailAndGetAggregationDataAndMetaData(
         agg: [
           detail.name,
           detail.message,
-          detail.stack,
+          // detail.stack,
           detail.errorInfo,
           detail.component,
           detail.file,
