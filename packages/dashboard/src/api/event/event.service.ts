@@ -25,6 +25,17 @@ export class EventService {
       .send(TOPIC_DASHBOARD_MANAGER_GET_EVENT, { event_id, issue_id })
       .toPromise();
 
+    try {
+      const source = await this.sourceMapService.getSource(event);
+      if (source) {
+        return Object.assign(event, {
+          source,
+        });
+      }
+    } catch (error) {
+      return event;
+    }
+
     return event;
   }
 
