@@ -69,7 +69,7 @@ export class InviteService {
         return invite.url;
       } else {
         const uuid = uuid_v4();
-        const url = `${host}/invite?id=${uuid}`;
+        const url = `${host}/#/invite?id=${uuid}`;
         invite = this.inviteRepository.create({
           uuid,
           hash,
