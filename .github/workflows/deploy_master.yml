@@ -23,4 +23,4 @@ jobs:
             mv ohbug_server_cert.key ./docker/nginx/certs/
             mv ohbug_server_cert.pem ./docker/nginx/certs/
             source docker_env.sh
-            npm run deploy:test
+            npm run deploy:prod
