@@ -63,6 +63,17 @@ export class OrganizationService {
     introduction,
   }: CreateOrganizationDto): Promise<Organization> {
     try {
+      const MAX_ORGANIZATION_COUNT = 2;
+      // @ts-ignore
+      const [_, count] = await this.organizationRepository.findAndCount({
+        where: {
+          admin: admin_id,
+        },
+      });
+      // 可创建团队最大数量限制为 2
+      if (count >= MAX_ORGANIZATION_COUNT) {
+        throw new Error(`每个用户最多可创建 ${MAX_ORGANIZATION_COUNT} 个团队`);
+      }
       const org = await this.createOrganizationObject({
         name,
         admin_id,

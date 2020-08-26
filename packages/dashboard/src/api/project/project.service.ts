@@ -118,6 +118,17 @@ export class ProjectService {
     organization_id,
   }: CreateProjectDto): Promise<Project> {
     try {
+      const MAX_PROJECT_COUNT = 2;
+      // @ts-ignore
+      const [_, count] = await this.projectRepository.findAndCount({
+        where: {
+          organization: organization_id,
+        },
+      });
+      // 项目最大数量限制为 2
+      if (count >= MAX_PROJECT_COUNT) {
+        throw new Error(`每个团队最多可创建 ${MAX_PROJECT_COUNT} 个项目`);
+      }
       const project = await this.createProjectObject({
         name,
         type,
