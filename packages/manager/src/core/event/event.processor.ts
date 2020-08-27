@@ -1,23 +1,24 @@
 import { Inject } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { Process, Processor } from '@nestjs/bull';
+import { getManager } from 'typeorm';
 import { Job } from 'bull';
+import { ConfigService } from '@nestjs/config';
 
 import {
   ForbiddenException,
   TOPIC_MANAGER_NOTIFIER_DISPATCH_NOTICE,
 } from '@ohbug-server/common';
+
 import type {
   OhbugEventLike,
   OhbugEventLikeWithIssueId,
 } from '@ohbug-server/common';
-
 import { IssueService } from '@/core/issue/issue.service';
 import {
   getNotificationByApiKey,
   judgingStatus,
 } from '@/core/issue/notification.core';
-
 import { EventService } from './event.service';
 import type { OhbugDocument } from './event.interface';
 
@@ -26,6 +27,7 @@ export class EventConsumer {
   constructor(
     private readonly eventService: EventService,
     private readonly issueService: IssueService,
+    private readonly configService: ConfigService,
   ) {}
 
   @Inject('MICROSERVICE_NOTIFIER_CLIENT')
@@ -37,8 +39,9 @@ export class EventConsumer {
    * 2. 创建 issue (postgres)
    * 3. 创建 event (elastic)
    * 4. 更新 issue 的 events (postgres)
-   * 5. 根据 apiKey 拿到对应的 notification 配置
-   * 6. 判断当前状态十分符合 notification 配置的要求，符合则通知 notifier 开始任务
+   * 5. 更新 organization 中的 count
+   * 6. 根据 apiKey 拿到对应的 notification 配置
+   * 7. 判断当前状态十分符合 notification 配置的要求，符合则通知 notifier 开始任务
    *
    * @param job
    */
@@ -46,7 +49,8 @@ export class EventConsumer {
   async handleEvent(job: Job) {
     try {
       const eventLike = job.data as OhbugEventLike;
-      if (eventLike) {
+      const { exceeded, organization } = await this.statisticalEvent(eventLike);
+      if (eventLike && exceeded) {
         // 1. aggregation
         const { intro, metadata } = this.eventService.aggregation(eventLike);
 
@@ -79,10 +83,19 @@ export class EventConsumer {
           baseIssue,
           ...document,
         });
-
-        // 5. 根据 apiKey 拿到对应的 notification 配置
+        // 5. 更新 organization 中的 count
+        await getManager().query(
+          `
+          UPDATE "organization"
+          SET "count" = "organization"."count" + 1
+          WHERE
+            "organization"."id" = $1
+        `,
+          [organization.id],
+        );
+        // 6. 根据 apiKey 拿到对应的 notification 配置
         const notification = await getNotificationByApiKey(issue.apiKey);
-        // 6. 判断当前状态十分符合 notification 配置的要求，符合则通知 notifier 开始任务
+        // 7. 判断当前状态十分符合 notification 配置的要求，符合则通知 notifier 开始任务
         const callback = async (result) => {
           return await this.notifierClient
             .send(TOPIC_MANAGER_NOTIFIER_DISPATCH_NOTICE, {
@@ -99,9 +112,40 @@ export class EventConsumer {
           notification.notificationRules,
           callback,
         );
+      } else {
+        throw new Error('超出当前团队 Event 数量上限值');
       }
     } catch (error) {
       throw new ForbiddenException(4001004, error);
     }
+  }
+
+  /**
+   * 统计 event 总数
+   * 若超过限定值不再储存 event
+   *
+   * @private
+   */
+  private async statisticalEvent(event: OhbugEventLike) {
+    const manager = getManager();
+    const [organization] = await manager.query(
+      `
+      SELECT
+        "organization"."id",
+        "organization"."count"
+      FROM
+        "organization"
+        LEFT JOIN "project" ON "project"."apiKey" = $1
+      WHERE
+        "project"."organizationId" = "organization"."id"
+    `,
+      [event.apiKey],
+    );
+
+    const max = this.configService.get<string>('others.event.max');
+    return {
+      exceeded: parseInt(organization.count, 10) < parseInt(max, 10),
+      organization,
+    };
   }
 }

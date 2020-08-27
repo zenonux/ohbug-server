@@ -20,4 +20,7 @@ export const othersConfig = registerAs('others', () => ({
   sourceMap: {
     max: 10,
   },
+  event: {
+    max: process.env.EVENT_MAX,
+  },
 }));

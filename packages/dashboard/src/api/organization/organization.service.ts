@@ -63,7 +63,7 @@ export class OrganizationService {
     introduction,
   }: CreateOrganizationDto): Promise<Organization> {
     try {
-      const MAX_ORGANIZATION_COUNT = 2;
+      const MAX_ORGANIZATION_COUNT = 1;
       // @ts-ignore
       const [_, count] = await this.organizationRepository.findAndCount({
         where: {

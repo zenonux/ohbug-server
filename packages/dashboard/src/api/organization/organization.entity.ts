@@ -84,5 +84,15 @@ export class Organization {
   @OneToMany((_) => Project, (project) => project.organization)
   projects: Project[];
 
+  /**
+   * organization 当前承载的 event 数
+   *
+   * @type {number}
+   * @memberof Organization
+   */
+  @Exclude()
+  @Column({ type: 'integer', default: 0 })
+  count: number;
+
   // TODO 与 business 相关联
 }
