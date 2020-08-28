@@ -4,7 +4,7 @@ import { Repository } from 'typeorm';
 import dayjs from 'dayjs';
 import { v4 as uuid_v4 } from 'uuid';
 
-import { ForbiddenException, md5 } from '@ohbug-server/common';
+import { ForbiddenException, md5, getHost } from '@ohbug-server/common';
 import { ProjectService } from '@/api/project/project.service';
 import { OrganizationService } from '@/api/organization/organization.service';
 import { UserService } from '@/api/user/user.service';
@@ -17,23 +17,6 @@ import {
   GetInviteDto,
 } from './invite.dto';
 
-const hostMap = [
-  {
-    env: 'development',
-    host: 'http://localhost:8888',
-  },
-  {
-    env: 'production',
-    host: 'https://app.ohbug.net',
-  },
-  {
-    env: 'test',
-    host: 'https://test.app.ohbug.net',
-  },
-];
-const host =
-  hostMap.find(({ env }) => process.env.NODE_ENV === env).host ||
-  'https://app.ohbug.net';
 const expire = 14;
 
 @Injectable()
@@ -69,7 +52,7 @@ export class InviteService {
         return invite.url;
       } else {
         const uuid = uuid_v4();
-        const url = `${host}/invite?id=${uuid}`;
+        const url = `${getHost()}/invite?id=${uuid}`;
         invite = this.inviteRepository.create({
           uuid,
           hash,

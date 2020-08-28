@@ -24,13 +24,14 @@ export class UserService {
   /**
    * 对用户数据进行处理
    *
-   * @param from
+   * @param type
    * @param detail
    */
   private createUser(type: OAuthType, detail: UserDetail): User {
-    let mobile: string;
     let name: string;
     let email: string;
+    let password: string;
+    let mobile: string;
     let avatar: string;
     let oauth: OAuth;
     switch (type) {
@@ -49,15 +50,18 @@ export class UserService {
         break;
       default:
         const normalDetail = detail as NormalUser;
-        mobile = normalDetail.mobile;
         name = normalDetail.name;
         email = normalDetail.email;
+        password = normalDetail.password;
+        mobile = normalDetail.mobile;
+        mobile = normalDetail.mobile;
         avatar = normalDetail.avatar;
     }
     const user = this.userRepository.create({
-      mobile,
       name,
       email,
+      password,
+      mobile,
       avatar,
     });
     if (oauth) user.oauth = oauth;
@@ -80,12 +84,7 @@ export class UserService {
     }
   }
 
-  async bindOAuth({
-    baseUser,
-    mobile,
-    type,
-    detail,
-  }: BindOAuthParams): Promise<User> {
+  async bindOAuth({ baseUser, type, detail }: BindOAuthParams): Promise<User> {
     let user = baseUser;
     if (user) {
       // 已有账号 仅更新 oauth 字段
@@ -99,7 +98,6 @@ export class UserService {
     } else {
       // 没有账号 生成用户
       user = this.createUser(type, detail);
-      user.mobile = mobile;
     }
     const result = await this.userRepository.save(user);
     return result;
@@ -182,6 +180,36 @@ export class UserService {
   }
 
   /**
+   * 根据 email 获取库里的指定用户
+   *
+   * @param email
+   */
+  async getUserByEmail(email: string): Promise<User> {
+    try {
+      const user = await this.userRepository.findOne({
+        email,
+      });
+      return user;
+    } catch (error) {
+      throw new ForbiddenException(400001, error);
+    }
+  }
+
+  /**
+   * 根据 email 激活指定用户
+   *
+   * @param email
+   */
+  async activateUserByEmail(email: string): Promise<User> {
+    const user = await this.getUserByEmail(email);
+    if (user.activated === false) {
+      user.activated = true;
+      return await this.userRepository.save(user);
+    }
+    return user;
+  }
+
+  /**
    * 更新用户信息
    *
    * @param user_id
@@ -194,7 +222,7 @@ export class UserService {
     name,
     email,
     avatar,
-  }: GetUserDto & UpdateUserDto) {
+  }: GetUserDto & UpdateUserDto): Promise<User> {
     try {
       const user = await this.getUserById(user_id);
       if (user) {

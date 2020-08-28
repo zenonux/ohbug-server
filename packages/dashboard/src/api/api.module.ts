@@ -6,7 +6,6 @@ import { EventModule } from './event/event.module';
 import { IssueModule } from './issue/issue.module';
 import { OrganizationModule } from './organization/organization.module';
 import { ProjectModule } from './project/project.module';
-import { AnalysisModule } from './analysis/analysis.module';
 import { SourceMapModule } from './sourceMap/sourceMap.module';
 import { InviteModule } from './invite/invite.module';
 
@@ -18,7 +17,6 @@ import { InviteModule } from './invite/invite.module';
     IssueModule,
     OrganizationModule,
     ProjectModule,
-    AnalysisModule,
     SourceMapModule,
     InviteModule,
   ],

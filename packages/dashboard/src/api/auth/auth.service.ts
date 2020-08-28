@@ -1,35 +1,34 @@
-import { Injectable, HttpService, OnModuleInit } from '@nestjs/common';
+import { Injectable, HttpService, Inject } from '@nestjs/common';
+import type { OnModuleInit } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { RedisService } from 'nestjs-redis';
-import alicloudService from '@alicloud/pop-core';
-import dayjs from 'dayjs';
-import { Redis } from 'ioredis';
 import { ConfigService } from '@nestjs/config';
+import type { Redis } from 'ioredis';
+import { ClientProxy } from '@nestjs/microservices';
 
-import { ForbiddenException } from '@ohbug-server/common';
+import {
+  ForbiddenException,
+  md5,
+  getHost,
+  TOPIC_DASHBOARD_NOTIFIER_SEND_EMAIL,
+} from '@ohbug-server/common';
 
 import { User } from '@/api/user/user.entity';
 import { UserService } from '@/api/user/user.service';
-
 import type { OAuthType } from '@/api/user/user.interface';
+import { BindUserDto, SignupDto } from '@/api/auth/auth.dto';
 
 import type {
   GithubToken,
   GithubUser,
   JwtToken,
   RedisCaptchaValue,
-  SignupParams,
-  BindUserParams,
 } from './auth.interface';
 import type { JwtPayload } from './auth.interface';
-
-// 短信验证码 过期时间 (秒)
-const CAPTCHA_EXPIRY_TIME = 300;
 
 @Injectable()
 export class AuthService implements OnModuleInit {
   redisClient: Redis;
-  smsClient: alicloudService;
 
   constructor(
     private readonly configService: ConfigService,
@@ -39,140 +38,218 @@ export class AuthService implements OnModuleInit {
     private readonly jwtService: JwtService,
   ) {}
 
+  @Inject('MICROSERVICE_NOTIFIER_CLIENT')
+  private readonly notifierClient: ClientProxy;
+
   async onModuleInit() {
     this.redisClient = await this.redisService.getClient();
-    this.smsClient = new alicloudService(
-      this.configService.get('service.sms.config'),
-    );
-  }
-
-  /**
-   * 发送短信 (使用阿里云短信服务)
-   *
-   * @param mobile
-   * @param captcha
-   */
-  private async sendSms(mobile: string, captcha: number): Promise<void> {
-    const params = {
-      ...this.configService.get('service.sms.params'),
-      PhoneNumbers: mobile,
-      TemplateParam: `{"code":"${captcha}"}`,
-    };
-
-    const requestOption = {
-      method: 'POST',
-    };
-
-    await this.smsClient.request('SendSms', params, requestOption);
-  }
-
-  private async createCaptcha(mobile: string): Promise<'OK'> {
-    // 生成验证码
-    const captcha = Math.floor(100000 + Math.random() * 900000);
-    // 发送验证码
-    if (process.env.NODE_ENV === 'production') {
-      await this.sendSms(mobile, captcha);
-    }
-    const value: RedisCaptchaValue = {
-      captcha,
-      timestamp: new Date().getTime(),
-    };
-    // 暂存验证码 有效期 CAPTCHA_EXPIRY_TIME
-    return await this.redisClient.set(
-      mobile,
-      JSON.stringify(value),
-      'EX',
-      CAPTCHA_EXPIRY_TIME,
-    );
-  }
-
-  /**
-   * 控制获取验证码的流程
-   * 1. 验证手机号是否存在 redis
-   * 2. 发送验证码
-   * 3. 生成并暂存验证码
-   *
-   * @param mobile
-   */
-  async getCaptcha(mobile: string): Promise<string> {
-    try {
-      // 验证手机号是否存在 redis
-      const value = await this.redisClient.get(mobile);
-      if (value) {
-        // 存在，判断时间是否大于 sending_interval 秒
-        const { timestamp } = JSON.parse(value) as RedisCaptchaValue;
-        const sending_interval = this.configService.get<number>(
-          'service.sms.sending_interval',
-        );
-        if (
-          dayjs().isBefore(dayjs(timestamp).add(sending_interval, 'second'))
-        ) {
-          // 小于
-          throw new Error(
-            `每 ${sending_interval} 秒只能获取一次验证码，请稍后重试`,
-          );
-        } else {
-          // 大于 生成 captcha
-          return await this.createCaptcha(mobile);
-        }
-      } else {
-        // 不存在 生成 captcha
-        return await this.createCaptcha(mobile);
-      }
-    } catch (error) {
-      throw new ForbiddenException(400010, error);
-    }
-  }
-
-  /**
-   * 校验验证码是否合法
-   *
-   * @param mobile
-   * @param captcha
-   */
-  async verifyCaptcha(
-    mobile: string,
-    captcha: number | string,
-  ): Promise<boolean> {
-    const value = await this.redisClient.get(mobile);
-    if (value) {
-      const { captcha: redisCaptcha } = JSON.parse(value) as RedisCaptchaValue;
-      if (Number(captcha) === redisCaptcha) {
-        await this.redisClient.del(mobile);
-        return true;
-      } else {
-        throw new Error(`验证码不合法，请检查手机号与验证码是否对应`);
-      }
-    } else {
-      throw new Error(`验证码已过期，请重新生成验证码`);
-    }
   }
 
   /**
    * 注册
    *
    * @param mobile
-   * @param captcha
    */
-  async signup({ mobile }: SignupParams): Promise<User> {
+  async signup({ name, email, password }: SignupDto): Promise<User> {
     try {
-      // 检测手机号是否已经注册
-      let user = await this.userService.getUserByMobile(mobile);
+      // 检测是否已经注册
+      let user = await this.userService.getUserByEmail(email);
       if (user) {
-        throw new Error(`手机号已经注册`);
+        throw new Error(`邮箱已注册`);
       }
+      // 密码加密处理
+      const encryptedPassword = md5(
+        md5(password) +
+          this.configService.get<string>('others.user.password.salt'),
+      );
       // 未注册，开始创建 user
       user = await this.userService.saveUser(null, {
-        name: mobile,
-        mobile,
+        name,
+        email,
+        password: encryptedPassword,
       });
       if (user) {
+        await this.sendActivationEmail(email);
         return user;
       } else {
-        throw new Error(`创建用户 ${mobile} 失败`);
+        throw new Error(`创建用户 ${name} 失败`);
       }
     } catch (error) {
       throw new ForbiddenException(400020, error);
+    }
+  }
+
+  /**
+   * 发送激活邮件
+   *
+   * @param email
+   */
+  async sendActivationEmail(email: string) {
+    try {
+      const captcha = await this.createCaptcha(email);
+      const title = `Ohbug 喊你来激活邮箱啦`;
+      const text = `
+    为了保证您的帐户安全，请及时激活邮箱，该链接在24小时之内有效。
+    点击链接激活邮箱：
+    ${getHost()}/activate?captcha=${captcha}
+    `;
+      const html = ``;
+      // 发送激活邮件
+      return await this.notifierClient
+        .send(TOPIC_DASHBOARD_NOTIFIER_SEND_EMAIL, {
+          email,
+          title,
+          text,
+          html,
+        })
+        .toPromise();
+    } catch (error) {
+      throw new ForbiddenException(400012, error);
+    }
+  }
+
+  /**
+   * 用户激活
+   *
+   * @param captcha
+   */
+  async activate(captcha: string): Promise<User> {
+    try {
+      const { email } = await this.getCaptcha(captcha);
+      if (!email) {
+        throw new Error('激活链接已失效 请前往控制台重新生成激活邮箱');
+      }
+      const user = await this.userService.activateUserByEmail(email);
+      await this.redisClient.del(captcha);
+      return user;
+    } catch (error) {
+      throw new ForbiddenException(400013, error);
+    }
+  }
+
+  /**
+   * 获取验证码对应 email
+   *
+   * @param captcha
+   */
+  async getCaptcha(captcha: string): Promise<RedisCaptchaValue> {
+    try {
+      const json = await this.redisClient.get(captcha);
+      if (json) return JSON.parse(json) as RedisCaptchaValue;
+      throw new Error(
+        '用户已激活或激活链接已失效，请前往控制台重新生成激活邮箱',
+      );
+    } catch (error) {
+      throw new ForbiddenException(400011, error);
+    }
+  }
+
+  /**
+   * 生成验证码
+   *
+   * @private
+   * @param email
+   */
+  private async createCaptcha(email: string): Promise<string> {
+    try {
+      // 生成验证码
+      const captcha = md5(Math.random().toString());
+      const value: RedisCaptchaValue = {
+        email,
+        timestamp: new Date().getTime(),
+      };
+      // 验证码过期时间 (秒)
+      const CAPTCHA_EXPIRY_TIME = 86400; // 24h
+      // 暂存验证码 有效期 CAPTCHA_EXPIRY_TIME
+      await this.redisClient.set(
+        captcha,
+        JSON.stringify(value),
+        'EX',
+        CAPTCHA_EXPIRY_TIME,
+      );
+      return captcha;
+    } catch (error) {
+      throw new ForbiddenException(400010, error);
+    }
+  }
+
+  /**
+   * 登录 包含 oauth2 和普通手机号验证登录
+   * 此方法会根据 `from` `detail` 的不同做不同的处理
+   *
+   * @param type
+   * @param detail oauth2 拿到的用户信息
+   */
+  async login(type: OAuthType, detail: any) {
+    try {
+      if (type === 'github') {
+        // 判断是否已经注册
+        const user = await this.userService.getUserByOauthId(type, detail.id);
+        if (user) {
+          return user;
+        }
+        return null;
+      } else {
+        const { email, password } = detail;
+        const user = await this.userService.getUserByEmail(email);
+        if (!user) {
+          throw new Error('用户未注册');
+        }
+        const verified = await this.verifyPassword(user, password);
+        if (verified) {
+          return user;
+        } else {
+          throw new Error('邮箱或密码错误');
+        }
+      }
+    } catch (error) {
+      throw new ForbiddenException(400006, error);
+    }
+  }
+
+  /**
+   * 验证密码
+   *
+   * @param user
+   * @param password
+   */
+  async verifyPassword(user: User, password: string) {
+    const encryptedPassword = md5(
+      md5(password) +
+        this.configService.get<string>('others.user.password.salt'),
+    );
+    return user.password === encryptedPassword;
+  }
+
+  /**
+   * 绑定用户
+   *
+   * @param email
+   * @param oauthType
+   * @param oauthUserDetail
+   */
+  async bindUser({ email, oauthType, oauthUserDetail }: BindUserDto) {
+    try {
+      // 判断账号是否已经注册
+      const user = await this.userService.getUserByEmail(email);
+      if (user) {
+        // 判断手机号是否绑定了相同 oauth 账号
+        if (user.oauth?.[oauthType]) {
+          const oauthTextMap = {
+            github: 'Github',
+            wechat: '微信',
+          };
+          throw new Error(`该账号已绑定 ${oauthTextMap[oauthType]}`);
+        }
+      }
+      // 开始绑定 oauth 信息
+      return await this.userService.bindOAuth({
+        baseUser: user,
+        type: oauthType,
+        detail: oauthUserDetail,
+      });
+    } catch (error) {
+      throw new ForbiddenException(400030, error);
     }
   }
 
@@ -231,78 +308,6 @@ export class AuthService implements OnModuleInit {
       return data;
     } catch (error) {
       throw new ForbiddenException(400005, error);
-    }
-  }
-
-  /**
-   * 登录 包含 oauth2 和普通手机号验证登录
-   * 此方法会根据 `from` `detail` 的不同做不同的处理
-   *
-   * @param type
-   * @param detail oauth2 拿到的用户信息
-   */
-  async login(type: OAuthType, detail: any) {
-    try {
-      if (type === 'github') {
-        // 判断是否已经注册
-        const user = await this.userService.getUserByOauthId(type, detail.id);
-        if (user) {
-          return user;
-        }
-        return null;
-      } else {
-        // 手机号验证登录
-        const { mobile, captcha } = detail;
-        const verified = await this.verifyCaptcha(mobile, captcha);
-        if (verified) {
-          return await this.userService.getUserByMobile(mobile);
-        }
-      }
-    } catch (error) {
-      throw new ForbiddenException(400006, error);
-    }
-  }
-
-  /**
-   * 绑定用户
-   *
-   * @param mobile
-   * @param captcha
-   * @param oauthType
-   * @param oauthUserDetail
-   */
-  async bindUser({
-    mobile,
-    captcha,
-    oauthType,
-    oauthUserDetail,
-  }: BindUserParams) {
-    try {
-      // 手机号验证
-      const verified = await this.verifyCaptcha(mobile, captcha);
-      if (verified) {
-        // 判断手机号是否已经注册
-        const user = await this.userService.getUserByMobile(mobile);
-        if (user) {
-          // 判断手机号是否绑定了相同 oauth 账号
-          if (user.oauth?.[oauthType]) {
-            const oauthTextMap = {
-              github: 'Github',
-              wechat: '微信',
-            };
-            throw new Error(`该手机号已绑定 ${oauthTextMap[oauthType]}`);
-          }
-        }
-        // 开始绑定 oauth 信息
-        return await this.userService.bindOAuth({
-          baseUser: user,
-          mobile,
-          type: oauthType,
-          detail: oauthUserDetail,
-        });
-      }
-    } catch (error) {
-      throw new ForbiddenException(400030, error);
     }
   }
 

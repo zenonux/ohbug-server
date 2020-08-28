@@ -2,7 +2,7 @@ import { HttpService, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import webpush from 'web-push';
 
-import type { DispatchNotice } from './notice.interface';
+import type { DispatchNotice, SendEmail } from './notice.interface';
 import { getNotificationContent } from './notice.core';
 import sendEmail from './email';
 import dispatchWebhook from './webhook';
@@ -22,13 +22,10 @@ export class NoticeService {
       issue,
       event,
     });
-    // TODO 将 email browser推送 webhook 分别封装成单独的方法 这里直接调用
-    const auth = this.configService.get('service.email');
     for (const { email, open } of setting.emails) {
       if (open === true) {
-        await sendEmail({
-          auth,
-          to: email,
+        await this.sendEmail({
+          email,
           title,
           text,
           html,
@@ -63,5 +60,24 @@ export class NoticeService {
         });
       }
     }
+  }
+
+  /**
+   * 发送邮件
+   *
+   * @param email
+   * @param title
+   * @param text
+   * @param html
+   */
+  async sendEmail({ email, title, text, html }: SendEmail) {
+    const auth = this.configService.get('service.email');
+    await sendEmail({
+      auth,
+      to: email,
+      title,
+      text,
+      html,
+    });
   }
 }

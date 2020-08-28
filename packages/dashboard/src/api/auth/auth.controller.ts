@@ -1,9 +1,16 @@
-import { Controller, Get, Post, Query, Body } from '@nestjs/common';
+import { Controller, Post, Body, UseGuards } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
 import { ForbiddenException } from '@ohbug-server/common';
 import { AuthService } from './auth.service';
-import { CaptchaDto, BaseAuthDto, LoginDto, BindUserDto } from './auth.dto';
+import {
+  SignupDto,
+  ActivateDto,
+  LoginDto,
+  BindUserDto,
+  SendActivationEmailDto,
+} from './auth.dto';
+import { AuthGuard } from '@nestjs/passport';
 
 @Controller('auth')
 export class AuthController {
@@ -29,43 +36,49 @@ export class AuthController {
   }
 
   /**
-   * 获取短信验证码
+   * 注册
    *
-   * @param mobile
+   * @param name
+   * @param email
+   * @param password
    */
-  @Get('captcha')
-  async captcha(@Query() { mobile }: CaptchaDto): Promise<string> {
-    return await this.authService.getCaptcha(mobile);
+  @Post('signup')
+  async signup(@Body() { name, email, password }: SignupDto) {
+    const user = await this.authService.signup({ name, email, password });
+    return this.returnJwt(user);
   }
 
   /**
-   * 校验验证码是否合法
+   * 用户激活
    *
-   * @param mobile
    * @param captcha
    */
-  @Get('verify')
-  async verifyCaptcha(
-    @Query() { mobile, captcha }: BaseAuthDto,
-  ): Promise<boolean> {
-    return await this.authService.verifyCaptcha(mobile, captcha);
+  @Post('activate')
+  @UseGuards(AuthGuard('jwt'))
+  async activate(@Body() { captcha }: ActivateDto) {
+    return await this.authService.activate(captcha);
   }
 
   /**
-   * 登录/注册
+   * 发送用户激活邮件
    *
-   * @param mobile
-   * @param captcha
+   * @param email
+   */
+  @Post('sendActivationEmail')
+  @UseGuards(AuthGuard('jwt'))
+  async sendActivationEmail(@Body() { email }: SendActivationEmailDto) {
+    return await this.authService.sendActivationEmail(email);
+  }
+
+  /**
+   * 登录
+   *
+   * @param email
+   * @param password
    */
   @Post('login')
-  async login(@Body() { mobile, captcha }: LoginDto) {
-    let user = await this.authService.login(null, { mobile, captcha });
-
-    if (!user) {
-      // 若未注册则注册
-      user = await this.authService.signup({ mobile });
-    }
-
+  async login(@Body() { email, password }: LoginDto) {
+    const user = await this.authService.login(null, { email, password });
     return this.returnJwt(user);
   }
 
@@ -104,18 +117,14 @@ export class AuthController {
   /**
    * 绑定用户
    *
-   * @param mobile
-   * @param captcha
+   * @param email
    * @param oauthType
    * @param oauthUserDetail
    */
   @Post('bindUser')
-  async bindUser(
-    @Body() { mobile, captcha, oauthType, oauthUserDetail }: BindUserDto,
-  ) {
+  async bindUser(@Body() { email, oauthType, oauthUserDetail }: BindUserDto) {
     const user = await this.authService.bindUser({
-      mobile,
-      captcha,
+      email,
       oauthType,
       oauthUserDetail,
     });

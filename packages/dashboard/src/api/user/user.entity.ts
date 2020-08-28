@@ -20,15 +20,6 @@ export class User {
   id: number;
 
   /**
-   * 用户手机号
-   *
-   * @type {string}
-   * @memberof User
-   */
-  @Column({ type: 'text' })
-  mobile: string;
-
-  /**
    * 用户昵称 可修改 默认是 oauth2 里的 name
    *
    * @type {string}
@@ -43,8 +34,36 @@ export class User {
    * @type {string}
    * @memberof User
    */
+  @Column({ type: 'text' })
+  email: string;
+
+  /**
+   * 密码
+   *
+   * @type {string}
+   * @memberof User
+   */
+  @Exclude()
+  @Column({ type: 'text' })
+  password: string;
+
+  /**
+   * 激活状态
+   *
+   * @type {boolean}
+   * @memberof User
+   */
+  @Column({ type: 'bool', default: false })
+  activated: boolean;
+
+  /**
+   * 用户手机号
+   *
+   * @type {string}
+   * @memberof User
+   */
   @Column({ type: 'text', nullable: true })
-  email?: string;
+  mobile: string;
 
   /**
    * 用户头像 可修改 默认是 oauth2 里的 avatar

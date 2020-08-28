@@ -14,7 +14,6 @@ export type OAuth = Record<
 
 export interface BindOAuthParams {
   baseUser?: User;
-  mobile: string;
   type: OAuthType;
   detail: OAuthDetail;
 }

@@ -11,3 +11,10 @@ export interface DispatchNotice {
   issue: Issue;
   event: OhbugEventLike;
 }
+
+export interface SendEmail {
+  email: string;
+  title: string;
+  text: string;
+  html: string;
+}

@@ -1,7 +1,10 @@
 import nodemailer from 'nodemailer';
 
 interface SendMail {
-  auth: any;
+  auth: {
+    user: string;
+    pass: string;
+  };
   to: string;
   title: string;
   text: string;
@@ -16,7 +19,7 @@ async function main({ auth, to, title, text, html }: SendMail) {
   });
 
   const info = {
-    from: 'Ohbug <notice@ohbug.net>',
+    from: `Ohbug <${auth.user}>`,
     to,
     subject: title,
     text,

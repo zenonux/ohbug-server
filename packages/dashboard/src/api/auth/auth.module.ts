@@ -3,6 +3,8 @@ import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 
+import { MicroserviceNotifierClientModule } from '@ohbug-server/common';
+
 import { UserModule } from '@/api/user/user.module';
 
 import { AuthController } from './auth.controller';
@@ -19,6 +21,7 @@ import { JwtStrategy } from './jwt.strategy';
         configService.get('others.jwt'),
       inject: [ConfigService],
     }),
+    MicroserviceNotifierClientModule,
     UserModule,
   ],
   controllers: [AuthController],

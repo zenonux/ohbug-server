@@ -1,6 +1,11 @@
 import { registerAs } from '@nestjs/config';
 
 export const othersConfig = registerAs('others', () => ({
+  user: {
+    password: {
+      salt: process.env.USER_PASSWORD_SALT,
+    },
+  },
   oauth: {
     github: {
       client_id: process.env.OAUTH_GITHUB_CLIENT_ID,
