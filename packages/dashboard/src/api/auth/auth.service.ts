@@ -220,7 +220,7 @@ export class AuthService implements OnModuleInit {
   }
 
   /**
-   * 登录 包含 oauth2 和普通手机号验证登录
+   * 登录 包含 oauth2 和普通邮箱验证登录
    * 此方法会根据 `from` `detail` 的不同做不同的处理
    *
    * @param type
@@ -348,29 +348,35 @@ export class AuthService implements OnModuleInit {
    * 绑定用户
    *
    * @param email
+   * @param captcha
    * @param oauthType
    * @param oauthUserDetail
    */
-  async bindUser({ email, oauthType, oauthUserDetail }: BindUserDto) {
+  async bindUser({ email, captcha, oauthType, oauthUserDetail }: BindUserDto) {
     try {
-      // 判断账号是否已经注册
-      const user = await this.userService.getUserByEmail(email);
-      if (user) {
-        // 判断手机号是否绑定了相同 oauth 账号
-        if (user.oauth?.[oauthType]) {
-          const oauthTextMap = {
-            github: 'Github',
-            wechat: '微信',
-          };
-          throw new Error(`该账号已绑定 ${oauthTextMap[oauthType]}`);
+      const value = await this.getCaptcha<RedisCaptchaValue>(email);
+      if (value.captcha === captcha) {
+        // 判断账号是否已经注册
+        const user = await this.userService.getUserByEmail(email);
+        if (user) {
+          // 判断账号是否绑定了相同 oauth 账号
+          if (user.oauth?.[oauthType]) {
+            const oauthTextMap = {
+              github: 'Github',
+              wechat: '微信',
+            };
+            throw new Error(`该账号已绑定 ${oauthTextMap[oauthType]}`);
+          }
         }
+        // 开始绑定 oauth 信息
+        return await this.userService.bindOAuth({
+          baseUser: user,
+          type: oauthType,
+          detail: oauthUserDetail,
+        });
+      } else {
+        throw new Error('验证码验证失败');
       }
-      // 开始绑定 oauth 信息
-      return await this.userService.bindOAuth({
-        baseUser: user,
-        type: oauthType,
-        detail: oauthUserDetail,
-      });
     } catch (error) {
       throw new ForbiddenException(400030, error);
     }

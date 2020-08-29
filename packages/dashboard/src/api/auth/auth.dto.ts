@@ -40,6 +40,9 @@ export class ResetDto extends BaseAuthDto {
 
 export class BindUserDto extends BaseAuthDto {
   @IsString()
+  readonly captcha: string;
+
+  @IsString()
   readonly oauthType: 'github';
 
   @IsNotEmpty()

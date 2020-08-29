@@ -142,13 +142,17 @@ export class AuthController {
    * 绑定用户
    *
    * @param email
+   * @param captcha
    * @param oauthType
    * @param oauthUserDetail
    */
   @Post('bindUser')
-  async bindUser(@Body() { email, oauthType, oauthUserDetail }: BindUserDto) {
+  async bindUser(
+    @Body() { email, captcha, oauthType, oauthUserDetail }: BindUserDto,
+  ) {
     const user = await this.authService.bindUser({
       email,
+      captcha,
       oauthType,
       oauthUserDetail,
     });
