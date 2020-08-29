@@ -1,4 +1,4 @@
-import { Controller, Post, Body, UseGuards } from '@nestjs/common';
+import { Controller, Post, Body, UseGuards, Get, Query } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
 import { ForbiddenException } from '@ohbug-server/common';
@@ -9,6 +9,8 @@ import {
   LoginDto,
   BindUserDto,
   SendActivationEmailDto,
+  CaptchaDto,
+  ResetDto,
 } from './auth.dto';
 import { AuthGuard } from '@nestjs/passport';
 
@@ -80,6 +82,28 @@ export class AuthController {
   async login(@Body() { email, password }: LoginDto) {
     const user = await this.authService.login(null, { email, password });
     return this.returnJwt(user);
+  }
+
+  /**
+   * 生成验证码
+   *
+   * @param email
+   */
+  @Get('captcha')
+  async captcha(@Query() { email }: CaptchaDto) {
+    return await this.authService.captcha({ email });
+  }
+
+  /**
+   * 重置密码
+   *
+   * @param email
+   * @param password
+   * @param captcha
+   */
+  @Post('reset')
+  async reset(@Body() { email, password, captcha }: ResetDto) {
+    return await this.authService.reset({ email, password, captcha });
   }
 
   /**

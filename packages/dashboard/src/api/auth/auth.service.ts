@@ -16,15 +16,22 @@ import {
 import { User } from '@/api/user/user.entity';
 import { UserService } from '@/api/user/user.service';
 import type { OAuthType } from '@/api/user/user.interface';
-import { BindUserDto, SignupDto } from '@/api/auth/auth.dto';
+import {
+  BindUserDto,
+  CaptchaDto,
+  ResetDto,
+  SignupDto,
+} from '@/api/auth/auth.dto';
 
 import type {
   GithubToken,
   GithubUser,
   JwtToken,
+  RedisActivationValue,
   RedisCaptchaValue,
 } from './auth.interface';
 import type { JwtPayload } from './auth.interface';
+import dayjs from 'dayjs';
 
 @Injectable()
 export class AuthService implements OnModuleInit {
@@ -89,12 +96,29 @@ export class AuthService implements OnModuleInit {
       const captcha = await this.createCaptcha(email);
       const title = `Ohbug 喊你来激活邮箱啦`;
       const text = `
-    为了保证您的帐户安全，请及时激活邮箱，该链接在24小时之内有效。
-    点击链接激活邮箱：
-    ${getHost()}/activate?captcha=${captcha}
-    `;
+        为了保证您的帐户安全，请及时激活邮箱，该链接在24小时之内有效。
+        点击链接激活邮箱：
+        ${getHost()}/activate?captcha=${captcha}
+
+        Ohbug 爱你哟~
+        `;
       const html = ``;
-      // 发送激活邮件
+      await this.sendEmail({ email, title, text, html });
+    } catch (error) {
+      throw new ForbiddenException(400012, error);
+    }
+  }
+
+  /**
+   * 发送邮件
+   *
+   * @param email
+   * @param title
+   * @param text
+   * @param html
+   */
+  async sendEmail({ email, title, text, html }) {
+    try {
       return await this.notifierClient
         .send(TOPIC_DASHBOARD_NOTIFIER_SEND_EMAIL, {
           email,
@@ -115,7 +139,7 @@ export class AuthService implements OnModuleInit {
    */
   async activate(captcha: string): Promise<User> {
     try {
-      const { email } = await this.getCaptcha(captcha);
+      const { email } = await this.getCaptcha<RedisActivationValue>(captcha);
       if (!email) {
         throw new Error('激活链接已失效 请前往控制台重新生成激活邮箱');
       }
@@ -130,15 +154,12 @@ export class AuthService implements OnModuleInit {
   /**
    * 获取验证码对应 email
    *
-   * @param captcha
+   * @param key
    */
-  async getCaptcha(captcha: string): Promise<RedisCaptchaValue> {
+  async getCaptcha<T>(key: string): Promise<T> {
     try {
-      const json = await this.redisClient.get(captcha);
-      if (json) return JSON.parse(json) as RedisCaptchaValue;
-      throw new Error(
-        '用户已激活或激活链接已失效，请前往控制台重新生成激活邮箱',
-      );
+      const json = await this.redisClient.get(key);
+      if (json) return JSON.parse(json) as T;
     } catch (error) {
       throw new ForbiddenException(400011, error);
     }
@@ -149,25 +170,50 @@ export class AuthService implements OnModuleInit {
    *
    * @private
    * @param email
+   * @param type
    */
-  private async createCaptcha(email: string): Promise<string> {
+  private async createCaptcha(
+    email: string,
+    type: 'activation' | 'captcha' = 'activation',
+  ): Promise<string> {
     try {
-      // 生成验证码
-      const captcha = md5(Math.random().toString());
-      const value: RedisCaptchaValue = {
-        email,
-        timestamp: new Date().getTime(),
-      };
-      // 验证码过期时间 (秒)
-      const CAPTCHA_EXPIRY_TIME = 86400; // 24h
-      // 暂存验证码 有效期 CAPTCHA_EXPIRY_TIME
-      await this.redisClient.set(
-        captcha,
-        JSON.stringify(value),
-        'EX',
-        CAPTCHA_EXPIRY_TIME,
-      );
-      return captcha;
+      const user = await this.userService.getUserByEmail(email);
+      if (!user) {
+        throw new Error('该邮箱未注册');
+      }
+      if (type === 'activation') {
+        // 生成验证码
+        const captcha = md5(Math.random().toString());
+        const value: RedisActivationValue = {
+          email,
+          timestamp: new Date().getTime(),
+        };
+        // 暂存验证码 有效期 CAPTCHA_EXPIRY_TIME 24h
+        const CAPTCHA_EXPIRY_TIME = 86400;
+        await this.redisClient.set(
+          captcha,
+          JSON.stringify(value),
+          'EX',
+          CAPTCHA_EXPIRY_TIME,
+        );
+        return captcha;
+      } else if (type === 'captcha') {
+        // 生成验证码
+        const captcha = Math.floor(100000 + Math.random() * 900000).toString();
+        const value: RedisCaptchaValue = {
+          captcha,
+          timestamp: new Date().getTime(),
+        };
+        // 暂存验证码 有效期 CAPTCHA_EXPIRY_TIME 5min
+        const CAPTCHA_EXPIRY_TIME = 300;
+        await this.redisClient.set(
+          email,
+          JSON.stringify(value),
+          'EX',
+          CAPTCHA_EXPIRY_TIME,
+        );
+        return captcha;
+      }
     } catch (error) {
       throw new ForbiddenException(400010, error);
     }
@@ -204,6 +250,83 @@ export class AuthService implements OnModuleInit {
       }
     } catch (error) {
       throw new ForbiddenException(400006, error);
+    }
+  }
+
+  /**
+   * 生成验证码
+   *
+   * @param email
+   */
+  async captcha({ email }: CaptchaDto) {
+    try {
+      let captcha: string;
+      const value = await this.getCaptcha<RedisCaptchaValue>(email);
+      if (value) {
+        // 存在，判断时间是否大于 sending_interval 秒
+        const { timestamp } = value;
+        const sending_interval = 90;
+        if (
+          dayjs().isBefore(dayjs(timestamp).add(sending_interval, 'second'))
+        ) {
+          // 小于
+          throw new Error(
+            `每 ${sending_interval} 秒只能获取一次验证码，请稍后重试`,
+          );
+        } else {
+          // 大于 生成 captcha
+          captcha = await this.createCaptcha(email, 'captcha');
+        }
+      } else {
+        // 不存在 生成 captcha
+        captcha = await this.createCaptcha(email, 'captcha');
+      }
+
+      const title = `Ohbug 给你送验证码啦`;
+      const text = `
+      您的验证码为：${captcha}，该验证码 5 分钟内有效，请不要泄露给他人。
+
+      您的账号 "${email}" 正在进行敏感操作，如果不是您本人进行操作，请忽略这条邮件。
+
+      Ohbug 爱你哟~
+      `;
+      const html = ``;
+      return await this.sendEmail({
+        email,
+        title,
+        text,
+        html,
+      });
+    } catch (error) {
+      throw new ForbiddenException(400014, error);
+    }
+  }
+
+  /**
+   * 重置密码
+   *
+   * @param email
+   * @param password
+   * @param captcha
+   */
+  async reset({ email, password, captcha }: ResetDto) {
+    try {
+      const value = await this.getCaptcha<RedisCaptchaValue>(email);
+      if (value?.captcha && value.captcha === captcha) {
+        const encryptedPassword = md5(
+          md5(password) +
+            this.configService.get<string>('others.user.password.salt'),
+        );
+        const user = await this.userService.resetPasswordByEmail(
+          email,
+          encryptedPassword,
+        );
+        if (user) await this.redisClient.del(email);
+        return !!user;
+      }
+      throw new Error('验证不通过，请检查验证码是否正确');
+    } catch (error) {
+      throw new ForbiddenException(400040, error);
     }
   }
 

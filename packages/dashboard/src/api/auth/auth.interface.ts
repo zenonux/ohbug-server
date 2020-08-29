@@ -1,5 +1,9 @@
-export interface RedisCaptchaValue {
+export interface RedisActivationValue {
   email: string;
+  timestamp: number;
+}
+export interface RedisCaptchaValue {
+  captcha: string;
   timestamp: number;
 }
 

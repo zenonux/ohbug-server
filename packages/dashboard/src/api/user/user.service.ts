@@ -210,6 +210,18 @@ export class UserService {
   }
 
   /**
+   * 根据 email 重置指定用户密码
+   *
+   * @param email
+   * @param password
+   */
+  async resetPasswordByEmail(email: string, password: string): Promise<User> {
+    const user = await this.getUserByEmail(email);
+    user.password = password;
+    return await this.userRepository.save(user);
+  }
+
+  /**
    * 更新用户信息
    *
    * @param user_id

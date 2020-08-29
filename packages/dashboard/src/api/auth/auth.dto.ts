@@ -28,6 +28,16 @@ export class LoginDto extends BaseAuthDto {
   readonly password: string;
 }
 
+export class CaptchaDto extends BaseAuthDto {}
+
+export class ResetDto extends BaseAuthDto {
+  @IsString()
+  readonly password: string;
+
+  @IsString()
+  readonly captcha: string;
+}
+
 export class BindUserDto extends BaseAuthDto {
   @IsString()
   readonly oauthType: 'github';
