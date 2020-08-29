@@ -125,12 +125,6 @@ export class AuthController {
         // 返回 token
         if (user) {
           return this.returnJwt(user);
-        } else {
-          return {
-            id: userDetail.id,
-            name: userDetail.name,
-            avatar_url: userDetail.avatar_url,
-          };
         }
       }
     } else {

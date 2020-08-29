@@ -65,6 +65,9 @@ export class UserService {
       avatar,
     });
     if (oauth) user.oauth = oauth;
+    if (type === 'github') {
+      user.activated = true;
+    }
     return user;
   }
 

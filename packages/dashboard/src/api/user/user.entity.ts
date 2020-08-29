@@ -29,12 +29,12 @@ export class User {
   name: string;
 
   /**
-   * 用户邮箱 可修改 默认是 oauth2 里的 email
+   * 用户邮箱 默认是 oauth2 里的 email
    *
    * @type {string}
    * @memberof User
    */
-  @Column({ type: 'text' })
+  @Column({ type: 'text', default: '' })
   email: string;
 
   /**
@@ -44,8 +44,8 @@ export class User {
    * @memberof User
    */
   @Exclude()
-  @Column({ type: 'text' })
-  password: string;
+  @Column({ type: 'text', nullable: true })
+  password?: string;
 
   /**
    * 激活状态

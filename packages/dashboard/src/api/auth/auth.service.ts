@@ -234,7 +234,7 @@ export class AuthService implements OnModuleInit {
         if (user) {
           return user;
         }
-        return null;
+        return await this.userService.saveUser(type, detail);
       } else {
         const { email, password } = detail;
         const user = await this.userService.getUserByEmail(email);
@@ -395,7 +395,7 @@ export class AuthService implements OnModuleInit {
       } = oauth;
 
       const { data } = await this.httpService
-        .post(`http://github.com/login/oauth/access_token`, null, {
+        .post(`https://github.com/login/oauth/access_token`, null, {
           params: {
             client_id,
             client_secret,
@@ -407,7 +407,7 @@ export class AuthService implements OnModuleInit {
         .toPromise();
       // 获取 token 出错 (通常是 token 过期)
       if (data.error) {
-        throw new ForbiddenException(400004, `获取 github access_token 失败`);
+        throw new ForbiddenException(400004, data.error_description);
       }
       return data;
     } catch (error) {
@@ -427,7 +427,7 @@ export class AuthService implements OnModuleInit {
   async getGithubUser(accessToken: string): Promise<GithubUser> {
     try {
       const { data } = await this.httpService
-        .get(`http://api.github.com/user`, {
+        .get(`https://api.github.com/user`, {
           headers: {
             accept: 'application/json',
             Authorization: `token ${accessToken}`,
