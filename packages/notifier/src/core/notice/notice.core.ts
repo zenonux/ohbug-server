@@ -62,19 +62,22 @@ export function getNotificationContent({
   平台：${statistics.platform}
 
   ${
-    url &&
+    !!url &&
+    url !== 'undefined' &&
     `Url
   ${url}`
   }
 
   ${
-    filename &&
+    !!filename &&
+    filename !== 'undefined' &&
     `File
   ${filename}`
   }
 
   ${
-    others &&
+    !!others &&
+    others !== 'undefined' &&
     `Others
   ${others}`
   }
@@ -95,21 +98,24 @@ export function getNotificationContent({
   - 平台：${statistics.platform}
 
   ${
-    url &&
-    `## Url
-  > ${url}`
+    !!url &&
+    url !== 'undefined' &&
+    `Url
+  ${url}`
   }
 
   ${
-    filename &&
-    `## File
-  > ${filename}`
+    !!filename &&
+    filename !== 'undefined' &&
+    `File
+  ${filename}`
   }
 
   ${
-    others &&
-    `## Others
-  > ${others}`
+    !!others &&
+    others !== 'undefined' &&
+    `Others
+  ${others}`
   }
 
   [查看详情](${link})
