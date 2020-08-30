@@ -1,6 +1,7 @@
 import dayjs from 'dayjs';
 import markdownIt from 'markdown-it';
 
+import { getHost } from '@ohbug-server/common';
 import type { NotificationRuleLevel } from '@ohbug-server/common';
 import { DispatchNotice } from '@/core/notice/notice.interface';
 
@@ -46,7 +47,7 @@ export function getNotificationContent({
     time: updatedAt,
     platform,
   };
-  const link = `http://localhost:8888/issue/${id}/event/latest`;
+  const link = `${getHost()}/issue/${id}/event/latest`;
 
   const text = `
   ${title}
