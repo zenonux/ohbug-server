@@ -110,11 +110,11 @@ function judgingList(
   const list = rule[type];
   if (Array.isArray(list)) {
     for (const item of list) {
-      if (!event?.detail?.message) {
+      if (!event?.detail) {
         continue;
       }
       if (event.type === item.type) {
-        if (matchMessageByRegExp(new RegExp(item.message), item.message)) {
+        if (matchMessageByRegExp(new RegExp(item.message), event?.detail)) {
           return true;
         }
       }
@@ -124,6 +124,9 @@ function judgingList(
 }
 /**
  * 判断是否符合 range data 的规则 (包含黑白名单的判断)
+ * 若在白名单 则不论是否符合区间内的数量匹配直接通过
+ * 若在黑名单 不论如何直接不通过
+ * 最后判断是否在区间范围内
  *
  * @param event
  * @param issue

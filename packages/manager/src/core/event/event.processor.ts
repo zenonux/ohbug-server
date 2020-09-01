@@ -50,6 +50,7 @@ export class EventConsumer {
     try {
       const eventLike = job.data as OhbugEventLike;
       const { exceeded, organization } = await this.statisticalEvent(eventLike);
+
       if (eventLike && exceeded) {
         // 1. aggregation
         const { intro, metadata } = this.eventService.aggregation(eventLike);
@@ -69,6 +70,7 @@ export class EventConsumer {
           event: eventLike,
           issue_id: baseIssue.id,
         };
+
         const [
           { topicName, partition, baseOffset },
         ] = await this.eventService.passEventToLogstash(key, value);
@@ -83,6 +85,7 @@ export class EventConsumer {
           baseIssue,
           ...document,
         });
+
         // 5. 更新 organization 中的 count
         await getManager().query(
           `
@@ -93,8 +96,10 @@ export class EventConsumer {
         `,
           [organization.id],
         );
+
         // 6. 根据 apiKey 拿到对应的 notification 配置
         const notification = await getNotificationByApiKey(issue.apiKey);
+
         // 7. 判断当前状态十分符合 notification 配置的要求，符合则通知 notifier 开始任务
         const callback = async (result) => {
           return await this.notifierClient
