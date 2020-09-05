@@ -1,3 +1,5 @@
+import { types as browserTypes } from '@ohbug/browser';
+
 import {
   md5,
   TOPIC_MANAGER_LOGSTASH_EVENT_ERROR,
@@ -12,13 +14,20 @@ import type {
   OhbugEventDetail,
 } from './event.interface';
 
-const UNCAUGHT_ERROR = 'uncaughtError';
-const RESOURCE_ERROR = 'resourceError';
-const UNHANDLEDREJECTION_ERROR = 'unhandledrejectionError';
-const AJAX_ERROR = 'ajaxError';
-const FETCH_ERROR = 'fetchError';
-const WEBSOCKET_ERROR = 'websocketError';
-const UNKNOWN_ERROR = 'unknownError';
+const {
+  UNCAUGHT_ERROR,
+  RESOURCE_ERROR,
+  UNHANDLEDREJECTION_ERROR,
+  AJAX_ERROR,
+  FETCH_ERROR,
+  WEBSOCKET_ERROR,
+  UNKNOWN_ERROR,
+} = browserTypes;
+const MINIAPP_ERROR = 'miniappError';
+const MINIAPP_UNHANDLEDREJECTION_ERROR = 'miniappUnhandledrejectionError';
+const MINIAPP_PAGENOTFOUND_ERROR = 'miniappPagenotfoundError';
+const MINIAPP_MEMORYWARNING_ERROR = 'miniappMemorywarningError';
+
 /**
  * 根据不同 error detail 返回可用于聚合的字段
  *
@@ -137,6 +146,43 @@ export function switchErrorDetailAndGetAggregationDataAndMetaData(
           message: detail.message,
           filename: detail.file,
           others: detail.errorInfo,
+        },
+      };
+    case MINIAPP_ERROR:
+      return {
+        agg: detail?.stack ? [detail.message, detail.stack] : [detail.message],
+        metadata: {
+          type,
+          message: detail.message,
+          stack: detail?.stack,
+        },
+      };
+    case MINIAPP_UNHANDLEDREJECTION_ERROR:
+      return {
+        agg: detail?.stack ? [detail.message, detail.stack] : [detail.message],
+        metadata: {
+          type,
+          message: detail.message,
+          stack: detail?.stack,
+        },
+      };
+    case MINIAPP_PAGENOTFOUND_ERROR:
+      return {
+        agg: [detail?.message, detail?.path, detail.query, detail.isEntryPage],
+        metadata: {
+          type,
+          message: detail.message,
+          path: detail.path,
+          query: detail.query,
+        },
+      };
+    case MINIAPP_MEMORYWARNING_ERROR:
+      return {
+        agg: [detail?.message, detail?.level],
+        metadata: {
+          type,
+          message: detail.message,
+          level: detail.level,
         },
       };
     default:

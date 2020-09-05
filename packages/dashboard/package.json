@@ -34,6 +34,6 @@
     "winston": "^3.2.1"
   },
   "devDependencies": {
-    "@nestjs/schematics": "^7.0.0"
+    "@nestjs/schematics": "^7.1.1"
   }
 }

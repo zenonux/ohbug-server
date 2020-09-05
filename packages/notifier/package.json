@@ -27,7 +27,7 @@
     "web-push": "^3.4.4"
   },
   "devDependencies": {
-    "@types/markdown-it": "^10.0.1",
+    "@types/markdown-it": "^10.0.2",
     "@types/nodemailer": "^6.4.0",
     "@types/web-push": "^3.3.0"
   }

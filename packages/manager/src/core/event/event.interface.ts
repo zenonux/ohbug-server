@@ -18,7 +18,8 @@ export type OhbugEventDetail = UncaughtErrorDetail &
   FetchErrorDetail &
   WebsocketErrorDetail &
   ReactErrorDetail &
-  VueErrorDetail;
+  VueErrorDetail &
+  any;
 
 export interface OhbugDocument {
   document_id: string;
@@ -29,7 +30,9 @@ export interface MetaData {
   type: string;
   message: string;
   filename?: string;
+  stack?: string;
   others?: string;
+  [key: string]: any;
 }
 export interface AggregationDataAndMetaData {
   agg: any[];
