@@ -147,10 +147,12 @@ export class EventConsumer {
       [event.apiKey],
     );
 
-    const max = this.configService.get<string>('others.event.max');
-    return {
-      exceeded: parseInt(organization.count, 10) < parseInt(max, 10),
-      organization,
-    };
+    if (organization) {
+      const max = this.configService.get<string>('others.event.max');
+      return {
+        exceeded: parseInt(organization.count, 10) < parseInt(max, 10),
+        organization,
+      };
+    }
   }
 }
