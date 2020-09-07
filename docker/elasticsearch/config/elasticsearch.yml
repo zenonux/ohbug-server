@@ -11,6 +11,10 @@ network.host: 0.0.0.0
 xpack.license.self_generated.type: trial
 xpack.security.enabled: false
 xpack.monitoring.collection.enabled: true
+xpack.monitoring.history.duration: 1d
 
 # https://stackoverflow.com/questions/37216300/elasticsearch-circuit-breaking-exception-data-too-large-with-significant-terms
-indices.breaker.request.limit: 45%
+indices.breaker.total.limit: 80%
+indices.fielddata.cache.size: 10%
+indices.breaker.fielddata.limit: 60%
+indices.breaker.request.limit: 60%

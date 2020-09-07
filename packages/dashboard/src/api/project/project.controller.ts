@@ -28,7 +28,6 @@ export class ProjectController {
 
   /**
    * 创建 project
-   * TODO 限制 project 最大数量
    *
    * @param name project 名称
    * @param type project 类别

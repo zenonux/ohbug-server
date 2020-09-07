@@ -93,6 +93,4 @@ export class Organization {
   @Exclude()
   @Column({ type: 'integer', default: 0 })
   count: number;
-
-  // TODO 与 business 相关联
 }
