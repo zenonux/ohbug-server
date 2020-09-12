@@ -1,18 +1,15 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule as ConfigBaseModule } from '@nestjs/config';
-import path from 'path';
 
 import { databaseConfig } from './database.config';
 import { serviceConfig } from './service.config';
-import { othersConfig } from './others.config';
+import { businessConfig } from './business.config';
+import { securityConfig } from './security.config';
 
 @Module({
   imports: [
     ConfigBaseModule.forRoot({
-      envFilePath: [
-        path.resolve(__dirname, `../../../../.env.${process.env.NODE_ENV}`),
-      ],
-      load: [databaseConfig, serviceConfig, othersConfig],
+      load: [databaseConfig, serviceConfig, businessConfig, securityConfig],
       isGlobal: true,
     }),
   ],

@@ -28,7 +28,7 @@ export class AuthController {
    */
   returnJwt(user) {
     const maxAge = this.configService.get<string>(
-      'others.jwt.signOptions.expiresIn',
+      'security.jwt.signOptions.expiresIn',
     );
     const token = this.authService.createToken(user.id, maxAge);
     return {

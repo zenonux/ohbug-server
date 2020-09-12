@@ -1,25 +1,17 @@
 import nodemailer from 'nodemailer';
 
 interface SendMail {
-  auth: {
-    user: string;
-    pass: string;
-  };
+  config: any;
   to: string;
   title: string;
   text: string;
   html: string;
 }
-async function main({ auth, to, title, text, html }: SendMail) {
-  const transporter = nodemailer.createTransport({
-    host: 'smtp.exmail.qq.com',
-    port: 465,
-    secure: true,
-    auth,
-  });
+async function main({ config, to, title, text, html }: SendMail) {
+  const transporter = nodemailer.createTransport(config);
 
   const info = {
-    from: `Ohbug <${auth.user}>`,
+    from: `Ohbug <${config?.auth?.user}>`,
     to,
     subject: title,
     text,

@@ -8,7 +8,6 @@
     "start": "cross-env NODE_ENV=development nest start --watch",
     "build": "nest build",
     "start:debug": "nest start --debug --watch",
-    "start:test": "cross-env pm2 start ./ecosystem.config.js --env test",
     "start:prod": "cross-env pm2 start ./ecosystem.config.js --env production",
     "prettier": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "lint": "tslint -p tsconfig.json -c tslint.json",

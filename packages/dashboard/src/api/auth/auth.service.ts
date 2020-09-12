@@ -67,7 +67,7 @@ export class AuthService implements OnModuleInit {
       // 密码加密处理
       const encryptedPassword = md5(
         md5(password) +
-          this.configService.get<string>('others.user.password.salt'),
+          this.configService.get<string>('security.user.password.salt'),
       );
       // 未注册，开始创建 user
       user = await this.userService.saveUser(null, {
@@ -315,7 +315,7 @@ export class AuthService implements OnModuleInit {
       if (value?.captcha && value.captcha === captcha) {
         const encryptedPassword = md5(
           md5(password) +
-            this.configService.get<string>('others.user.password.salt'),
+            this.configService.get<string>('security.user.password.salt'),
         );
         const user = await this.userService.resetPasswordByEmail(
           email,
@@ -339,7 +339,7 @@ export class AuthService implements OnModuleInit {
   async verifyPassword(user: User, password: string) {
     const encryptedPassword = md5(
       md5(password) +
-        this.configService.get<string>('others.user.password.salt'),
+        this.configService.get<string>('security.user.password.salt'),
     );
     return user.password === encryptedPassword;
   }
@@ -389,7 +389,7 @@ export class AuthService implements OnModuleInit {
    */
   async getGithubToken(code: string): Promise<GithubToken> {
     try {
-      const oauth = this.configService.get('others.oauth');
+      const oauth = this.configService.get('security.oauth');
       const {
         github: { client_id, client_secret },
       } = oauth;

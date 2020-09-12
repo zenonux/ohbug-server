@@ -148,7 +148,7 @@ export class EventConsumer {
     );
 
     if (organization) {
-      const max = this.configService.get<string>('others.event.max');
+      const max = this.configService.get<string>('business.event.max');
       return {
         exceeded: parseInt(organization.count, 10) < parseInt(max, 10),
         organization,

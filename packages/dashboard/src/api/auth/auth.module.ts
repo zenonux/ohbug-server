@@ -18,7 +18,7 @@ import { JwtStrategy } from './jwt.strategy';
     JwtModule.registerAsync({
       imports: [ConfigModule],
       useFactory: (configService: ConfigService) =>
-        configService.get('others.jwt'),
+        configService.get('security.jwt'),
       inject: [ConfigService],
     }),
     MicroserviceNotifierClientModule,

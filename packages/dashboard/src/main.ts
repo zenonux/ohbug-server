@@ -19,8 +19,6 @@ async function bootstrap() {
     logger: WinstonModule.createLogger(LoggerConfig),
   });
 
-  app.enableCors();
-
   app.useLogger(app.get(WINSTON_MODULE_NEST_PROVIDER));
 
   app.use(cookieParser());

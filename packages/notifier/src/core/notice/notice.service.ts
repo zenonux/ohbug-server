@@ -71,9 +71,9 @@ export class NoticeService {
    * @param html
    */
   async sendEmail({ email, title, text, html }: SendEmail) {
-    const auth = this.configService.get('service.email');
+    const config = this.configService.get('service.email');
     await sendEmail({
-      auth,
+      config,
       to: email,
       title,
       text,

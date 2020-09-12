@@ -25,7 +25,7 @@ export class ScheduleService {
   async handleCleanUpExpiredData() {
     try {
       const interval = this.configService.get<string>(
-        'others.expiredData.interval',
+        'business.expiredData.interval',
       );
       await this.eventService.deleteEvents(
         interval,

@@ -1,22 +1,27 @@
 {
-  "name": "root",
-  "private": true,
+  "name": "ohbug-server",
+  "version": "1.0.0",
+  "description": "Ohbug Server",
+  "author": "chenyueban <jasonchan0527@gmail.com>",
+  "homepage": "https://github.com/ohbug-org/ohbug-server",
+  "bugs": {
+    "url": "https://github.com/ohbug-org/ohbug-server/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ohbug-org/ohbug-server"
+  },
+  "license": "Apache-2.0",
   "workspaces": [
     "packages/*"
   ],
   "scripts": {
     "bootstrap": "lerna bootstrap",
-    "docker:local": "docker-compose -f docker-compose.local.yml up --build",
-    "docker:test": "docker-compose -f docker-compose.test.yml up --build -d",
-    "docker:prod": "docker-compose -f docker-compose.yml up --build -d",
-    "docker:build:test": "docker build -t ohbug-server-test .",
-    "docker:build:prod": "docker build -t ohbug-server .",
     "build": "lerna run build --stream",
     "start": "lerna run start --parallel",
-    "start:test": "lerna run start:test --parallel",
     "start:prod": "lerna run start:prod --parallel",
-    "deploy:test": "npm run docker:test & npm run build && npm run start:test",
-    "deploy:prod": "npm run docker:prod & npm run build && npm run start:prod",
+    "docker:dev": "docker-compose -f ./docker/docker-compose.dev.yml up --build",
+    "docker:prod": "docker-compose -f ./docker/docker-compose.prod.yml up --build -d",
     "prettier": "lerna run prettier",
     "lint": "lerna run lint",
     "test": "lerna run test --parallel",
@@ -41,6 +46,7 @@
     "class-transformer": "^0.3.1",
     "class-validator": "^0.12.2",
     "dayjs": "^1.8.35",
+    "dotenv": "^8.2.0",
     "kafkajs": "^1.12.0",
     "pg": "^8.3.3",
     "ramda": "^0.27.0",

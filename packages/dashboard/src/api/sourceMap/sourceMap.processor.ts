@@ -19,7 +19,7 @@ export class SourceMapConsumer {
 
   /**
    * 管理 sourceMap 文件的储存
-   * 1. 根据 apiKey 检查 sourceMap 数据量是否超过最大值 others.sourceMap.max
+   * 1. 根据 apiKey 检查 sourceMap 数据量是否超过最大值 business.sourceMap.max
    * 2. 超过 -> 返回拒绝
    * 3. 不超过 -> 判断有没有 appVersion 和 appType 同时符合的数据
    * 4. 有 -> data 叠加
@@ -36,7 +36,7 @@ export class SourceMapConsumer {
       const sourceMaps = await this.sourceMapRepository.find({
         apiKey,
       });
-      const maxSourceMap = this.configService.get('others.sourceMap.max');
+      const maxSourceMap = this.configService.get('business.sourceMap.max');
       if (sourceMaps.length >= maxSourceMap) {
         throw new Error('sourceMap 文件数量已达到最大值');
       } else {
