@@ -2,7 +2,7 @@ version: '3.7'
 
 services:
   ohbug-ce:
-    image: ohbug/ohbug-server:latest
+    image: ohbug/ohbug-ce:latest
     restart: always
     env_file:
       - ../.env.production
