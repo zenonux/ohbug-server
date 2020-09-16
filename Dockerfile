@@ -4,6 +4,8 @@ USER root
 
 WORKDIR /usr/src/ohbug
 
+RUN yarn global add pm2
+
 # ohbug-server
 COPY package.json /usr/src/ohbug/package.json
 COPY yarn.lock /usr/src/ohbug/yarn.lock
@@ -16,7 +18,6 @@ COPY lerna.json /usr/src/ohbug/lerna.json
 RUN yarn
 COPY ./ /usr/src/ohbug
 RUN yarn bootstrap
-RUN yarn global add pm2
 RUN yarn build
 
 # ohbug-web-app
