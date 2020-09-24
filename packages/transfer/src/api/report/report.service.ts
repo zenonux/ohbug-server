@@ -39,7 +39,7 @@ export class ReportService {
   }
 
   /**
-   * 对 event 进行预处理后通过 kafka 传递到 logstash
+   * 对 event 进行预处理后传递到 manager 进行下一步处理
    *
    * @param event 通过上报接口拿到的 event
    * @param ip_address 用户 ip

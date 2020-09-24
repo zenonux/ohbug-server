@@ -64,6 +64,8 @@ EVENT_MAX=1000
 
 ## 普通搭建
 
+使用 npm 安装依赖可能出现问题，请使用 [yarn](https://yarnpkg.com/) 代替 npm 安装依赖。
+
 1. clone 仓库
 
 ```shell

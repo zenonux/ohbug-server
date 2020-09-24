@@ -14,7 +14,7 @@ module.exports = {
      * Use typeorm to manipulate the database. It is recommended to use postgresql
      */
     orm: {
-      type: 'postgres',
+      type: process.env.TYPEORM_CONNECTION,
       host: process.env.TYPEORM_HOST,
       port: parseInt(process.env.TYPEORM_PORT, 10),
       database: process.env.TYPEORM_DATABASE,
