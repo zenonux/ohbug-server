@@ -1,3 +1,11 @@
+<div align="center">
+  <a href="https://ohbug.net" target="_blank">
+    <img src="https://raw.githubusercontent.com/ohbug-org/blog/master/images/ohbug_logo.svg" alt="Ohbug" height="72">
+  </a>
+  
+  <p>开源应用信息监控平台</p>
+</div>
+
 # Ohbug Server
 
 <p align="center">
