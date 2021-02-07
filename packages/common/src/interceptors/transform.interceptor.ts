@@ -1,10 +1,10 @@
-import { Injectable } from '@nestjs/common';
-import type { NestInterceptor, CallHandler } from '@nestjs/common';
-import { map } from 'rxjs/operators';
-import type { Observable } from 'rxjs';
+import { Injectable } from '@nestjs/common'
+import type { NestInterceptor, CallHandler } from '@nestjs/common'
+import { map } from 'rxjs/operators'
+import type { Observable } from 'rxjs'
 
 interface Response<T> {
-  data: T;
+  data: T
 }
 
 @Injectable()
@@ -16,8 +16,8 @@ export class TransformInterceptor<T>
         return {
           data,
           success: true,
-        };
-      }),
-    );
+        }
+      })
+    )
   }
 }

@@ -1,18 +1,18 @@
-import { HttpService, Injectable } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
-import webpush from 'web-push';
+import { HttpService, Injectable } from '@nestjs/common'
+import { ConfigService } from '@nestjs/config'
+import webpush from 'web-push'
 
-import type { DispatchNotice, SendEmail } from './notice.interface';
-import { getNotificationContent } from './notice.core';
-import sendEmail from './email';
-import dispatchWebhook from './webhook';
-import sendBrowserNotification from './browser';
+import type { DispatchNotice, SendEmail } from './notice.interface'
+import { getNotificationContent } from './notice.core'
+import sendEmail from './email'
+import dispatchWebhook from './webhook'
+import sendBrowserNotification from './browser'
 
 @Injectable()
 export class NoticeService {
   constructor(
     private readonly httpService: HttpService,
-    private configService: ConfigService,
+    private configService: ConfigService
   ) {}
 
   async dispatchNotice({ setting, rule, issue, event }: DispatchNotice) {
@@ -21,7 +21,7 @@ export class NoticeService {
       rule,
       issue,
       event,
-    });
+    })
     for (const { email, open } of setting.emails) {
       if (open === true) {
         await this.sendEmail({
@@ -29,7 +29,7 @@ export class NoticeService {
           title,
           text,
           html,
-        });
+        })
       }
     }
 
@@ -38,26 +38,26 @@ export class NoticeService {
         await dispatchWebhook(
           { title, text, markdown },
           webhook,
-          this.httpService,
-        );
+          this.httpService
+        )
       }
     }
 
     if (setting.browser.open === true) {
-      const keys = this.configService.get('service.webpush');
+      const keys = this.configService.get('service.webpush')
       webpush.setVapidDetails(
         'mailto:yueban@ohbug.net',
         keys.publicKey,
-        keys.privateKey,
-      );
-      const subscription = setting?.browser?.data;
+        keys.privateKey
+      )
+      const subscription = setting?.browser?.data
       if (subscription) {
         await sendBrowserNotification({
           subscription,
           title,
           body: lite,
           link,
-        });
+        })
       }
     }
   }
@@ -71,13 +71,13 @@ export class NoticeService {
    * @param html
    */
   async sendEmail({ email, title, text, html }: SendEmail) {
-    const config = this.configService.get('service.email');
+    const config = this.configService.get('service.email')
     await sendEmail({
       config,
       to: email,
       title,
       text,
       html,
-    });
+    })
   }
 }

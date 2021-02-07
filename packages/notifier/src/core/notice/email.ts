@@ -1,14 +1,14 @@
-import nodemailer from 'nodemailer';
+import nodemailer from 'nodemailer'
 
 interface SendMail {
-  config: any;
-  to: string;
-  title: string;
-  text: string;
-  html: string;
+  config: any
+  to: string
+  title: string
+  text: string
+  html: string
 }
 async function main({ config, to, title, text, html }: SendMail) {
-  const transporter = nodemailer.createTransport(config);
+  const transporter = nodemailer.createTransport(config)
 
   const info = {
     from: `Ohbug <${config?.auth?.user}>`,
@@ -16,12 +16,12 @@ async function main({ config, to, title, text, html }: SendMail) {
     subject: title,
     text,
     html,
-  };
+  }
 
-  const verify = await transporter.verify();
+  const verify = await transporter.verify()
   if (verify) {
-    return await transporter.sendMail(info);
+    return await transporter.sendMail(info)
   }
 }
 
-export default main;
+export default main

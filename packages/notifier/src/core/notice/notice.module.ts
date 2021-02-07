@@ -1,8 +1,8 @@
-import { Module, HttpModule } from '@nestjs/common';
+import { Module, HttpModule } from '@nestjs/common'
 
-import { ConfigModule } from '@ohbug-server/common';
+import { ConfigModule } from '@ohbug-server/common'
 
-import { NoticeService } from './notice.service';
+import { NoticeService } from './notice.service'
 
 @Module({
   imports: [HttpModule, ConfigModule],

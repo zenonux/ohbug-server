@@ -1,9 +1,9 @@
-import { ClientsModule, Transport } from '@nestjs/microservices';
+import { ClientsModule, Transport } from '@nestjs/microservices'
 
 import {
   MICROSERVICE_MANAGER_PORT,
   MICROSERVICE_NOTIFIER_PORT,
-} from '../constants';
+} from '../constants'
 
 export const MicroserviceManagerClientModule = ClientsModule.register([
   {
@@ -11,7 +11,7 @@ export const MicroserviceManagerClientModule = ClientsModule.register([
     transport: Transport.TCP,
     options: { port: MICROSERVICE_MANAGER_PORT },
   },
-]);
+])
 
 export const MicroserviceNotifierClientModule = ClientsModule.register([
   {
@@ -19,4 +19,4 @@ export const MicroserviceNotifierClientModule = ClientsModule.register([
     transport: Transport.TCP,
     options: { port: MICROSERVICE_NOTIFIER_PORT },
   },
-]);
+])

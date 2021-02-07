@@ -1,18 +1,7 @@
 {
+  "extends": "@chenyueban/tsconfig",
   "compilerOptions": {
     "baseUrl": "./packages",
-    "module": "commonjs",
-    "declaration": true,
-    "removeComments": true,
-    "emitDecoratorMetadata": true,
-    "experimentalDecorators": true,
-    "target": "es2017",
-    "sourceMap": false,
-    "incremental": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "resolveJsonModule": true,
-    "esModuleInterop": true,
     "paths": {
       "@ohbug-server/*": ["packages/*/src"]
     }

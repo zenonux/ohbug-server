@@ -15,14 +15,14 @@
     "start:debug": "nest start --debug --watch",
     "start:prod": "cross-env pm2-runtime start ./ecosystem.config.js --env production",
     "prettier": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
-    "lint": "tslint -p tsconfig.json -c tslint.json",
+    "lint": "eslint '{src,apps,libs,test}/**/*.ts' --fix",
     "test": "jest",
     "test:watch": "jest --watch"
   },
   "dependencies": {
     "@ohbug-server/common": "^0.0.0",
-    "markdown-it": "^11.0.0",
-    "nodemailer": "^6.4.10",
+    "markdown-it": "^12.0.4",
+    "nodemailer": "^6.4.17",
     "web-push": "^3.4.4"
   },
   "devDependencies": {

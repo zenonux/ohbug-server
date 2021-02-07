@@ -1,5 +1,5 @@
-import { registerAs } from '@nestjs/config';
+import { registerAs } from '@nestjs/config'
 // tslint:disable-next-line:no-var-requires
-const config = require('../../../../config');
+const config = require('../../../../config')
 
-export const businessConfig = registerAs('business', () => config.business);
+export const businessConfig = registerAs('business', () => config.business)

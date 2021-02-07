@@ -1,12 +1,12 @@
-import webpush from 'web-push';
-import { NotificationSettingBrowser } from '@ohbug-server/common';
+import webpush from 'web-push'
+import { NotificationSettingBrowser } from '@ohbug-server/common'
 
 interface SendBrowserNotification {
-  subscription: NotificationSettingBrowser['data'];
-  title: string;
-  body: string;
-  link: string;
-  icon?: string;
+  subscription: NotificationSettingBrowser['data']
+  title: string
+  body: string
+  link: string
+  icon?: string
 }
 async function main({
   subscription,
@@ -22,8 +22,8 @@ async function main({
       body,
       icon,
       link,
-    }),
-  );
+    })
+  )
 }
 
-export default main;
+export default main

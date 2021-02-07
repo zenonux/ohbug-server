@@ -1,27 +1,27 @@
-import dayjs from 'dayjs';
-import markdownIt from 'markdown-it';
+import dayjs from 'dayjs'
+import markdownIt from 'markdown-it'
 
-import { getHost } from '@ohbug-server/common';
-import type { NotificationRuleLevel } from '@ohbug-server/common';
-import { DispatchNotice } from '@/core/notice/notice.interface';
+import { getHost } from '@ohbug-server/common'
+import type { NotificationRuleLevel } from '@ohbug-server/common'
+import { DispatchNotice } from '@/core/notice/notice.interface'
 
 interface Content {
-  title: string;
-  text: string;
-  link: string;
-  lite: string;
-  markdown?: string;
-  html?: string;
+  title: string
+  text: string
+  link: string
+  lite: string
+  markdown?: string
+  html?: string
 }
 function switchLevelAndGetText(level: NotificationRuleLevel) {
   const levelList = [
     { label: '严重', value: 'serious' },
     { label: '警告', value: 'warning' },
     { label: '默认', value: 'default' },
-  ];
-  return levelList.find((item) => item.value === level).label;
+  ]
+  return levelList.find((item) => item.value === level).label
 }
-const md = markdownIt();
+const md = markdownIt()
 export function getNotificationContent({
   event,
   issue,
@@ -29,7 +29,7 @@ export function getNotificationContent({
 }: DispatchNotice): Content {
   const {
     device: { platform, url },
-  } = event;
+  } = event
   const {
     id,
     type,
@@ -37,17 +37,17 @@ export function getNotificationContent({
     usersCount,
     updatedAt,
     metadata: { message, filename, others },
-  } = issue;
+  } = issue
   const title = `「Ohbug」[问题通知] [${switchLevelAndGetText(
-    rule.level,
-  )}] ${type}`;
+    rule.level
+  )}] ${type}`
   const statistics = {
     eventsCount,
     usersCount,
     time: updatedAt,
     platform,
-  };
-  const link = `${getHost()}/issue/${id}/event/latest`;
+  }
+  const link = `${getHost()}/issue/${id}/event/latest`
 
   const text = `
   ${title}
@@ -84,7 +84,7 @@ export function getNotificationContent({
 
   查看详情
   ${link}
-  `;
+  `
   const markdown = `
   # ${title}
 
@@ -119,11 +119,11 @@ export function getNotificationContent({
   }
 
   [查看详情](${link})
-  `;
-  const html = md.render(markdown);
+  `
+  const html = md.render(markdown)
   const lite = `总事件数：${statistics.eventsCount} 总用户数：${
     statistics.usersCount
-  } 时间：${dayjs(statistics.time).format(`YYYY-MM-DD HH:mm:ss`)}`;
+  } 时间：${dayjs(statistics.time).format(`YYYY-MM-DD HH:mm:ss`)}`
   return {
     title,
     text,
@@ -131,5 +131,5 @@ export function getNotificationContent({
     lite,
     markdown,
     html,
-  };
+  }
 }

@@ -1,10 +1,10 @@
-import type { OhbugEvent, OhbugUser } from '@ohbug/types';
+import type { OhbugEvent, OhbugUser } from '@ohbug/types'
 
-export type OhbugEventLike = OhbugEvent<any>;
+export type OhbugEventLike = OhbugEvent<any>
 
 export interface OhbugEventLikeWithIssueId {
-  event: OhbugEventLike;
-  issue_id: number;
+  event: OhbugEventLike
+  issue_id: number
 }
 
-export type { OhbugUser };
+export type { OhbugUser }
