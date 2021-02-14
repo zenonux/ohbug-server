@@ -9,23 +9,23 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   OneToOne,
-} from 'typeorm';
-import { Exclude } from 'class-transformer';
+} from 'typeorm'
+import { Exclude } from 'class-transformer'
 
-import { Organization } from '@/api/organization/organization.entity';
-import { User } from '@/api/user/user.entity';
+import { Organization } from '@/api/organization/organization.entity'
+import { User } from '@/api/user/user.entity'
 
-import { NotificationRule } from '@/api/notification/notification.rule.entity';
-import { NotificationSetting } from '@/api/notification/notification.setting.entity';
-import type { ProjectType } from './project.interface';
+import { NotificationRule } from '@/api/notification/notification.rule.entity'
+import { NotificationSetting } from '@/api/notification/notification.setting.entity'
+import type { ProjectType } from './project.interface'
 
 @Entity()
 export class Project {
   @PrimaryGeneratedColumn()
-  id: number;
+  id: number
 
   @Column({ type: 'text' })
-  apiKey: string;
+  apiKey: string
 
   /**
    * project 名称 可修改
@@ -34,7 +34,7 @@ export class Project {
    * @memberof Project
    */
   @Column({ type: 'text' })
-  name: string;
+  name: string
 
   /**
    * project 类型 不可修改
@@ -43,7 +43,7 @@ export class Project {
    * @memberof Project
    */
   @Column({ type: 'text' })
-  type: ProjectType;
+  type: ProjectType
 
   /**
    * project 创建时间
@@ -52,7 +52,7 @@ export class Project {
    * @memberof Project
    */
   @CreateDateColumn({ type: 'timestamp with time zone' })
-  createdAt: Date;
+  createdAt: Date
 
   /**
    * project 更新时间
@@ -62,7 +62,7 @@ export class Project {
    */
   @Exclude()
   @UpdateDateColumn()
-  updatedAt: Date;
+  updatedAt: Date
 
   /**
    * project 的管理员用户 (多对一)
@@ -72,7 +72,7 @@ export class Project {
    */
   @ManyToOne((_) => User, (user) => user.projects)
   @JoinColumn()
-  admin: User;
+  admin: User
 
   /**
    * project 所属的 organization (多对一)
@@ -83,7 +83,7 @@ export class Project {
   @ManyToOne((_) => Organization, (organization) => organization.projects, {
     onDelete: 'CASCADE',
   })
-  organization: Organization;
+  organization: Organization
 
   /**
    * project 所拥有的 users (多对多)
@@ -92,7 +92,7 @@ export class Project {
    * @memberof Project
    */
   @ManyToMany((_) => User, (user) => user.projects)
-  users: User[];
+  users: User[]
 
   /**
    * project 所拥有的 notification rules (一对多)
@@ -101,7 +101,7 @@ export class Project {
    * @memberof Project
    */
   @OneToMany((_) => NotificationRule, (notification) => notification.project)
-  notificationRules: Notification[];
+  notificationRules: Notification[]
 
   /**
    * project 所拥有的 notification settings (一对一)
@@ -112,7 +112,7 @@ export class Project {
   @OneToOne(
     (_) => NotificationSetting,
     (notification) => notification.project,
-    { cascade: true },
+    { cascade: true }
   )
-  notificationSetting: NotificationSetting;
+  notificationSetting: NotificationSetting
 }

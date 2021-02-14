@@ -1,22 +1,22 @@
-import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { InjectQueue } from '@nestjs/bull';
-import type { Queue } from 'bull';
-import { getStackFrame, getTheSourceByError } from 'source-map-trace';
-import { unlinkSync } from 'fs';
+import { Injectable } from '@nestjs/common'
+import { InjectRepository } from '@nestjs/typeorm'
+import { Repository } from 'typeorm'
+import { InjectQueue } from '@nestjs/bull'
+import type { Queue } from 'bull'
+import { getStackFrame, getTheSourceByError } from 'source-map-trace'
+import { unlinkSync } from 'fs'
 
-import { ForbiddenException } from '@ohbug-server/common';
-import type { OhbugEventLike } from '@ohbug-server/common';
-import { ProjectService } from '@/api/project/project.service';
+import { ForbiddenException } from '@ohbug-server/common'
+import type { OhbugEventLike } from '@ohbug-server/common'
+import { ProjectService } from '@/api/project/project.service'
 
-import { SourceMap } from './sourceMap.entity';
+import { SourceMap } from './sourceMap.entity'
 import {
   DeleteSourceMapsDto,
   GetSourceMapsDto,
   ReceiveSourceMapDto,
-} from './sourceMap.dto';
-import type { ReceiveSourceMapFile } from './sourceMap.interface';
+} from './sourceMap.dto'
+import type { ReceiveSourceMapFile } from './sourceMap.interface'
 
 @Injectable()
 export class SourceMapService {
@@ -24,7 +24,7 @@ export class SourceMapService {
     @InjectQueue('sourceMap') private sourceMapQueue: Queue,
     @InjectRepository(SourceMap)
     private readonly sourceMapRepository: Repository<SourceMap>,
-    private readonly projectService: ProjectService,
+    private readonly projectService: ProjectService
   ) {}
 
   /**
@@ -36,23 +36,23 @@ export class SourceMapService {
    */
   async handleSourceMap(
     file: ReceiveSourceMapFile,
-    receiveSourceMapDto: ReceiveSourceMapDto,
+    receiveSourceMapDto: ReceiveSourceMapDto
   ) {
     try {
       const project = await this.projectService.getProjectByApiKey(
-        receiveSourceMapDto.apiKey,
-      );
+        receiveSourceMapDto.apiKey
+      )
       if (project) {
         await this.sourceMapQueue.add('sourceMapFile', {
           file,
           receiveSourceMapDto,
-        });
+        })
       }
     } catch (error) {
       if (error.name === 'EntityNotFound') {
-        throw new ForbiddenException(400901);
+        throw new ForbiddenException(400901)
       } else {
-        throw new ForbiddenException(400902, error);
+        throw new ForbiddenException(400902, error)
       }
     }
   }
@@ -71,22 +71,23 @@ export class SourceMapService {
         apiKey,
         appVersion,
         appType,
-      });
+      })
       if (sourceMap) {
-        const stackFrame = getStackFrame(detail);
+        const stackFrame = getStackFrame(detail)
         if (stackFrame) {
           const sourceMapTarget = sourceMap.data.find(({ originalname }) => {
-            const sourceFileName = originalname.split('.map')[0];
-            return stackFrame.fileName.includes(sourceFileName);
-          });
+            const sourceFileName = originalname.split('.map')[0]
+            return stackFrame.fileName?.includes(sourceFileName)
+          })
 
           if (sourceMapTarget) {
-            return await getTheSourceByError(sourceMapTarget.path, detail);
+            return await getTheSourceByError(sourceMapTarget.path, detail)
           }
         }
       }
+      return null
     } catch (error) {
-      throw new ForbiddenException(400903, error);
+      throw new ForbiddenException(400903, error)
     }
   }
 
@@ -97,10 +98,10 @@ export class SourceMapService {
    */
   async getSourceMapsByApiKey({ apiKey }: GetSourceMapsDto) {
     try {
-      const sourceMaps = await this.sourceMapRepository.find({ apiKey });
-      return sourceMaps;
+      const sourceMaps = await this.sourceMapRepository.find({ apiKey })
+      return sourceMaps
     } catch (error) {
-      throw new ForbiddenException(400904, error);
+      throw new ForbiddenException(400904, error)
     }
   }
 
@@ -111,16 +112,16 @@ export class SourceMapService {
    */
   async deleteSourceMapById({ id }: DeleteSourceMapsDto) {
     try {
-      const sourceMap = await this.sourceMapRepository.findOneOrFail(id);
+      const sourceMap = await this.sourceMapRepository.findOneOrFail(id)
 
       sourceMap.data.forEach(({ path }) => {
-        unlinkSync(path);
-        // tslint:disable-next-line:no-console
-        console.log(`successfully deleted ${path}`);
-      });
-      return Boolean(await this.sourceMapRepository.remove(sourceMap));
+        unlinkSync(path)
+        // eslint-disable-next-line no-console
+        console.log(`successfully deleted ${path}`)
+      })
+      return Boolean(await this.sourceMapRepository.remove(sourceMap))
     } catch (error) {
-      throw new ForbiddenException(400905, error);
+      throw new ForbiddenException(400905, error)
     }
   }
 }

@@ -8,16 +8,16 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   ManyToMany,
-} from 'typeorm';
-import { Exclude } from 'class-transformer';
+} from 'typeorm'
+import { Exclude } from 'class-transformer'
 
-import { User } from '@/api/user/user.entity';
-import { Project } from '@/api/project/project.entity';
+import { User } from '@/api/user/user.entity'
+import { Project } from '@/api/project/project.entity'
 
 @Entity()
 export class Organization {
   @PrimaryGeneratedColumn()
-  id: number;
+  id: number
 
   /**
    * organization 名称 可修改?
@@ -26,7 +26,7 @@ export class Organization {
    * @memberof Organization
    */
   @Column({ type: 'text' })
-  name: string;
+  name: string
 
   /**
    * organization 简介 可修改
@@ -35,7 +35,7 @@ export class Organization {
    * @memberof Organization
    */
   @Column({ type: 'text', nullable: true })
-  introduction?: string;
+  introduction?: string
 
   /**
    * organization 创建时间
@@ -44,7 +44,7 @@ export class Organization {
    * @memberof User
    */
   @CreateDateColumn({ type: 'timestamp with time zone' })
-  createdAt: Date;
+  createdAt: Date
 
   /**
    * organization 更新时间
@@ -54,7 +54,7 @@ export class Organization {
    */
   @Exclude()
   @UpdateDateColumn()
-  updatedAt: Date;
+  updatedAt: Date
 
   /**
    * organization 所拥有的 user (多对多)
@@ -63,7 +63,7 @@ export class Organization {
    * @memberof Organization
    */
   @ManyToMany((_) => User, (user) => user.organizations)
-  users: User[];
+  users: User[]
 
   /**
    * organization 的管理员用户 (一对一)
@@ -73,7 +73,7 @@ export class Organization {
    */
   @ManyToOne((_) => User)
   @JoinColumn()
-  admin: User;
+  admin: User
 
   /**
    * organization 所拥有的 project (一对多)
@@ -82,7 +82,7 @@ export class Organization {
    * @memberof Organization
    */
   @OneToMany((_) => Project, (project) => project.organization)
-  projects: Project[];
+  projects: Project[]
 
   /**
    * organization 当前承载的 event 数
@@ -92,5 +92,5 @@ export class Organization {
    */
   @Exclude()
   @Column({ type: 'integer', default: 0 })
-  count: number;
+  count: number
 }

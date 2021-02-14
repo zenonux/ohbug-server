@@ -1,20 +1,20 @@
-import { Repository } from 'typeorm';
-import { InjectRepository } from '@nestjs/typeorm';
-import { ConfigService } from '@nestjs/config';
-import { Processor, Process } from '@nestjs/bull';
-import { Job } from 'bull';
-import { unlinkSync } from 'fs';
-import { uniq } from 'ramda';
+import { Repository } from 'typeorm'
+import { InjectRepository } from '@nestjs/typeorm'
+import { ConfigService } from '@nestjs/config'
+import { Processor, Process } from '@nestjs/bull'
+import { Job } from 'bull'
+import { unlinkSync } from 'fs'
+import { uniq } from 'ramda'
 
-import { ForbiddenException } from '@ohbug-server/common';
-import { SourceMap } from '@/api/sourceMap/sourceMap.entity';
+import { ForbiddenException } from '@ohbug-server/common'
+import { SourceMap } from '@/api/sourceMap/sourceMap.entity'
 
 @Processor('sourceMap')
 export class SourceMapConsumer {
   constructor(
     @InjectRepository(SourceMap)
     private readonly sourceMapRepository: Repository<SourceMap>,
-    private readonly configService: ConfigService,
+    private readonly configService: ConfigService
   ) {}
 
   /**
@@ -30,34 +30,34 @@ export class SourceMapConsumer {
   @Process('sourceMapFile')
   async handleSourceMap(job: Job) {
     try {
-      const { file, receiveSourceMapDto } = job.data;
-      const { apiKey, appVersion, appType } = receiveSourceMapDto;
+      const { file, receiveSourceMapDto } = job.data
+      const { apiKey, appVersion, appType } = receiveSourceMapDto
       // 先查有没有已经存的
       const sourceMaps = await this.sourceMapRepository.find({
         apiKey,
-      });
-      const maxSourceMap = this.configService.get('business.sourceMap.max');
+      })
+      const maxSourceMap = this.configService.get('business.sourceMap.max')
       if (sourceMaps.length >= maxSourceMap) {
-        throw new Error('sourceMap 文件数量已达到最大值');
+        throw new Error('sourceMap 文件数量已达到最大值')
       } else {
         const matchSourceMap = sourceMaps.find(
-          (s) => s.appVersion === appVersion && s.appType === appType,
-        );
+          (s) => s.appVersion === appVersion && s.appType === appType
+        )
         if (matchSourceMap) {
-          let data = matchSourceMap.data;
+          let data = matchSourceMap.data
           // 这一步要对比新文件与老文件是否重复，若重复删除老的文件
           const oldFile = matchSourceMap.data.find(
-            ({ originalname }) => originalname === file.originalname,
-          );
+            ({ originalname }) => originalname === file.originalname
+          )
           if (oldFile) {
-            unlinkSync(oldFile.path);
-            data = data.filter(({ path }) => path !== oldFile.path);
-            // tslint:disable-next-line:no-console
-            console.log(`successfully deleted ${oldFile.path}`);
+            unlinkSync(oldFile.path)
+            data = data.filter(({ path }) => path !== oldFile.path)
+            // eslint-disable-next-line no-console
+            console.log(`successfully deleted ${oldFile.path}`)
           }
           // 如果有则新增 data
-          matchSourceMap.data = uniq([...data, file]);
-          return await this.sourceMapRepository.save(matchSourceMap);
+          matchSourceMap.data = uniq([...data, file])
+          return await this.sourceMapRepository.save(matchSourceMap)
         } else {
           // 如果没有则新建
           const sourceMap = await this.sourceMapRepository.create({
@@ -65,12 +65,12 @@ export class SourceMapConsumer {
             appVersion,
             appType,
             data: [file],
-          });
-          return await this.sourceMapRepository.save(sourceMap);
+          })
+          return await this.sourceMapRepository.save(sourceMap)
         }
       }
     } catch (error) {
-      throw new ForbiddenException(400900, error);
+      throw new ForbiddenException(400900, error)
     }
   }
 }

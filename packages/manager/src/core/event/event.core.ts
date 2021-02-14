@@ -1,18 +1,18 @@
-import { types as browserTypes } from '@ohbug/browser';
+import { types as browserTypes } from '@ohbug/browser'
 
 import {
   md5,
-  TOPIC_MANAGER_LOGSTASH_EVENT_ERROR,
-  TOPIC_MANAGER_LOGSTASH_EVENT_FEEDBACK,
-  TOPIC_MANAGER_LOGSTASH_EVENT_MESSAGE,
-  TOPIC_MANAGER_LOGSTASH_EVENT_VIEW,
-  TOPIC_MANAGER_LOGSTASH_PERFORMANCE,
-} from '@ohbug-server/common';
+  TOPIC_MANAGER_DATABASE_EVENT_ERROR,
+  TOPIC_MANAGER_DATABASE_EVENT_FEEDBACK,
+  TOPIC_MANAGER_DATABASE_EVENT_MESSAGE,
+  TOPIC_MANAGER_DATABASE_EVENT_VIEW,
+  TOPIC_MANAGER_DATABASE_EVENT_PERFORMANCE,
+} from '@ohbug-server/common'
 
 import type {
   AggregationDataAndMetaData,
   OhbugEventDetail,
-} from './event.interface';
+} from './event.interface'
 
 const {
   UNCAUGHT_ERROR,
@@ -22,11 +22,11 @@ const {
   FETCH_ERROR,
   WEBSOCKET_ERROR,
   UNKNOWN_ERROR,
-} = browserTypes;
-const MINIAPP_ERROR = 'miniappError';
-const MINIAPP_UNHANDLEDREJECTION_ERROR = 'miniappUnhandledrejectionError';
-const MINIAPP_PAGENOTFOUND_ERROR = 'miniappPagenotfoundError';
-const MINIAPP_MEMORYWARNING_ERROR = 'miniappMemorywarningError';
+} = browserTypes
+const MINIAPP_ERROR = 'miniappError'
+const MINIAPP_UNHANDLEDREJECTION_ERROR = 'miniappUnhandledrejectionError'
+const MINIAPP_PAGENOTFOUND_ERROR = 'miniappPagenotfoundError'
+const MINIAPP_MEMORYWARNING_ERROR = 'miniappMemorywarningError'
 
 /**
  * 根据不同 error detail 返回可用于聚合的字段
@@ -35,8 +35,8 @@ const MINIAPP_MEMORYWARNING_ERROR = 'miniappMemorywarningError';
  * @param detail error detail
  */
 export function switchErrorDetailAndGetAggregationDataAndMetaData(
-  type,
-  detail: OhbugEventDetail,
+  type: string,
+  detail: OhbugEventDetail
 ): AggregationDataAndMetaData {
   switch (type) {
     case UNCAUGHT_ERROR:
@@ -55,7 +55,7 @@ export function switchErrorDetailAndGetAggregationDataAndMetaData(
           filename: detail.filename,
           // others: detail.stack,
         },
-      };
+      }
     case UNHANDLEDREJECTION_ERROR:
       return {
         agg: [detail.message],
@@ -63,7 +63,7 @@ export function switchErrorDetailAndGetAggregationDataAndMetaData(
           type,
           message: detail.message,
         },
-      };
+      }
     case UNKNOWN_ERROR:
       return {
         agg: [detail.message],
@@ -71,7 +71,7 @@ export function switchErrorDetailAndGetAggregationDataAndMetaData(
           type,
           message: detail.message,
         },
-      };
+      }
     case RESOURCE_ERROR:
       return {
         agg: [
@@ -89,7 +89,7 @@ export function switchErrorDetailAndGetAggregationDataAndMetaData(
           message: detail.message,
           others: detail.selector,
         },
-      };
+      }
     case AJAX_ERROR:
       return {
         agg: [detail.req.url, detail.req.method, detail.req.data],
@@ -98,7 +98,7 @@ export function switchErrorDetailAndGetAggregationDataAndMetaData(
           message: detail.req.url,
           others: detail.req.method,
         },
-      };
+      }
     case FETCH_ERROR:
       return {
         agg: [detail.req.url, detail.req.method, detail.req.data],
@@ -107,7 +107,7 @@ export function switchErrorDetailAndGetAggregationDataAndMetaData(
           message: detail.req.url,
           others: detail.req.method,
         },
-      };
+      }
     case WEBSOCKET_ERROR:
       return {
         agg: [detail.url],
@@ -115,7 +115,7 @@ export function switchErrorDetailAndGetAggregationDataAndMetaData(
           type,
           message: detail.url,
         },
-      };
+      }
     case 'react':
       return {
         agg: [
@@ -129,7 +129,7 @@ export function switchErrorDetailAndGetAggregationDataAndMetaData(
           message: detail.message,
           others: detail.errorInfo,
         },
-      };
+      }
     case 'vue':
       return {
         agg: [
@@ -147,7 +147,7 @@ export function switchErrorDetailAndGetAggregationDataAndMetaData(
           filename: detail.file,
           others: detail.errorInfo,
         },
-      };
+      }
     case MINIAPP_ERROR:
       return {
         agg: detail?.stack ? [detail.message, detail.stack] : [detail.message],
@@ -156,7 +156,7 @@ export function switchErrorDetailAndGetAggregationDataAndMetaData(
           message: detail.message,
           stack: detail?.stack,
         },
-      };
+      }
     case MINIAPP_UNHANDLEDREJECTION_ERROR:
       return {
         agg: detail?.stack ? [detail.message, detail.stack] : [detail.message],
@@ -165,7 +165,7 @@ export function switchErrorDetailAndGetAggregationDataAndMetaData(
           message: detail.message,
           stack: detail?.stack,
         },
-      };
+      }
     case MINIAPP_PAGENOTFOUND_ERROR:
       return {
         agg: [detail?.message, detail?.path, detail.query, detail.isEntryPage],
@@ -175,7 +175,7 @@ export function switchErrorDetailAndGetAggregationDataAndMetaData(
           path: detail.path,
           query: detail.query,
         },
-      };
+      }
     case MINIAPP_MEMORYWARNING_ERROR:
       return {
         agg: [detail?.message, detail?.level],
@@ -184,7 +184,7 @@ export function switchErrorDetailAndGetAggregationDataAndMetaData(
           message: detail.message,
           level: detail.level,
         },
-      };
+      }
     default:
       return {
         agg: [detail.message],
@@ -192,7 +192,7 @@ export function switchErrorDetailAndGetAggregationDataAndMetaData(
           type,
           message: detail.message,
         },
-      };
+      }
   }
 }
 
@@ -202,36 +202,35 @@ export function switchErrorDetailAndGetAggregationDataAndMetaData(
  * @param aggregationData
  */
 export function getMd5FromAggregationData(...aggregationData: any[]): string {
-  const data = aggregationData.join(',');
-  return md5(data);
+  const data = aggregationData.join(',')
+  return md5(data)
 }
 
 export const eventIndices = [
   // event
   {
     category: 'error',
-    key: TOPIC_MANAGER_LOGSTASH_EVENT_ERROR,
+    key: TOPIC_MANAGER_DATABASE_EVENT_ERROR,
     index: 'ohbug-event-error',
   },
   {
     category: 'message',
-    key: TOPIC_MANAGER_LOGSTASH_EVENT_MESSAGE,
+    key: TOPIC_MANAGER_DATABASE_EVENT_MESSAGE,
     index: 'ohbug-event-message',
   },
   {
     category: 'feedback',
-    key: TOPIC_MANAGER_LOGSTASH_EVENT_FEEDBACK,
+    key: TOPIC_MANAGER_DATABASE_EVENT_FEEDBACK,
     index: 'ohbug-event-feedback',
   },
   {
     category: 'view',
-    key: TOPIC_MANAGER_LOGSTASH_EVENT_VIEW,
+    key: TOPIC_MANAGER_DATABASE_EVENT_VIEW,
     index: 'ohbug-event-view',
   },
-  // performance
   {
     category: 'performance',
-    key: TOPIC_MANAGER_LOGSTASH_PERFORMANCE,
-    index: 'ohbug-performance',
+    key: TOPIC_MANAGER_DATABASE_EVENT_PERFORMANCE,
+    index: 'ohbug-event-performance',
   },
-];
+]

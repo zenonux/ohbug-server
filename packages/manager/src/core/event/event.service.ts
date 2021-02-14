@@ -1,36 +1,32 @@
-import { forwardRef, Inject, Injectable } from '@nestjs/common';
-import type { Queue } from 'bull';
-import { InjectQueue } from '@nestjs/bull';
-import { ClientKafka } from '@nestjs/microservices';
-import { OhbugEvent } from '@ohbug/types';
-import dayjs from 'dayjs';
-import { ElasticsearchService } from '@nestjs/elasticsearch';
+import { forwardRef, Inject, Injectable } from '@nestjs/common'
+import { Repository } from 'typeorm'
+import { InjectRepository } from '@nestjs/typeorm'
+import type { Queue } from 'bull'
+import { InjectQueue } from '@nestjs/bull'
+import { OhbugEvent } from '@ohbug/types'
+import dayjs from 'dayjs'
 
-import { ForbiddenException, KafkaEmitCallback } from '@ohbug-server/common';
-import type {
-  OhbugEventLike,
-  OhbugEventLikeWithIssueId,
-} from '@ohbug-server/common';
-import { IssueService } from '@/core/issue/issue.service';
+import { ForbiddenException } from '@ohbug-server/common'
+import type { OhbugEventLike } from '@ohbug-server/common'
+import { IssueService } from '@/core/issue/issue.service'
 
-import type { GetEventByEventId, OhbugEventDetail } from './event.interface';
+import type { GetEventByEventId, OhbugEventDetail } from './event.interface'
 import {
   getMd5FromAggregationData,
   switchErrorDetailAndGetAggregationDataAndMetaData,
   eventIndices,
-} from './event.core';
+} from './event.core'
+import { Event } from './event.entity'
 
 @Injectable()
 export class EventService {
   constructor(
+    @InjectRepository(Event)
+    private readonly eventRepository: Repository<Event>,
     @InjectQueue('document') private documentQueue: Queue,
-    private readonly elasticsearchService: ElasticsearchService,
     @Inject(forwardRef(() => IssueService))
-    private readonly issueService: IssueService,
+    private readonly issueService: IssueService
   ) {}
-
-  @Inject('KAFKA_MANAGER_LOGSTASH_CLIENT')
-  private readonly logstashClient: ClientKafka;
 
   /**
    * 对 event 进行聚合 生成 issue
@@ -40,67 +36,53 @@ export class EventService {
    */
   aggregation(event: OhbugEventLike) {
     try {
-      const { type, detail, apiKey } = event;
+      const { type, detail, apiKey } = event
       if (typeof detail === 'string') {
-        const formatDetail: OhbugEventDetail = JSON.parse(detail);
+        const formatDetail: OhbugEventDetail = JSON.parse(detail)
         const {
           agg,
           metadata,
         } = switchErrorDetailAndGetAggregationDataAndMetaData(
           type,
-          formatDetail,
-        );
-        const intro = getMd5FromAggregationData(apiKey, ...agg);
-        return { intro, metadata };
+          formatDetail
+        )
+        const intro = getMd5FromAggregationData(apiKey, ...agg)
+        return { intro, metadata }
       }
+      return null
     } catch (error) {
-      throw new ForbiddenException(4001003, error);
+      throw new ForbiddenException(4001003, error)
     }
   }
 
   getIndexOrKeyByEvent(event: OhbugEvent<any> | OhbugEventLike) {
     const { category, key, index } = eventIndices.find(
-      (item) => item.category === event?.category,
-    );
+      (item) => item.category === event?.category
+    )!
     return {
       category,
       key,
       index: `${index}-${dayjs().format('YYYY.MM.DD')}`,
-    };
+    }
   }
 
   /**
-   * 1. 分类后传递到 elk
+   * 创建 event
    *
-   * @param key
-   * @param value
+   * @param event
    */
-  async passEventToLogstash(
-    key: string,
-    value: OhbugEventLikeWithIssueId,
-  ): Promise<KafkaEmitCallback> {
+  createEvent(event: OhbugEventLike): Event {
     try {
-      const result = await this.logstashClient
-        .emit(key, {
-          key,
-          value,
-        })
-        .toPromise<KafkaEmitCallback>();
-      return result;
-      throw new Error(
-        `传入 logstash 失败，请确认 category 是否为指定内容: 'error', 'message', 'feedback', 'view', 'performance'
-        ${JSON.stringify(value)}
-        `,
-      );
+      return this.eventRepository.create(event)
     } catch (error) {
-      throw new ForbiddenException(4001001, error);
+      throw new ForbiddenException(4001001, error)
     }
   }
 
   async handleEvent(eventLike: OhbugEventLike): Promise<void> {
     await this.documentQueue.add('event', eventLike, {
       delay: 3000,
-    });
+    })
   }
 
   /**
@@ -111,21 +93,26 @@ export class EventService {
    */
   async deleteEvents(interval: string, index: string | string[]) {
     try {
-      return await this.elasticsearchService.delete_by_query({
+      console.log({
+        interval,
         index,
-        body: {
-          query: {
-            range: {
-              '@timestamp': {
-                lt: `now-${interval}d`,
-                format: 'epoch_millis',
-              },
-            },
-          },
-        },
-      });
+      })
+
+      // return await this.elasticsearchService.delete_by_query({
+      //   index,
+      //   body: {
+      //     query: {
+      //       range: {
+      //         '@timestamp': {
+      //           lt: `now-${interval}d`,
+      //           format: 'epoch_millis',
+      //         },
+      //       },
+      //     },
+      //   },
+      // })
     } catch (error) {
-      throw new ForbiddenException(4001005, error);
+      throw new ForbiddenException(4001005, error)
     }
   }
 
@@ -136,52 +123,50 @@ export class EventService {
    */
   async getEventByEventId({ event_id, issue_id }: GetEventByEventId) {
     try {
-      const issue = await this.issueService.getIssueByIssueId({ issue_id });
-      const index = issue.events.find((e) => e.document_id === event_id)?.index;
+      const issue = await this.issueService.getIssueByIssueId({ issue_id })
+      const index = issue.events.find((e) => e.id === event_id)
       if (index) {
-        const {
-          body: {
-            _source: { event: eventLike },
-          },
-        } = await this.elasticsearchService.get(
-          {
-            index,
-            id: event_id,
-          },
-          {
-            ignore: [404],
-            maxRetries: 3,
-          },
-        );
-        const eventIndex = issue.events.findIndex(
-          (e) => e.document_id === event_id && e.index === index,
-        );
-        const previousEvent = issue.events[eventIndex - 1];
-        const nextEvent = issue.events[eventIndex + 1];
-
-        const event = eventLike;
-        if (event_id) {
-          event.id = event_id;
-        }
-        if (index) {
-          event.index = index;
-        }
-        event.previous = previousEvent || undefined;
-        event.next = nextEvent || undefined;
-        if (typeof event.detail === 'string') {
-          event.detail = JSON.parse(event.detail);
-        }
-        if (typeof event.actions === 'string') {
-          event.actions = JSON.parse(event.actions);
-        }
-        if (typeof event.metaData === 'string') {
-          event.metaData = JSON.parse(event.metaData);
-        }
-
-        return event;
+        // const {
+        //   body: {
+        //     _source: { event: eventLike },
+        //   },
+        // } = await this.elasticsearchService.get(
+        //   {
+        //     index,
+        //     id: event_id,
+        //   },
+        //   {
+        //     ignore: [404],
+        //     maxRetries: 3,
+        //   }
+        // )
+        // const eventIndex = issue.events.findIndex(
+        //   (e) => e.document_id === event_id && e.index === index
+        // )
+        // const previousEvent = issue.events[eventIndex - 1]
+        // const nextEvent = issue.events[eventIndex + 1]
+        // const event = eventLike
+        // if (event_id) {
+        //   event.id = event_id
+        // }
+        // if (index) {
+        //   event.index = index
+        // }
+        // event.previous = previousEvent || undefined
+        // event.next = nextEvent || undefined
+        // if (typeof event.detail === 'string') {
+        //   event.detail = JSON.parse(event.detail)
+        // }
+        // if (typeof event.actions === 'string') {
+        //   event.actions = JSON.parse(event.actions)
+        // }
+        // if (typeof event.metaData === 'string') {
+        //   event.metaData = JSON.parse(event.metaData)
+        // }
+        // return event
       }
     } catch (error) {
-      throw new ForbiddenException(400305, error);
+      throw new ForbiddenException(400305, error)
     }
   }
 }

@@ -10,9 +10,9 @@ function switchWebhookTypeAndGetFormatResult(
   { title, text, markdown }: Content,
   webhook: NotificationSettingWebHook
 ) {
-  const at = webhook.at.map((item) => item.value)
+  const at = webhook?.at?.map((item) => item.value)
   const atText = (hasExtra: boolean) =>
-    at.reduce(
+    at?.reduce(
       (pre, cur) =>
         `${pre}\n${hasExtra ? '<' : ''}@${cur}${hasExtra ? '>' : ''} `,
       ''

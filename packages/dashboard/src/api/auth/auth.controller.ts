@@ -1,8 +1,12 @@
-import { Controller, Post, Body, UseGuards, Get, Query } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
+import { Controller, Post, Body, UseGuards, Get, Query } from '@nestjs/common'
+import { ConfigService } from '@nestjs/config'
+import { AuthGuard } from '@nestjs/passport'
 
-import { ForbiddenException } from '@ohbug-server/common';
-import { AuthService } from './auth.service';
+import { ForbiddenException } from '@ohbug-server/common'
+
+import { User } from '@/api/user/user.entity'
+
+import { AuthService } from './auth.service'
 import {
   SignupDto,
   ActivateDto,
@@ -11,14 +15,13 @@ import {
   SendActivationEmailDto,
   CaptchaDto,
   ResetDto,
-} from './auth.dto';
-import { AuthGuard } from '@nestjs/passport';
+} from './auth.dto'
 
 @Controller('auth')
 export class AuthController {
   constructor(
     private readonly configService: ConfigService,
-    private readonly authService: AuthService,
+    private readonly authService: AuthService
   ) {}
 
   /**
@@ -26,15 +29,15 @@ export class AuthController {
    *
    * @param user
    */
-  returnJwt(user) {
+  returnJwt(user: User) {
     const maxAge = this.configService.get<string>(
-      'security.jwt.signOptions.expiresIn',
-    );
-    const token = this.authService.createToken(user.id, maxAge);
+      'security.jwt.signOptions.expiresIn'
+    )!
+    const token = this.authService.createToken(user.id, maxAge)
     return {
       token,
       id: user.id,
-    };
+    }
   }
 
   /**
@@ -46,8 +49,8 @@ export class AuthController {
    */
   @Post('signup')
   async signup(@Body() { name, email, password }: SignupDto) {
-    const user = await this.authService.signup({ name, email, password });
-    return this.returnJwt(user);
+    const user = await this.authService.signup({ name, email, password })
+    return this.returnJwt(user)
   }
 
   /**
@@ -58,7 +61,7 @@ export class AuthController {
   @Post('activate')
   @UseGuards(AuthGuard('jwt'))
   async activate(@Body() { captcha }: ActivateDto) {
-    return await this.authService.activate(captcha);
+    return await this.authService.activate(captcha)
   }
 
   /**
@@ -69,7 +72,7 @@ export class AuthController {
   @Post('sendActivationEmail')
   @UseGuards(AuthGuard('jwt'))
   async sendActivationEmail(@Body() { email }: SendActivationEmailDto) {
-    return await this.authService.sendActivationEmail(email);
+    return await this.authService.sendActivationEmail(email)
   }
 
   /**
@@ -80,8 +83,8 @@ export class AuthController {
    */
   @Post('login')
   async login(@Body() { email, password }: LoginDto) {
-    const user = await this.authService.login(null, { email, password });
-    return this.returnJwt(user);
+    const user = await this.authService.login(null, { email, password })
+    return this.returnJwt(user)
   }
 
   /**
@@ -91,7 +94,7 @@ export class AuthController {
    */
   @Get('captcha')
   async captcha(@Query() { email }: CaptchaDto) {
-    return await this.authService.captcha({ email });
+    return await this.authService.captcha({ email })
   }
 
   /**
@@ -103,7 +106,7 @@ export class AuthController {
    */
   @Post('reset')
   async reset(@Body() { email, password, captcha }: ResetDto) {
-    return await this.authService.reset({ email, password, captcha });
+    return await this.authService.reset({ email, password, captcha })
   }
 
   /**
@@ -113,22 +116,23 @@ export class AuthController {
    * @param code
    */
   @Post('github')
-  async github(@Body('code') code) {
+  async github(@Body('code') code: string) {
     if (code) {
-      const data = await this.authService.getGithubToken(code);
+      const data = await this.authService.getGithubToken(code)
       if (data.access_token && data.token_type === 'bearer') {
         const userDetail = await this.authService.getGithubUser(
-          data.access_token,
-        );
+          data.access_token
+        )
         // 拿到用户数据
-        const user = await this.authService.login('github', userDetail);
+        const user = await this.authService.login('github', userDetail)
         // 返回 token
         if (user) {
-          return this.returnJwt(user);
+          return this.returnJwt(user)
         }
       }
+      return null
     } else {
-      throw new ForbiddenException(40002);
+      throw new ForbiddenException(40002)
     }
   }
 
@@ -142,14 +146,14 @@ export class AuthController {
    */
   @Post('bindUser')
   async bindUser(
-    @Body() { email, captcha, oauthType, oauthUserDetail }: BindUserDto,
+    @Body() { email, captcha, oauthType, oauthUserDetail }: BindUserDto
   ) {
     const user = await this.authService.bindUser({
       email,
       captcha,
       oauthType,
       oauthUserDetail,
-    });
-    return this.returnJwt(user);
+    })
+    return this.returnJwt(user)
   }
 }

@@ -1,19 +1,19 @@
-import { Injectable } from '@nestjs/common';
-import { Cron, CronExpression } from '@nestjs/schedule';
-import { ConfigService } from '@nestjs/config';
-import { Raw } from 'typeorm';
+import { Injectable } from '@nestjs/common'
+import { Cron, CronExpression } from '@nestjs/schedule'
+import { ConfigService } from '@nestjs/config'
+import { Raw } from 'typeorm'
 
-import { ForbiddenException } from '@ohbug-server/common';
-import { eventIndices } from '@/core/event/event.core';
-import { EventService } from '@/core/event/event.service';
-import { IssueService } from '@/core/issue/issue.service';
+import { ForbiddenException } from '@ohbug-server/common'
+import { eventIndices } from '@/core/event/event.core'
+import { EventService } from '@/core/event/event.service'
+import { IssueService } from '@/core/issue/issue.service'
 
 @Injectable()
 export class ScheduleService {
   constructor(
     private readonly configService: ConfigService,
     private readonly eventService: EventService,
-    private readonly issueService: IssueService,
+    private readonly issueService: IssueService
   ) {}
 
   /**
@@ -25,20 +25,19 @@ export class ScheduleService {
   async handleCleanUpExpiredData() {
     try {
       const interval = this.configService.get<string>(
-        'business.expiredData.interval',
-      );
+        'business.expiredData.interval'
+      )!
       await this.eventService.deleteEvents(
         interval,
-        eventIndices.map((item) => `${item.index}-*`),
-      );
+        eventIndices.map((item) => `${item.index}-*`)
+      )
       await this.issueService.deleteIssue({
         updatedAt: Raw(
-          (alias) =>
-            `${alias} < CURRENT_TIMESTAMP - INTERVAL '${interval} day'`,
+          (alias) => `${alias} < CURRENT_TIMESTAMP - INTERVAL '${interval} day'`
         ),
-      });
+      })
     } catch (error) {
-      throw new ForbiddenException(4001010, error);
+      throw new ForbiddenException(4001010, error)
     }
   }
 }

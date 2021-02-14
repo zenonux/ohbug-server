@@ -15,14 +15,6 @@ TYPEORM_DATABASE=ohbug
 TYPEORM_USERNAME=postgres
 TYPEORM_PASSWORD=ohbug_postgres_password
 
-# elasticsearch 相关配置
-ELASTICSEARCH_NODE=http://localhost:9200
-ELASTICSEARCH_USERNAME=elastic
-ELASTICSEARCH_PASSWORD=changeme
-
-# kafka nodes
-KAFKA_NODES=localhost:9092
-
 # redis 相关配置
 REDIS_HOST=localhost
 REDIS_PORT=6379
@@ -57,9 +49,6 @@ WEBPUSH_PRIVATE_KEY=YOUR_WEBPUSH_PRIVATE_KEY
 
 # 数据过期清理的间隔时间
 TIME_INTERVAL_FOR_CLEANING_UP_EXPIRED_DATA=30
-
-# 可允许储存的 event 的最大数量
-EVENT_MAX=1000
 ```
 
 ## 普通搭建

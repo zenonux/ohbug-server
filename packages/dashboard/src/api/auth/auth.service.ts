@@ -1,27 +1,27 @@
-import { Injectable, HttpService, Inject } from '@nestjs/common';
-import type { OnModuleInit } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
-import { RedisService } from 'nestjs-redis';
-import { ConfigService } from '@nestjs/config';
-import type { Redis } from 'ioredis';
-import { ClientProxy } from '@nestjs/microservices';
+import { Injectable, HttpService, Inject } from '@nestjs/common'
+import type { OnModuleInit } from '@nestjs/common'
+import { JwtService } from '@nestjs/jwt'
+import { RedisService } from 'nestjs-redis'
+import { ConfigService } from '@nestjs/config'
+import type { Redis } from 'ioredis'
+import { ClientProxy } from '@nestjs/microservices'
 
 import {
   ForbiddenException,
   md5,
   getHost,
   TOPIC_DASHBOARD_NOTIFIER_SEND_EMAIL,
-} from '@ohbug-server/common';
+} from '@ohbug-server/common'
 
-import { User } from '@/api/user/user.entity';
-import { UserService } from '@/api/user/user.service';
-import type { OAuthType } from '@/api/user/user.interface';
+import { User } from '@/api/user/user.entity'
+import { UserService } from '@/api/user/user.service'
+import type { OAuthType } from '@/api/user/user.interface'
 import {
   BindUserDto,
   CaptchaDto,
   ResetDto,
   SignupDto,
-} from '@/api/auth/auth.dto';
+} from '@/api/auth/auth.dto'
 
 import type {
   GithubToken,
@@ -29,27 +29,27 @@ import type {
   JwtToken,
   RedisActivationValue,
   RedisCaptchaValue,
-} from './auth.interface';
-import type { JwtPayload } from './auth.interface';
-import dayjs from 'dayjs';
+} from './auth.interface'
+import type { JwtPayload } from './auth.interface'
+import dayjs from 'dayjs'
 
 @Injectable()
 export class AuthService implements OnModuleInit {
-  redisClient: Redis;
+  redisClient: Redis
 
   constructor(
     private readonly configService: ConfigService,
     private readonly redisService: RedisService,
     private readonly httpService: HttpService,
     private readonly userService: UserService,
-    private readonly jwtService: JwtService,
+    private readonly jwtService: JwtService
   ) {}
 
   @Inject('MICROSERVICE_NOTIFIER_CLIENT')
-  private readonly notifierClient: ClientProxy;
+  private readonly notifierClient: ClientProxy
 
   async onModuleInit() {
-    this.redisClient = await this.redisService.getClient();
+    this.redisClient = await this.redisService.getClient()
   }
 
   /**
@@ -60,29 +60,29 @@ export class AuthService implements OnModuleInit {
   async signup({ name, email, password }: SignupDto): Promise<User> {
     try {
       // 检测是否已经注册
-      let user = await this.userService.getUserByEmail(email);
+      let user = await this.userService.getUserByEmail(email)
       if (user) {
-        throw new Error(`邮箱已注册`);
+        throw new Error(`邮箱已注册`)
       }
       // 密码加密处理
       const encryptedPassword = md5(
         md5(password) +
-          this.configService.get<string>('security.user.password.salt'),
-      );
+          this.configService.get<string>('security.user.password.salt')
+      )
       // 未注册，开始创建 user
       user = await this.userService.saveUser(null, {
         name,
         email,
         password: encryptedPassword,
-      });
+      })
       if (user) {
-        await this.sendActivationEmail(email);
-        return user;
+        await this.sendActivationEmail(email)
+        return user
       } else {
-        throw new Error(`创建用户 ${name} 失败`);
+        throw new Error(`创建用户 ${name} 失败`)
       }
     } catch (error) {
-      throw new ForbiddenException(400020, error);
+      throw new ForbiddenException(400020, error)
     }
   }
 
@@ -93,19 +93,19 @@ export class AuthService implements OnModuleInit {
    */
   async sendActivationEmail(email: string) {
     try {
-      const captcha = await this.createCaptcha(email);
-      const title = `Ohbug 喊你来激活邮箱啦`;
+      const captcha = await this.createCaptcha(email)
+      const title = `Ohbug 喊你来激活邮箱啦`
       const text = `
         为了保证您的帐户安全，请及时激活邮箱，该链接在24小时之内有效。
         点击链接激活邮箱：
         ${getHost()}/activate?captcha=${captcha}
 
         Ohbug 爱你哟~
-        `;
-      const html = ``;
-      await this.sendEmail({ email, title, text, html });
+        `
+      const html = ``
+      await this.sendEmail({ email, title, text, html })
     } catch (error) {
-      throw new ForbiddenException(400012, error);
+      throw new ForbiddenException(400012, error)
     }
   }
 
@@ -117,7 +117,17 @@ export class AuthService implements OnModuleInit {
    * @param text
    * @param html
    */
-  async sendEmail({ email, title, text, html }) {
+  async sendEmail({
+    email,
+    title,
+    text,
+    html,
+  }: {
+    email: string
+    title: string
+    text: string
+    html: string
+  }) {
     try {
       return await this.notifierClient
         .send(TOPIC_DASHBOARD_NOTIFIER_SEND_EMAIL, {
@@ -126,9 +136,9 @@ export class AuthService implements OnModuleInit {
           text,
           html,
         })
-        .toPromise();
+        .toPromise()
     } catch (error) {
-      throw new ForbiddenException(400012, error);
+      throw new ForbiddenException(400012, error)
     }
   }
 
@@ -137,17 +147,18 @@ export class AuthService implements OnModuleInit {
    *
    * @param captcha
    */
-  async activate(captcha: string): Promise<User> {
+  async activate(captcha: string): Promise<User | null> {
     try {
-      const { email } = await this.getCaptcha<RedisActivationValue>(captcha);
-      if (!email) {
-        throw new Error('激活链接已失效 请前往控制台重新生成激活邮箱');
+      const cache = await this.getCaptcha<RedisActivationValue>(captcha)
+      if (!cache || !cache.email) {
+        throw new Error('激活链接已失效 请前往控制台重新生成激活邮箱')
       }
-      const user = await this.userService.activateUserByEmail(email);
-      await this.redisClient.del(captcha);
-      return user;
+      const user = await this.userService.activateUserByEmail(cache.email)
+      await this.redisClient.del(captcha)
+      if (user) return user
+      return null
     } catch (error) {
-      throw new ForbiddenException(400013, error);
+      throw new ForbiddenException(400013, error)
     }
   }
 
@@ -156,12 +167,13 @@ export class AuthService implements OnModuleInit {
    *
    * @param key
    */
-  async getCaptcha<T>(key: string): Promise<T> {
+  async getCaptcha<T>(key: string): Promise<T | null> {
     try {
-      const json = await this.redisClient.get(key);
-      if (json) return JSON.parse(json) as T;
+      const json = await this.redisClient.get(key)
+      if (json) return JSON.parse(json) as T
+      return null
     } catch (error) {
-      throw new ForbiddenException(400011, error);
+      throw new ForbiddenException(400011, error)
     }
   }
 
@@ -174,48 +186,49 @@ export class AuthService implements OnModuleInit {
    */
   private async createCaptcha(
     email: string,
-    type: 'activation' | 'captcha' = 'activation',
-  ): Promise<string> {
+    type: 'activation' | 'captcha' = 'activation'
+  ): Promise<string | null> {
     try {
-      const user = await this.userService.getUserByEmail(email);
+      const user = await this.userService.getUserByEmail(email)
       if (!user) {
-        throw new Error('该邮箱未注册');
+        throw new Error('该邮箱未注册')
       }
       if (type === 'activation') {
         // 生成验证码
-        const captcha = md5(Math.random().toString());
+        const captcha = md5(Math.random().toString())
         const value: RedisActivationValue = {
           email,
           timestamp: new Date().getTime(),
-        };
+        }
         // 暂存验证码 有效期 CAPTCHA_EXPIRY_TIME 24h
-        const CAPTCHA_EXPIRY_TIME = 86400;
+        const CAPTCHA_EXPIRY_TIME = 86400
         await this.redisClient.set(
           captcha,
           JSON.stringify(value),
           'EX',
-          CAPTCHA_EXPIRY_TIME,
-        );
-        return captcha;
+          CAPTCHA_EXPIRY_TIME
+        )
+        return captcha
       } else if (type === 'captcha') {
         // 生成验证码
-        const captcha = Math.floor(100000 + Math.random() * 900000).toString();
+        const captcha = Math.floor(100000 + Math.random() * 900000).toString()
         const value: RedisCaptchaValue = {
           captcha,
           timestamp: new Date().getTime(),
-        };
+        }
         // 暂存验证码 有效期 CAPTCHA_EXPIRY_TIME 5min
-        const CAPTCHA_EXPIRY_TIME = 300;
+        const CAPTCHA_EXPIRY_TIME = 300
         await this.redisClient.set(
           email,
           JSON.stringify(value),
           'EX',
-          CAPTCHA_EXPIRY_TIME,
-        );
-        return captcha;
+          CAPTCHA_EXPIRY_TIME
+        )
+        return captcha
       }
+      return null
     } catch (error) {
-      throw new ForbiddenException(400010, error);
+      throw new ForbiddenException(400010, error)
     }
   }
 
@@ -226,30 +239,30 @@ export class AuthService implements OnModuleInit {
    * @param type
    * @param detail oauth2 拿到的用户信息
    */
-  async login(type: OAuthType, detail: any) {
+  async login(type: OAuthType | null, detail: any) {
     try {
       if (type === 'github') {
         // 判断是否已经注册
-        const user = await this.userService.getUserByOauthId(type, detail.id);
+        const user = await this.userService.getUserByOauthId(type, detail.id)
         if (user) {
-          return user;
+          return user
         }
-        return await this.userService.saveUser(type, detail);
+        return await this.userService.saveUser(type, detail)
       } else {
-        const { email, password } = detail;
-        const user = await this.userService.getUserByEmail(email);
+        const { email, password } = detail
+        const user = await this.userService.getUserByEmail(email)
         if (!user) {
-          throw new Error('用户未注册');
+          throw new Error('用户未注册')
         }
-        const verified = await this.verifyPassword(user, password);
+        const verified = await this.verifyPassword(user, password)
         if (verified) {
-          return user;
+          return user
         } else {
-          throw new Error('邮箱或密码错误');
+          throw new Error('邮箱或密码错误')
         }
       }
     } catch (error) {
-      throw new ForbiddenException(400006, error);
+      throw new ForbiddenException(400006, error)
     }
   }
 
@@ -260,45 +273,45 @@ export class AuthService implements OnModuleInit {
    */
   async captcha({ email }: CaptchaDto) {
     try {
-      let captcha: string;
-      const value = await this.getCaptcha<RedisCaptchaValue>(email);
+      let captcha: string | null
+      const value = await this.getCaptcha<RedisCaptchaValue>(email)
       if (value) {
         // 存在，判断时间是否大于 sending_interval 秒
-        const { timestamp } = value;
-        const sending_interval = 90;
+        const { timestamp } = value
+        const sending_interval = 90
         if (
           dayjs().isBefore(dayjs(timestamp).add(sending_interval, 'second'))
         ) {
           // 小于
           throw new Error(
-            `每 ${sending_interval} 秒只能获取一次验证码，请稍后重试`,
-          );
+            `每 ${sending_interval} 秒只能获取一次验证码，请稍后重试`
+          )
         } else {
           // 大于 生成 captcha
-          captcha = await this.createCaptcha(email, 'captcha');
+          captcha = await this.createCaptcha(email, 'captcha')
         }
       } else {
         // 不存在 生成 captcha
-        captcha = await this.createCaptcha(email, 'captcha');
+        captcha = await this.createCaptcha(email, 'captcha')
       }
 
-      const title = `Ohbug 给你送验证码啦`;
+      const title = `Ohbug 给你送验证码啦`
       const text = `
       您的验证码为：${captcha}，该验证码 5 分钟内有效，请不要泄露给他人。
 
       您的账号 "${email}" 正在进行敏感操作，如果不是您本人进行操作，请忽略这条邮件。
 
       Ohbug 爱你哟~
-      `;
-      const html = ``;
+      `
+      const html = ``
       return await this.sendEmail({
         email,
         title,
         text,
         html,
-      });
+      })
     } catch (error) {
-      throw new ForbiddenException(400014, error);
+      throw new ForbiddenException(400014, error)
     }
   }
 
@@ -311,22 +324,22 @@ export class AuthService implements OnModuleInit {
    */
   async reset({ email, password, captcha }: ResetDto) {
     try {
-      const value = await this.getCaptcha<RedisCaptchaValue>(email);
+      const value = await this.getCaptcha<RedisCaptchaValue>(email)
       if (value?.captcha && value.captcha === captcha) {
         const encryptedPassword = md5(
           md5(password) +
-            this.configService.get<string>('security.user.password.salt'),
-        );
+            this.configService.get<string>('security.user.password.salt')
+        )
         const user = await this.userService.resetPasswordByEmail(
           email,
-          encryptedPassword,
-        );
-        if (user) await this.redisClient.del(email);
-        return !!user;
+          encryptedPassword
+        )
+        if (user) await this.redisClient.del(email)
+        return !!user
       }
-      throw new Error('验证不通过，请检查验证码是否正确');
+      throw new Error('验证不通过，请检查验证码是否正确')
     } catch (error) {
-      throw new ForbiddenException(400040, error);
+      throw new ForbiddenException(400040, error)
     }
   }
 
@@ -339,9 +352,9 @@ export class AuthService implements OnModuleInit {
   async verifyPassword(user: User, password: string) {
     const encryptedPassword = md5(
       md5(password) +
-        this.configService.get<string>('security.user.password.salt'),
-    );
-    return user.password === encryptedPassword;
+        this.configService.get<string>('security.user.password.salt')
+    )
+    return user.password === encryptedPassword
   }
 
   /**
@@ -354,18 +367,18 @@ export class AuthService implements OnModuleInit {
    */
   async bindUser({ email, captcha, oauthType, oauthUserDetail }: BindUserDto) {
     try {
-      const value = await this.getCaptcha<RedisCaptchaValue>(email);
-      if (value.captcha === captcha) {
+      const value = await this.getCaptcha<RedisCaptchaValue>(email)
+      if (value?.captcha === captcha) {
         // 判断账号是否已经注册
-        const user = await this.userService.getUserByEmail(email);
+        const user = await this.userService.getUserByEmail(email)
         if (user) {
           // 判断账号是否绑定了相同 oauth 账号
           if (user.oauth?.[oauthType]) {
             const oauthTextMap = {
               github: 'Github',
               wechat: '微信',
-            };
-            throw new Error(`该账号已绑定 ${oauthTextMap[oauthType]}`);
+            }
+            throw new Error(`该账号已绑定 ${oauthTextMap[oauthType]}`)
           }
         }
         // 开始绑定 oauth 信息
@@ -373,12 +386,12 @@ export class AuthService implements OnModuleInit {
           baseUser: user,
           type: oauthType,
           detail: oauthUserDetail,
-        });
+        })
       } else {
-        throw new Error('验证码验证失败');
+        throw new Error('验证码验证失败')
       }
     } catch (error) {
-      throw new ForbiddenException(400030, error);
+      throw new ForbiddenException(400030, error)
     }
   }
 
@@ -389,10 +402,10 @@ export class AuthService implements OnModuleInit {
    */
   async getGithubToken(code: string): Promise<GithubToken> {
     try {
-      const oauth = this.configService.get('security.oauth');
+      const oauth = this.configService.get('security.oauth')
       const {
         github: { client_id, client_secret },
-      } = oauth;
+      } = oauth
 
       const { data } = await this.httpService
         .post(`https://github.com/login/oauth/access_token`, null, {
@@ -404,17 +417,17 @@ export class AuthService implements OnModuleInit {
           },
           headers: { accept: 'application/json' },
         })
-        .toPromise();
+        .toPromise()
       // 获取 token 出错 (通常是 token 过期)
       if (data.error) {
-        throw new ForbiddenException(400004, data.error_description);
+        throw new ForbiddenException(400004, data.error_description)
       }
-      return data;
+      return data
     } catch (error) {
       if (error.code === 400004) {
-        throw error;
+        throw error
       } else {
-        throw new ForbiddenException(400003, error);
+        throw new ForbiddenException(400003, error)
       }
     }
   }
@@ -433,10 +446,10 @@ export class AuthService implements OnModuleInit {
             Authorization: `token ${accessToken}`,
           },
         })
-        .toPromise();
-      return data;
+        .toPromise()
+      return data
     } catch (error) {
-      throw new ForbiddenException(400005, error);
+      throw new ForbiddenException(400005, error)
     }
   }
 
@@ -448,15 +461,15 @@ export class AuthService implements OnModuleInit {
    */
   createToken(id: string | number, maxAge: string): JwtToken {
     try {
-      const payload: JwtPayload = { id: id.toString() };
-      const accessToken = this.jwtService.sign(payload, { expiresIn: maxAge });
-      return accessToken;
+      const payload: JwtPayload = { id: id.toString() }
+      const accessToken = this.jwtService.sign(payload, { expiresIn: maxAge })
+      return accessToken
     } catch (error) {
-      throw new ForbiddenException(400007, error);
+      throw new ForbiddenException(400007, error)
     }
   }
 
   async validateUser(id: string): Promise<User> {
-    return await this.userService.getUserById(id);
+    return await this.userService.getUserById(id)
   }
 }

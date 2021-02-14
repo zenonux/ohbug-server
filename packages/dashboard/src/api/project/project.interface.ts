@@ -1,1 +1,1 @@
-export type ProjectType = 'JavaScript' | 'NodeJS';
+export type ProjectType = 'JavaScript' | 'NodeJS'

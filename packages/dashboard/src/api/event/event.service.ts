@@ -1,18 +1,18 @@
-import { Inject, Injectable } from '@nestjs/common';
-import { ClientProxy } from '@nestjs/microservices';
+import { Inject, Injectable } from '@nestjs/common'
+import { ClientProxy } from '@nestjs/microservices'
 
 import {
   TOPIC_DASHBOARD_MANAGER_GET_LATEST_EVENT,
   TOPIC_DASHBOARD_MANAGER_GET_EVENT,
-} from '@ohbug-server/common';
-import { SourceMapService } from '@/api/sourceMap/sourceMap.service';
+} from '@ohbug-server/common'
+import { SourceMapService } from '@/api/sourceMap/sourceMap.service'
 
 @Injectable()
 export class EventService {
   constructor(private readonly sourceMapService: SourceMapService) {}
 
   @Inject('MICROSERVICE_MANAGER_CLIENT')
-  private readonly managerClient: ClientProxy;
+  private readonly managerClient: ClientProxy
 
   /**
    * 根据 event_id 查询 event
@@ -23,20 +23,20 @@ export class EventService {
   async getEventByEventId(event_id: string, issue_id: string | number) {
     const event = await this.managerClient
       .send(TOPIC_DASHBOARD_MANAGER_GET_EVENT, { event_id, issue_id })
-      .toPromise();
+      .toPromise()
 
     try {
-      const source = await this.sourceMapService.getSource(event);
+      const source = await this.sourceMapService.getSource(event)
       if (source) {
         return Object.assign(event, {
           source,
-        });
+        })
       }
     } catch (error) {
-      return event;
+      return event
     }
 
-    return event;
+    return event
   }
 
   /**
@@ -47,19 +47,19 @@ export class EventService {
   async getLatestEventByIssueId(issue_id: number | string) {
     const event = await this.managerClient
       .send(TOPIC_DASHBOARD_MANAGER_GET_LATEST_EVENT, issue_id)
-      .toPromise();
+      .toPromise()
 
     try {
-      const source = await this.sourceMapService.getSource(event);
+      const source = await this.sourceMapService.getSource(event)
       if (source) {
         return Object.assign(event, {
           source,
-        });
+        })
       }
     } catch (error) {
-      return event;
+      return event
     }
 
-    return event;
+    return event
   }
 }

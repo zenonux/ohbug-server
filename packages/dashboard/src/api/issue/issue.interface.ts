@@ -1,23 +1,23 @@
-import type { FindOperator } from 'typeorm';
+import type { FindOperator } from 'typeorm'
 
 export interface GetIssueByIssueIdParams {
-  issue_id: number | string;
+  issue_id: number | string
 }
 
 export interface SearchCondition {
-  start?: Date;
-  end?: Date;
+  start?: Date
+  end?: Date
 }
 
 export interface GetIssuesByProjectIdParams {
-  project_id: number | string;
-  searchCondition: SearchCondition;
-  limit?: number;
-  skip?: number;
+  project_id: number | string
+  searchCondition: SearchCondition
+  limit?: number
+  skip?: number
 }
 
 export interface WhereOptions {
-  time?: FindOperator<number | string>;
+  time?: FindOperator<number | string>
 }
 
-export type Period = '24h' | '14d' | 'all';
+export type Period = '24h' | '14d' | 'all'

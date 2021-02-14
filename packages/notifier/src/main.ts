@@ -17,12 +17,11 @@ async function bootstrap() {
     }
   )
   app.listen(() =>
-    // tslint:disable-next-line:no-console
+    // eslint-disable-next-line no-console
     console.log(`Notifier is running on: ${MICROSERVICE_NOTIFIER_PORT}`)
   )
 }
 bootstrap().catch((error) => {
-  // tslint:disable-next-line:no-console
   console.error(error)
   process.exit(1)
 })

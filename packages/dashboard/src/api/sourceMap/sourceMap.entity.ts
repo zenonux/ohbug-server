@@ -4,15 +4,15 @@ import {
   PrimaryGeneratedColumn,
   CreateDateColumn,
   UpdateDateColumn,
-} from 'typeorm';
-import { Exclude } from 'class-transformer';
+} from 'typeorm'
+import { Exclude } from 'class-transformer'
 
-import type { SourceMapData } from './sourceMap.interface';
+import type { SourceMapData } from './sourceMap.interface'
 
 @Entity()
 export class SourceMap {
   @PrimaryGeneratedColumn()
-  id: number;
+  id: number
 
   /**
    * apiKey
@@ -21,7 +21,7 @@ export class SourceMap {
    * @memberof SourceMap
    */
   @Column({ type: 'text' })
-  apiKey: string;
+  apiKey: string
 
   /**
    * appVersion
@@ -30,7 +30,7 @@ export class SourceMap {
    * @memberof SourceMap
    */
   @Column({ type: 'text' })
-  appVersion: string;
+  appVersion: string
 
   /**
    * appType
@@ -39,7 +39,7 @@ export class SourceMap {
    * @memberof SourceMap
    */
   @Column({ type: 'text', nullable: true })
-  appType?: string;
+  appType?: string
 
   /**
    * 所有的 sourceMap 文件信息
@@ -48,7 +48,7 @@ export class SourceMap {
    * @memberof SourceMap
    */
   @Column({ type: 'jsonb' })
-  data: SourceMapData;
+  data: SourceMapData
 
   /**
    * sourceMap 创建时间
@@ -57,7 +57,7 @@ export class SourceMap {
    * @memberof SourceMap
    */
   @CreateDateColumn({ type: 'timestamp with time zone' })
-  createdAt: Date;
+  createdAt: Date
 
   /**
    * sourceMap 更新时间
@@ -67,5 +67,5 @@ export class SourceMap {
    */
   @Exclude()
   @UpdateDateColumn()
-  updatedAt: Date;
+  updatedAt: Date
 }

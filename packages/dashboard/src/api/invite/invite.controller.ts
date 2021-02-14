@@ -7,16 +7,16 @@ import {
   Query,
   UseInterceptors,
   ClassSerializerInterceptor,
-} from '@nestjs/common';
-import { AuthGuard } from '@nestjs/passport';
+} from '@nestjs/common'
+import { AuthGuard } from '@nestjs/passport'
 
 import {
   CreateInviteUrlDto,
   GetInviteDto,
   BindUserDto,
   BindProjectDto,
-} from './invite.dto';
-import { InviteService } from './invite.service';
+} from './invite.dto'
+import { InviteService } from './invite.service'
 
 @Controller('invite')
 export class InviteController {
@@ -33,14 +33,14 @@ export class InviteController {
   @Post('url')
   @UseGuards(AuthGuard('jwt'))
   async createInviteUrl(
-    @Body() { auth, projects, organization_id, inviter_id }: CreateInviteUrlDto,
+    @Body() { auth, projects, organization_id, inviter_id }: CreateInviteUrlDto
   ) {
     return await this.inviteService.createInviteUrl({
       auth,
       projects,
       organization_id,
       inviter_id,
-    });
+    })
   }
 
   /**
@@ -51,7 +51,7 @@ export class InviteController {
   @Get()
   @UseInterceptors(ClassSerializerInterceptor)
   async getInviteByUUID(@Query() { uuid }: GetInviteDto) {
-    return await this.inviteService.getInviteByUUID({ uuid });
+    return await this.inviteService.getInviteByUUID({ uuid })
   }
 
   /**
@@ -64,7 +64,7 @@ export class InviteController {
   @UseGuards(AuthGuard('jwt'))
   @UseInterceptors(ClassSerializerInterceptor)
   async bindUser(@Body() { user_id, uuid }: BindUserDto) {
-    return await this.inviteService.bindUser({ user_id, uuid });
+    return await this.inviteService.bindUser({ user_id, uuid })
   }
 
   /**
@@ -77,6 +77,6 @@ export class InviteController {
   @UseGuards(AuthGuard('jwt'))
   @UseInterceptors(ClassSerializerInterceptor)
   async bindProject(@Body() { users, project_id }: BindProjectDto) {
-    return await this.inviteService.bindProject({ users, project_id });
+    return await this.inviteService.bindProject({ users, project_id })
   }
 }

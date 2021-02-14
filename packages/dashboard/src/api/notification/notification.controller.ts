@@ -10,10 +10,10 @@ import {
   UseGuards,
   UseInterceptors,
   ClassSerializerInterceptor,
-} from '@nestjs/common';
-import { AuthGuard } from '@nestjs/passport';
+} from '@nestjs/common'
+import { AuthGuard } from '@nestjs/passport'
 
-import { NotificationService } from './notification.service';
+import { NotificationService } from './notification.service'
 import {
   BaseNotificationRuleDto,
   NotificationRuleDto,
@@ -23,9 +23,9 @@ import {
   UpdateNotificationSettingDto,
   NotificationSettingWebhookDto,
   BaseNotificationSettingWebhookDto,
-} from './notification.dto';
-import { NotificationRule } from './notification.rule.entity';
-import { NotificationSetting } from './notification.setting.entity';
+} from './notification.dto'
+import { NotificationRule } from './notification.rule.entity'
+import { NotificationSetting } from './notification.setting.entity'
 
 @Controller('notification')
 export class NotificationController {
@@ -57,7 +57,7 @@ export class NotificationController {
       level,
       interval,
       open,
-    }: CreateNotificationRuleDto,
+    }: CreateNotificationRuleDto
   ): Promise<NotificationRule> {
     return await this.notificationService.createNotificationRule({
       project_id,
@@ -68,7 +68,7 @@ export class NotificationController {
       level,
       interval,
       open,
-    });
+    })
   }
 
   /**
@@ -80,9 +80,9 @@ export class NotificationController {
   @UseGuards(AuthGuard('jwt'))
   @UseInterceptors(ClassSerializerInterceptor)
   async getNotificationRules(
-    @Query() { project_id }: GetNotificationRulesDto,
+    @Query() { project_id }: GetNotificationRulesDto
   ): Promise<NotificationRule[]> {
-    return await this.notificationService.getNotificationRules({ project_id });
+    return await this.notificationService.getNotificationRules({ project_id })
   }
 
   /**
@@ -111,7 +111,7 @@ export class NotificationController {
       level,
       interval,
       open,
-    }: NotificationRuleDto,
+    }: NotificationRuleDto
   ): Promise<NotificationRule> {
     return await this.notificationService.updateNotificationRule({
       rule_id,
@@ -122,7 +122,7 @@ export class NotificationController {
       level,
       interval,
       open,
-    });
+    })
   }
 
   /**
@@ -135,11 +135,11 @@ export class NotificationController {
   @UseInterceptors(ClassSerializerInterceptor)
   async deleteNotificationRule(
     @Param()
-    { rule_id }: BaseNotificationRuleDto,
+    { rule_id }: BaseNotificationRuleDto
   ): Promise<boolean> {
     return await this.notificationService.deleteNotificationRule({
       rule_id,
-    });
+    })
   }
 
   /**
@@ -151,11 +151,11 @@ export class NotificationController {
   @UseGuards(AuthGuard('jwt'))
   @UseInterceptors(ClassSerializerInterceptor)
   async getNotificationSetting(
-    @Query() { project_id }: BaseNotificationSettingDto,
+    @Query() { project_id }: BaseNotificationSettingDto
   ): Promise<NotificationSetting> {
     return await this.notificationService.getNotificationSetting({
       project_id,
-    });
+    })
   }
 
   /**
@@ -171,14 +171,14 @@ export class NotificationController {
   @UseInterceptors(ClassSerializerInterceptor)
   async updateNotificationSetting(
     @Query() { project_id }: BaseNotificationSettingDto,
-    @Body() { emails, browser, webhooks }: UpdateNotificationSettingDto,
+    @Body() { emails, browser, webhooks }: UpdateNotificationSettingDto
   ): Promise<NotificationSetting> {
     return await this.notificationService.updateNotificationSetting({
       project_id,
       emails,
       browser,
       webhooks,
-    });
+    })
   }
 
   /**
@@ -197,7 +197,7 @@ export class NotificationController {
   async createNotificationSettingWebhook(
     @Query() { project_id }: BaseNotificationSettingDto,
     @Body()
-    { type, name, link, open, at }: NotificationSettingWebhookDto,
+    { type, name, link, open, at }: NotificationSettingWebhookDto
   ) {
     return await this.notificationService.createNotificationSettingWebhook({
       project_id,
@@ -206,7 +206,7 @@ export class NotificationController {
       link,
       open,
       at,
-    });
+    })
   }
 
   /**
@@ -227,7 +227,7 @@ export class NotificationController {
     @Query() { project_id }: BaseNotificationSettingDto,
     @Param() { id }: BaseNotificationSettingWebhookDto,
     @Body()
-    { type, name, link, open, at }: NotificationSettingWebhookDto,
+    { type, name, link, open, at }: NotificationSettingWebhookDto
   ) {
     return await this.notificationService.updateNotificationSettingWebhook({
       project_id,
@@ -237,7 +237,7 @@ export class NotificationController {
       link,
       open,
       at,
-    });
+    })
   }
 
   /**
@@ -251,11 +251,11 @@ export class NotificationController {
   @UseInterceptors(ClassSerializerInterceptor)
   async deleteNotificationSettingWebhook(
     @Query() { project_id }: BaseNotificationSettingDto,
-    @Param() { id }: BaseNotificationSettingWebhookDto,
+    @Param() { id }: BaseNotificationSettingWebhookDto
   ) {
     return await this.notificationService.deleteNotificationSettingWebhook({
       project_id,
       id,
-    });
+    })
   }
 }

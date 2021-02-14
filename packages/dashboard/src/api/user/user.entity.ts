@@ -6,18 +6,18 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   JoinTable,
-} from 'typeorm';
-import { Exclude } from 'class-transformer';
+} from 'typeorm'
+import { Exclude } from 'class-transformer'
 
-import { Organization } from '@/api/organization/organization.entity';
-import { Project } from '@/api/project/project.entity';
+import { Organization } from '@/api/organization/organization.entity'
+import { Project } from '@/api/project/project.entity'
 
-import type { OAuth } from './user.interface';
+import type { OAuth } from './user.interface'
 
 @Entity()
 export class User {
   @PrimaryGeneratedColumn()
-  id: number;
+  id: number
 
   /**
    * 用户昵称 可修改 默认是 oauth2 里的 name
@@ -26,7 +26,7 @@ export class User {
    * @memberof User
    */
   @Column({ type: 'text' })
-  name: string;
+  name: string
 
   /**
    * 用户邮箱 默认是 oauth2 里的 email
@@ -35,7 +35,7 @@ export class User {
    * @memberof User
    */
   @Column({ type: 'text', default: '' })
-  email: string;
+  email: string
 
   /**
    * 密码
@@ -45,7 +45,7 @@ export class User {
    */
   @Exclude()
   @Column({ type: 'text', nullable: true })
-  password?: string;
+  password?: string
 
   /**
    * 激活状态
@@ -54,7 +54,7 @@ export class User {
    * @memberof User
    */
   @Column({ type: 'bool', default: false })
-  activated: boolean;
+  activated: boolean
 
   /**
    * 用户手机号
@@ -63,7 +63,7 @@ export class User {
    * @memberof User
    */
   @Column({ type: 'text', nullable: true })
-  mobile: string;
+  mobile: string
 
   /**
    * 用户头像 可修改 默认是 oauth2 里的 avatar
@@ -72,7 +72,7 @@ export class User {
    * @memberof User
    */
   @Column({ type: 'text', nullable: true })
-  avatar?: string;
+  avatar?: string
 
   /**
    * 用户创建时间
@@ -81,7 +81,7 @@ export class User {
    * @memberof User
    */
   @CreateDateColumn({ type: 'timestamp with time zone' })
-  createdAt: Date;
+  createdAt: Date
 
   /**
    * 用户更新时间
@@ -91,7 +91,7 @@ export class User {
    */
   @Exclude()
   @UpdateDateColumn()
-  updatedAt: Date;
+  updatedAt: Date
 
   /**
    * 用户绑定的第三方登录信息
@@ -101,7 +101,7 @@ export class User {
    */
   @Exclude()
   @Column({ type: 'jsonb', nullable: true })
-  oauth?: OAuth;
+  oauth?: OAuth
 
   /**
    * user 所属的 organization (多对多)
@@ -113,7 +113,7 @@ export class User {
     cascade: true,
   })
   @JoinTable()
-  organizations: Organization[];
+  organizations: Organization[]
 
   /**
    * user 所属的 project (多对多)
@@ -123,5 +123,5 @@ export class User {
    */
   @ManyToMany((_) => Project, (project) => project.users, { cascade: true })
   @JoinTable()
-  projects: Project[];
+  projects: Project[]
 }

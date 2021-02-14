@@ -1,11 +1,11 @@
-import { Module } from '@nestjs/common';
+import { Module } from '@nestjs/common'
 
-import { MicroserviceManagerClientModule } from '@ohbug-server/common';
+import { MicroserviceManagerClientModule } from '@ohbug-server/common'
 
-import { ProjectModule } from '@/api/project/project.module';
+import { ProjectModule } from '@/api/project/project.module'
 
-import { IssueController } from './issue.controller';
-import { IssueService } from './issue.service';
+import { IssueController } from './issue.controller'
+import { IssueService } from './issue.service'
 
 @Module({
   imports: [MicroserviceManagerClientModule, ProjectModule],

@@ -9,18 +9,18 @@ import {
   UseGuards,
   UseInterceptors,
   ClassSerializerInterceptor,
-} from '@nestjs/common';
-import { AuthGuard } from '@nestjs/passport';
+} from '@nestjs/common'
+import { AuthGuard } from '@nestjs/passport'
 
-import { ProjectService } from './project.service';
+import { ProjectService } from './project.service'
 import {
   BaseProjectDto,
   CreateProjectDto,
   UpdateProjectDto,
   GetAllProjectsByOrganizationIdDto,
   GetTrendByProjectIdDto,
-} from './project.dto';
-import { Project } from './project.entity';
+} from './project.dto'
+import { Project } from './project.entity'
 
 @Controller('projects')
 export class ProjectController {
@@ -38,14 +38,14 @@ export class ProjectController {
   @UseGuards(AuthGuard('jwt'))
   async create(
     @Body()
-    { name, type, admin_id, organization_id }: CreateProjectDto,
+    { name, type, admin_id, organization_id }: CreateProjectDto
   ): Promise<Project> {
     return await this.projectService.saveProject({
       name,
       type,
       admin_id,
       organization_id,
-    });
+    })
   }
 
   /**
@@ -60,13 +60,13 @@ export class ProjectController {
   async update(
     @Param() { project_id }: BaseProjectDto,
     @Body()
-    { name, type }: UpdateProjectDto,
+    { name, type }: UpdateProjectDto
   ): Promise<Project> {
     return await this.projectService.updateProject({
       name,
       type,
       project_id,
-    });
+    })
   }
 
   /**
@@ -79,12 +79,12 @@ export class ProjectController {
   @UseInterceptors(ClassSerializerInterceptor)
   async getAll(
     @Query()
-    { organization_id, user_id }: GetAllProjectsByOrganizationIdDto,
+    { organization_id, user_id }: GetAllProjectsByOrganizationIdDto
   ): Promise<Project[]> {
     return await this.projectService.getAllProjectsByOrganizationId(
       organization_id,
-      user_id,
-    );
+      user_id
+    )
   }
 
   /**
@@ -99,12 +99,12 @@ export class ProjectController {
   async getProjectTrend(
     @Param() { project_id }: BaseProjectDto,
     @Query()
-    { start, end }: GetTrendByProjectIdDto,
+    { start, end }: GetTrendByProjectIdDto
   ) {
     return await this.projectService.getProjectTrendByProjectId({
       project_id,
       start,
       end,
-    });
+    })
   }
 }

@@ -6,20 +6,20 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   OneToOne,
-} from 'typeorm';
-import { Exclude } from 'class-transformer';
+} from 'typeorm'
+import { Exclude } from 'class-transformer'
 
 import type {
   NotificationSettingEmails,
   NotificationSettingBrowser,
   NotificationSettingWebHooks,
-} from '@ohbug-server/common';
-import { Project } from '@/api/project/project.entity';
+} from '@ohbug-server/common'
+import { Project } from '@/api/project/project.entity'
 
 @Entity()
 export class NotificationSetting {
   @PrimaryGeneratedColumn()
-  id: number;
+  id: number
 
   /**
    * notification setting emails
@@ -28,7 +28,7 @@ export class NotificationSetting {
    * @memberof NotificationSetting
    */
   @Column({ type: 'jsonb', default: [] })
-  emails: NotificationSettingEmails;
+  emails: NotificationSettingEmails
 
   /**
    * notification setting browser
@@ -37,7 +37,7 @@ export class NotificationSetting {
    * @memberof NotificationSetting
    */
   @Column({ type: 'jsonb', default: { open: false, data: null } })
-  browser: NotificationSettingBrowser;
+  browser: NotificationSettingBrowser
 
   /**
    * notification setting webhooks
@@ -46,7 +46,7 @@ export class NotificationSetting {
    * @memberof NotificationSetting
    */
   @Column({ type: 'jsonb', default: [] })
-  webhooks: NotificationSettingWebHooks;
+  webhooks: NotificationSettingWebHooks
 
   /**
    * notification setting 创建时间
@@ -56,7 +56,7 @@ export class NotificationSetting {
    */
   @Exclude()
   @CreateDateColumn({ type: 'timestamp with time zone' })
-  createdAt: Date;
+  createdAt: Date
 
   /**
    * notification setting 更新时间
@@ -66,7 +66,7 @@ export class NotificationSetting {
    */
   @Exclude()
   @UpdateDateColumn()
-  updatedAt: Date;
+  updatedAt: Date
 
   /**
    * notification setting 的 project (一对一)
@@ -79,5 +79,5 @@ export class NotificationSetting {
     onDelete: 'CASCADE',
   })
   @JoinColumn()
-  project: Project;
+  project: Project
 }

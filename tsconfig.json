@@ -2,6 +2,7 @@
   "extends": "@chenyueban/tsconfig",
   "compilerOptions": {
     "baseUrl": "./packages",
+    "strictPropertyInitialization": false,
     "paths": {
       "@ohbug-server/*": ["packages/*/src"]
     }

@@ -1,26 +1,26 @@
-import { Injectable } from '@nestjs/common';
-import { Repository } from 'typeorm';
-import { InjectRepository } from '@nestjs/typeorm';
-import { uniq } from 'ramda';
+import { Injectable } from '@nestjs/common'
+import { Repository } from 'typeorm'
+import { InjectRepository } from '@nestjs/typeorm'
+import { uniq } from 'ramda'
 
-import { ForbiddenException } from '@ohbug-server/common';
-import { Project } from '@/api/project/project.entity';
-import { UserService } from '@/api/user/user.service';
+import { ForbiddenException } from '@ohbug-server/common'
+import { Project } from '@/api/project/project.entity'
+import { UserService } from '@/api/user/user.service'
 
-import { Organization } from './organization.entity';
+import { Organization } from './organization.entity'
 import {
   BaseOrganizationDto,
   CreateOrganizationDto,
   UpdateOrganizationDto,
-} from './organization.dto';
-import { User } from '@/api/user/user.entity';
+} from './organization.dto'
+import { User } from '@/api/user/user.entity'
 
 @Injectable()
 export class OrganizationService {
   constructor(
     @InjectRepository(Organization)
     private readonly organizationRepository: Repository<Organization>,
-    private readonly userService: UserService,
+    private readonly userService: UserService
   ) {}
 
   /**
@@ -36,17 +36,17 @@ export class OrganizationService {
     introduction,
   }: CreateOrganizationDto): Promise<Organization> {
     try {
-      const admin = await this.userService.getUserById(admin_id);
-      const users = [admin];
+      const admin = await this.userService.getUserById(admin_id)
+      const users = [admin]
       const org = await this.organizationRepository.create({
         name,
         admin,
         introduction,
         users,
-      });
-      return org;
+      })
+      return org
     } catch (error) {
-      throw new ForbiddenException(400100, error);
+      throw new ForbiddenException(400100, error)
     }
   }
 
@@ -63,25 +63,25 @@ export class OrganizationService {
     introduction,
   }: CreateOrganizationDto): Promise<Organization> {
     try {
-      const MAX_ORGANIZATION_COUNT = 1;
+      const MAX_ORGANIZATION_COUNT = 1
       // @ts-ignore
       const [_, count] = await this.organizationRepository.findAndCount({
         where: {
           admin: admin_id,
         },
-      });
+      })
       // 可创建团队最大数量限制为 2
       if (count >= MAX_ORGANIZATION_COUNT) {
-        throw new Error(`每个用户最多可创建 ${MAX_ORGANIZATION_COUNT} 个团队`);
+        throw new Error(`每个用户最多可创建 ${MAX_ORGANIZATION_COUNT} 个团队`)
       }
       const org = await this.createOrganizationObject({
         name,
         admin_id,
         introduction,
-      });
-      return await this.organizationRepository.save(org);
+      })
+      return await this.organizationRepository.save(org)
     } catch (error) {
-      throw new ForbiddenException(400102, error);
+      throw new ForbiddenException(400102, error)
     }
   }
 
@@ -99,12 +99,12 @@ export class OrganizationService {
     organization_id,
   }: UpdateOrganizationDto & BaseOrganizationDto): Promise<Organization> {
     try {
-      const org = await this.getOrganizationById(organization_id);
-      if (name) org.name = name;
-      if (introduction) org.introduction = introduction;
-      return await this.organizationRepository.save(org);
+      const org = await this.getOrganizationById(organization_id)
+      if (name) org.name = name
+      if (introduction) org.introduction = introduction
+      return await this.organizationRepository.save(org)
     } catch (error) {
-      throw new ForbiddenException(400105, error);
+      throw new ForbiddenException(400105, error)
     }
   }
 
@@ -117,10 +117,10 @@ export class OrganizationService {
     organization_id,
   }: BaseOrganizationDto): Promise<Organization> {
     try {
-      const org = await this.getOrganizationById(organization_id);
-      return await this.organizationRepository.remove(org);
+      const org = await this.getOrganizationById(organization_id)
+      return await this.organizationRepository.remove(org)
     } catch (error) {
-      throw new ForbiddenException(400101, error);
+      throw new ForbiddenException(400101, error)
     }
   }
 
@@ -134,16 +134,16 @@ export class OrganizationService {
     // https://github.com/typeorm/typeorm/issues/2500
     if (!id) {
       throw new Error(
-        `getOrganizationById: 期望参数 "id" 类型为 number | string, 收到参数 ${id}`,
-      );
+        `getOrganizationById: 期望参数 "id" 类型为 number | string, 收到参数 ${id}`
+      )
     }
     try {
       const organization = await this.organizationRepository.findOneOrFail(id, {
         relations: ['users'],
-      });
-      return organization;
+      })
+      return organization
     } catch (error) {
-      throw new ForbiddenException(400103, error);
+      throw new ForbiddenException(400103, error)
     }
   }
 
@@ -153,20 +153,20 @@ export class OrganizationService {
    * @param id organization id
    */
   async getAllProjectsByOrganizationId(
-    id: number | string,
+    id: number | string
   ): Promise<Project[]> {
     if (!id) {
       throw new Error(
-        `getAllProjectsByOrganizationId: 期望参数 "id" 类型为 number | string, 收到参数 ${id}`,
-      );
+        `getAllProjectsByOrganizationId: 期望参数 "id" 类型为 number | string, 收到参数 ${id}`
+      )
     }
     try {
       const organization = await this.organizationRepository.findOneOrFail(id, {
         relations: ['projects'],
-      });
-      return organization.projects;
+      })
+      return organization.projects
     } catch (error) {
-      throw new ForbiddenException(400104, error);
+      throw new ForbiddenException(400104, error)
     }
   }
 
@@ -178,11 +178,11 @@ export class OrganizationService {
    */
   async addUser(organization: Organization, users: User[]) {
     try {
-      const result = organization;
-      result.users = uniq([...result.users, ...users]);
-      return await this.organizationRepository.save(result);
+      const result = organization
+      result.users = uniq([...result.users, ...users])
+      return await this.organizationRepository.save(result)
     } catch (error) {
-      throw new ForbiddenException(400106, error);
+      throw new ForbiddenException(400106, error)
     }
   }
 }

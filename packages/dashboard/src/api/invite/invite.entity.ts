@@ -5,20 +5,20 @@ import {
   ManyToOne,
   ManyToMany,
   JoinTable,
-} from 'typeorm';
-import { Exclude } from 'class-transformer';
+} from 'typeorm'
+import { Exclude } from 'class-transformer'
 
-import { User } from '@/api/user/user.entity';
-import { Project } from '@/api/project/project.entity';
-import { Organization } from '@/api/organization/organization.entity';
+import { User } from '@/api/user/user.entity'
+import { Project } from '@/api/project/project.entity'
+import { Organization } from '@/api/organization/organization.entity'
 
-import type { InviteAuth } from './invite.interface';
+import type { InviteAuth } from './invite.interface'
 
 @Entity()
 export class Invite {
   @Exclude()
   @PrimaryGeneratedColumn()
-  id: number;
+  id: number
 
   /**
    * invite uuid
@@ -27,7 +27,7 @@ export class Invite {
    * @memberof Invite
    */
   @Column({ type: 'text' })
-  uuid: string;
+  uuid: string
 
   /**
    * invite hash
@@ -37,7 +37,7 @@ export class Invite {
    */
   @Exclude()
   @Column({ type: 'text' })
-  hash: string;
+  hash: string
 
   /**
    * invite 邀请人的权限
@@ -46,7 +46,7 @@ export class Invite {
    * @memberof Invite
    */
   @Column({ type: 'text' })
-  auth: InviteAuth;
+  auth: InviteAuth
 
   /**
    * invite 邀请链接
@@ -56,7 +56,7 @@ export class Invite {
    */
   @Exclude()
   @Column({ type: 'text' })
-  url: string;
+  url: string
 
   /**
    * invite 过期时间
@@ -66,7 +66,7 @@ export class Invite {
    */
   @Exclude()
   @Column({ type: 'timestamp' })
-  expires: Date;
+  expires: Date
 
   /**
    * invite 链接所对应的项目
@@ -77,7 +77,7 @@ export class Invite {
   @Exclude()
   @ManyToMany((_) => Project)
   @JoinTable()
-  projects: Project[];
+  projects: Project[]
 
   /**
    * invite 链接所对应的团队
@@ -86,7 +86,7 @@ export class Invite {
    * @memberof Invite
    */
   @ManyToOne((_) => Organization)
-  organization: Organization;
+  organization: Organization
 
   /**
    * invite 链接所对应的邀请人
@@ -95,5 +95,5 @@ export class Invite {
    * @memberof Invite
    */
   @ManyToOne((_) => User)
-  inviter: User;
+  inviter: User
 }

@@ -14,5 +14,5 @@ const hostMap = [
 ]
 
 export const getHost = () =>
-  hostMap.find(({ env }) => process.env.NODE_ENV === env).host ||
+  hostMap.find(({ env }) => process.env.NODE_ENV === env)?.host ||
   'https://app.ohbug.net'

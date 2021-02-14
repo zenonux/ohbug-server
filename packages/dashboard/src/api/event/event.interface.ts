@@ -1,17 +1,17 @@
 export interface SearchCondition {
-  issue_id?: number | string;
+  issue_id?: number | string
 
-  type?: string;
+  type?: string
 
-  user?: string;
+  user?: string
 
-  start?: Date;
+  start?: Date
 
-  end?: Date;
+  end?: Date
 }
 export interface SearchParams {
-  project_id: number | string;
-  searchCondition: SearchCondition;
-  limit?: number;
-  skip?: number;
+  project_id: number | string
+  searchCondition: SearchCondition
+  limit?: number
+  skip?: number
 }

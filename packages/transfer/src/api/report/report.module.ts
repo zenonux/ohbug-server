@@ -1,9 +1,9 @@
-import { Module } from '@nestjs/common';
+import { Module } from '@nestjs/common'
 
-import { MicroserviceManagerClientModule } from '@ohbug-server/common';
+import { MicroserviceManagerClientModule } from '@ohbug-server/common'
 
-import { ReportController } from './report.controller';
-import { ReportService } from './report.service';
+import { ReportController } from './report.controller'
+import { ReportService } from './report.service'
 
 @Module({
   imports: [MicroserviceManagerClientModule],

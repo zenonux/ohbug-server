@@ -1,26 +1,26 @@
-import { Inject, Injectable, forwardRef } from '@nestjs/common';
-import { Repository } from 'typeorm';
-import { InjectRepository } from '@nestjs/typeorm';
-import { ClientProxy } from '@nestjs/microservices';
-import * as crypto from 'crypto';
-import { uniq } from 'ramda';
+import { Inject, Injectable, forwardRef } from '@nestjs/common'
+import { Repository } from 'typeorm'
+import { InjectRepository } from '@nestjs/typeorm'
+import { ClientProxy } from '@nestjs/microservices'
+import * as crypto from 'crypto'
+import { uniq } from 'ramda'
 
-import { UserService } from '@/api/user/user.service';
-import { OrganizationService } from '@/api/organization/organization.service';
-import { NotificationService } from '@/api/notification/notification.service';
+import { UserService } from '@/api/user/user.service'
+import { OrganizationService } from '@/api/organization/organization.service'
+import { NotificationService } from '@/api/notification/notification.service'
 import {
   ForbiddenException,
   TOPIC_DASHBOARD_MANAGER_GET_PROJECT_TREND,
-} from '@ohbug-server/common';
+} from '@ohbug-server/common'
 
-import { Project } from './project.entity';
+import { Project } from './project.entity'
 import {
   BaseProjectDto,
   CreateProjectDto,
   GetTrendByProjectIdDto,
   UpdateProjectDto,
-} from './project.dto';
-import { User } from '@/api/user/user.entity';
+} from './project.dto'
+import { User } from '@/api/user/user.entity'
 
 @Injectable()
 export class ProjectService {
@@ -30,11 +30,11 @@ export class ProjectService {
     private readonly userService: UserService,
     private readonly organizationService: OrganizationService,
     @Inject(forwardRef(() => NotificationService))
-    private readonly notificationService: NotificationService,
+    private readonly notificationService: NotificationService
   ) {}
 
   @Inject('MICROSERVICE_MANAGER_CLIENT')
-  private readonly managerClient: ClientProxy;
+  private readonly managerClient: ClientProxy
 
   private static createApiKey({
     name,
@@ -43,13 +43,13 @@ export class ProjectService {
     organization_id,
   }: CreateProjectDto): string {
     try {
-      const secret = process.env.APP_SECRET;
+      const secret = process.env.APP_SECRET
       return crypto
-        .createHmac('sha256', secret)
+        .createHmac('sha256', secret!)
         .update(`${name}-${type}-${admin_id}-${organization_id}`)
-        .digest('hex');
+        .digest('hex')
     } catch (error) {
-      throw new ForbiddenException(400200, error);
+      throw new ForbiddenException(400200, error)
     }
   }
 
@@ -68,16 +68,16 @@ export class ProjectService {
     organization_id,
   }: CreateProjectDto): Promise<Project> {
     try {
-      const admin = await this.userService.getUserById(admin_id);
+      const admin = await this.userService.getUserById(admin_id)
       const organization = await this.organizationService.getOrganizationById(
-        organization_id,
-      );
+        organization_id
+      )
       const apiKey = ProjectService.createApiKey({
         name,
         type,
         admin_id,
         organization_id,
-      });
+      })
       const notificationSetting = this.notificationService.createNotificationSetting(
         {
           emails: admin.email ? [{ email: admin.email, open: true }] : [],
@@ -86,8 +86,8 @@ export class ProjectService {
             data: null,
           },
           webhooks: [],
-        },
-      );
+        }
+      )
       const project = this.projectRepository.create({
         apiKey,
         name,
@@ -96,10 +96,10 @@ export class ProjectService {
         users: [admin],
         organization,
         notificationSetting,
-      });
-      return project;
+      })
+      return project
     } catch (error) {
-      throw new ForbiddenException(400201, error);
+      throw new ForbiddenException(400201, error)
     }
   }
 
@@ -118,26 +118,26 @@ export class ProjectService {
     organization_id,
   }: CreateProjectDto): Promise<Project> {
     try {
-      const MAX_PROJECT_COUNT = 2;
+      const MAX_PROJECT_COUNT = 2
       // @ts-ignore
       const [_, count] = await this.projectRepository.findAndCount({
         where: {
           organization: organization_id,
         },
-      });
+      })
       // 项目最大数量限制为 2
       if (count >= MAX_PROJECT_COUNT) {
-        throw new Error(`每个团队最多可创建 ${MAX_PROJECT_COUNT} 个项目`);
+        throw new Error(`每个团队最多可创建 ${MAX_PROJECT_COUNT} 个项目`)
       }
       const project = await this.createProjectObject({
         name,
         type,
         admin_id,
         organization_id,
-      });
-      return await this.projectRepository.save(project);
+      })
+      return await this.projectRepository.save(project)
     } catch (error) {
-      throw new ForbiddenException(400202, error);
+      throw new ForbiddenException(400202, error)
     }
   }
 
@@ -154,12 +154,12 @@ export class ProjectService {
     project_id,
   }: UpdateProjectDto & BaseProjectDto): Promise<Project> {
     try {
-      const project = await this.getProjectByProjectId(project_id);
-      if (name) project.name = name;
-      if (type) project.type = type;
-      return await this.projectRepository.save(project);
+      const project = await this.getProjectByProjectId(project_id)
+      if (name) project.name = name
+      if (type) project.type = type
+      return await this.projectRepository.save(project)
     } catch (error) {
-      throw new ForbiddenException(400205, error);
+      throw new ForbiddenException(400205, error)
     }
   }
 
@@ -172,9 +172,9 @@ export class ProjectService {
     try {
       return await this.projectRepository.findOneOrFail(id, {
         relations: ['users'],
-      });
+      })
     } catch (error) {
-      throw new ForbiddenException(400203, error);
+      throw new ForbiddenException(400203, error)
     }
   }
 
@@ -185,9 +185,9 @@ export class ProjectService {
    */
   async getProjectsByProjectIds(ids: (number | string)[]): Promise<Project[]> {
     try {
-      return await this.projectRepository.findByIds(ids);
+      return await this.projectRepository.findByIds(ids)
     } catch (error) {
-      throw new ForbiddenException(400206, error);
+      throw new ForbiddenException(400206, error)
     }
   }
 
@@ -200,9 +200,9 @@ export class ProjectService {
     try {
       return await this.projectRepository.findOneOrFail({
         apiKey,
-      });
+      })
     } catch (error) {
-      throw new ForbiddenException(400204, error);
+      throw new ForbiddenException(400204, error)
     }
   }
 
@@ -214,7 +214,7 @@ export class ProjectService {
    */
   async getAllProjectsByOrganizationId(
     organization_id: number | string,
-    user_id: number | string,
+    user_id?: number | string
   ): Promise<Project[]> {
     try {
       const projects = await this.projectRepository.find({
@@ -222,18 +222,17 @@ export class ProjectService {
           organization: organization_id,
         },
         relations: ['users', 'admin'],
-      });
+      })
 
       if (user_id) {
         return projects.filter((project) =>
-          // tslint:disable-next-line:triple-equals
-          Boolean(project.users.find((user) => user.id == user_id)),
-        );
+          Boolean(project.users.find((user) => user.id == user_id))
+        )
       }
 
-      return projects;
+      return projects
     } catch (error) {
-      throw new ForbiddenException(400207, error);
+      throw new ForbiddenException(400207, error)
     }
   }
 
@@ -249,7 +248,7 @@ export class ProjectService {
     start,
     end,
   }: GetTrendByProjectIdDto & BaseProjectDto) {
-    const { apiKey } = await this.getProjectByProjectId(project_id);
+    const { apiKey } = await this.getProjectByProjectId(project_id)
 
     return await this.managerClient
       .send(TOPIC_DASHBOARD_MANAGER_GET_PROJECT_TREND, {
@@ -257,7 +256,7 @@ export class ProjectService {
         start,
         end,
       })
-      .toPromise();
+      .toPromise()
   }
 
   /**
@@ -268,11 +267,11 @@ export class ProjectService {
    */
   async addUser(project: Project, users: User[]) {
     try {
-      const result = project;
-      result.users = uniq([...result.users, ...users]);
-      return await this.projectRepository.save(result);
+      const result = project
+      result.users = uniq([...result.users, ...users])
+      return await this.projectRepository.save(result)
     } catch (error) {
-      throw new ForbiddenException(400208, error);
+      throw new ForbiddenException(400208, error)
     }
   }
 }

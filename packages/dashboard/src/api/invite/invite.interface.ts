@@ -1,1 +1,1 @@
-export type InviteAuth = 'sub_admin' | 'default';
+export type InviteAuth = 'sub_admin' | 'default'

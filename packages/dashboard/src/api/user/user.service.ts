@@ -1,24 +1,24 @@
-import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Injectable } from '@nestjs/common'
+import { InjectRepository } from '@nestjs/typeorm'
+import { Repository } from 'typeorm'
 
-import { ForbiddenException } from '@ohbug-server/common';
+import { ForbiddenException } from '@ohbug-server/common'
 
 import type {
   GithubUser,
   NormalUser,
   UserDetail,
-} from '@/api/auth/auth.interface';
+} from '@/api/auth/auth.interface'
 
-import type { BindOAuthParams, OAuth, OAuthType } from './user.interface';
-import { User } from './user.entity';
-import { GetUserDto, UpdateUserDto } from './user.dto';
+import type { BindOAuthParams, OAuth, OAuthType } from './user.interface'
+import { User } from './user.entity'
+import { GetUserDto, UpdateUserDto } from './user.dto'
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectRepository(User)
-    private readonly userRepository: Repository<User>,
+    private readonly userRepository: Repository<User>
   ) {}
 
   /**
@@ -27,48 +27,53 @@ export class UserService {
    * @param type
    * @param detail
    */
-  private createUser(type: OAuthType, detail: UserDetail): User {
-    let name: string;
-    let email: string;
-    let password: string;
-    let mobile: string;
-    let avatar: string;
-    let oauth: OAuth;
+  private createUser(type: OAuthType | null, detail: UserDetail): User {
+    let name: string
+    let email: string
+    let password: string
+    let mobile: string
+    let avatar: string
+    let oauth: OAuth
     switch (type) {
       case 'github':
-        const githubDetail = detail as GithubUser;
+        // eslint-disable-next-line no-case-declarations
+        const githubDetail = detail as GithubUser
         name =
-          githubDetail.name || githubDetail.login || githubDetail.id.toString();
-        email = githubDetail.email;
-        avatar = githubDetail.avatar_url;
+          githubDetail.name || githubDetail.login || githubDetail.id.toString()
+        email = githubDetail.email
+        avatar = githubDetail.avatar_url
         oauth = {
           [type]: {
             id: githubDetail.id.toString(),
             detail,
           },
-        };
-        break;
+        }
+        break
       default:
-        const normalDetail = detail as NormalUser;
-        name = normalDetail.name;
-        email = normalDetail.email;
-        password = normalDetail.password;
-        mobile = normalDetail.mobile;
-        mobile = normalDetail.mobile;
-        avatar = normalDetail.avatar;
+        // eslint-disable-next-line no-case-declarations
+        const normalDetail = detail as NormalUser
+        name = normalDetail.name
+        email = normalDetail.email
+        password = normalDetail.password
+        mobile = normalDetail.mobile!
+        mobile = normalDetail.mobile!
+        avatar = normalDetail.avatar!
     }
     const user = this.userRepository.create({
       name,
       email,
+      // @ts-ignore
       password,
+      // @ts-ignore
       mobile,
       avatar,
-    });
-    if (oauth) user.oauth = oauth;
+    })
+    // @ts-ignore
+    if (oauth) user.oauth = oauth
     if (type === 'github') {
-      user.activated = true;
+      user.activated = true
     }
-    return user;
+    return user
   }
 
   /**
@@ -77,33 +82,33 @@ export class UserService {
    * @param type
    * @param detail oauth2 拿到的用户数据
    */
-  async saveUser(type: OAuthType, detail: UserDetail): Promise<User> {
+  async saveUser(type: OAuthType | null, detail: UserDetail): Promise<User> {
     try {
-      const user = this.createUser(type, detail);
-      const result = await this.userRepository.save(user);
-      return result;
+      const user = this.createUser(type, detail)
+      const result = await this.userRepository.save(user)
+      return result
     } catch (error) {
-      throw new ForbiddenException(400000, error);
+      throw new ForbiddenException(400000, error)
     }
   }
 
   async bindOAuth({ baseUser, type, detail }: BindOAuthParams): Promise<User> {
-    let user = baseUser;
+    let user = baseUser
     if (user) {
       // 已有账号 仅更新 oauth 字段
       user.oauth = {
-        ...baseUser.oauth,
+        ...baseUser?.oauth,
         [type]: {
           id: detail.id.toString(),
           detail,
         },
-      };
+      }
     } else {
       // 没有账号 生成用户
-      user = this.createUser(type, detail);
+      user = this.createUser(type, detail)
     }
-    const result = await this.userRepository.save(user);
-    return result;
+    const result = await this.userRepository.save(user)
+    return result
   }
 
   /**
@@ -120,10 +125,10 @@ export class UserService {
           'organizations.users',
           'organizations.projects',
         ],
-      });
-      return user;
+      })
+      return user
     } catch (error) {
-      throw new ForbiddenException(400001, error);
+      throw new ForbiddenException(400001, error)
     }
   }
 
@@ -141,10 +146,10 @@ export class UserService {
           'organizations.users',
           'organizations.projects',
         ],
-      });
-      return users;
+      })
+      return users
     } catch (error) {
-      throw new ForbiddenException(400001, error);
+      throw new ForbiddenException(400001, error)
     }
   }
 
@@ -153,14 +158,14 @@ export class UserService {
    *
    * @param mobile 用户手机号
    */
-  async getUserByMobile(mobile: string): Promise<User> {
+  async getUserByMobile(mobile: string): Promise<User | undefined> {
     try {
       const user = await this.userRepository.findOne({
         mobile,
-      });
-      return user;
+      })
+      return user
     } catch (error) {
-      throw new ForbiddenException(400001, error);
+      throw new ForbiddenException(400001, error)
     }
   }
 
@@ -170,15 +175,18 @@ export class UserService {
    * @param type
    * @param oauth_id 用户 oauth_id
    */
-  async getUserByOauthId(type: OAuthType, oauth_id: number): Promise<User> {
+  async getUserByOauthId(
+    type: OAuthType,
+    oauth_id: number
+  ): Promise<User | undefined> {
     try {
       const user = await this.userRepository
         .createQueryBuilder('user')
         .where(`user.oauth -> '${type}' ->> 'id' = '${oauth_id}'`)
-        .getOne();
-      return user;
+        .getOne()
+      return user
     } catch (error) {
-      throw new ForbiddenException(400001, error);
+      throw new ForbiddenException(400001, error)
     }
   }
 
@@ -187,14 +195,14 @@ export class UserService {
    *
    * @param email
    */
-  async getUserByEmail(email: string): Promise<User> {
+  async getUserByEmail(email: string): Promise<User | undefined> {
     try {
       const user = await this.userRepository.findOne({
         email,
-      });
-      return user;
+      })
+      return user
     } catch (error) {
-      throw new ForbiddenException(400001, error);
+      throw new ForbiddenException(400001, error)
     }
   }
 
@@ -203,13 +211,13 @@ export class UserService {
    *
    * @param email
    */
-  async activateUserByEmail(email: string): Promise<User> {
-    const user = await this.getUserByEmail(email);
-    if (user.activated === false) {
-      user.activated = true;
-      return await this.userRepository.save(user);
+  async activateUserByEmail(email: string): Promise<User | undefined> {
+    const user = await this.getUserByEmail(email)
+    if (user?.activated === false) {
+      user.activated = true
+      return await this.userRepository.save(user)
     }
-    return user;
+    return user
   }
 
   /**
@@ -218,10 +226,16 @@ export class UserService {
    * @param email
    * @param password
    */
-  async resetPasswordByEmail(email: string, password: string): Promise<User> {
-    const user = await this.getUserByEmail(email);
-    user.password = password;
-    return await this.userRepository.save(user);
+  async resetPasswordByEmail(
+    email: string,
+    password: string
+  ): Promise<User | null> {
+    const user = await this.getUserByEmail(email)
+    if (user) {
+      user.password = password
+      return await this.userRepository.save(user)
+    }
+    return null
   }
 
   /**
@@ -239,15 +253,15 @@ export class UserService {
     avatar,
   }: GetUserDto & UpdateUserDto): Promise<User> {
     try {
-      const user = await this.getUserById(user_id);
+      const user = await this.getUserById(user_id)
       if (user) {
-        if (name) user.name = name;
-        if (email) user.email = email;
-        if (avatar) user.avatar = avatar;
+        if (name) user.name = name
+        if (email) user.email = email
+        if (avatar) user.avatar = avatar
       }
-      return await this.userRepository.save(user);
+      return await this.userRepository.save(user)
     } catch (error) {
-      throw new ForbiddenException(400009, error);
+      throw new ForbiddenException(400009, error)
     }
   }
 }

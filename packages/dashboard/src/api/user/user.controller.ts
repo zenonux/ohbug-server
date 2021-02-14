@@ -7,12 +7,12 @@ import {
   UseGuards,
   UseInterceptors,
   ClassSerializerInterceptor,
-} from '@nestjs/common';
-import { AuthGuard } from '@nestjs/passport';
+} from '@nestjs/common'
+import { AuthGuard } from '@nestjs/passport'
 
-import { UserService } from './user.service';
-import { User } from './user.entity';
-import { GetUserDto, UpdateUserDto } from './user.dto';
+import { UserService } from './user.service'
+import { User } from './user.entity'
+import { GetUserDto, UpdateUserDto } from './user.dto'
 
 @Controller('users')
 export class UserController {
@@ -22,7 +22,7 @@ export class UserController {
   @UseGuards(AuthGuard('jwt'))
   @UseInterceptors(ClassSerializerInterceptor)
   async get(@Param() { user_id }: GetUserDto): Promise<User> {
-    return await this.userService.getUserById(user_id);
+    return await this.userService.getUserById(user_id)
   }
 
   /**
@@ -38,8 +38,8 @@ export class UserController {
   @UseInterceptors(ClassSerializerInterceptor)
   async update(
     @Param() { user_id }: GetUserDto,
-    @Body() { name, email, avatar }: UpdateUserDto,
+    @Body() { name, email, avatar }: UpdateUserDto
   ): Promise<User> {
-    return await this.userService.updateUser({ user_id, name, email, avatar });
+    return await this.userService.updateUser({ user_id, name, email, avatar })
   }
 }

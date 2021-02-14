@@ -6,9 +6,9 @@ import type {
   AjaxErrorDetail,
   FetchErrorDetail,
   WebsocketErrorDetail,
-} from '@ohbug/browser';
-import type { ReactErrorDetail } from '@ohbug/react';
-import type { VueErrorDetail } from '@ohbug/vue';
+} from '@ohbug/browser'
+import type { ReactErrorDetail } from '@ohbug/react'
+import type { VueErrorDetail } from '@ohbug/vue'
 
 export type OhbugEventDetail = UncaughtErrorDetail &
   UnhandledrejectionErrorDetail &
@@ -19,27 +19,27 @@ export type OhbugEventDetail = UncaughtErrorDetail &
   WebsocketErrorDetail &
   ReactErrorDetail &
   VueErrorDetail &
-  any;
+  any
 
 export interface OhbugDocument {
-  document_id: string;
-  index: string;
+  document_id: string
+  index: string
 }
 
 export interface MetaData {
-  type: string;
-  message: string;
-  filename?: string;
-  stack?: string;
-  others?: string;
-  [key: string]: any;
+  type: string
+  message: string
+  filename?: string
+  stack?: string
+  others?: string
+  [key: string]: any
 }
 export interface AggregationDataAndMetaData {
-  agg: any[];
-  metadata: MetaData;
+  agg: any[]
+  metadata: MetaData
 }
 
 export interface GetEventByEventId {
-  event_id: string;
-  issue_id: string | number;
+  event_id: string | number
+  issue_id: string | number
 }

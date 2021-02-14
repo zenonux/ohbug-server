@@ -8,16 +8,16 @@ import {
   UseInterceptors,
   ClassSerializerInterceptor,
   Param,
-} from '@nestjs/common';
-import { AuthGuard } from '@nestjs/passport';
+} from '@nestjs/common'
+import { AuthGuard } from '@nestjs/passport'
 
-import { OrganizationService } from './organization.service';
+import { OrganizationService } from './organization.service'
 import {
   BaseOrganizationDto,
   CreateOrganizationDto,
   UpdateOrganizationDto,
-} from './organization.dto';
-import { Organization } from './organization.entity';
+} from './organization.dto'
+import { Organization } from './organization.entity'
 
 @Controller('organizations')
 export class OrganizationController {
@@ -35,13 +35,13 @@ export class OrganizationController {
   @UseInterceptors(ClassSerializerInterceptor)
   async create(
     @Body()
-    { name, admin_id, introduction }: CreateOrganizationDto,
+    { name, admin_id, introduction }: CreateOrganizationDto
   ): Promise<Organization> {
     return await this.organizationService.saveOrganization({
       name,
       admin_id,
       introduction,
-    });
+    })
   }
 
   /**
@@ -58,13 +58,13 @@ export class OrganizationController {
   async update(
     @Param() { organization_id }: BaseOrganizationDto,
     @Body()
-    { name, introduction }: UpdateOrganizationDto,
+    { name, introduction }: UpdateOrganizationDto
   ): Promise<Organization> {
     return await this.organizationService.updateOrganization({
       name,
       introduction,
       organization_id,
-    });
+    })
   }
 
   /**
@@ -77,10 +77,10 @@ export class OrganizationController {
   @UseInterceptors(ClassSerializerInterceptor)
   async delete(
     @Param()
-    { organization_id }: BaseOrganizationDto,
+    { organization_id }: BaseOrganizationDto
   ): Promise<Organization> {
     return await this.organizationService.deleteOrganization({
       organization_id,
-    });
+    })
   }
 }

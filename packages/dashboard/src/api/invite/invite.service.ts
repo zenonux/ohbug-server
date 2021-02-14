@@ -1,23 +1,23 @@
-import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import dayjs from 'dayjs';
-import { v4 as uuid_v4 } from 'uuid';
+import { Injectable } from '@nestjs/common'
+import { InjectRepository } from '@nestjs/typeorm'
+import { Repository } from 'typeorm'
+import dayjs from 'dayjs'
+import { v4 as uuid_v4 } from 'uuid'
 
-import { ForbiddenException, md5, getHost } from '@ohbug-server/common';
-import { ProjectService } from '@/api/project/project.service';
-import { OrganizationService } from '@/api/organization/organization.service';
-import { UserService } from '@/api/user/user.service';
+import { ForbiddenException, md5, getHost } from '@ohbug-server/common'
+import { ProjectService } from '@/api/project/project.service'
+import { OrganizationService } from '@/api/organization/organization.service'
+import { UserService } from '@/api/user/user.service'
 
-import { Invite } from './invite.entity';
+import { Invite } from './invite.entity'
 import {
   BindProjectDto,
   BindUserDto,
   CreateInviteUrlDto,
   GetInviteDto,
-} from './invite.dto';
+} from './invite.dto'
 
-const expire = 14;
+const expire = 14
 
 @Injectable()
 export class InviteService {
@@ -26,7 +26,7 @@ export class InviteService {
     private readonly inviteRepository: Repository<Invite>,
     private readonly projectService: ProjectService,
     private readonly organizationService: OrganizationService,
-    private readonly userService: UserService,
+    private readonly userService: UserService
   ) {}
 
   /**
@@ -44,32 +44,34 @@ export class InviteService {
     inviter_id,
   }: CreateInviteUrlDto) {
     try {
-      const hash = md5([auth, projects, organization_id, inviter_id].join(','));
+      const hash = md5([auth, projects, organization_id, inviter_id].join(','))
       let invite = await this.inviteRepository.findOne({
         hash,
-      });
+      })
       if (invite) {
-        return invite.url;
+        return invite.url
       } else {
-        const uuid = uuid_v4();
-        const url = `${getHost()}/invite?id=${uuid}`;
+        const uuid = uuid_v4()
+        const url = `${getHost()}/invite?id=${uuid}`
         invite = this.inviteRepository.create({
           uuid,
           hash,
           auth,
           url,
           expires: dayjs().add(expire, 'day').toISOString(),
-          projects: await this.projectService.getProjectsByProjectIds(projects),
+          projects: projects
+            ? await this.projectService.getProjectsByProjectIds(projects)
+            : undefined,
           organization: await this.organizationService.getOrganizationById(
-            organization_id,
+            organization_id
           ),
           inviter: await this.userService.getUserById(inviter_id),
-        });
-        const result = await this.inviteRepository.save(invite);
-        return result.url;
+        })
+        const result = await this.inviteRepository.save(invite)
+        return result.url
       }
     } catch (error) {
-      throw new ForbiddenException(4001200, error);
+      throw new ForbiddenException(4001200, error)
     }
   }
 
@@ -89,9 +91,9 @@ export class InviteService {
           'projects.users',
           'organization.users',
         ],
-      });
+      })
     } catch (error) {
-      throw new ForbiddenException(4001201, error);
+      throw new ForbiddenException(4001201, error)
     }
   }
 
@@ -103,15 +105,15 @@ export class InviteService {
    */
   async bindUser({ user_id, uuid }: BindUserDto) {
     try {
-      const { projects, organization } = await this.getInviteByUUID({ uuid });
-      const user = await this.userService.getUserById(user_id);
-      await this.organizationService.addUser(organization, [user]);
+      const { projects, organization } = await this.getInviteByUUID({ uuid })
+      const user = await this.userService.getUserById(user_id)
+      await this.organizationService.addUser(organization, [user])
       for (const project of projects) {
-        await this.projectService.addUser(project, [user]);
+        await this.projectService.addUser(project, [user])
       }
-      return user;
+      return user
     } catch (error) {
-      throw new ForbiddenException(4001202, error);
+      throw new ForbiddenException(4001202, error)
     }
   }
 
@@ -123,13 +125,13 @@ export class InviteService {
    */
   async bindProject({ users, project_id }: BindProjectDto) {
     try {
-      const user = await this.userService.getUserByIds(users);
+      const user = await this.userService.getUserByIds(users)
       const project = await this.projectService.getProjectByProjectId(
-        project_id,
-      );
-      return await this.projectService.addUser(project, user);
+        project_id
+      )
+      return await this.projectService.addUser(project, user)
     } catch (error) {
-      throw new ForbiddenException(4001203, error);
+      throw new ForbiddenException(4001203, error)
     }
   }
 }

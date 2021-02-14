@@ -1,9 +1,9 @@
-import { forwardRef, Module } from '@nestjs/common';
-import { TypeOrmModule } from '@nestjs/typeorm';
+import { forwardRef, Module } from '@nestjs/common'
+import { TypeOrmModule } from '@nestjs/typeorm'
 
-import { EventModule } from '@/core/event/event.module';
-import { Issue } from './issue.entity';
-import { IssueService } from './issue.service';
+import { EventModule } from '@/core/event/event.module'
+import { Issue } from './issue.entity'
+import { IssueService } from './issue.service'
 
 @Module({
   imports: [TypeOrmModule.forFeature([Issue]), forwardRef(() => EventModule)],

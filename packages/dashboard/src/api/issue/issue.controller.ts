@@ -6,17 +6,17 @@ import {
   Param,
   Post,
   Body,
-} from '@nestjs/common';
-import { AuthGuard } from '@nestjs/passport';
+} from '@nestjs/common'
+import { AuthGuard } from '@nestjs/passport'
 
-import { IssueService } from './issue.service';
+import { IssueService } from './issue.service'
 import {
   GetIssueByIssueIdDto,
   GetIssueDto,
   GetTrendByIssueIdDto,
-} from './issue.dto';
+} from './issue.dto'
 
-const limit = 20;
+const limit = 20
 
 @Controller('issues')
 export class IssueController {
@@ -32,11 +32,11 @@ export class IssueController {
   @UseGuards(AuthGuard('jwt'))
   async get(
     @Param()
-    { issue_id }: GetIssueByIssueIdDto,
+    { issue_id }: GetIssueByIssueIdDto
   ) {
     return await this.issueService.getIssueByIssueId({
       issue_id,
-    });
+    })
   }
 
   /**
@@ -51,16 +51,16 @@ export class IssueController {
   @UseGuards(AuthGuard('jwt'))
   async getAll(
     @Query()
-    { project_id, page, start, end }: GetIssueDto,
+    { project_id, page, start, end }: GetIssueDto
   ) {
-    const skip = parseInt(page, 10) * limit;
-    const searchCondition = { start, end };
+    const skip = parseInt(page, 10) * limit
+    const searchCondition = { start, end }
     return await this.issueService.searchIssues({
       project_id,
       searchCondition,
       limit,
       skip,
-    });
+    })
   }
 
   /**
@@ -73,8 +73,8 @@ export class IssueController {
   @UseGuards(AuthGuard('jwt'))
   async getTrendByIssueId(
     @Body()
-    { ids, period }: GetTrendByIssueIdDto,
+    { ids, period }: GetTrendByIssueIdDto
   ) {
-    return await this.issueService.getTrendByIssueId(ids, period);
+    return await this.issueService.getTrendByIssueId(ids, period)
   }
 }

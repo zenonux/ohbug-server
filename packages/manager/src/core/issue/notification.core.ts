@@ -1,8 +1,8 @@
-import { getManager } from 'typeorm';
-import dayjs from 'dayjs';
+import { getManager } from 'typeorm'
+import dayjs from 'dayjs'
 
-import type { NotificationRule, OhbugEventLike } from '@ohbug-server/common';
-import { Issue } from '@/core/issue/issue.entity';
+import type { NotificationRule, OhbugEventLike } from '@ohbug-server/common'
+import { Issue } from '@/core/issue/issue.entity'
 
 /**
  * 根据 apiKey 拿到对应的 notification 配置
@@ -10,7 +10,7 @@ import { Issue } from '@/core/issue/issue.entity';
  * @param apiKey
  */
 export async function getNotificationByApiKey(apiKey: string) {
-  const manager = getManager();
+  const manager = getManager()
   const notificationRules = await manager.query(
     `
     SELECT
@@ -30,8 +30,8 @@ export async function getNotificationByApiKey(apiKey: string) {
     WHERE
       "project"."apiKey" = $1
   `,
-    [apiKey],
-  );
+    [apiKey]
+  )
   const [notificationSetting] = await manager.query(
     `
     SELECT
@@ -45,12 +45,12 @@ export async function getNotificationByApiKey(apiKey: string) {
     WHERE
       "project"."apiKey" = $1
   `,
-    [apiKey],
-  );
+    [apiKey]
+  )
   return {
     notificationRules,
     notificationSetting,
-  };
+  }
 }
 /**
  * 更新 notification_rule 的 recently 以及 count
@@ -58,7 +58,7 @@ export async function getNotificationByApiKey(apiKey: string) {
  * @param rule_id
  */
 export async function updateNotificationRule(rule_id: string | number) {
-  const manager = getManager();
+  const manager = getManager()
   return await manager.query(
     `
     UPDATE "notification_rule"
@@ -67,33 +67,33 @@ export async function updateNotificationRule(rule_id: string | number) {
     WHERE
       "id" = $1
   `,
-    [rule_id],
-  );
+    [rule_id]
+  )
 }
 
 function getRuleDataType(
-  rule?: NotificationRule,
+  rule?: NotificationRule
 ): 'indicator' | 'range' | undefined {
   if (rule) {
     if (
-      rule.data?.hasOwnProperty('interval') &&
-      rule.data?.hasOwnProperty('percentage')
+      Object.prototype.hasOwnProperty.call(rule.data, 'interval') &&
+      Object.prototype.hasOwnProperty.call(rule.data, 'percentage')
     ) {
-      return 'indicator';
+      return 'indicator'
     }
     if (
-      rule.data?.hasOwnProperty('range1') &&
-      rule.data?.hasOwnProperty('range2') &&
-      rule.data?.hasOwnProperty('range3') &&
-      rule.data?.hasOwnProperty('range4')
+      Object.prototype.hasOwnProperty.call(rule.data, 'range1') &&
+      Object.prototype.hasOwnProperty.call(rule.data, 'range2') &&
+      Object.prototype.hasOwnProperty.call(rule.data, 'range3') &&
+      Object.prototype.hasOwnProperty.call(rule.data, 'range4')
     ) {
-      return 'range';
+      return 'range'
     }
   }
-  return undefined;
+  return undefined
 }
 function matchMessageByRegExp(regExp: RegExp, message: string) {
-  return regExp.test(message);
+  return regExp.test(message)
 }
 /**
  * 判断是否在 白/黑名单内
@@ -105,22 +105,22 @@ function matchMessageByRegExp(regExp: RegExp, message: string) {
 function judgingList(
   event: OhbugEventLike,
   rule: NotificationRule,
-  type: 'whiteList' | 'blackList',
+  type: 'whiteList' | 'blackList'
 ) {
-  const list = rule[type];
+  const list = rule[type]
   if (Array.isArray(list)) {
     for (const item of list) {
       if (!event?.detail) {
-        continue;
+        continue
       }
       if (event.type === item.type) {
         if (matchMessageByRegExp(new RegExp(item.message), event?.detail)) {
-          return true;
+          return true
         }
       }
     }
   }
-  return false;
+  return false
 }
 /**
  * 判断是否符合 range data 的规则 (包含黑白名单的判断)
@@ -135,14 +135,14 @@ function judgingList(
 function judgingRangeData(
   event: OhbugEventLike,
   issue: Issue,
-  rule: NotificationRule,
+  rule: NotificationRule
 ) {
-  const { data } = rule;
-  const ruleDataType = getRuleDataType(rule);
-  if (!ruleDataType) return false;
-  if (judgingList(event, rule, 'whiteList')) return true;
-  if (judgingList(event, rule, 'blackList')) return false;
-  return !!Object.values(data).find((item) => item === issue.eventsCount);
+  const { data } = rule
+  const ruleDataType = getRuleDataType(rule)
+  if (!ruleDataType) return false
+  if (judgingList(event, rule, 'whiteList')) return true
+  if (judgingList(event, rule, 'blackList')) return false
+  return !!Object.values(data).find((item) => item === issue.events.length)
 }
 /**
  * 判断是否在静默期内 在 return true 否则 return false
@@ -152,11 +152,11 @@ function judgingRangeData(
 function judgingInterval(rule: NotificationRule) {
   if (rule.recently) {
     // 判断当前时间是否大于静默期
-    const now = dayjs();
-    const last = dayjs(rule.recently);
-    if (now.isBefore(last.add(rule.interval, 'ms'))) return true;
+    const now = dayjs()
+    const last = dayjs(rule.recently)
+    if (now.isBefore(last.add(rule.interval, 'ms'))) return true
   }
-  return false;
+  return false
 }
 /**
  * 判断 event issue 是否符合 notification_rules 的规则
@@ -170,7 +170,7 @@ export function judgingStatus(
   event: OhbugEventLike,
   issue: Issue,
   notification_rules: NotificationRule[],
-  callback,
+  callback: (result: { rule: any; event: any; issue: any }) => any
 ) {
   notification_rules.forEach((rule) => {
     if (rule.open) {
@@ -180,11 +180,11 @@ export function judgingStatus(
             rule,
             event,
             issue,
-          };
-          callback(result);
-          updateNotificationRule(rule.id);
+          }
+          callback(result)
+          updateNotificationRule(rule.id)
         }
       }
     }
-  });
+  })
 }

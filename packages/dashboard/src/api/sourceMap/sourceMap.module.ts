@@ -1,15 +1,15 @@
-import { Module } from '@nestjs/common';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { MulterModule } from '@nestjs/platform-express';
-import { BullModule } from '@nestjs/bull';
-import { ConfigService } from '@nestjs/config';
+import { Module } from '@nestjs/common'
+import { TypeOrmModule } from '@nestjs/typeorm'
+import { MulterModule } from '@nestjs/platform-express'
+import { BullModule } from '@nestjs/bull'
+import { ConfigService } from '@nestjs/config'
 
-import { ConfigModule } from '@ohbug-server/common';
-import { ProjectModule } from '@/api/project/project.module';
-import { SourceMapController } from './sourceMap.controller';
-import { SourceMapService } from './sourceMap.service';
-import { SourceMap } from './sourceMap.entity';
-import { SourceMapConsumer } from './sourceMap.processor';
+import { ConfigModule } from '@ohbug-server/common'
+import { ProjectModule } from '@/api/project/project.module'
+import { SourceMapController } from './sourceMap.controller'
+import { SourceMapService } from './sourceMap.service'
+import { SourceMap } from './sourceMap.entity'
+import { SourceMapConsumer } from './sourceMap.processor'
 
 @Module({
   imports: [

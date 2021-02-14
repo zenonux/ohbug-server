@@ -1,7 +1,7 @@
-const path = require('path');
+const path = require('path')
 require('dotenv').config({
   path: path.resolve(__dirname, `./.env.${process.env.NODE_ENV}`),
-});
+})
 
 module.exports = {
   /**
@@ -27,22 +27,6 @@ module.exports = {
         duration: 30000, // 30 seconds
       },
       logging: process.env.NODE_ENV !== 'production',
-    },
-    /**
-     * elasticsearch
-     */
-    elasticsearch: {
-      node: process.env.ELASTICSEARCH_NODE,
-      auth: {
-        username: process.env.ELASTICSEARCH_USERNAME,
-        password: process.env.ELASTICSEARCH_PASSWORD,
-      },
-    },
-    /**
-     * kafka
-     */
-    kafka: {
-      nodes: process.env.KAFKA_NODES.split(','),
     },
     /**
      * redis
@@ -98,13 +82,6 @@ module.exports = {
        */
       max: 10,
     },
-    event: {
-      /**
-       * 可允许储存的 event 的最大数量
-       * The maximum number of events that can be stored
-       */
-      max: process.env.EVENT_MAX,
-    },
   },
   /**
    * 安全相关配置
@@ -143,4 +120,4 @@ module.exports = {
       },
     },
   },
-};
+}

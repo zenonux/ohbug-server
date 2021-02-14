@@ -15,15 +15,17 @@ async function main({
   link,
   icon,
 }: SendBrowserNotification) {
-  await webpush.sendNotification(
-    subscription,
-    JSON.stringify({
-      title,
-      body,
-      icon,
-      link,
-    })
-  )
+  if (subscription) {
+    await webpush.sendNotification(
+      subscription,
+      JSON.stringify({
+        title,
+        body,
+        icon,
+        link,
+      })
+    )
+  }
 }
 
 export default main

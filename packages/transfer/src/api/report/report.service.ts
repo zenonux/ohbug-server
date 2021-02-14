@@ -1,19 +1,21 @@
-import { Inject, Injectable } from '@nestjs/common';
-import { ClientProxy } from '@nestjs/microservices';
-import type { OhbugEvent } from '@ohbug/types';
+import { Inject, Injectable } from '@nestjs/common'
+import { ClientProxy } from '@nestjs/microservices'
+import type { OhbugEvent } from '@ohbug/types'
 
 import {
   ForbiddenException,
   TOPIC_TRANSFER_MANAGER_EVENT,
-} from '@ohbug-server/common';
-import type { OhbugEventLike } from '@ohbug-server/common';
+} from '@ohbug-server/common'
+import type { OhbugEventLike } from '@ohbug-server/common'
 
-import { formatter } from '@/utils';
+import { formatter } from '@/utils'
 
 @Injectable()
 export class ReportService {
-  @Inject('MICROSERVICE_MANAGER_CLIENT')
-  private readonly managerClient: ClientProxy;
+  constructor(
+    @Inject('MICROSERVICE_MANAGER_CLIENT')
+    private readonly managerClient: ClientProxy
+  ) {}
 
   /**
    * 将可能会变的字段转为 string
@@ -29,13 +31,13 @@ export class ReportService {
       'actions',
       'metaData',
       'data',
-    ]);
+    ])
 
     return Object.assign(eventLike, {
       user: {
         ip_address,
       },
-    });
+    })
   }
 
   /**
@@ -46,10 +48,10 @@ export class ReportService {
    */
   async handleEvent(event: OhbugEvent<any>, ip_address: string): Promise<void> {
     try {
-      const value = this.transferEvent(event, ip_address);
-      await this.managerClient.emit(TOPIC_TRANSFER_MANAGER_EVENT, value);
+      const value = this.transferEvent(event, ip_address)
+      await this.managerClient.emit(TOPIC_TRANSFER_MANAGER_EVENT, value)
     } catch (error) {
-      throw new ForbiddenException(4001000, error);
+      throw new ForbiddenException(4001000, error)
     }
   }
 }

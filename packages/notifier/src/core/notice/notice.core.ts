@@ -10,8 +10,8 @@ interface Content {
   text: string
   link: string
   lite: string
-  markdown?: string
-  html?: string
+  markdown: string
+  html: string
 }
 function switchLevelAndGetText(level: NotificationRuleLevel) {
   const levelList = [
@@ -19,7 +19,7 @@ function switchLevelAndGetText(level: NotificationRuleLevel) {
     { label: '警告', value: 'warning' },
     { label: '默认', value: 'default' },
   ]
-  return levelList.find((item) => item.value === level).label
+  return levelList.find((item) => item.value === level)?.label
 }
 const md = markdownIt()
 export function getNotificationContent({

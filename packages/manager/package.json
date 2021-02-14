@@ -14,14 +14,12 @@
     "build": "nest build",
     "start:debug": "nest start --debug --watch",
     "start:prod": "cross-env pm2-runtime start ./ecosystem.config.js --env production",
-    "prettier": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
+    "prettier": "prettier --write \"src/**/*.ts\"",
     "lint": "eslint '{src,apps,libs,test}/**/*.ts' --fix",
     "test": "jest",
     "test:watch": "jest --watch"
   },
   "dependencies": {
-    "@elastic/elasticsearch": "^7.10.0",
-    "@nestjs/elasticsearch": "^7.1.0",
     "@nestjs/schedule": "^0.4.2",
     "@ohbug-server/common": "^0.0.0",
     "vue": "^2.6.12"

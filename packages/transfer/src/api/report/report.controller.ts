@@ -1,8 +1,8 @@
-import { Controller, Post, Body, Ip, Req } from '@nestjs/common';
-import type { OhbugEvent } from '@ohbug/types';
-import rawbody from 'raw-body';
+import { Controller, Post, Body, Ip, Req } from '@nestjs/common'
+import type { OhbugEvent } from '@ohbug/types'
+import rawbody from 'raw-body'
 
-import { ReportService } from './report.service';
+import { ReportService } from './report.service'
 
 /**
  * 用于接收上报数据
@@ -23,14 +23,14 @@ export class ReportController {
   async receiveEventFromPost(
     @Body() event: OhbugEvent<any>,
     @Ip() ip_address: string,
-    @Req() req: any,
+    @Req() req: any
   ): Promise<void> {
     if (req.readable) {
-      const raw = await rawbody(req);
-      const json = raw.toString().trim();
-      this.reportService.handleEvent(JSON.parse(json), ip_address);
+      const raw = await rawbody(req)
+      const json = raw.toString().trim()
+      this.reportService.handleEvent(JSON.parse(json), ip_address)
     } else {
-      this.reportService.handleEvent(event, ip_address);
+      this.reportService.handleEvent(event, ip_address)
     }
   }
 }

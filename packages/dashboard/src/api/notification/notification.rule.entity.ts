@@ -6,21 +6,21 @@ import {
   ManyToOne,
   CreateDateColumn,
   UpdateDateColumn,
-} from 'typeorm';
-import { Exclude } from 'class-transformer';
+} from 'typeorm'
+import { Exclude } from 'class-transformer'
 
 import type {
   NotificationRuleData,
   NotificationRuleWhiteList,
   NotificationRuleBlackList,
   NotificationRuleLevel,
-} from '@ohbug-server/common';
-import { Project } from '@/api/project/project.entity';
+} from '@ohbug-server/common'
+import { Project } from '@/api/project/project.entity'
 
 @Entity()
 export class NotificationRule {
   @PrimaryGeneratedColumn()
-  id: number;
+  id: number
 
   /**
    * notification 名称
@@ -29,7 +29,7 @@ export class NotificationRule {
    * @memberof NotificationRule
    */
   @Column({ type: 'text' })
-  name: string;
+  name: string
 
   /**
    * notification 规则
@@ -38,7 +38,7 @@ export class NotificationRule {
    * @memberof NotificationRule
    */
   @Column({ type: 'jsonb' })
-  data: NotificationRuleData;
+  data: NotificationRuleData
 
   /**
    * notification 白名单
@@ -47,7 +47,7 @@ export class NotificationRule {
    * @memberof NotificationRule
    */
   @Column({ type: 'jsonb', nullable: true })
-  whiteList?: NotificationRuleWhiteList;
+  whiteList?: NotificationRuleWhiteList
 
   /**
    * notification 黑名单
@@ -56,7 +56,7 @@ export class NotificationRule {
    * @memberof NotificationRule
    */
   @Column({ type: 'jsonb', nullable: true })
-  blackList?: NotificationRuleBlackList;
+  blackList?: NotificationRuleBlackList
 
   /**
    * notification 级别
@@ -65,7 +65,7 @@ export class NotificationRule {
    * @memberof NotificationRule
    */
   @Column({ type: 'text', default: 'default' })
-  level: NotificationRuleLevel;
+  level: NotificationRuleLevel
 
   /**
    * notification 静默期
@@ -75,7 +75,7 @@ export class NotificationRule {
    * @memberof NotificationRule
    */
   @Column({ type: 'integer', default: 1800000 })
-  interval: number;
+  interval: number
 
   /**
    * notification 开关
@@ -84,7 +84,7 @@ export class NotificationRule {
    * @memberof NotificationRule
    */
   @Column({ type: 'bool', default: true })
-  open: boolean;
+  open: boolean
 
   /**
    * notification 最近通知的日期
@@ -93,7 +93,7 @@ export class NotificationRule {
    * @memberof NotificationRule
    */
   @Column({ type: 'timestamp', nullable: true })
-  recently?: Date;
+  recently?: Date
 
   /**
    * notification 通知总数
@@ -102,7 +102,7 @@ export class NotificationRule {
    * @memberof NotificationRule
    */
   @Column({ type: 'integer', default: 0 })
-  count: number;
+  count: number
 
   /**
    * notification 创建时间
@@ -112,7 +112,7 @@ export class NotificationRule {
    */
   @Exclude()
   @CreateDateColumn({ type: 'timestamp with time zone' })
-  createdAt: Date;
+  createdAt: Date
 
   /**
    * notification 更新时间
@@ -122,7 +122,7 @@ export class NotificationRule {
    */
   @Exclude()
   @UpdateDateColumn()
-  updatedAt: Date;
+  updatedAt: Date
 
   /**
    * notification 的 project (多对一)
@@ -135,5 +135,5 @@ export class NotificationRule {
     onDelete: 'CASCADE',
   })
   @JoinColumn()
-  project: Project;
+  project: Project
 }

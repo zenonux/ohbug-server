@@ -1,17 +1,18 @@
-import { forwardRef, Module } from '@nestjs/common';
-import { BullModule } from '@nestjs/bull';
-import { Transport, ClientProxyFactory } from '@nestjs/microservices';
-import { ConfigService } from '@nestjs/config';
+import { forwardRef, Module } from '@nestjs/common'
+import { BullModule } from '@nestjs/bull'
+import { TypeOrmModule } from '@nestjs/typeorm'
+import { ConfigService } from '@nestjs/config'
 
 import {
   ConfigModule,
   MicroserviceNotifierClientModule,
-} from '@ohbug-server/common';
+} from '@ohbug-server/common'
 
-import { IssueModule } from '@/core/issue/issue.module';
+import { IssueModule } from '@/core/issue/issue.module'
 
-import { EventService } from './event.service';
-import { EventConsumer } from './event.processor';
+import { EventService } from './event.service'
+import { EventConsumer } from './event.processor'
+import { Event } from './event.entity'
 
 @Module({
   imports: [
@@ -24,31 +25,10 @@ import { EventConsumer } from './event.processor';
       }),
       inject: [ConfigService],
     }),
+    TypeOrmModule.forFeature([Event]),
     forwardRef(() => IssueModule),
   ],
-  providers: [
-    EventService,
-    EventConsumer,
-    {
-      provide: 'KAFKA_MANAGER_LOGSTASH_CLIENT',
-      useFactory: (configService: ConfigService) => {
-        const { nodes } = configService.get('database.kafka');
-        return ClientProxyFactory.create({
-          transport: Transport.KAFKA,
-          options: {
-            client: {
-              clientId: 'logstash',
-              brokers: nodes,
-            },
-            consumer: {
-              groupId: 'logstash-consumer',
-            },
-          },
-        });
-      },
-      inject: [ConfigService],
-    },
-  ],
+  providers: [EventService, EventConsumer],
   exports: [EventService],
 })
 export class EventModule {}

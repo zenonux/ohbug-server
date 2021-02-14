@@ -1,16 +1,16 @@
-import { Module } from '@nestjs/common';
+import { Module } from '@nestjs/common'
 import {
   utilities as nestWinstonModuleUtilities,
   WinstonModule,
-} from 'nest-winston';
-import * as winston from 'winston';
+} from 'nest-winston'
+import * as winston from 'winston'
 
 export const LoggerConfig = {
   transports: [
     new winston.transports.Console({
       format: winston.format.combine(
         winston.format.timestamp(),
-        nestWinstonModuleUtilities.format.nestLike(),
+        nestWinstonModuleUtilities.format.nestLike()
       ),
     }),
     new winston.transports.File({
@@ -22,7 +22,7 @@ export const LoggerConfig = {
       level: 'error',
     }),
   ],
-};
+}
 
 @Module({
   imports: [WinstonModule.forRoot(LoggerConfig)],

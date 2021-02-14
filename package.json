@@ -48,7 +48,6 @@
     "class-validator": "^0.13.1",
     "dayjs": "^1.10.4",
     "dotenv": "^8.2.0",
-    "kafkajs": "^1.15.0",
     "pg": "^8.5.1",
     "ramda": "^0.27.0",
     "reflect-metadata": "^0.1.13",
@@ -110,9 +109,7 @@
   },
   "husky": {
     "hooks": {
-      "prepare-commit-msg": "exec < /dev/tty && git cz --hook || true",
-      "pre-commit": "lint-staged",
-      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
+      "pre-commit": "lint-staged"
     }
   },
   "config": {

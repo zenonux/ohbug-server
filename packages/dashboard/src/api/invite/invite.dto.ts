@@ -1,39 +1,39 @@
-import { IsString, IsNumber, IsArray, IsOptional } from 'class-validator';
+import { IsString, IsNumber, IsArray, IsOptional } from 'class-validator'
 
-import type { InviteAuth } from './invite.interface';
+import type { InviteAuth } from './invite.interface'
 
 export class CreateInviteUrlDto {
   @IsString()
-  readonly auth: InviteAuth;
+  readonly auth: InviteAuth
 
   @IsArray()
   @IsOptional()
-  readonly projects?: number[];
+  readonly projects?: number[]
 
   @IsNumber()
-  readonly organization_id: number;
+  readonly organization_id: number
 
   @IsNumber()
-  readonly inviter_id: number;
+  readonly inviter_id: number
 }
 
 export class GetInviteDto {
   @IsString()
-  readonly uuid: string;
+  readonly uuid: string
 }
 
 export class BindUserDto {
   @IsNumber()
-  user_id: number;
+  user_id: number
 
   @IsString()
-  readonly uuid: string;
+  readonly uuid: string
 }
 
 export class BindProjectDto {
   @IsArray()
-  users: number[];
+  users: number[]
 
   @IsNumber()
-  project_id: number;
+  project_id: number
 }
