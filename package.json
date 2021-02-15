@@ -19,7 +19,7 @@
   "scripts": {
     "bootstrap": "lerna bootstrap",
     "build": "lerna run build --stream",
-    "start": "lerna run start --parallel",
+    "start": "yarn docker:dev & lerna run start --parallel",
     "start:prod": "lerna run start:prod --parallel",
     "docker:dev": "docker-compose -f ./docker/docker-compose.dev.yml up --build",
     "docker:prod": "docker-compose -f ./docker/docker-compose.prod.yml up --build -d",

@@ -79,8 +79,19 @@ export class Issue {
    * @memberof Issue
    */
   @Exclude()
-  @OneToMany(() => Event, (event) => event.issue)
+  @OneToMany(() => Event, (event) => event.issue, {
+    cascade: true,
+  })
   events: Event[]
+
+  /**
+   * issue 所对应的 events count
+   *
+   * @type {number}
+   * @memberof Issue
+   */
+  @Column({ type: 'integer', default: 0 })
+  eventsCount: number
 
   /**
    * 受此 issue 影响的用户
@@ -91,4 +102,13 @@ export class Issue {
   @Exclude()
   @Column({ type: 'jsonb', default: [] })
   users: OhbugUser[]
+
+  /**
+   * 受此 issue 影响的用户 count
+   *
+   * @type {number}
+   * @memberof Issue
+   */
+  @Column({ type: 'integer', default: 0 })
+  usersCount: number
 }

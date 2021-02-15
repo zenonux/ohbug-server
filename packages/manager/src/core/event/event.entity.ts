@@ -4,6 +4,7 @@ import {
   PrimaryGeneratedColumn,
   CreateDateColumn,
   ManyToOne,
+  JoinColumn,
 } from 'typeorm'
 import type {
   OhbugReleaseStage,
@@ -36,7 +37,7 @@ export class Event implements OhbugEventLike {
    * @type {string}
    * @memberof Event
    */
-  @Column({ type: 'text' })
+  @Column({ type: 'text', nullable: true })
   appVersion?: string
 
   /**
@@ -45,7 +46,7 @@ export class Event implements OhbugEventLike {
    * @type {string}
    * @memberof Event
    */
-  @Column({ type: 'text' })
+  @Column({ type: 'text', nullable: true })
   appType?: string
 
   /**
@@ -54,7 +55,7 @@ export class Event implements OhbugEventLike {
    * @type {string}
    * @memberof Event
    */
-  @Column({ type: 'text' })
+  @Column({ type: 'text', nullable: true })
   releaseStage?: OhbugReleaseStage
 
   /**
@@ -72,7 +73,7 @@ export class Event implements OhbugEventLike {
    * @type {string}
    * @memberof Event
    */
-  @Column({ type: 'text' })
+  @Column({ type: 'text', nullable: true })
   category?: OhbugCategory
 
   /**
@@ -90,7 +91,9 @@ export class Event implements OhbugEventLike {
    * @type {string}
    * @memberof Event
    */
-  @Column({ type: 'jsonb' })
+  @Column({
+    type: 'jsonb',
+  })
   sdk: OhbugSDK
 
   /**
@@ -99,7 +102,10 @@ export class Event implements OhbugEventLike {
    * @type {string}
    * @memberof Event
    */
-  @Column({ type: 'jsonb' })
+  @Column({
+    type: 'jsonb',
+    transformer: { to: (v) => v, from: (v: string) => JSON.parse(v) },
+  })
   detail: string
 
   /**
@@ -117,7 +123,7 @@ export class Event implements OhbugEventLike {
    * @type {string}
    * @memberof Event
    */
-  @Column({ type: 'jsonb' })
+  @Column({ type: 'jsonb', nullable: true })
   user?: OhbugUser
 
   /**
@@ -126,7 +132,11 @@ export class Event implements OhbugEventLike {
    * @type {string}
    * @memberof Event
    */
-  @Column({ type: 'jsonb' })
+  @Column({
+    type: 'jsonb',
+    nullable: true,
+    transformer: { to: (v) => v, from: (v: string) => JSON.parse(v) },
+  })
   actions?: OhbugAction[]
 
   /**
@@ -135,7 +145,11 @@ export class Event implements OhbugEventLike {
    * @type {string}
    * @memberof Event
    */
-  @Column({ type: 'jsonb' })
+  @Column({
+    type: 'jsonb',
+    nullable: true,
+    transformer: { to: (v) => v, from: (v: string) => JSON.parse(v) },
+  })
   metaData?: string
 
   /**
@@ -154,5 +168,6 @@ export class Event implements OhbugEventLike {
    * @memberof Event
    */
   @ManyToOne(() => Issue, (issue) => issue.events)
+  @JoinColumn({ name: 'issueId' })
   issue: Issue
 }

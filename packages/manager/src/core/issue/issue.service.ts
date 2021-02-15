@@ -2,8 +2,10 @@ import { forwardRef, Inject, Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
 import type { FindConditions } from 'typeorm'
-import dayjs from 'dayjs'
 import { uniq } from 'ramda'
+import dayjs from 'dayjs'
+import duration from 'dayjs/plugin/duration'
+dayjs.extend(duration)
 
 import { ForbiddenException } from '@ohbug-server/common'
 
@@ -49,8 +51,9 @@ export class IssueService {
         where: {
           intro,
         },
+        relations: ['events'],
       })
-      const _event = this.eventService.createEvent(event)
+      const _event = await this.eventService.createEvent(event)
       if (!issue) {
         // 不存在 创建 (intro, metadata, event)
         const issueObject = this.issueRepository.create({
@@ -59,16 +62,26 @@ export class IssueService {
           type: event.type,
           metadata,
           users: event.user ? [event.user] : [],
+          usersCount: event.user ? 1 : 0,
           events: [_event],
+          eventsCount: 1,
         })
         return await this.issueRepository.save(issueObject)
       } else {
+        // users 最多存储 1000，超过后只更改 usersCount
+        const MAX_USERS_NUMBER = 1000
+        const usersCount = issue.users.length
+        if (usersCount < MAX_USERS_NUMBER) {
+          issue.users = uniq(
+            event.user ? [...issue.users, event.user] : issue.users
+          )
+          issue.usersCount = issue.users.length
+        } else {
+          issue.usersCount = issue.usersCount + 1
+        }
         // 已经存在
-        issue.users = uniq(
-          event.user ? [...issue.users, event.user] : issue.users
-        )
-        issue.events = [...issue.events, _event]
-
+        issue.events.push(_event)
+        issue.eventsCount = issue.eventsCount + 1
         return await this.issueRepository.save(issue)
       }
     } catch (error) {
@@ -81,9 +94,9 @@ export class IssueService {
    *
    * @param issue_id
    */
-  async getIssueByIssueId({ issue_id }: GetIssueByIssueIdParams) {
+  async getIssueByIssueId({ issue_id, relations }: GetIssueByIssueIdParams) {
     try {
-      return await this.issueRepository.findOneOrFail(issue_id)
+      return await this.issueRepository.findOneOrFail(issue_id, { relations })
     } catch (error) {
       throw new ForbiddenException(400410, error)
     }
@@ -104,7 +117,7 @@ export class IssueService {
     skip,
   }: GetIssuesByProjectIdParams) {
     try {
-      return await this.issueRepository.findAndCount({
+      const result = await this.issueRepository.findAndCount({
         where: {
           apiKey,
           ...getWhereOptions(searchCondition),
@@ -115,46 +128,66 @@ export class IssueService {
         skip,
         take: limit,
       })
+      return result
     } catch (error) {
       throw new ForbiddenException(400401, error)
     }
   }
 
   private async getTrend(
-    query: any,
-    trend: Record<string, unknown>,
-    others?: Record<string, unknown>
+    query: {
+      issueId?: number
+      range: { gte: Date; lte: Date }
+    },
+    trend: {
+      interval: string
+      format: string
+      min_doc_count: number
+      extended_bounds: {
+        min: string | Date
+        max: string | Date
+      }
+    },
+    others?: any
   ) {
-    console.log({ query, trend, others })
+    const min = trend?.extended_bounds?.min
+    const max = trend?.extended_bounds?.max
+    const interval = trend?.interval
+    const result = await this.eventService.groupEvents(query, trend)
 
-    // const {
-    //   body: {
-    //     aggregations: {
-    //       trend: { buckets },
-    //     },
-    //   },
-    // } = await this.elasticsearchService.search(
-    //   {
-    //     body: {
-    //       size: 0,
-    //       query,
-    //       aggs: {
-    //         trend,
-    //       },
-    //     },
-    //   },
-    //   {
-    //     ignore: [404],
-    //     maxRetries: 3,
-    //   }
-    // )
-    // return {
-    //   ...others,
-    //   buckets: buckets.map((bucket: any) => ({
-    //     timestamp: bucket.key,
-    //     count: bucket?.distinct?.value || bucket.doc_count,
-    //   })),
-    // }
+    const buckets = Array.from(
+      new Array(
+        dayjs(max).diff(
+          dayjs(min),
+          // @ts-ignore
+          interval
+        ) + 1
+      )
+    ).map((_, index) => {
+      const timestamp = dayjs(min)
+        // @ts-ignore
+        .add(index, interval)
+        .format(trend?.format?.replace(/\d+/, ''))
+      const match = result.find(
+        (v: { timestamp: string | number; count: string | number }) =>
+          v.timestamp === timestamp
+      )
+      if (match) {
+        return {
+          timestamp,
+          count: parseInt(match.count, 10),
+        }
+      }
+      return {
+        timestamp,
+        count: trend?.min_doc_count,
+      }
+    })
+
+    return {
+      ...others,
+      buckets,
+    }
   }
 
   /**
@@ -168,81 +201,55 @@ export class IssueService {
       const now = dayjs()
       const trendMap = {
         '14d': {
-          date_histogram: {
-            field: 'event.timestamp',
-            calendar_interval: 'day',
-            format: 'yyyy-MM-dd',
-            min_doc_count: 0,
-            extended_bounds: {
-              min: now.subtract(13, 'day').format('YYYY-MM-DD'),
-              max: now.format('YYYY-MM-DD'),
-            },
+          interval: 'day',
+          format: 'YYYY-MM-DD',
+          min_doc_count: 0,
+          extended_bounds: {
+            min: now.subtract(13, 'day').format('YYYY-MM-DD'),
+            max: now.format('YYYY-MM-DD'),
           },
         },
         '24h': {
-          date_histogram: {
-            field: 'event.timestamp',
-            calendar_interval: 'hour',
-            format: 'yyyy-MM-dd HH',
-            min_doc_count: 0,
-            extended_bounds: {
-              min: `${now.format('YYYY-MM-DD')} 01`,
-              max: `${now.format('YYYY-MM-DD')} 23`,
-            },
+          interval: 'hour',
+          format: 'YYYY-MM-DD HH24',
+          min_doc_count: 0,
+          extended_bounds: {
+            min: `${now.format('YYYY-MM-DD')} 00`,
+            max: `${now.format('YYYY-MM-DD')} 23`,
           },
         },
       }
 
       return await Promise.all(
-        ids.map(async (id) => {
+        ids.map(async (issueId) => {
           const queryMap = {
             '14d': {
-              bool: {
-                must: [
-                  {
-                    match: { issue_id: id },
-                  },
-                ],
-                filter: {
-                  range: {
-                    'event.timestamp': {
-                      gte: now.subtract(13, 'day').toDate(),
-                      lte: now.toDate(),
-                    },
-                  },
-                },
+              issueId,
+              range: {
+                gte: now.subtract(13, 'day').toDate(),
+                lte: now.toDate(),
               },
             },
             '24h': {
-              bool: {
-                must: [
-                  {
-                    match: { issue_id: id },
-                  },
-                ],
-                filter: {
-                  range: {
-                    'event.timestamp': {
-                      gte: now.subtract(23, 'hour').toDate(),
-                      lte: now.toDate(),
-                    },
-                  },
-                },
+              issueId,
+              range: {
+                gte: now.subtract(23, 'hour').toDate(),
+                lte: now.toDate(),
               },
             },
           }
           if (period === 'all') {
             return {
               '14d': await this.getTrend(queryMap['14d'], trendMap['14d'], {
-                issue_id: id,
+                issueId,
               }),
               '24h': await this.getTrend(queryMap['24h'], trendMap['24h'], {
-                issue_id: id,
+                issueId,
               }),
             }
           } else {
             return await this.getTrend(queryMap[period], trendMap[period], {
-              issue_id: id,
+              issueId,
             })
           }
         })
@@ -259,16 +266,10 @@ export class IssueService {
    */
   async getLatestEventByIssueId(issue_id: number | string) {
     try {
-      const issue = await this.issueRepository.findOne(issue_id)
-      const latestEventDocument = issue?.events[issue.events.length - 1]
-      if (latestEventDocument) {
-        const { id } = latestEventDocument
-        const event = await this.eventService.getEventByEventId({
-          event_id: id,
-          issue_id,
-        })
-        return event
-      }
+      const issue = await this.issueRepository.findOne(issue_id, {
+        relations: ['events'],
+      })
+      return issue?.events[issue.events.length - 1]
     } catch (error) {
       throw new ForbiddenException(400403, error)
     }
@@ -282,42 +283,20 @@ export class IssueService {
    * @param end
    */
   async getProjectTrendByApiKey({
-    apiKey,
+    // apiKey,
     start,
     end,
   }: GetProjectTrendByApiKeyParams) {
     const query = {
-      bool: {
-        must: [
-          {
-            match: {
-              'event.apiKey': apiKey,
-            },
-          },
-        ],
-        filter: {
-          range: {
-            'event.timestamp': {
-              gte: dayjs(start).toDate(),
-              lte: dayjs(end).toDate(),
-            },
-          },
-        },
+      range: {
+        gte: dayjs(start).toDate(),
+        lte: dayjs(end).toDate(),
       },
     }
     const trend = {
-      date_histogram: {
-        field: 'event.timestamp',
-        min_doc_count: 0,
-        ...switchTimeRangeAndGetDateHistogram(start, end),
-      },
-      aggs: {
-        distinct: {
-          cardinality: {
-            field: 'issue_id',
-          },
-        },
-      },
+      field: 'event.timestamp',
+      min_doc_count: 0,
+      ...switchTimeRangeAndGetDateHistogram(start, end),
     }
 
     return await this.getTrend(query, trend)

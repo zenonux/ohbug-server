@@ -12,6 +12,7 @@ export interface CreateOrUpdateIssueByIntroParams {
 
 export interface GetIssueByIssueIdParams {
   issue_id: number | string
+  relations?: string[]
 }
 
 export interface SearchCondition {

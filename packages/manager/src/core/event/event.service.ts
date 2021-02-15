@@ -71,9 +71,9 @@ export class EventService {
    *
    * @param event
    */
-  createEvent(event: OhbugEventLike): Event {
+  async createEvent(event: OhbugEventLike): Promise<Event> {
     try {
-      return this.eventRepository.create(event)
+      return await this.eventRepository.save(this.eventRepository.create(event))
     } catch (error) {
       throw new ForbiddenException(4001001, error)
     }
@@ -123,50 +123,61 @@ export class EventService {
    */
   async getEventByEventId({ event_id, issue_id }: GetEventByEventId) {
     try {
-      const issue = await this.issueService.getIssueByIssueId({ issue_id })
-      const index = issue.events.find((e) => e.id === event_id)
-      if (index) {
-        // const {
-        //   body: {
-        //     _source: { event: eventLike },
-        //   },
-        // } = await this.elasticsearchService.get(
-        //   {
-        //     index,
-        //     id: event_id,
-        //   },
-        //   {
-        //     ignore: [404],
-        //     maxRetries: 3,
-        //   }
-        // )
-        // const eventIndex = issue.events.findIndex(
-        //   (e) => e.document_id === event_id && e.index === index
-        // )
-        // const previousEvent = issue.events[eventIndex - 1]
-        // const nextEvent = issue.events[eventIndex + 1]
-        // const event = eventLike
-        // if (event_id) {
-        //   event.id = event_id
-        // }
-        // if (index) {
-        //   event.index = index
-        // }
-        // event.previous = previousEvent || undefined
-        // event.next = nextEvent || undefined
-        // if (typeof event.detail === 'string') {
-        //   event.detail = JSON.parse(event.detail)
-        // }
-        // if (typeof event.actions === 'string') {
-        //   event.actions = JSON.parse(event.actions)
-        // }
-        // if (typeof event.metaData === 'string') {
-        //   event.metaData = JSON.parse(event.metaData)
-        // }
-        // return event
-      }
+      const issue = await this.issueService.getIssueByIssueId({
+        issue_id,
+        relations: ['events'],
+      })
+      const event = issue.events.find(
+        (e) => e.id === parseInt(event_id as string, 10)
+      )
+      const eventIndex = issue.events.findIndex(
+        (e) => e.id === parseInt(event_id as string, 10)
+      )
+      const previousEvent = issue.events[eventIndex - 1]
+      const nextEvent = issue.events[eventIndex + 1]
+      // @ts-ignore
+      if (previousEvent) event.previous = previousEvent
+      // @ts-ignore
+      if (nextEvent) event.next = nextEvent
+
+      return event
     } catch (error) {
       throw new ForbiddenException(400305, error)
     }
+  }
+
+  async groupEvents(
+    query: {
+      issueId?: number
+      range: { gte: Date; lte: Date }
+    },
+    trend: {
+      interval: string
+      format: string
+      min_doc_count: number
+      extended_bounds: {
+        min: string | Date
+        max: string | Date
+      }
+    }
+  ) {
+    const result = await this.eventRepository
+      .createQueryBuilder('event')
+      .select(
+        `to_char(event.createdAt AT TIME ZONE 'Asia/Shanghai', '${trend.format}')`,
+        'timestamp'
+      )
+      .addSelect('COUNT(*)', 'count')
+      .where(`event.issueId = :issueId`, { issueId: query.issueId })
+      .andWhere(`event.createdAt >= :start AND event.createdAt <= :end`, {
+        start: query.range?.gte,
+        end: query.range?.lte,
+      })
+      .groupBy(
+        `to_char(event.createdAt AT TIME ZONE 'Asia/Shanghai', '${trend.format}')`
+      )
+      .orderBy(`"timestamp"`)
+      .execute()
+    return result
   }
 }

@@ -25,8 +25,8 @@ export function switchTimeRangeAndGetDateHistogram(start: Date, end: Date) {
     // 14天
     case 312:
       return {
-        calendar_interval: 'day',
-        format: 'yyyy-MM-dd',
+        interval: 'day',
+        format: 'YYYY-MM-DD',
         extended_bounds: {
           min: dayjs(start).format('YYYY-MM-DD'),
           max: dayjs(end).format('YYYY-MM-DD'),
@@ -35,7 +35,8 @@ export function switchTimeRangeAndGetDateHistogram(start: Date, end: Date) {
     // 24小时
     case 23:
       return {
-        calendar_interval: 'hour',
+        interval: 'hour',
+        format: 'YYYY-MM-DD',
         extended_bounds: {
           min: dayjs(start).toDate(),
           max: dayjs(end).toDate(),
@@ -43,7 +44,8 @@ export function switchTimeRangeAndGetDateHistogram(start: Date, end: Date) {
       }
     default:
       return {
-        calendar_interval: 'hour',
+        interval: 'hour',
+        format: 'YYYY-MM-DD',
         extended_bounds: {
           min: dayjs(start).toDate(),
           max: dayjs(end).toDate(),
