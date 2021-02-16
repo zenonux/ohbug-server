@@ -8,15 +8,11 @@ services:
       - ../.env.production
     volumes:
       - /usr/src/app
-      - ./nginx/certs:/etc/ssl/certs
-      - ./nginx/conf.d:/etc/nginx/conf.d
     ports:
       - 6660:6660
       - 6666:6666
       - 80:80
       - 443:443
-    extra_hosts:
-      - 'host.docker.internal:172.17.0.1'
 
   postgres:
     image: postgres:12
@@ -24,22 +20,21 @@ services:
     hostname: postgres
     ports:
       - '5432:5432'
+    env_file:
+      - ../.env.production
     environment:
-      POSTGRES_DB: ohbug
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: ohbug_postgres_password
+      POSTGRES_DB: ${TYPEORM_DATABASE}
+      POSTGRES_USER: ${TYPEORM_USERNAME}
+      POSTGRES_PASSWORD: ${TYPEORM_PASSWORD}
       PG_DATA: /var/lib/postgresql/data
     volumes:
       - pgdata:/var/lib/postgresql/data
 
   redis:
-    image: redis:6.0.1
+    image: redis:alpine
     restart: always
     ports:
       - '6379:6379'
-    volumes:
-      - ./temp/redis/redis.conf:/etc/redis/redis.conf
-    command: redis-server /etc/redis/redis.conf
 
 volumes:
   pgdata:

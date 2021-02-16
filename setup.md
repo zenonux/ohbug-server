@@ -100,15 +100,7 @@ yarn start:prod
 
 1. 配置环境变量 `.env.production`
 2. 配置 `docker-compose.yml`，推荐使用 [docker-compose 模板](./docker/docker-compose.prod.yml)，默认包含部署所需要的所有服务，可自行修改。
-3. 创建文件 `docker_env.sh` 输入以下内容，并且执行 `source docker_env.sh` （这一步目的是为配置 docker 内 kafka，若自有 kafka 可自行选择是否忽略）
-
-```bash
-#!/bin/bash
-
-export DOCKER_HOST_IP=$(ip route get 1 | awk '{print $(NF-2);exit}')
-```
-
-4. 执行 `docker-compose -f docker-compose.yml up --build -d`
+3. 执行 `docker-compose -f docker-compose.yml up --build -d`
 
 ## 联系
 

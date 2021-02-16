@@ -1,10 +1,8 @@
-FROM hoosin/alpine-nginx-nodejs:latest
+FROM keymetrics/pm2:latest-alpine
 LABEL maintainer="chenyueban <jasonchan0527@gmail.com>"
 USER root
 
 WORKDIR /usr/src/ohbug
-
-RUN yarn global add pm2
 
 # ohbug-server
 COPY package.json /usr/src/ohbug/package.json
@@ -21,10 +19,9 @@ RUN yarn bootstrap
 RUN yarn build
 
 # ohbug-web-app
-COPY ./docker/nginx/conf.d /etc/nginx/conf.d
-ADD https://github.com/ohbug-org/ohbug-web-app/releases/latest/download/dist.tar.gz /usr/share/nginx/html
-RUN tar -zxf /usr/share/nginx/html/dist.tar.gz -C /usr/share/nginx/html && rm /usr/share/nginx/html/dist.tar.gz
+ADD https://github.com/ohbug-org/ohbug-web-app/releases/latest/download/dist.tar.gz /usr/src/ohbug/packages/dashboard/app
+RUN tar -zxf /usr/src/ohbug/packages/dashboard/app/dist.tar.gz -C /usr/src/ohbug/packages/dashboard/app && rm /usr/src/ohbug/packages/dashboard/app/dist.tar.gz
 
 EXPOSE 6660 6666 80 443
 
-ENTRYPOINT [ "sh", "/usr/src/ohbug/entrypoint.sh" ]
+CMD [ "yarn", "start:prod" ]
