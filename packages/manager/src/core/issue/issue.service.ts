@@ -294,11 +294,9 @@ export class IssueService {
       },
     }
     const trend = {
-      field: 'event.timestamp',
       min_doc_count: 0,
       ...switchTimeRangeAndGetDateHistogram(start, end),
     }
-
     return await this.getTrend(query, trend)
   }
 

@@ -4,7 +4,6 @@ import { ConfigService } from '@nestjs/config'
 import { Raw } from 'typeorm'
 
 import { ForbiddenException } from '@ohbug-server/common'
-import { eventIndices } from '@/core/event/event.core'
 import { EventService } from '@/core/event/event.service'
 import { IssueService } from '@/core/issue/issue.service'
 
@@ -27,10 +26,11 @@ export class ScheduleService {
       const interval = this.configService.get<string>(
         'business.expiredData.interval'
       )!
-      await this.eventService.deleteEvents(
-        interval,
-        eventIndices.map((item) => `${item.index}-*`)
-      )
+      await this.eventService.deleteEvents({
+        createdAt: Raw(
+          (alias) => `${alias} < CURRENT_TIMESTAMP - INTERVAL '${interval} day'`
+        ),
+      })
       await this.issueService.deleteIssue({
         updatedAt: Raw(
           (alias) => `${alias} < CURRENT_TIMESTAMP - INTERVAL '${interval} day'`

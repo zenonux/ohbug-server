@@ -1,5 +1,5 @@
 import { forwardRef, Inject, Injectable } from '@nestjs/common'
-import { Repository } from 'typeorm'
+import { FindConditions, Repository } from 'typeorm'
 import { InjectRepository } from '@nestjs/typeorm'
 import type { Queue } from 'bull'
 import { InjectQueue } from '@nestjs/bull'
@@ -86,31 +86,13 @@ export class EventService {
   }
 
   /**
-   * 删除 index
+   * 删除 event
    *
    * @param interval
-   * @param index
    */
-  async deleteEvents(interval: string, index: string | string[]) {
+  async deleteEvents(conditions: FindConditions<any>) {
     try {
-      console.log({
-        interval,
-        index,
-      })
-
-      // return await this.elasticsearchService.delete_by_query({
-      //   index,
-      //   body: {
-      //     query: {
-      //       range: {
-      //         '@timestamp': {
-      //           lt: `now-${interval}d`,
-      //           format: 'epoch_millis',
-      //         },
-      //       },
-      //     },
-      //   },
-      // })
+      return await this.eventRepository.delete(conditions)
     } catch (error) {
       throw new ForbiddenException(4001005, error)
     }
@@ -161,14 +143,32 @@ export class EventService {
       }
     }
   ) {
-    const result = await this.eventRepository
+    if (query.issueId) {
+      return await this.eventRepository
+        .createQueryBuilder('event')
+        .select(
+          `to_char(event.createdAt AT TIME ZONE 'Asia/Shanghai', '${trend.format}')`,
+          'timestamp'
+        )
+        .addSelect('COUNT(*)', 'count')
+        .where(`event.issueId = :issueId`, { issueId: query.issueId })
+        .andWhere(`event.createdAt >= :start AND event.createdAt <= :end`, {
+          start: query.range?.gte,
+          end: query.range?.lte,
+        })
+        .groupBy(
+          `to_char(event.createdAt AT TIME ZONE 'Asia/Shanghai', '${trend.format}')`
+        )
+        .orderBy(`"timestamp"`)
+        .execute()
+    }
+    return await this.eventRepository
       .createQueryBuilder('event')
       .select(
         `to_char(event.createdAt AT TIME ZONE 'Asia/Shanghai', '${trend.format}')`,
         'timestamp'
       )
       .addSelect('COUNT(*)', 'count')
-      .where(`event.issueId = :issueId`, { issueId: query.issueId })
       .andWhere(`event.createdAt >= :start AND event.createdAt <= :end`, {
         start: query.range?.gte,
         end: query.range?.lte,
@@ -178,6 +178,5 @@ export class EventService {
       )
       .orderBy(`"timestamp"`)
       .execute()
-    return result
   }
 }

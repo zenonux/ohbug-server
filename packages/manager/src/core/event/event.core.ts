@@ -207,7 +207,6 @@ export function getMd5FromAggregationData(...aggregationData: any[]): string {
 }
 
 export const eventIndices = [
-  // event
   {
     category: 'error',
     key: TOPIC_MANAGER_DATABASE_EVENT_ERROR,
