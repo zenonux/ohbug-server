@@ -21,13 +21,11 @@
 
 ## 关于开源
 
-推荐使用 [Ohbug 官方服务](https://ohbug.net)，省去部署烦恼。
-
 Ohbug 遵循 [Apache License 2.0](./LICENSE) 开源协议，可私有部署到自有服务器。
 
 ## 私有部署
 
-> [部署文档](./setup.md)
+> [部署文档](https://ohbug.net/docs/deploy/Deploy)
 
 ## License
 
