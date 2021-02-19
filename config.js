@@ -73,7 +73,7 @@ module.exports = {
      * Data expiration time
      */
     expiredData: {
-      interval: process.env.TIME_INTERVAL_FOR_CLEANING_UP_EXPIRED_DATA,
+      interval: process.env.TIME_INTERVAL_FOR_CLEANING_UP_EXPIRED_DATA || 30,
     },
     sourceMap: {
       /**
@@ -94,7 +94,7 @@ module.exports = {
          * 用户密码加盐
          * User password salt
          */
-        salt: process.env.USER_PASSWORD_SALT,
+        salt: process.env.USER_PASSWORD_SALT || 'ohbug_user_password_salt',
       },
     },
     oauth: {
@@ -114,9 +114,9 @@ module.exports = {
      * JWT required parameters
      */
     jwt: {
-      secret: process.env.JWT_SECRET,
+      secret: process.env.JWT_SECRET || 'ohbug_jwt_secret',
       signOptions: {
-        expiresIn: process.env.JWT_EXPIRES_IN,
+        expiresIn: process.env.JWT_EXPIRES_IN || 2592000000,
       },
     },
   },

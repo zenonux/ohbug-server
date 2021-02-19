@@ -15,7 +15,7 @@ export class NoticeService {
     private configService: ConfigService
   ) {}
 
-  async dispatchNotice({ setting, rule, issue, event }: DispatchNotice) {
+  dispatchNotice({ setting, rule, issue, event }: DispatchNotice) {
     const { title, text, link, lite, markdown, html } = getNotificationContent({
       setting,
       rule,
@@ -24,7 +24,7 @@ export class NoticeService {
     })
     for (const { email, open } of setting.emails) {
       if (open === true) {
-        await this.sendEmail({
+        this.sendEmail({
           email,
           title,
           text,
@@ -35,30 +35,29 @@ export class NoticeService {
 
     for (const webhook of setting.webhooks) {
       if (webhook.open === true) {
-        await dispatchWebhook(
-          { title, text, markdown },
-          webhook,
-          this.httpService
-        )
+        dispatchWebhook({ title, text, markdown }, webhook, this.httpService)
       }
     }
 
     if (setting.browser.open === true) {
       const keys = this.configService.get('service.webpush')
-      webpush.setVapidDetails(
-        'mailto:yueban@ohbug.net',
-        keys.publicKey,
-        keys.privateKey
-      )
-      const subscription = setting?.browser?.data
-      if (subscription) {
-        await sendBrowserNotification({
-          subscription,
-          title,
-          body: lite,
-          link,
-        })
+      if (keys.publicKey && keys.privateKey) {
+        webpush.setVapidDetails(
+          'mailto:yueban@ohbug.net',
+          keys.publicKey,
+          keys.privateKey
+        )
+        const subscription = setting?.browser?.data
+        if (subscription) {
+          sendBrowserNotification({
+            subscription,
+            title,
+            body: lite,
+            link,
+          })
+        }
       }
+      throw new Error('发送 webpush 失败：未正确设置 webpush 相关配置')
     }
   }
 
@@ -72,12 +71,15 @@ export class NoticeService {
    */
   async sendEmail({ email, title, text, html }: SendEmail) {
     const config = this.configService.get('service.email')
-    await sendEmail({
-      config,
-      to: email,
-      title,
-      text,
-      html,
-    })
+    if (config.host) {
+      await sendEmail({
+        config,
+        to: email,
+        title,
+        text,
+        html,
+      })
+    }
+    throw new Error('发送邮件失败：未正确设置邮件相关配置')
   }
 }

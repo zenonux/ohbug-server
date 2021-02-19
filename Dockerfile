@@ -6,6 +6,8 @@ RUN apk add --no-cache openssh
 
 WORKDIR /usr/src/ohbug
 
+RUN npm config set registry https://registry.npm.taobao.org
+
 # ohbug-server
 COPY package.json /usr/src/ohbug/package.json
 COPY yarn.lock /usr/src/ohbug/yarn.lock
@@ -20,9 +22,8 @@ COPY ./ /usr/src/ohbug
 RUN yarn bootstrap
 RUN yarn build
 
-RUN git clone https://github.com/ohbug-org/ohbug-web-app.git /usr/src/ohbug-web-app
-RUN cd /usr/src/ohbug-web-app && yarn && yarn build
-COPY /usr/src/ohbug-web-app/dist/ /usr/src/ohbug/packages/dashboard/app
+RUN git clone https://github.com/ohbug-org/ohbug-web-app.git /usr/src/ohbug/app
+RUN cd ./app && yarn && yarn build && mv ./dist /usr/src/ohbug/packages/dashboard/app
 
 EXPOSE 6660 6666 80 443
 
