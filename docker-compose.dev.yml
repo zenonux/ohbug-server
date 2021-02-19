@@ -1,19 +1,6 @@
 version: '3.7'
 
 services:
-  ohbug-ce:
-    image: ohbug/ohbug-ce:latest
-    restart: always
-    env_file:
-      - ../.env.production
-    volumes:
-      - /usr/src/app
-    ports:
-      - 6660:6660
-      - 6666:6666
-      - 80:80
-      - 443:443
-
   postgres:
     image: postgres:12
     restart: always
@@ -21,7 +8,7 @@ services:
     ports:
       - '5432:5432'
     env_file:
-      - ../.env.production
+      - ./.env.development
     environment:
       POSTGRES_DB: ${TYPEORM_DATABASE}
       POSTGRES_USER: ${TYPEORM_USERNAME}

@@ -1,6 +1,8 @@
 FROM keymetrics/pm2:latest-alpine
 LABEL maintainer="chenyueban <jasonchan0527@gmail.com>"
 USER root
+RUN apk add --no-cache git
+RUN apk add --no-cache openssh
 
 WORKDIR /usr/src/ohbug
 
@@ -18,9 +20,9 @@ COPY ./ /usr/src/ohbug
 RUN yarn bootstrap
 RUN yarn build
 
-# ohbug-web-app
-ADD https://github.com/ohbug-org/ohbug-web-app/releases/latest/download/dist.tar.gz /usr/src/ohbug/packages/dashboard/app
-RUN tar -zxf /usr/src/ohbug/packages/dashboard/app/dist.tar.gz -C /usr/src/ohbug/packages/dashboard/app && rm /usr/src/ohbug/packages/dashboard/app/dist.tar.gz
+RUN git clone https://github.com/ohbug-org/ohbug-web-app.git /usr/src/ohbug-web-app
+RUN cd /usr/src/ohbug-web-app && yarn && yarn build
+COPY /usr/src/ohbug-web-app/dist/ /usr/src/ohbug/packages/dashboard/app
 
 EXPOSE 6660 6666 80 443
 
