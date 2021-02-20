@@ -26,6 +26,6 @@ RUN yarn build
 RUN git clone https://github.com/ohbug-org/ohbug-web-app.git /usr/src/ohbug/app
 RUN cd ./app && yarn && yarn build && mv ./dist /usr/src/ohbug/packages/dashboard/app
 
-EXPOSE 6660 80 443
+EXPOSE 6660 80
 
-CMD [ "npm", "run", "start:prod" ]
+CMD [ "yarn", "start:prod" ]

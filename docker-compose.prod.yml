@@ -1,28 +1,12 @@
 version: '3.7'
 
 services:
-  ohbug-ce:
-    build: .
-    # image: ohbug/ohbug-ce:latest
-    restart: always
-    env_file:
-      - ./.env.production
-    volumes:
-      - /usr/src/app
-    ports:
-      - 6660:6660
-      - 6666:6666
-      - 80:80
-      - 443:443
-
   postgres:
     image: postgres:12
     restart: always
     hostname: postgres
     ports:
       - '5432:5432'
-    env_file:
-      - .env.production
     environment:
       POSTGRES_DB: ${TYPEORM_DATABASE}
       POSTGRES_USER: ${TYPEORM_USERNAME}
@@ -34,8 +18,22 @@ services:
   redis:
     image: redis:alpine
     restart: always
+    hostname: redis
     ports:
       - '6379:6379'
+
+  ohbug-ce:
+    build: .
+    # image: ohbug/ohbug-ce:latest
+    restart: always
+    volumes:
+      - /usr/src/ohbug
+    ports:
+      - 6660:6660
+      - 80:80
+    depends_on:
+      - postgres
+      - redis
 
 volumes:
   pgdata:

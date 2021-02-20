@@ -9,7 +9,7 @@ import { SharedModule } from './shared/shared.module'
   imports: [
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, '../..', 'app'),
-      exclude: ['/v1*'],
+      exclude: ['/api/v1*'],
     }),
     ApiModule,
     SharedModule,

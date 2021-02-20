@@ -4,15 +4,12 @@ services:
   postgres:
     image: postgres:12
     restart: always
-    hostname: postgres
     ports:
       - '5432:5432'
-    env_file:
-      - .env.development
     environment:
-      POSTGRES_DB: ${TYPEORM_DATABASE}
-      POSTGRES_USER: ${TYPEORM_USERNAME}
-      POSTGRES_PASSWORD: ${TYPEORM_PASSWORD}
+      POSTGRES_DB: ohbug
+        POSTGRES_USER: postgres
+        POSTGRES_PASSWORD: ohbug_postgres_password
       PG_DATA: /var/lib/postgresql/data
     volumes:
       - pgdata:/var/lib/postgresql/data
