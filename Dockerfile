@@ -1,4 +1,4 @@
-FROM keymetrics/pm2:latest-alpine
+FROM keymetrics/pm2:12-alpine
 LABEL maintainer="chenyueban <jasonchan0527@gmail.com>"
 USER root
 RUN apk add --no-cache git
@@ -22,9 +22,10 @@ COPY ./ /usr/src/ohbug
 RUN yarn bootstrap
 RUN yarn build
 
+# ohbug-web-app
 RUN git clone https://github.com/ohbug-org/ohbug-web-app.git /usr/src/ohbug/app
 RUN cd ./app && yarn && yarn build && mv ./dist /usr/src/ohbug/packages/dashboard/app
 
-EXPOSE 6660 6666 80 443
+EXPOSE 6660 80 443
 
-CMD [ "yarn", "start:prod" ]
+CMD [ "npm", "run", "start:prod" ]

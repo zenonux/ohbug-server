@@ -8,8 +8,8 @@ import { SharedModule } from './shared/shared.module'
 @Module({
   imports: [
     ServeStaticModule.forRoot({
-      rootPath: join(__dirname, '..', 'app'),
-      exclude: ['/api*'],
+      rootPath: join(__dirname, '../..', 'app'),
+      exclude: ['/v1*'],
     }),
     ApiModule,
     SharedModule,

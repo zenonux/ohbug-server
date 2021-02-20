@@ -8,7 +8,7 @@ services:
     ports:
       - '5432:5432'
     env_file:
-      - ./.env.development
+      - .env.development
     environment:
       POSTGRES_DB: ${TYPEORM_DATABASE}
       POSTGRES_USER: ${TYPEORM_USERNAME}
