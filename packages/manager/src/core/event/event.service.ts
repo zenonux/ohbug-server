@@ -115,12 +115,14 @@ export class EventService {
       const eventIndex = issue.events.findIndex(
         (e) => e.id === parseInt(event_id as string, 10)
       )
-      const previousEvent = issue.events[eventIndex - 1]
-      const nextEvent = issue.events[eventIndex + 1]
-      // @ts-ignore
-      if (previousEvent) event.previous = previousEvent
-      // @ts-ignore
-      if (nextEvent) event.next = nextEvent
+      if (event && eventIndex) {
+        const previousEvent = issue.events[eventIndex - 1]
+        const nextEvent = issue.events[eventIndex + 1]
+        // @ts-ignore
+        if (previousEvent) event.previous = previousEvent
+        // @ts-ignore
+        if (nextEvent) event.next = nextEvent
+      }
 
       return event
     } catch (error) {
