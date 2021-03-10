@@ -8,8 +8,8 @@ services:
       - '5432:5432'
     environment:
       POSTGRES_DB: ohbug
-        POSTGRES_USER: postgres
-        POSTGRES_PASSWORD: ohbug_postgres_password
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ohbug_postgres_password
       PG_DATA: /var/lib/postgresql/data
     volumes:
       - pgdata:/var/lib/postgresql/data

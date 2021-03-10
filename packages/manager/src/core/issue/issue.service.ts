@@ -269,7 +269,11 @@ export class IssueService {
       const issue = await this.issueRepository.findOne(issue_id, {
         relations: ['events'],
       })
-      return issue?.events[issue.events.length - 1]
+      const event = issue?.events[issue.events.length - 1]
+      const previousEvent = issue?.events[issue.events.length - 1 - 1]
+      // @ts-ignore
+      if (previousEvent) event.previous = previousEvent
+      return event
     } catch (error) {
       throw new ForbiddenException(400403, error)
     }
