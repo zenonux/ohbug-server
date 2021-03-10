@@ -35,6 +35,7 @@ export class ReportService {
 
     return Object.assign(eventLike, {
       user: {
+        ...(eventLike.user ?? {}),
         ip_address,
       },
     })
