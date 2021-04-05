@@ -1,0 +1,70 @@
+@import '@/styles/theme.less';
+
+@card-width: 160px;
+@card-height: 60px;
+@progress-width: 40px;
+
+.root {
+  :global {
+    .ant-card-body {
+      padding: 0;
+    }
+  }
+
+  display: inline-block;
+  width: @card-width;
+  min-width: @card-width;
+  height: @card-height;
+  &:not(:last-child) {
+    margin-right: @space;
+  }
+
+  .container {
+    width: @card-width;
+    min-width: @card-width;
+    height: @card-height;
+    overflow: hidden;
+
+    .content {
+      flex-direction: column;
+      justify-content: space-around;
+      .flex();
+
+      float: left;
+      height: 100%;
+      padding: 6px 20px;
+
+      .title {
+        margin: 0;
+        font-size: 16px;
+      }
+      .description {
+        font-size: 12px;
+      }
+    }
+    .progress {
+      position: relative;
+      float: right;
+      width: @progress-width;
+      height: 100%;
+      color: @black;
+      font-size: 14px;
+      background-color: @light-color;
+      .flex-center();
+      &.white {
+        color: @white;
+      }
+
+      .line {
+        position: absolute;
+        bottom: 0;
+        z-index: 1;
+        width: 100%;
+        background-color: @primary-color;
+      }
+      .number {
+        z-index: 2;
+      }
+    }
+  }
+}

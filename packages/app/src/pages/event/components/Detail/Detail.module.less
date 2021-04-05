@@ -1,0 +1,34 @@
+@import '@/styles/theme.less';
+
+.root {
+  .descriptions {
+    margin-bottom: @space;
+  }
+
+  .actions {
+    max-height: 400px;
+    overflow: auto;
+
+    :global {
+      .ant-timeline-item {
+        line-height: 1.8;
+      }
+    }
+
+    .action {
+      .flex-between();
+
+      .type {
+        width: 106px;
+        font-weight: bold;
+      }
+      .data {
+        flex: 1;
+      }
+      .time {
+        width: 80px;
+        color: @text-color-secondary;
+      }
+    }
+  }
+}

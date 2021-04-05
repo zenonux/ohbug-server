@@ -1,0 +1,42 @@
+@import '@/styles/theme.less';
+
+.root {
+  .title {
+    position: relative;
+    text-align: center;
+  }
+  .container {
+    flex-direction: column;
+    justify-content: center;
+    width: 100%;
+    height: 320px;
+    .flex-between();
+
+    .content,
+    .footer {
+      width: 100%;
+    }
+    .footer {
+      .flex-between();
+    }
+    .projectGroup {
+      display: block;
+      .projectItem {
+        &:hover {
+          background-color: fade(@primary-color, 20%);
+          cursor: pointer;
+        }
+      }
+    }
+    .projectItem {
+      height: 40px;
+      padding: 0 @space;
+      transition: @transition;
+      .flex-between();
+
+      .title {
+        font-size: 16px;
+      }
+    }
+  }
+}

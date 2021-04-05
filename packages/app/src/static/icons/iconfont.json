@@ -1,0 +1,79 @@
+{
+  "id": "1765412",
+  "name": "ohbug",
+  "font_family": "ohbug",
+  "css_prefix_text": "ohbug",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "14859563",
+      "name": "github-fill",
+      "font_class": "github-fill",
+      "unicode": "e605",
+      "unicode_decimal": 58885
+    },
+    {
+      "icon_id": "14859564",
+      "name": "wechat-fill",
+      "font_class": "wechat-fill",
+      "unicode": "e606",
+      "unicode_decimal": 58886
+    },
+    {
+      "icon_id": "14859565",
+      "name": "chrome-line",
+      "font_class": "chrome-line2",
+      "unicode": "e607",
+      "unicode_decimal": 58887
+    },
+    {
+      "icon_id": "14859585",
+      "name": "arrow-left-line",
+      "font_class": "arrow-left-line",
+      "unicode": "e60c",
+      "unicode_decimal": 58892
+    },
+    {
+      "icon_id": "14859586",
+      "name": "arrow-drop-right-line",
+      "font_class": "arrow-drop-right-line",
+      "unicode": "e60d",
+      "unicode_decimal": 58893
+    },
+    {
+      "icon_id": "14859587",
+      "name": "notification-4-line",
+      "font_class": "notification-4-line",
+      "unicode": "e60e",
+      "unicode_decimal": 58894
+    },
+    {
+      "icon_id": "14859588",
+      "name": "global-line",
+      "font_class": "global-line",
+      "unicode": "e60f",
+      "unicode_decimal": 58895
+    },
+    {
+      "icon_id": "14859589",
+      "name": "time-line",
+      "font_class": "time-line",
+      "unicode": "e610",
+      "unicode_decimal": 58896
+    },
+    {
+      "icon_id": "14859590",
+      "name": "message-2-line",
+      "font_class": "message-2-line",
+      "unicode": "e611",
+      "unicode_decimal": 58897
+    },
+    {
+      "icon_id": "14859591",
+      "name": "标题",
+      "font_class": "biaoti",
+      "unicode": "e612",
+      "unicode_decimal": 58898
+    }
+  ]
+}

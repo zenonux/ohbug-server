@@ -1,0 +1,36 @@
+@import '@/styles/theme.less';
+
+.root {
+  :global {
+    .ant-card-body {
+      padding: 0;
+    }
+  }
+
+  padding: @space-2;
+  overflow: visible;
+  background-color: @white;
+  border-radius: @radius-2;
+  cursor: default;
+  .hoverAnimation();
+
+  &::before {
+    position: absolute;
+    top: 30%;
+    left: 0;
+    width: 4px;
+    height: 40%;
+    margin-left: -2px;
+    background-color: @primary-color;
+    border-radius: 4px;
+    transition: @transition;
+    content: '';
+  }
+
+  &:hover {
+    &::before {
+      top: 20%;
+      height: 60%;
+    }
+  }
+}

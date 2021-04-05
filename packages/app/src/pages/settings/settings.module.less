@@ -1,0 +1,28 @@
+@import '@/styles/theme.less';
+
+.header {
+  padding-top: @space-2;
+  padding-left: @space-2;
+}
+
+.root {
+  :global {
+    .ant-card-body {
+      justify-content: space-between;
+      padding: @space-2 0 0;
+      .flex();
+    }
+  }
+
+  .leftMenu {
+    width: 220px;
+  }
+
+  .container {
+    flex: 1;
+    padding: 0 @space-3;
+    & > section {
+      max-width: 960px;
+    }
+  }
+}

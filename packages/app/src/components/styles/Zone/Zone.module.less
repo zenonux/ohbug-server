@@ -1,0 +1,26 @@
+@import '@/styles/theme.less';
+
+.root {
+  margin-bottom: @space-2;
+
+  .title {
+    padding-bottom: @space;
+    font-weight: 400;
+    font-size: 24px;
+    border-bottom: 1px solid @light-color;
+    .flex-between();
+    &.danger {
+      margin: 0;
+      color: @error-color;
+      font-weight: 600;
+      border-bottom: none;
+    }
+  }
+
+  .container {
+    border-radius: @radius;
+    &.danger {
+      border: 1px solid @error-color;
+    }
+  }
+}

@@ -1,0 +1,20 @@
+.tooltip {
+  &-time {
+    padding-bottom: 3px;
+  }
+  &-value {
+    position: relative;
+    padding-top: 3px;
+    &::before {
+      position: absolute;
+      top: 0;
+      left: 50%;
+      display: block;
+      width: 20px;
+      height: 2px;
+      margin-left: -10px;
+      background: #666;
+      content: '';
+    }
+  }
+}

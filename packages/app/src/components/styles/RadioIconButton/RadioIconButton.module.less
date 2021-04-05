@@ -1,0 +1,33 @@
+@import '@/styles/theme.less';
+
+.root {
+  :global {
+    .ant-radio-button-wrapper-checked:not(.ant-radio-button-wrapper-disabled) {
+      color: @info-color;
+      &:focus-within {
+        box-shadow: none;
+      }
+    }
+  }
+  :global(.ant-radio-button-wrapper) {
+    height: auto;
+    border: none;
+    outline: none;
+    &::before {
+      content: none;
+    }
+    &:hover {
+      color: fade(@info-color, 65%);
+      .button {
+        color: fade(@info-color, 65%);
+      }
+    }
+  }
+  .button {
+    flex-direction: column;
+    .flex-center();
+  }
+  .buttonLabel {
+    color: @text-color;
+  }
+}

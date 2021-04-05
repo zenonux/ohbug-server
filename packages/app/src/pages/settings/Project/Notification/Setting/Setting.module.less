@@ -1,0 +1,28 @@
+@import '@/styles/theme.less';
+
+.root {
+  .emailLine {
+    .flex();
+    .emailSwitch {
+      padding: 0 16px;
+    }
+  }
+  .browserLine {
+    .flex();
+    .browserSwitch {
+      margin: 0;
+      padding: 0 16px;
+    }
+  }
+  .editButton {
+    color: @info-color;
+  }
+  .deleteButton {
+    color: @error-color;
+  }
+  .addWebhook {
+    & > span {
+      font-size: 26px !important;
+    }
+  }
+}

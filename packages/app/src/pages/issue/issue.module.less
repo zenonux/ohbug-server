@@ -1,0 +1,53 @@
+@import '@/styles/theme.less';
+
+.root {
+  .list {
+    :global {
+      .ant-list-item {
+        margin-bottom: @space / 2;
+        padding: @space;
+        background-color: @white;
+        border-radius: @radius;
+        box-shadow: @box-shadow;
+        .hoverAnimation();
+      }
+      .ant-list-header {
+        padding-top: 0;
+        border: none !important;
+      }
+      .ant-list-item-meta {
+        padding-right: @space;
+        overflow: hidden;
+      }
+      .ant-list-item-meta-content {
+        overflow: hidden;
+      }
+    }
+
+    .message {
+      margin-bottom: @space;
+    }
+    .header {
+      padding: 0 @space;
+      font-weight: bold;
+      .flex-between();
+      .title {
+        flex: 1;
+      }
+    }
+    .title {
+      line-height: 1.2;
+      .type {
+        margin-right: @space;
+        font-size: 16px;
+      }
+    }
+    .desc {
+      margin-bottom: 0;
+    }
+
+    .content {
+      min-width: 600px;
+    }
+  }
+}

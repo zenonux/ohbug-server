@@ -1,0 +1,26 @@
+@import '@/styles/theme.less';
+
+.root {
+  .avatar {
+    text-align: center;
+  }
+  .list {
+    :global {
+      .ant-list-item {
+        display: flex;
+      }
+    }
+
+    max-width: 480px;
+    margin: @space auto 0;
+
+    .item {
+      .label {
+        width: 100px;
+      }
+      .value {
+        flex: 1;
+      }
+    }
+  }
+}
