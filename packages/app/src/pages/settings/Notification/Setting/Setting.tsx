@@ -1,7 +1,7 @@
 import React from 'react'
 import { Form, Switch, Input, Space, Button, Table, Modal } from 'antd'
 
-import { useModel } from '@/ability'
+import { RouteComponentProps, useModel } from '@/ability'
 import type { NotificationSetting, NotificationSettingWebHook } from '@/models'
 import { Zone, IconButton } from '@/components'
 import { useUpdateEffect, useBoolean } from '@/hooks'
@@ -11,7 +11,7 @@ import EditWebhook from './EditWebhook'
 
 import styles from './Setting.module.less'
 
-const Setting: React.FC = () => {
+const Setting: React.FC<RouteComponentProps> = () => {
   const notificationModel = useModel('notification')
   const appModel = useModel('app')
   const loadingModel = useModel('loading')

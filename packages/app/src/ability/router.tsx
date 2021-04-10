@@ -33,10 +33,7 @@ const Container: React.FC = ({ children }) => {
     setRoute(matchRoute(routes, location))
   }, [location.key])
 
-  let Wrapper = React.Fragment
-  if (route?.wrapper) {
-    Wrapper = React.lazy(() => import(/* @vite-ignore */ route.wrapper!))
-  }
+  const Wrapper = route?.wrapper ? route.wrapper : React.Fragment
 
   return (
     <React.Suspense fallback={<Loading />}>
@@ -65,9 +62,7 @@ function renderRoutes(routes: Route[]) {
   return routes
     .map((route) => {
       if (route.component) {
-        const Component = React.lazy(
-          () => import(/* @vite-ignore */ route.component!)
-        )
+        const Component = route.component
 
         if (!route.routes) {
           if (route.redirect) {

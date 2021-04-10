@@ -2,7 +2,7 @@ import React from 'react'
 import { Table, Tag, Switch, Button, Modal } from 'antd'
 import dayjs from 'dayjs'
 
-import { useModel } from '@/ability'
+import { RouteComponentProps, useModel } from '@/ability'
 import type { NotificationRule } from '@/models'
 import { Zone } from '@/components'
 import { useBoolean } from '@/hooks'
@@ -12,7 +12,7 @@ import { levelList } from './Rules.core'
 
 import styles from './Rules.module.less'
 
-const Rules: React.FC = () => {
+const Rules: React.FC<RouteComponentProps> = () => {
   const notificationModel = useModel('notification')
   const loadingModel = useModel('loading')
   const [

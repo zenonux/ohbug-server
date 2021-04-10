@@ -1,9 +1,9 @@
 import React from 'react'
 import { Result, Button } from 'antd'
 
-import { Link } from '@/ability'
+import { RouteComponentProps, Link } from '@/ability'
 
-const NotAuthorized: React.FC = () => (
+const NotAuthorized: React.FC<RouteComponentProps> = () => (
   <Result
     status="403"
     title="403"

@@ -1,4 +1,5 @@
 import { HttpService } from '@nestjs/common'
+import type { AxiosResponse } from 'axios'
 import type { NotificationSettingWebHook } from '@ohbug-server/common'
 
 interface Content {
@@ -44,11 +45,12 @@ function switchWebhookTypeAndGetFormatResult(
       return text
   }
 }
+
 export async function main(
   { title, text, markdown }: Content,
   webhook: NotificationSettingWebHook,
   httpService: HttpService
-) {
+): Promise<AxiosResponse<any>> {
   const result = switchWebhookTypeAndGetFormatResult(
     { title, text, markdown },
     webhook

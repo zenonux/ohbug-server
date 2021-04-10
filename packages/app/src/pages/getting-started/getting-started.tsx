@@ -3,13 +3,13 @@ import { Typography, Button } from 'antd'
 import SyntaxHighlighter from 'react-syntax-highlighter'
 import { githubGist as highlighterStyles } from 'react-syntax-highlighter/dist/esm/styles/hljs'
 
-import { useModel } from '@/ability'
+import { RouteComponentProps, useModel } from '@/ability'
 import { useMount } from '@/hooks'
 import { Icon } from '@/components'
 
 import styles from './getting-started.module.less'
 
-const GettingStarted: React.FC = () => {
+const GettingStarted: React.FC<RouteComponentProps> = () => {
   const projectModel = useModel('project')
   const loadingModel = useModel('loading')
   const project = projectModel.state.current

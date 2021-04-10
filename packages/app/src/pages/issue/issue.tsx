@@ -2,18 +2,14 @@ import React from 'react'
 import { Card, Space, List, Skeleton, Radio, Typography, Row, Col } from 'antd'
 import dayjs from 'dayjs'
 
-import { useModel, Link } from '@/ability'
+import { RouteComponentProps, useModel, Link } from '@/ability'
 import { Layout, MiniChart, LineChart } from '@/components'
 
 import TimePicker from './components/TimePicker'
 
 import styles from './issue.module.less'
 
-interface IssueDashPageProps {
-  children?: React.ReactNode
-}
-
-const Issue: React.FC<IssueDashPageProps> = ({ children }) => {
+const Issue: React.FC<RouteComponentProps> = ({ children }) => {
   const issueModel = useModel('issue')
   const projectModel = useModel('project')
   const loadingModel = useModel('loading')

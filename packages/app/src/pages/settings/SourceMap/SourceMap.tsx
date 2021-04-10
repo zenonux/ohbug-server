@@ -2,14 +2,14 @@ import React from 'react'
 import { Button, Modal, Table } from 'antd'
 import dayjs from 'dayjs'
 
-import { useModel } from '@/ability'
+import { RouteComponentProps, useModel } from '@/ability'
 import type { SourceMap } from '@/models'
 import { Zone } from '@/components'
 import { useMount } from '@/hooks'
 
 import styles from './SourceMap.module.less'
 
-const SourceMapCompnent: React.FC = () => {
+const SourceMapCompnent: React.FC<RouteComponentProps> = () => {
   const sourceMapModel = useModel('sourceMap')
   const projectModel = useModel('project')
   const loadingModel = useModel('loading')

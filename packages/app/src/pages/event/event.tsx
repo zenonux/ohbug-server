@@ -2,7 +2,7 @@ import React from 'react'
 import { Row, Col, Tabs, Radio } from 'antd'
 import ReactJson from 'react-json-view'
 
-import { useModel, navigate, useParams } from '@/ability'
+import { RouteComponentProps, useModel, navigate, useParams } from '@/ability'
 import { Layout } from '@/components'
 import type { EventState, IssueState } from '@/models'
 
@@ -95,7 +95,7 @@ const EventTab: React.FC<EventTabProps> = ({ event, issue }) => {
   )
 }
 
-const Event: React.FC = () => {
+const Event: React.FC<RouteComponentProps> = () => {
   const eventModel = useModel('event')
   const issueModel = useModel('issue')
   const { issue_id, event_id } = useParams()

@@ -1,10 +1,10 @@
 import React from 'react'
 
 import { Loading } from '@/components'
-import { useModel, navigate } from '@/ability'
+import { RouteComponentProps, useModel, navigate } from '@/ability'
 import { useMount } from '@/hooks'
 
-const Auth: React.FC = ({ children }) => {
+const Auth: React.FC<RouteComponentProps> = ({ children }) => {
   const projectModel = useModel('project')
   const loadingModel = useModel('loading')
   const loading = loadingModel.state.effects.project.get

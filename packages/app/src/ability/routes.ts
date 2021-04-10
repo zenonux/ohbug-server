@@ -1,8 +1,10 @@
+import React from 'react'
+import type { RouteComponentProps } from '@/ability'
 export interface Route {
   path: string
-  wrapper?: string
+  wrapper?: React.FC<RouteComponentProps>
   redirect?: string
-  component?: string
+  component?: React.FC<RouteComponentProps>
   menu?: {
     name: string
     icon: string
@@ -15,45 +17,31 @@ export interface Route {
   default?: boolean
 }
 
-function parsePath(path: string) {
-  if (typeof path !== 'string') {
-    throw new Error(`Should input a path string, got ${path}`)
-  }
-  if (path[0] === '@' && path[1] === '/') {
-    return path.replace('@/', '../') + '/index.ts'
-  }
-  return path + '/index.ts'
-}
-function createRoutes(routes: Route[]): Route[] {
-  return routes.map((route) => {
-    const _route = { ...route }
-    if (_route.wrapper) {
-      _route.wrapper = parsePath(_route.wrapper)
-    }
-    if (_route.component) {
-      _route.component = parsePath(_route.component)
-    }
-    if (_route.routes) {
-      _route.routes = createRoutes(_route.routes)
-    }
-    return _route
-  })
-}
+import Auth from '@/components/renders/Auth'
+import GettingStarted from '@/pages/getting-started'
+import Issue from '@/pages/issue'
+import Event from '@/pages/event'
+import Settings from '@/pages/settings'
+import NotificationRules from '@/pages/settings/Notification/Rules'
+import NotificationSetting from '@/pages/settings/Notification/Setting'
+import SourceMap from '@/pages/settings/SourceMap'
+import NotFound from '@/pages/not-found'
+import NotAuthorized from '@/pages/not-authorized'
 
 const routes: Route[] = [
   {
     path: '/',
-    wrapper: '@/components/renders/Auth',
+    wrapper: Auth,
     redirect: '/issue',
   },
   {
     path: '/getting-started',
-    component: '@/pages/getting-started',
+    component: GettingStarted,
   },
   {
     path: '/issue',
-    component: '@/pages/issue',
-    wrapper: '@/components/renders/Auth',
+    component: Issue,
+    wrapper: Auth,
     // layout
     menu: {
       name: '问题',
@@ -62,20 +50,20 @@ const routes: Route[] = [
     routes: [
       {
         path: '/issue/:issue_id/event/:event_id',
-        component: '@/pages/event',
-        wrapper: '@/components/renders/Auth',
+        component: Event,
+        wrapper: Auth,
       },
     ],
   },
   {
     path: '/event/:target',
-    component: '@/pages/event',
-    wrapper: '@/components/renders/Auth',
+    component: Event,
+    wrapper: Auth,
   },
   {
     path: '/settings',
-    component: '@/pages/settings',
-    wrapper: '@/components/renders/Auth',
+    component: Settings,
+    wrapper: Auth,
     redirect: '/settings/notification_rules',
     // layout
     menu: {
@@ -85,22 +73,22 @@ const routes: Route[] = [
     routes: [
       {
         path: 'notification_rules',
-        component: '@/pages/settings/Notification/Rules',
+        component: NotificationRules,
       },
       {
         path: 'notification_setting',
-        component: '@/pages/settings/Notification/Setting',
+        component: NotificationSetting,
       },
       {
         path: 'sourcemap',
-        component: '@/pages/settings/SourceMap',
+        component: SourceMap,
       },
     ],
   },
   {
     default: true,
     path: '/404',
-    component: '@/pages/not-found',
+    component: NotFound,
     layout: {
       hideNav: true,
       hideFooter: true,
@@ -108,7 +96,7 @@ const routes: Route[] = [
   },
   {
     path: '/403',
-    component: '@/pages/not-authorized',
+    component: NotAuthorized,
     layout: {
       hideNav: true,
       hideFooter: true,
@@ -116,4 +104,4 @@ const routes: Route[] = [
   },
 ]
 
-export default createRoutes(routes)
+export default routes
