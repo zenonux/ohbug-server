@@ -92,6 +92,7 @@ const LineChart: React.FC<LineChartProps> = ({ data, loading, title }) => {
             fontWeight: 'bolder',
             fontSize: 12,
             lineHeight: 1,
+            color: '#fafafa',
           },
           extraCssText: 'text-align: center;',
         },

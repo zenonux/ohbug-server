@@ -1,8 +1,9 @@
 import React from 'react'
-import { DatePicker } from 'antd'
 import dayjs from 'dayjs'
 
-import { useModel, useQuery } from '@/ability'
+import { useModel } from '@/ability'
+import { DatePicker } from '@/components'
+import { useMount } from '@/hooks'
 
 const today = [dayjs().subtract(23, 'hour'), dayjs()]
 const twoWeeks = [dayjs().subtract(13, 'day'), dayjs()]
@@ -14,16 +15,14 @@ const ranges = {
 
 const TimePicker: React.FC = () => {
   const issueModel = useModel('issue')
-  const query = useQuery()
 
-  React.useEffect(() => {
+  useMount(() => {
     issueModel.dispatch.searchIssues({
       page: 0,
       start: (defaultValue[0].toISOString() as unknown) as Date,
       end: (defaultValue[1].toISOString() as unknown) as Date,
-      project_id: query.get('project_id')!,
     })
-  }, [issueModel.dispatch, query])
+  })
 
   const handleTimeChange = React.useCallback(
     (dates: any) => {
@@ -32,10 +31,9 @@ const TimePicker: React.FC = () => {
         page: 0,
         start: (start.toISOString() as unknown) as Date,
         end: (end.toISOString() as unknown) as Date,
-        project_id: query.get('project_id')!,
       })
     },
-    [issueModel.dispatch, query]
+    [issueModel.dispatch]
   )
 
   return (

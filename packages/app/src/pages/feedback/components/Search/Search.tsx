@@ -1,6 +1,7 @@
 import React from 'react'
 import dayjs from 'dayjs'
-import { DatePicker } from 'antd'
+
+import { DatePicker } from '@/components'
 import { useModel } from '@/ability'
 
 import styles from './Search.module.less'

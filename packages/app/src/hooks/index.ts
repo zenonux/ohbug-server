@@ -1,4 +1,3 @@
-export * from './business'
-export * from './common'
+export * from './useRect'
 
 export * from 'ahooks'

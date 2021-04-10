@@ -57,25 +57,10 @@ export class NotificationRuleDto {
   readonly open?: boolean
 }
 
-export class CreateNotificationRuleDto extends NotificationRuleDto {
-  @IsNumberString({}, { message: '通知项目 id 格式错误' })
-  readonly project_id: number | string
-}
-
-export class GetNotificationRulesDto {
-  @IsNumberString()
-  readonly project_id: number | string
-}
-
 export class NotificationSettingDto {
   readonly emails: NotificationSettingEmails
   readonly browser: NotificationSettingBrowser
   readonly webhooks: NotificationSettingWebHooks
-}
-
-export class BaseNotificationSettingDto {
-  @IsNumberString()
-  readonly project_id: number | string
 }
 
 export class UpdateNotificationSettingDto {

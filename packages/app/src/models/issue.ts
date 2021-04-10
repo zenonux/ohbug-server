@@ -1,8 +1,7 @@
 import { createModel } from '@rematch/core'
 
 import type { RootModel } from '@/models'
-import api from '@/api'
-import { number } from 'echarts'
+import * as api from '@/api'
 
 interface MetaData {
   type: string
@@ -94,30 +93,22 @@ export const issue = createModel<RootModel>()({
       }
     },
 
-    async searchIssues(
-      {
-        page = 0,
-        start,
-        end,
-        project_id,
-      }: {
-        page: number
-        project_id: number | string
-        start?: Date
-        end?: Date
-      },
-      state
-    ) {
-      const project = state.project.current
-      if (project_id) {
+    async searchIssues({
+      page = 0,
+      start,
+      end,
+    }: {
+      page: number
+      start?: Date
+      end?: Date
+    }) {
+      if (start && end) {
         await dispatch.project.trend({
           start,
           end,
         })
 
         const res = await api.issue.getMany.call({
-          project_id:
-            project_id === 'current' ? project!.id : (project_id as number),
           page,
           start,
           end,

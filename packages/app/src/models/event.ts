@@ -3,7 +3,7 @@ import type { OhbugEvent } from '@ohbug/types'
 import type { Result } from 'source-map-trace/dist/interfaces'
 
 import type { RootModel } from '@/models'
-import api from '@/api'
+import * as api from '@/api'
 
 interface Document {
   id: string

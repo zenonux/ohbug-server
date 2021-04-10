@@ -1,7 +1,7 @@
 import { createModel } from '@rematch/core'
 
 import type { RootModel } from '@/models'
-import api from '@/api'
+import * as api from '@/api'
 
 export interface ViewState {
   PV?: number
@@ -9,7 +9,6 @@ export interface ViewState {
 }
 
 export interface GetPV {
-  project_id: number
   start?: number | string
   end?: number | string
 }
@@ -32,37 +31,25 @@ export const view = createModel<RootModel>()({
     },
   },
   effects: (dispatch) => ({
-    async getPV({ start, end }, state) {
-      const project = state.project
-      if (project.current) {
-        const project_id = project.current.id
+    async getPV({ start, end }) {
+      const data = await api.view.getPV.call({
+        start,
+        end,
+      })
 
-        const data = await api.view.getPV.call({
-          project_id,
-          start,
-          end,
-        })
-
-        if (typeof data !== 'undefined') {
-          dispatch.view.setPV(data)
-        }
+      if (typeof data !== 'undefined') {
+        dispatch.view.setPV(data)
       }
     },
 
-    async getUV({ start, end }, state) {
-      const project = state.project
-      if (project.current) {
-        const project_id = project.current.id
+    async getUV({ start, end }) {
+      const data = await api.view.getUV.call({
+        start,
+        end,
+      })
 
-        const data = await api.view.getUV.call({
-          project_id,
-          start,
-          end,
-        })
-
-        if (typeof data !== 'undefined') {
-          dispatch.view.setUV(data)
-        }
+      if (typeof data !== 'undefined') {
+        dispatch.view.setUV(data)
       }
     },
   }),

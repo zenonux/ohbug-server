@@ -1,13 +1,11 @@
 import {
   Controller,
   Get,
-  UseGuards,
   UseInterceptors,
   ClassSerializerInterceptor,
   Query,
   Param,
 } from '@nestjs/common'
-import { AuthGuard } from '@nestjs/passport'
 
 import type { OhbugEventLike } from '@ohbug-server/common'
 
@@ -26,7 +24,6 @@ export class EventController {
    * @param event_index
    */
   @Get('/:event_id')
-  @UseGuards(AuthGuard('jwt'))
   @UseInterceptors(ClassSerializerInterceptor)
   async get(
     @Param()

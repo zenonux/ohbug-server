@@ -10,7 +10,6 @@ export interface SearchCondition {
   end?: Date
 }
 export interface SearchParams {
-  project_id: number | string
   searchCondition: SearchCondition
   limit?: number
   skip?: number

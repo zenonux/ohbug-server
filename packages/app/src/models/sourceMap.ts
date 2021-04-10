@@ -1,7 +1,7 @@
 import { createModel } from '@rematch/core'
 
 import type { RootModel, Project } from '@/models'
-import api from '@/api'
+import * as api from '@/api'
 
 export interface SourceMap {
   id?: number

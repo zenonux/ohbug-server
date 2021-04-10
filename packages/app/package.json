@@ -15,7 +15,7 @@
   "license": "Apache-2.0",
   "scripts": {
     "start": "vite",
-    "build": "tsc && vite build",
+    "build": "vite build",
     "serve": "vite preview",
     "prettier": "prettier --write '**/*.{js,jsx,tsx,ts,less,md,json}'"
   },
@@ -33,8 +33,8 @@
     "dayjs": "^1.10.4",
     "echarts": "^5.0.2",
     "echarts-for-react": "^3.0.1",
-    "generate-avatar": "^1.4.6",
     "path-to-regexp": "^6.2.0",
+    "rc-picker": "^2.5.10",
     "react": "^17.0.0",
     "react-dom": "^17.0.0",
     "react-json-view": "^1.21.3",
@@ -43,6 +43,7 @@
     "redux": "^4.0.5",
     "redux-persist": "^6.0.0",
     "resize-observer-polyfill": "^1.5.1",
+    "source-map-trace": "^0.1.3",
     "swr": "^0.5.4",
     "ua-device": "^0.1.10"
   },

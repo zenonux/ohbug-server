@@ -103,9 +103,8 @@ export class IssueService {
   }
 
   /**
-   * 根据 project_id 取到对应 issues
+   * 搜索 issues
    *
-   * @param project_id
    * @param searchCondition
    * @param limit
    * @param skip

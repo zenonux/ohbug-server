@@ -1,16 +1,30 @@
 import React from 'react'
 
-import { useAuth } from '@/hooks'
 import { Loading } from '@/components'
+import { useModel, navigate } from '@/ability'
+import { useMount } from '@/hooks'
 
-// @ts-ignore
 const Auth: React.FC = ({ children }) => {
-  const { isLogin } = useAuth()
+  const projectModel = useModel('project')
+  const loadingModel = useModel('loading')
+  const loading = loadingModel.state.effects.project.get
 
-  if (isLogin) {
-    return children
+  useMount(() => {
+    projectModel.dispatch.get()
+  })
+
+  if (loading) {
+    return React.createElement(Loading)
   }
-  return React.createElement(Loading)
+
+  if (projectModel.state.current) {
+    if (React.isValidElement(children)) {
+      return children
+    }
+  }
+
+  navigate('/403')
+  return null
 }
 
 export default Auth

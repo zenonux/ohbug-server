@@ -83,41 +83,4 @@ module.exports = {
       max: 10,
     },
   },
-  /**
-   * 安全相关配置
-   * Security related configuration
-   */
-  security: {
-    user: {
-      password: {
-        /**
-         * 用户密码加盐
-         * User password salt
-         */
-        salt: process.env.USER_PASSWORD_SALT || 'ohbug_user_password_salt',
-      },
-    },
-    oauth: {
-      /**
-       * github oauth2 登录所需要的参数
-       * Parameters required for github oauth2 login
-       * https://developer.github.com/apps/building-oauth-apps/authorizing-oauth-apps/
-       */
-      github: {
-        client_id: process.env.OAUTH_GITHUB_CLIENT_ID,
-        client_secret: process.env.OAUTH_GITHUB_CLIENT_SECRET,
-        callback_url: process.env.OAUTH_GITHUB_CALLBACK_URL,
-      },
-    },
-    /**
-     * JWT 所需要的参数
-     * JWT required parameters
-     */
-    jwt: {
-      secret: process.env.JWT_SECRET || 'ohbug_jwt_secret',
-      signOptions: {
-        expiresIn: process.env.JWT_EXPIRES_IN || 2592000000,
-      },
-    },
-  },
 }

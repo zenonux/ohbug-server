@@ -1,7 +1,7 @@
 import { createApi } from '@/ability'
 import type { GetPV, GetUV } from '@/models'
 
-const view = {
+export const view = {
   getPV: createApi<GetPV, number>({
     url: '/view/pv',
     method: 'get',
@@ -11,5 +11,3 @@ const view = {
     method: 'get',
   }),
 }
-
-export default view

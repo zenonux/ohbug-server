@@ -1,6 +1,6 @@
 import { createModel } from '@rematch/core'
 import type { RootModel, Event } from '@/models'
-import api from '@/api'
+import * as api from '@/api'
 
 export interface FeedbackState {
   data?: Event<any>[]
@@ -25,40 +25,31 @@ export const feedback = createModel<RootModel>()({
     },
   },
   effects: (dispatch) => ({
-    async searchFeedbacks(
-      {
-        page = 0,
+    async searchFeedbacks({
+      page = 0,
+      issue_id,
+      type,
+      user,
+      start,
+      end,
+    }: {
+      page: number
+      issue_id?: number
+      type?: string
+      user?: string
+      start?: number | string
+      end?: number | string
+    }) {
+      const data = await api.feedback.getMany.call({
+        page,
         issue_id,
         type,
         user,
         start,
         end,
-      }: {
-        page: number
-        issue_id?: number
-        type?: string
-        user?: string
-        start?: number | string
-        end?: number | string
-      },
-      state
-    ) {
-      const project = state.project
-      if (project.current) {
-        const project_id = project.current.id
-
-        const data = await api.feedback.getMany.call({
-          project_id,
-          page,
-          issue_id,
-          type,
-          user,
-          start,
-          end,
-        })
-        if (data) {
-          dispatch.feedback.setFeedbacks(data)
-        }
+      })
+      if (data) {
+        dispatch.feedback.setFeedbacks(data)
       }
     },
   }),

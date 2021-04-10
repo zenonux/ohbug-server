@@ -11,9 +11,6 @@ import type { Period } from './issue.interface'
 
 export class GetIssueDto {
   @IsNumberString()
-  readonly project_id: number | string
-
-  @IsNumberString()
   readonly page: string
 
   @IsOptional()

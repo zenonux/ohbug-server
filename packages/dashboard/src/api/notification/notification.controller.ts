@@ -6,20 +6,14 @@ import {
   Delete,
   Body,
   Param,
-  Query,
-  UseGuards,
   UseInterceptors,
   ClassSerializerInterceptor,
 } from '@nestjs/common'
-import { AuthGuard } from '@nestjs/passport'
 
 import { NotificationService } from './notification.service'
 import {
   BaseNotificationRuleDto,
   NotificationRuleDto,
-  CreateNotificationRuleDto,
-  GetNotificationRulesDto,
-  BaseNotificationSettingDto,
   UpdateNotificationSettingDto,
   NotificationSettingWebhookDto,
   BaseNotificationSettingWebhookDto,
@@ -34,7 +28,6 @@ export class NotificationController {
   /**
    * 创建 notification rule
    *
-   * @param project_id
    * @param name
    * @param data
    * @param whiteList
@@ -44,12 +37,10 @@ export class NotificationController {
    * @param open
    */
   @Post('rules')
-  @UseGuards(AuthGuard('jwt'))
   @UseInterceptors(ClassSerializerInterceptor)
   async createNotificationRule(
     @Body()
     {
-      project_id,
       name,
       data,
       whiteList,
@@ -57,10 +48,9 @@ export class NotificationController {
       level,
       interval,
       open,
-    }: CreateNotificationRuleDto
+    }: NotificationRuleDto
   ): Promise<NotificationRule> {
     return await this.notificationService.createNotificationRule({
-      project_id,
       name,
       data,
       whiteList,
@@ -73,16 +63,11 @@ export class NotificationController {
 
   /**
    * 查询 notification rules
-   *
-   * @param project_id
    */
   @Get('rules')
-  @UseGuards(AuthGuard('jwt'))
   @UseInterceptors(ClassSerializerInterceptor)
-  async getNotificationRules(
-    @Query() { project_id }: GetNotificationRulesDto
-  ): Promise<NotificationRule[]> {
-    return await this.notificationService.getNotificationRules({ project_id })
+  async getNotificationRules(): Promise<NotificationRule[]> {
+    return await this.notificationService.getNotificationRules()
   }
 
   /**
@@ -98,7 +83,6 @@ export class NotificationController {
    * @param open
    */
   @Patch('rules/:rule_id')
-  @UseGuards(AuthGuard('jwt'))
   @UseInterceptors(ClassSerializerInterceptor)
   async updateNotificationRule(
     @Param() { rule_id }: BaseNotificationRuleDto,
@@ -131,7 +115,6 @@ export class NotificationController {
    * @param rule_id
    */
   @Delete('rules/:rule_id')
-  @UseGuards(AuthGuard('jwt'))
   @UseInterceptors(ClassSerializerInterceptor)
   async deleteNotificationRule(
     @Param()
@@ -144,37 +127,26 @@ export class NotificationController {
 
   /**
    * 获取 notification setting
-   *
-   * @param project_id
    */
   @Get('setting')
-  @UseGuards(AuthGuard('jwt'))
   @UseInterceptors(ClassSerializerInterceptor)
-  async getNotificationSetting(
-    @Query() { project_id }: BaseNotificationSettingDto
-  ): Promise<NotificationSetting> {
-    return await this.notificationService.getNotificationSetting({
-      project_id,
-    })
+  async getNotificationSetting(): Promise<NotificationSetting> {
+    return await this.notificationService.getNotificationSetting()
   }
 
   /**
    * 更新 notification setting
    *
-   * @param project_id
    * @param emails
    * @param browser
    * @param webhooks
    */
   @Patch('setting')
-  @UseGuards(AuthGuard('jwt'))
   @UseInterceptors(ClassSerializerInterceptor)
   async updateNotificationSetting(
-    @Query() { project_id }: BaseNotificationSettingDto,
     @Body() { emails, browser, webhooks }: UpdateNotificationSettingDto
   ): Promise<NotificationSetting> {
     return await this.notificationService.updateNotificationSetting({
-      project_id,
       emails,
       browser,
       webhooks,
@@ -184,7 +156,6 @@ export class NotificationController {
   /**
    * 创建 notification setting webhooks
    *
-   * @param project_id
    * @param type
    * @param name
    * @param link
@@ -192,15 +163,12 @@ export class NotificationController {
    * @param at
    */
   @Post('setting/webhooks')
-  @UseGuards(AuthGuard('jwt'))
   @UseInterceptors(ClassSerializerInterceptor)
   async createNotificationSettingWebhook(
-    @Query() { project_id }: BaseNotificationSettingDto,
     @Body()
     { type, name, link, open, at }: NotificationSettingWebhookDto
   ) {
     return await this.notificationService.createNotificationSettingWebhook({
-      project_id,
       type,
       name,
       link,
@@ -213,7 +181,6 @@ export class NotificationController {
    * 更新 notification setting webhooks
    *
    * @param id
-   * @param project_id
    * @param type
    * @param name
    * @param link
@@ -221,16 +188,13 @@ export class NotificationController {
    * @param at
    */
   @Patch('setting/webhooks/:id')
-  @UseGuards(AuthGuard('jwt'))
   @UseInterceptors(ClassSerializerInterceptor)
   async updateNotificationSettingWebhook(
-    @Query() { project_id }: BaseNotificationSettingDto,
     @Param() { id }: BaseNotificationSettingWebhookDto,
     @Body()
     { type, name, link, open, at }: NotificationSettingWebhookDto
   ) {
     return await this.notificationService.updateNotificationSettingWebhook({
-      project_id,
       id,
       type,
       name,
@@ -243,18 +207,14 @@ export class NotificationController {
   /**
    * 删除 notification setting webhooks
    *
-   * @param project_id
    * @param id
    */
   @Delete('setting/webhooks/:id')
-  @UseGuards(AuthGuard('jwt'))
   @UseInterceptors(ClassSerializerInterceptor)
   async deleteNotificationSettingWebhook(
-    @Query() { project_id }: BaseNotificationSettingDto,
     @Param() { id }: BaseNotificationSettingWebhookDto
   ) {
     return await this.notificationService.deleteNotificationSettingWebhook({
-      project_id,
       id,
     })
   }

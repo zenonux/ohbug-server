@@ -1,29 +1,8 @@
-import project from './project'
-import user from './user'
-import organization from './organization'
-import auth from './auth'
-import issue from './issue'
-import feedback from './feedback'
-import event from './event'
-import analysis from './analysis'
-import view from './view'
-import notification from './notification'
-import invite from './invite'
-import sourceMap from './sourceMap'
-
-const api = {
-  project,
-  user,
-  organization,
-  auth,
-  issue,
-  feedback,
-  event,
-  analysis,
-  view,
-  notification,
-  invite,
-  sourceMap,
-}
-
-export default api
+export * from './analysis'
+export * from './event'
+export * from './feedback'
+export * from './issue'
+export * from './notification'
+export * from './project'
+export * from './sourceMap'
+export * from './view'

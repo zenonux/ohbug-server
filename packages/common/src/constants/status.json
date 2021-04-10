@@ -1,40 +1,9 @@
 {
-  "400000": "创建用户失败",
-  "400001": "获取用户失败",
-  "400002": "oauth 登录失败，未传入 code",
-  "400003": "获取 GithubToken 失败",
-  "400004": "GithubToken 已过期",
-  "400005": "获取 GithubUser 失败",
-  "400006": "登录失败",
-  "400007": "创建 JWT TOKEN 失败",
-  "400008": "用户未注册",
-  "400009": "更改用户信息失败",
-  "400010": "生成验证码失败",
-  "400011": "获取验证码失败",
-  "400012": "邮件发送失败",
-  "400013": "用户激活失败",
-  "400014": "验证码发送失败",
-  "400020": "注册失败",
-  "400030": "绑定用户失败",
-  "400040": "重置密码失败",
-
-  "400100": "生成 organization object 失败",
-  "400101": "删除 organization 失败",
-  "400102": "创建 organization 失败",
-  "400103": "查询 organization 失败",
-  "400104": "查询 organization 所对应的 projects 失败",
-  "400105": "更新 organization 基本信息失败",
-  "400106": "organization 添加用户失败",
-
   "400200": "生成 apiKey 失败",
-  "400201": "生成 project object 失败",
   "400202": "创建 project 失败",
-  "400203": "根据 project_id 查询 project 失败",
+  "400203": "查询 project 失败",
   "400204": "根据 apiKey 查询 project 失败",
   "400205": "更新 project 失败",
-  "400206": "根据 project_ids 查询 projects 失败",
-  "400207": "根据 id 获取库里的指定 Organization 所对应的 projects 失败",
-  "400208": "project 添加用户 失败",
 
   "400300": "创建 event 失败",
   "400301": "搜索 events 失败",
@@ -55,14 +24,14 @@
 
   "400600": "创建 performance 失败",
   "400601": "根据 performance_id 获取 performance 失败",
-  "400602": "根据 project_id 获取 performance statistics 失败",
+  "400602": "获取 performance statistics 失败",
 
   "400700": "创建 replay 失败",
 
   "400800": "创建 view 失败",
   "400801": "搜索 view 失败",
-  "400802": "根据 project_id 获取 PV 失败",
-  "400803": "根据 project_id 获取 UV 失败",
+  "400802": "获取 PV 失败",
+  "400803": "获取 UV 失败",
 
   "400900": "创建 source map 失败",
   "400901": "没有没有找到对应 project ，请确认 apiKey 是否正确",
@@ -88,10 +57,5 @@
   "4001112": "更新 notification setting 失败",
   "4001113": "创建 notification setting webhook 失败",
   "4001114": "更新 notification setting webhook 失败",
-  "4001115": "删除 notification setting webhook 失败",
-
-  "4001200": "创建 invite 失败",
-  "4001201": "获取 invite 信息失败",
-  "4001202": "根据 invite 为 团队/项目 绑定用户失败",
-  "4001203": "绑定用户与项目失败"
+  "4001115": "删除 notification setting webhook 失败"
 }

@@ -10,7 +10,6 @@ import type {
 
 type Level = 'serious' | 'warning' | 'default'
 interface CreateRule {
-  project_id: number
   name: string
   data: string
   whiteList: string
@@ -18,9 +17,6 @@ interface CreateRule {
   level: Level
   interval: number
   open: boolean
-}
-interface GetRules {
-  project_id: number
 }
 interface UpdateRule {
   rule_id: number
@@ -35,17 +31,13 @@ interface UpdateRule {
 interface DeleteRule {
   rule_id: number
 }
-interface GetSetting {
-  project_id: number
-}
+
 interface UpdateSetting {
-  project_id: number
   emails?: NotificationSettingEmails
   browser?: NotificationSettingBrowser
   webhooks?: NotificationSettingWebHook[]
 }
 interface CreateSettingWebhook {
-  project_id: number
   type: NotificationSettingWebHookType
   name: string
   link: string
@@ -56,16 +48,15 @@ interface UpdateSettingWebhook extends Partial<CreateSettingWebhook> {
   id: string
 }
 interface DeleteSettingWebhook {
-  project_id: number
   id: string
 }
 
-const notification = {
+export const notification = {
   createRule: createApi<CreateRule, NotificationRule>({
     url: '/notification/rules',
     method: 'post',
   }),
-  getRules: createApi<GetRules, NotificationRule[]>({
+  getRules: createApi<null, NotificationRule[]>({
     url: '/notification/rules',
     method: 'get',
   }),
@@ -86,12 +77,12 @@ const notification = {
     url: ({ rule_id }) => `/notification/rules/${rule_id}`,
     method: 'delete',
   }),
-  getSetting: createApi<GetSetting, NotificationSetting>({
+  getSetting: createApi<null, NotificationSetting>({
     url: '/notification/setting',
     method: 'get',
   }),
   updateSetting: createApi<UpdateSetting, NotificationSetting>({
-    url: ({ project_id }) => `/notification/setting/${project_id}`,
+    url: '/notification/setting',
     method: 'patch',
     data: ({ emails, browser, webhooks }) => ({
       emails,
@@ -103,7 +94,7 @@ const notification = {
     CreateSettingWebhook,
     NotificationSettingWebHook
   >({
-    url: ({ project_id }) => `/notification/setting/webhooks/${project_id}`,
+    url: `/notification/setting/webhooks`,
     method: 'post',
     data: ({ type, name, link, open, at }) => ({
       type,
@@ -117,8 +108,7 @@ const notification = {
     UpdateSettingWebhook,
     NotificationSettingWebHook
   >({
-    url: ({ id, project_id }) =>
-      `/notification/setting/webhooks/${id}/${project_id}`,
+    url: ({ id }) => `/notification/setting/webhooks/${id}`,
     method: 'patch',
     data: ({ type, name, link, open, at }) => ({
       type,
@@ -129,10 +119,7 @@ const notification = {
     }),
   }),
   deleteSettingWebhook: createApi<DeleteSettingWebhook, boolean>({
-    url: ({ id, project_id }) =>
-      `/notification/setting/webhooks/${id}/${project_id}`,
+    url: ({ id }) => `/notification/setting/webhooks/${id}`,
     method: 'delete',
   }),
 }
-
-export default notification

@@ -33,12 +33,27 @@ export function createApi<T = any, R = any | void>({
       body = __data
     }
 
-    const result = await request(typeof url === 'string' ? url : url?.(_data), {
-      method,
-      data: body,
-      params,
-    })
-    return result.data as R
+    try {
+      const result = await request(
+        typeof url === 'string' ? url : url?.(_data),
+        {
+          method,
+          data: body,
+          params,
+        }
+      )
+      if (result.data) {
+        if (result.data.success) {
+          return result.data.data as R
+        }
+      }
+      return result.data as R
+    } catch (err) {
+      if (err.response) {
+        return err.response.data
+      }
+      throw err
+    }
   }
 
   return {

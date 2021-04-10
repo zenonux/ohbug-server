@@ -5,13 +5,11 @@ import {
   UploadedFile,
   Body,
   Get,
-  UseGuards,
   ClassSerializerInterceptor,
   Param,
   Delete,
 } from '@nestjs/common'
 import { FileInterceptor } from '@nestjs/platform-express'
-import { AuthGuard } from '@nestjs/passport'
 
 import { SourceMapService } from './sourceMap.service'
 import {
@@ -53,7 +51,6 @@ export class SourceMapController {
    * @param apiKey
    */
   @Get(':apiKey')
-  @UseGuards(AuthGuard('jwt'))
   @UseInterceptors(ClassSerializerInterceptor)
   async get(@Param() { apiKey }: GetSourceMapsDto): Promise<SourceMap[]> {
     return await this.sourceMapService.getSourceMapsByApiKey({ apiKey })
@@ -65,7 +62,6 @@ export class SourceMapController {
    * @param id
    */
   @Delete(':id')
-  @UseGuards(AuthGuard('jwt'))
   @UseInterceptors(ClassSerializerInterceptor)
   async delete(
     @Param()

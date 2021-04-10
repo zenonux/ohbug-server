@@ -56,6 +56,11 @@ label {
 .ant-menu-inline-collapsed > .ant-menu-item {
   padding: 0 16px !important;
 }
+.ant-menu-inline,
+.ant-menu-vertical,
+.ant-menu-vertical-left {
+  border: none !important;
+}
 .ant-page-header {
   padding: @space-2 !important;
 }
@@ -71,23 +76,4 @@ label {
 }
 .ant-table-thead > tr > th {
   font-weight: 600 !important;
-}
-@menu-height: 60px !important;
-.ant-layout-header {
-  height: @menu-height;
-  line-height: @menu-height;
-  padding: 0 @space-2;
-  .ant-pro-top-nav-header {
-    height: @menu-height;
-    .ant-pro-top-nav-header-main {
-      height: @menu-height;
-      .ant-pro-top-nav-header-logo {
-        height: @menu-height;
-      }
-    }
-  }
-  .ant-pro-top-nav-header-menu .ant-menu.ant-menu-horizontal {
-    height: @menu-height;
-    line-height: @menu-height;
-  }
 }

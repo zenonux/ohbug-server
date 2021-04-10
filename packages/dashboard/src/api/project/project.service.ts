@@ -3,10 +3,7 @@ import { Repository } from 'typeorm'
 import { InjectRepository } from '@nestjs/typeorm'
 import { ClientProxy } from '@nestjs/microservices'
 import * as crypto from 'crypto'
-import { uniq } from 'ramda'
 
-import { UserService } from '@/api/user/user.service'
-import { OrganizationService } from '@/api/organization/organization.service'
 import { NotificationService } from '@/api/notification/notification.service'
 import {
   ForbiddenException,
@@ -14,21 +11,13 @@ import {
 } from '@ohbug-server/common'
 
 import { Project } from './project.entity'
-import {
-  BaseProjectDto,
-  CreateProjectDto,
-  GetTrendByProjectIdDto,
-  UpdateProjectDto,
-} from './project.dto'
-import { User } from '@/api/user/user.entity'
+import { GetTrendDto } from './project.dto'
 
 @Injectable()
 export class ProjectService {
   constructor(
     @InjectRepository(Project)
     private readonly projectRepository: Repository<Project>,
-    private readonly userService: UserService,
-    private readonly organizationService: OrganizationService,
     @Inject(forwardRef(() => NotificationService))
     private readonly notificationService: NotificationService
   ) {}
@@ -36,51 +25,24 @@ export class ProjectService {
   @Inject('MICROSERVICE_MANAGER_CLIENT')
   private readonly managerClient: ClientProxy
 
-  private static createApiKey({
-    name,
-    type,
-    admin_id,
-    organization_id,
-  }: CreateProjectDto): string {
+  private static createApiKey(): string {
     try {
       const secret = process.env.APP_SECRET
-      return crypto
-        .createHmac('sha256', secret!)
-        .update(`${name}-${type}-${admin_id}-${organization_id}`)
-        .digest('hex')
+      return crypto.createHmac('sha256', secret!).digest('hex')
     } catch (error) {
       throw new ForbiddenException(400200, error)
     }
   }
 
   /**
-   * 创建 project object
-   *
-   * @param name project 名称
-   * @param type project 类别
-   * @param admin_id 管理员 id (对应 user 表)
-   * @param organization_id organization id (对应 organization 表)
+   * 创建 project
    */
-  private async createProjectObject({
-    name,
-    type,
-    admin_id,
-    organization_id,
-  }: CreateProjectDto): Promise<Project> {
+  async createProject(): Promise<Project> {
     try {
-      const admin = await this.userService.getUserById(admin_id)
-      const organization = await this.organizationService.getOrganizationById(
-        organization_id
-      )
-      const apiKey = ProjectService.createApiKey({
-        name,
-        type,
-        admin_id,
-        organization_id,
-      })
+      const apiKey = ProjectService.createApiKey()
       const notificationSetting = this.notificationService.createNotificationSetting(
         {
-          emails: admin.email ? [{ email: admin.email, open: true }] : [],
+          emails: [],
           browser: {
             open: false,
             data: null,
@@ -90,50 +52,7 @@ export class ProjectService {
       )
       const project = this.projectRepository.create({
         apiKey,
-        name,
-        type,
-        admin,
-        users: [admin],
-        organization,
         notificationSetting,
-      })
-      return project
-    } catch (error) {
-      throw new ForbiddenException(400201, error)
-    }
-  }
-
-  /**
-   * 创建 project object 并入库
-   *
-   * @param name project 名称
-   * @param type project 类别
-   * @param admin_id 管理员 id (对应 user 表)
-   * @param organization_id organization id (对应 organization 表)
-   */
-  async saveProject({
-    name,
-    type,
-    admin_id,
-    organization_id,
-  }: CreateProjectDto): Promise<Project> {
-    try {
-      const MAX_PROJECT_COUNT = 2
-      // @ts-ignore
-      const [_, count] = await this.projectRepository.findAndCount({
-        where: {
-          organization: organization_id,
-        },
-      })
-      // 项目最大数量限制为 2
-      if (count >= MAX_PROJECT_COUNT) {
-        throw new Error(`每个团队最多可创建 ${MAX_PROJECT_COUNT} 个项目`)
-      }
-      const project = await this.createProjectObject({
-        name,
-        type,
-        admin_id,
-        organization_id,
       })
       return await this.projectRepository.save(project)
     } catch (error) {
@@ -142,52 +61,15 @@ export class ProjectService {
   }
 
   /**
-   * 更新 project 基本信息
-   *
-   * @param name project 名称
-   * @param type project 类别
-   * @param project_id project id
+   * 查询 project
    */
-  async updateProject({
-    name,
-    type,
-    project_id,
-  }: UpdateProjectDto & BaseProjectDto): Promise<Project> {
+  async getProject(): Promise<Project> {
     try {
-      const project = await this.getProjectByProjectId(project_id)
-      if (name) project.name = name
-      if (type) project.type = type
-      return await this.projectRepository.save(project)
-    } catch (error) {
-      throw new ForbiddenException(400205, error)
-    }
-  }
-
-  /**
-   * 根据 id 获取库里的指定 project
-   *
-   * @param id project_id
-   */
-  async getProjectByProjectId(id: number | string): Promise<Project> {
-    try {
-      return await this.projectRepository.findOneOrFail(id, {
-        relations: ['users'],
-      })
+      const result = (await this.projectRepository.find())[0]
+      if (result) return result
+      throw new Error('未初始化')
     } catch (error) {
       throw new ForbiddenException(400203, error)
-    }
-  }
-
-  /**
-   * 根据 ids 获取库里的指定 projects
-   *
-   * @param ids project_ids
-   */
-  async getProjectsByProjectIds(ids: (number | string)[]): Promise<Project[]> {
-    try {
-      return await this.projectRepository.findByIds(ids)
-    } catch (error) {
-      throw new ForbiddenException(400206, error)
     }
   }
 
@@ -207,48 +89,13 @@ export class ProjectService {
   }
 
   /**
-   * 根据 id 获取库里的指定 Organization 所对应的 projects
+   * 获取指定时间段内的 trend
    *
-   * @param organization_id
-   * @param user_id
-   */
-  async getAllProjectsByOrganizationId(
-    organization_id: number | string,
-    user_id?: number | string
-  ): Promise<Project[]> {
-    try {
-      const projects = await this.projectRepository.find({
-        where: {
-          organization: organization_id,
-        },
-        relations: ['users', 'admin'],
-      })
-
-      if (user_id) {
-        return projects.filter((project) =>
-          Boolean(project.users.find((user) => user.id == user_id))
-        )
-      }
-
-      return projects
-    } catch (error) {
-      throw new ForbiddenException(400207, error)
-    }
-  }
-
-  /**
-   * 根据 project_id 获取指定时间段内的 trend
-   *
-   * @param project_id
    * @param start
    * @param end
    */
-  async getProjectTrendByProjectId({
-    project_id,
-    start,
-    end,
-  }: GetTrendByProjectIdDto & BaseProjectDto) {
-    const { apiKey } = await this.getProjectByProjectId(project_id)
+  async getProjectTrend({ start, end }: GetTrendDto) {
+    const { apiKey } = await this.getProject()
 
     return await this.managerClient
       .send(TOPIC_DASHBOARD_MANAGER_GET_PROJECT_TREND, {
@@ -257,21 +104,5 @@ export class ProjectService {
         end,
       })
       .toPromise()
-  }
-
-  /**
-   * 给项目添加用户
-   *
-   * @param project
-   * @param users
-   */
-  async addUser(project: Project, users: User[]) {
-    try {
-      const result = project
-      result.users = uniq([...result.users, ...users])
-      return await this.projectRepository.save(result)
-    } catch (error) {
-      throw new ForbiddenException(400208, error)
-    }
   }
 }

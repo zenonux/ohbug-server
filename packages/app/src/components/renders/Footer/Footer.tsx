@@ -1,7 +1,6 @@
 import React from 'react'
-import { Avatar, Divider, Button, Popover } from 'antd'
+import { Divider, Button, Popover } from 'antd'
 
-import logo from '@/static/logo.svg'
 import qrcode from './images/wechatQrcode.jpg'
 import styles from './Footer.module.less'
 
@@ -11,16 +10,6 @@ const Footer: React.FC = () => {
       <Divider />
 
       <div className={styles.container}>
-        <Button
-          className={styles.logo}
-          type="link"
-          href="https://ohbug.net"
-          target="_blank"
-        >
-          <Avatar src={logo} />
-          <span className={styles.title}>Ohbug</span>
-        </Button>
-
         <div className={styles.right}>
           <Button
             className={styles.link}

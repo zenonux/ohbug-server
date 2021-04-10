@@ -44,24 +44,11 @@ const routes: Route[] = [
   {
     path: '/',
     wrapper: '@/components/renders/Auth',
-    redirect: '/organization-project',
+    redirect: '/issue',
   },
   {
-    path: '/organization-project',
-    component: '@/pages/organization-project',
-    wrapper: '@/components/renders/Auth',
-    // layout
-    menu: {
-      name: '团队项目',
-      icon: 'icon-ohbug-projector-line',
-    },
-    routes: [
-      {
-        path: '/:project_id/getting-started',
-        component: '@/pages/getting-started',
-        wrapper: '@/components/renders/Auth',
-      },
-    ],
+    path: '/getting-started',
+    component: '@/pages/getting-started',
   },
   {
     path: '/issue',
@@ -74,7 +61,7 @@ const routes: Route[] = [
     },
     routes: [
       {
-        path: '/:issue_id/event/:event_id',
+        path: '/issue/:issue_id/event/:event_id',
         component: '@/pages/event',
         wrapper: '@/components/renders/Auth',
       },
@@ -86,134 +73,34 @@ const routes: Route[] = [
     wrapper: '@/components/renders/Auth',
   },
   {
-    path: '/settings/:organization_id',
+    path: '/settings',
     component: '@/pages/settings',
     wrapper: '@/components/renders/Auth',
-    redirect: '/settings/:organization_id/profile',
-    layout: {
-      hideNav: true,
-      hideFooter: true,
+    redirect: '/settings/notification_rules',
+    // layout
+    menu: {
+      name: '设置',
+      icon: 'icon-ohbug-settings-3-line',
     },
     routes: [
       {
-        path: '/profile',
-        component: '@/pages/settings/Organization/Profile',
+        path: 'notification_rules',
+        component: '@/pages/settings/Notification/Rules',
       },
       {
-        path: '/projects',
-        component: '@/pages/settings/Organization/Projects',
-        routes: [
-          // project settings
-          {
-            path: '/:project_id',
-            redirect: '/settings/:organization_id/project/:project_id/profile',
-            routes: [
-              {
-                path: '/profile',
-                component: '@/pages/settings/Project/Profile',
-              },
-              {
-                path: '/notification_rules',
-                component: '@/pages/settings/Project/Notification/Rules',
-              },
-              {
-                path: '/notification_setting',
-                component: '@/pages/settings/Project/Notification/Setting',
-              },
-              {
-                path: '/sourcemap',
-                component: '@/pages/settings/Project/SourceMap',
-              },
-              {
-                path: '/members',
-                component: '@/pages/settings/Project/Members',
-              },
-            ],
-          },
-        ],
+        path: 'notification_setting',
+        component: '@/pages/settings/Notification/Setting',
       },
       {
-        path: '/members',
-        component: '@/pages/settings/Organization/Members',
+        path: 'sourcemap',
+        component: '@/pages/settings/SourceMap',
       },
     ],
   },
-  // {
-  //   path: '/feedback',
-  //   component: '@/pages/Feedback',
-  //   wrapper: '@/components/renders/Auth',
-  //   // layout
-  //   menu: {
-  //     name: '反馈 Feedback',
-  //     icon: 'coffee',
-  //   },
-  // },
   {
-    path: '/signup',
-    component: '@/pages/signup',
-    layout: {
-      hideNav: true,
-      hideFooter: true,
-    },
-  },
-  {
-    path: '/activate',
-    component: '@/pages/activate',
-    layout: {
-      hideNav: true,
-    },
-  },
-  {
-    path: '/login',
-    component: '@/pages/login',
-    layout: {
-      hideNav: true,
-      hideFooter: true,
-    },
-  },
-  {
-    path: '/reset',
-    component: '@/pages/reset',
-    layout: {
-      hideNav: true,
-      hideFooter: true,
-    },
-  },
-  {
-    path: '/create-organization',
-    component: '@/pages/create-organization',
-    wrapper: '@/components/renders/Auth',
-    layout: {
-      hideNav: true,
-      hideFooter: true,
-    },
-  },
-  {
-    path: '/create-project',
-    component: '@/pages/create-project',
-    wrapper: '@/components/renders/Auth',
-    layout: {
-      hideNav: true,
-      hideFooter: true,
-    },
-  },
-  {
-    path: '/getting-started',
-    component: '@/pages/getting-started',
-    wrapper: '@/components/renders/Auth',
-  },
-  {
-    path: '/invite',
-    component: '@/pages/invite',
-    layout: {
-      hideNav: true,
-      hideFooter: true,
-    },
-  },
-  {
+    default: true,
     path: '/404',
     component: '@/pages/not-found',
-    default: true,
     layout: {
       hideNav: true,
       hideFooter: true,

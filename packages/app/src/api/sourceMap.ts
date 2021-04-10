@@ -1,7 +1,7 @@
 import { createApi } from '@/ability'
 import type { SourceMap } from '@/models'
 
-const sourceMap = {
+export const sourceMap = {
   get: createApi<string>({
     url: (apiKey) => `/sourceMap/${apiKey}`,
     method: 'get',
@@ -13,5 +13,3 @@ const sourceMap = {
     data: () => ({}),
   }),
 }
-
-export default sourceMap

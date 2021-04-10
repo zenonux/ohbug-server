@@ -1,3 +1,4 @@
+// @ts-ignore
 import * as UA from 'ua-device'
 import type { OhbugEvent } from '@ohbug/types'
 

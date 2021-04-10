@@ -2,7 +2,6 @@ import { createApi } from '@/ability'
 import type { Event } from '@/models'
 
 interface GetMany {
-  project_id: number
   page: number
   issue_id?: number
   type?: string
@@ -11,11 +10,9 @@ interface GetMany {
   end?: number | string
 }
 
-const feedback = {
+export const feedback = {
   getMany: createApi<GetMany, [Event<any>[], number]>({
     url: '/feedback',
     method: 'get',
   }),
 }
-
-export default feedback

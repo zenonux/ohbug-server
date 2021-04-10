@@ -22,20 +22,6 @@ const renderEmpty = (componentName?: string) => {
       </div>
     )
   }
-  if (
-    componentName === 'Tree' &&
-    location.pathname === '/organization-project'
-  ) {
-    // issue
-    description = <span>还没有项目？</span>
-    children = (
-      <div>
-        <Button type="link" size="large" href="/create-project">
-          创建项目
-        </Button>
-      </div>
-    )
-  }
 
   return (
     <Empty

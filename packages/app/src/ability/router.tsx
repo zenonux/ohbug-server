@@ -9,7 +9,7 @@ import {
   useLocation,
   WindowLocation,
 } from '@/ability'
-import { Loading, Menu, Footer } from '@/components'
+import { Loading, Sider, Footer } from '@/components'
 
 import routes, { Route } from './routes'
 
@@ -21,10 +21,7 @@ function matchRoute(routes: Route[], location: WindowLocation): Route | null {
       return route
     }
     if (route.routes) {
-      matchRoute(
-        route.routes.map((v) => ({ ...v, path: route.path + v.path })),
-        location
-      )
+      matchRoute(route.routes, location)
     }
   }
   return null
@@ -46,14 +43,18 @@ const Container: React.FC = ({ children }) => {
       <Wrapper>
         <Layout>
           {!(route?.layout?.hideNav === true) && (
-            <Layout.Header>
-              <Menu />
-            </Layout.Header>
+            <Layout.Sider width={65}>
+              <Sider />
+            </Layout.Sider>
           )}
 
-          <Layout.Content>{children}</Layout.Content>
+          <React.Suspense fallback={<Loading />}>
+            <Layout>
+              <Layout.Content>{children}</Layout.Content>
 
-          {!(route?.layout?.hideFooter === true) && <Footer />}
+              {!(route?.layout?.hideFooter === true) && <Footer />}
+            </Layout>
+          </React.Suspense>
         </Layout>
       </Wrapper>
     </React.Suspense>

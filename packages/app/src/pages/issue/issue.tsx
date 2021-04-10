@@ -2,7 +2,7 @@ import React from 'react'
 import { Card, Space, List, Skeleton, Radio, Typography, Row, Col } from 'antd'
 import dayjs from 'dayjs'
 
-import { useModel, Link, useQuery } from '@/ability'
+import { useModel, Link } from '@/ability'
 import { Layout, MiniChart, LineChart } from '@/components'
 
 import TimePicker from './components/TimePicker'
@@ -17,20 +17,15 @@ const Issue: React.FC<IssueDashPageProps> = ({ children }) => {
   const issueModel = useModel('issue')
   const projectModel = useModel('project')
   const loadingModel = useModel('loading')
-  const query = useQuery()
   const issue = issueModel.state.data!
   const count = issueModel.state.count
   const trend = issueModel.state.trend
 
-  const handleTablePaginationChange = React.useCallback(
-    (current) => {
-      issueModel.dispatch.searchIssues({
-        page: current - 1,
-        project_id: query.get('project_id') || '',
-      })
-    },
-    [issueModel.dispatch, query]
-  )
+  const handleTablePaginationChange = React.useCallback((current) => {
+    issueModel.dispatch.searchIssues({
+      page: current - 1,
+    })
+  }, [])
 
   const [trendValue, setTrendValue] = React.useState<'24h' | '14d'>('24h')
   const handleTrendChange = React.useCallback(

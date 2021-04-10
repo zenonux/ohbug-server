@@ -25,7 +25,6 @@ export class IssueService {
   /**
    * 根据 issue_id 取到对应 issue
    *
-   * @param project_id
    * @param issue_id
    */
   @Get('/:issue_id')
@@ -38,22 +37,18 @@ export class IssueService {
   }
 
   /**
-   * 根据 project_id 取到对应 issues
+   * 查询 issues
    *
-   * @param project_id
    * @param searchCondition
    * @param limit
    * @param skip
    */
   async searchIssues({
-    project_id,
     searchCondition,
     limit,
     skip,
   }: GetIssuesByProjectIdParams) {
-    const { apiKey } = await this.projectService.getProjectByProjectId(
-      project_id
-    )
+    const { apiKey } = await this.projectService.getProject()
     return await this.managerClient
       .send(TOPIC_DASHBOARD_MANAGER_SEARCH_ISSUES, {
         apiKey,

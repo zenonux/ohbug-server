@@ -2,7 +2,7 @@ import { createModel } from '@rematch/core'
 import dayjs from 'dayjs'
 
 import type { RootModel } from '@/models'
-import api from '@/api'
+import * as api from '@/api'
 
 export interface AnalysisItem {
   item: string
@@ -31,71 +31,52 @@ export const analysis = createModel<RootModel>()({
     },
   },
   effects: (dispatch) => ({
-    async getStatistics({ type }, state) {
-      const project = state.project
-      if (project.current) {
-        const project_id = project.current.id
+    async getStatistics({ type }) {
+      const data = await api.analysis.get.call({
+        type,
+      })
 
-        const data = await api.analysis.get.call({
-          type,
-          project_id,
+      if (typeof data !== 'undefined') {
+        dispatch.analysis.setState({
+          [type]: data,
         })
-
-        if (typeof data !== 'undefined') {
-          dispatch.analysis.setState({
-            [type]: data,
-          })
-        }
       }
     },
 
-    async getEventOrIssueStatistics({ type }, state) {
-      const project = state.project
+    async getEventOrIssueStatistics({ type }) {
+      // 取当天 event 总数
+      const start = dayjs(dayjs().format('YYYY-MM-DD')).toISOString()
+      const end = dayjs().toISOString()
 
-      if (project.current) {
-        const project_id = project.current.id
+      const data = await api.analysis.get.call({
+        type,
+        start,
+        end,
+      })
 
-        // 取当天 event 总数
-        const start = dayjs(dayjs().format('YYYY-MM-DD')).toISOString()
-        const end = dayjs().toISOString()
-
-        const data = await api.analysis.get.call({
-          type,
-          project_id,
-          start,
-          end,
+      if (typeof data !== 'undefined') {
+        dispatch.analysis.setState({
+          [type]: data,
         })
-
-        if (typeof data !== 'undefined') {
-          dispatch.analysis.setState({
-            [type]: data,
-          })
-        }
       }
     },
 
-    async getPerformanceStatistics({ type }, state) {
-      const project = state.project
-      if (project.current) {
-        const project_id = project.current.id
+    async getPerformanceStatistics({ type }) {
+      // 取当天 event 总数
+      const start = dayjs(dayjs().format('YYYY-MM-DD')).toISOString()
+      const end = dayjs().toISOString()
 
-        // 取当天 event 总数
-        const start = dayjs(dayjs().format('YYYY-MM-DD')).toISOString()
-        const end = dayjs().toISOString()
+      const data = await api.analysis.get.call({
+        start,
+        end,
+        type: 'performance',
+        performanceType: type,
+      })
 
-        const data = await api.analysis.get.call({
-          project_id,
-          start,
-          end,
-          type: 'performance',
-          performanceType: type,
+      if (typeof data !== 'undefined') {
+        dispatch.analysis.setState({
+          performance: data,
         })
-
-        if (typeof data !== 'undefined') {
-          dispatch.analysis.setState({
-            performance: data,
-          })
-        }
       }
     },
   }),

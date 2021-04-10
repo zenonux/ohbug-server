@@ -9,7 +9,7 @@ interface GetLatest {
   issue_id: string | number
 }
 
-const event = {
+export const event = {
   get: createApi<Get, Event<any>>({
     url: ({ event_id }) => `/events/${event_id}`,
     method: 'get',
@@ -25,5 +25,3 @@ const event = {
     }),
   }),
 }
-
-export default event

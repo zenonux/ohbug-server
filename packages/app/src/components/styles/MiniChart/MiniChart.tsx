@@ -83,6 +83,7 @@ const MiniChart: React.FC<MiniChartProps> = ({
           fontWeight: 'bolder',
           fontSize: 12,
           lineHeight: 1,
+          color: '#fafafa',
         },
         extraCssText: 'text-align: center;',
       },

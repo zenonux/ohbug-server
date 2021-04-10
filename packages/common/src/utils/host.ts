@@ -1,7 +1,7 @@
 const hostMap = [
   {
     env: 'development',
-    host: 'http://localhost:8888',
+    host: 'http://localhost:3000',
   },
   {
     env: 'production',
