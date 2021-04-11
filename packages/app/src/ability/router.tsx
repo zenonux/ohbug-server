@@ -8,6 +8,7 @@ import {
   Router,
   useLocation,
   WindowLocation,
+  navigate,
 } from '@/ability'
 import { Loading, Sider, Footer } from '@/components'
 
@@ -35,6 +36,10 @@ const Container: React.FC = ({ children }) => {
   }, [location.key])
 
   const Wrapper = route?.wrapper ? route.wrapper : React.Fragment
+  // wrapper 和 redirect 同时存在时优先处理 redirect
+  if (route?.wrapper && route.redirect) {
+    navigate(route.redirect, { replace: true })
+  }
 
   return (
     <React.Suspense fallback={<Loading />}>
@@ -79,6 +84,7 @@ function renderRoutes(routes: Route[]) {
               <Redirect
                 from={route.path}
                 to={route.redirect}
+                noThrow
                 key={route.redirect}
               />
             )
@@ -101,6 +107,7 @@ function renderRoutes(routes: Route[]) {
           <Redirect
             from={route.path}
             to={route.redirect}
+            noThrow
             key={route.redirect}
           />
         )
