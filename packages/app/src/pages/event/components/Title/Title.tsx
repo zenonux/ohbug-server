@@ -4,6 +4,7 @@ import { Row, Col, Skeleton, Typography, Card, Statistic } from 'antd'
 
 import type { EventState, IssueState } from '@/models'
 import { Image } from '@/components'
+import figure from '@/static/images/issue_title_figure.png'
 
 import styles from './Title.module.less'
 
@@ -48,7 +49,7 @@ const Title: React.FC<TitleProps> = ({ event, issue }) => {
           </Typography>
           <Image
             className={styles.figure}
-            src={require('@/static/images/issue_title_figure.png')}
+            src={figure}
             alt="issue_title_figure"
           />
         </Skeleton>

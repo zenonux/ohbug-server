@@ -104,10 +104,8 @@ const LineChart: React.FC<LineChartProps> = ({ data, loading, title }) => {
             symbolSize: 6,
             showSymbol: false,
             itemStyle: {
-              normal: {
-                lineStyle: {
-                  width: 4,
-                },
+              lineStyle: {
+                width: 4,
               },
             },
             areaStyle: {
