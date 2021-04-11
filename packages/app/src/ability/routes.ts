@@ -1,10 +1,8 @@
-import React from 'react'
-import type { RouteComponentProps } from '@/ability'
 export interface Route {
   path: string
-  wrapper?: React.FC<RouteComponentProps>
+  wrapper?: string
   redirect?: string
-  component?: React.FC<RouteComponentProps>
+  component?: string
   menu?: {
     name: string
     icon: string
@@ -17,31 +15,47 @@ export interface Route {
   default?: boolean
 }
 
-import Auth from '@/components/renders/Auth'
-import GettingStarted from '@/pages/getting-started'
-import Issue from '@/pages/issue'
-import Event from '@/pages/event'
-import Settings from '@/pages/settings'
-import NotificationRules from '@/pages/settings/Notification/Rules'
-import NotificationSetting from '@/pages/settings/Notification/Setting'
-import SourceMap from '@/pages/settings/SourceMap'
-import NotFound from '@/pages/not-found'
-import NotAuthorized from '@/pages/not-authorized'
+function parsePath(path: string) {
+  if (typeof path !== 'string') {
+    throw new Error(`Should input a path string, got ${path}`)
+  }
+  if (path[0] === '@' && path[1] === '/') {
+    return path.replace('@/', '../')
+  }
+  return path
+}
+function createRoutes(routes: Route[]): Route[] {
+  return routes.map((route) => {
+    const _route = { ...route }
+    if (_route.wrapper) {
+      _route.wrapper = parsePath(_route.wrapper)
+    }
+    if (_route.component) {
+      _route.component = parsePath(_route.component)
+    }
+    if (_route.routes) {
+      _route.routes = createRoutes(_route.routes)
+    }
+    return _route
+  })
+}
+
+const auth = '@/components/renders/Auth'
 
 const routes: Route[] = [
   {
     path: '/',
-    wrapper: Auth,
+    wrapper: auth,
     redirect: '/issue',
   },
   {
     path: '/getting-started',
-    component: GettingStarted,
+    component: '@/pages/getting-started',
   },
   {
     path: '/issue',
-    component: Issue,
-    wrapper: Auth,
+    component: '@/pages/issue',
+    wrapper: auth,
     // layout
     menu: {
       name: '问题',
@@ -50,13 +64,13 @@ const routes: Route[] = [
   },
   {
     path: '/issue/:issue_id/event/:event_id',
-    component: Event,
-    wrapper: Auth,
+    component: '@/pages/event',
+    wrapper: auth,
   },
   {
     path: '/settings',
-    component: Settings,
-    wrapper: Auth,
+    component: '@/pages/settings',
+    wrapper: auth,
     redirect: '/settings/notification_rules',
     // layout
     menu: {
@@ -66,22 +80,22 @@ const routes: Route[] = [
     routes: [
       {
         path: 'notification_rules',
-        component: NotificationRules,
+        component: '@/pages/settings/Notification/Rules',
       },
       {
         path: 'notification_setting',
-        component: NotificationSetting,
+        component: '@/pages/settings/Notification/Setting',
       },
       {
         path: 'sourcemap',
-        component: SourceMap,
+        component: '@/pages/settings/SourceMap',
       },
     ],
   },
   {
     default: true,
     path: '/404',
-    component: NotFound,
+    component: '@/pages/not-found',
     layout: {
       hideNav: true,
       hideFooter: true,
@@ -89,7 +103,7 @@ const routes: Route[] = [
   },
   {
     path: '/403',
-    component: NotAuthorized,
+    component: '@/pages/not-authorized',
     layout: {
       hideNav: true,
       hideFooter: true,
@@ -97,4 +111,4 @@ const routes: Route[] = [
   },
 ]
 
-export default routes
+export default createRoutes(routes)
