@@ -2,7 +2,7 @@ module.exports = {
   apps: [
     {
       name: '@ohbug-server/transfer',
-      script: 'dist/src/main.js',
+      script: 'dist/main.js',
       instances: 1,
       autorestart: true,
       watch: false,

@@ -1,8 +1,11 @@
+import React from 'react'
+import type { RouteComponentProps } from '@/ability'
+
 export interface Route {
   path: string
-  wrapper?: string
+  wrapper?: React.FC
   redirect?: string
-  component?: string
+  component?: React.FC<RouteComponentProps>
   menu?: {
     name: string
     icon: string
@@ -15,47 +18,49 @@ export interface Route {
   default?: boolean
 }
 
-function parsePath(path: string) {
-  if (typeof path !== 'string') {
-    throw new Error(`Should input a path string, got ${path}`)
-  }
-  if (path[0] === '@' && path[1] === '/') {
-    return path.replace('@/', '../')
-  }
-  return path
-}
-function createRoutes(routes: Route[]): Route[] {
-  return routes.map((route) => {
-    const _route = { ...route }
-    if (_route.wrapper) {
-      _route.wrapper = parsePath(_route.wrapper)
-    }
-    if (_route.component) {
-      _route.component = parsePath(_route.component)
-    }
-    if (_route.routes) {
-      _route.routes = createRoutes(_route.routes)
-    }
-    return _route
-  })
-}
-
-const auth = '@/components/renders/Auth'
+import Auth from '@/components/renders/Auth'
+const GettingStarted = React.lazy<React.FC<RouteComponentProps>>(
+  () => import('../pages/getting-started')
+)
+const Issue = React.lazy<React.FC<RouteComponentProps>>(
+  () => import('../pages/issue')
+)
+const Event = React.lazy<React.FC<RouteComponentProps>>(
+  () => import('../pages/event')
+)
+const Settings = React.lazy<React.FC<RouteComponentProps>>(
+  () => import('../pages/settings')
+)
+const NotificationRules = React.lazy<React.FC<RouteComponentProps>>(
+  () => import('../pages/settings/Notification/Rules')
+)
+const NotificationSetting = React.lazy<React.FC<RouteComponentProps>>(
+  () => import('../pages/settings/Notification/Setting')
+)
+const SourceMap = React.lazy<React.FC<RouteComponentProps>>(
+  () => import('../pages/settings/SourceMap')
+)
+const NotFound = React.lazy<React.FC<RouteComponentProps>>(
+  () => import('../pages/not-found')
+)
+const NotAuthorized = React.lazy<React.FC<RouteComponentProps>>(
+  () => import('../pages/not-authorized')
+)
 
 const routes: Route[] = [
   {
     path: '/',
-    wrapper: auth,
+    wrapper: Auth,
     redirect: '/issue',
   },
   {
     path: '/getting-started',
-    component: '@/pages/getting-started',
+    component: GettingStarted,
   },
   {
     path: '/issue',
-    component: '@/pages/issue',
-    wrapper: auth,
+    component: Issue,
+    wrapper: Auth,
     // layout
     menu: {
       name: '问题',
@@ -64,13 +69,13 @@ const routes: Route[] = [
   },
   {
     path: '/issue/:issue_id/event/:event_id',
-    component: '@/pages/event',
-    wrapper: auth,
+    component: Event,
+    wrapper: Auth,
   },
   {
     path: '/settings',
-    component: '@/pages/settings',
-    wrapper: auth,
+    component: Settings,
+    wrapper: Auth,
     redirect: '/settings/notification_rules',
     // layout
     menu: {
@@ -80,22 +85,22 @@ const routes: Route[] = [
     routes: [
       {
         path: 'notification_rules',
-        component: '@/pages/settings/Notification/Rules',
+        component: NotificationRules,
       },
       {
         path: 'notification_setting',
-        component: '@/pages/settings/Notification/Setting',
+        component: NotificationSetting,
       },
       {
         path: 'sourcemap',
-        component: '@/pages/settings/SourceMap',
+        component: SourceMap,
       },
     ],
   },
   {
     default: true,
     path: '/404',
-    component: '@/pages/not-found',
+    component: NotFound,
     layout: {
       hideNav: true,
       hideFooter: true,
@@ -103,7 +108,7 @@ const routes: Route[] = [
   },
   {
     path: '/403',
-    component: '@/pages/not-authorized',
+    component: NotAuthorized,
     layout: {
       hideNav: true,
       hideFooter: true,
@@ -111,4 +116,4 @@ const routes: Route[] = [
   },
 ]
 
-export default createRoutes(routes)
+export default routes

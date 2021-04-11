@@ -41,8 +41,8 @@ const baseConfig: UserConfig = {
 const developmentConfig: UserConfig = {
   server: {
     proxy: {
-      '/v1': {
-        target: 'http://localhost:6666/api',
+      '/api/v1': {
+        target: 'http://localhost:6666',
         changeOrigin: true,
       },
     },

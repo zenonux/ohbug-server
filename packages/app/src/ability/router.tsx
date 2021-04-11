@@ -9,7 +9,6 @@ import {
   useLocation,
   WindowLocation,
   navigate,
-  RouteComponentProps,
 } from '@/ability'
 import { Loading, Sider, Footer } from '@/components'
 
@@ -36,9 +35,7 @@ const Container: React.FC = ({ children }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location.key])
 
-  const Wrapper = route?.wrapper
-    ? React.lazy<React.FC<RouteComponentProps>>(() => import(route?.wrapper!))
-    : React.Fragment
+  const Wrapper = route?.wrapper ? route?.wrapper! : React.Fragment
   // wrapper 和 redirect 同时存在时优先处理 redirect
   if (route?.wrapper && route.redirect) {
     navigate(route.redirect, { replace: true })
@@ -79,9 +76,7 @@ function renderRoutes(routes: Route[]) {
   return routes
     .map((route) => {
       if (route.component) {
-        const Component = React.lazy<React.FC<RouteComponentProps>>(
-          () => import(route?.component!)
-        )
+        const Component = route?.component!
 
         if (!route.routes) {
           if (route.redirect) {

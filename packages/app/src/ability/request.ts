@@ -11,7 +11,7 @@ enum ErrorShowType {
 }
 
 export const request = axios.create({
-  baseURL: '/v1',
+  baseURL: '/api/v1',
   timeout: 10000,
   transformResponse: [
     (json) => {
