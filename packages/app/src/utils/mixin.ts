@@ -1,5 +1,4 @@
-// @ts-ignore
-import * as UA from 'ua-device'
+import UA from 'ua-parser-js'
 import type { OhbugEvent } from '@ohbug/types'
 
 export function getDeviceInfo(event?: OhbugEvent<any>) {
@@ -7,8 +6,12 @@ export function getDeviceInfo(event?: OhbugEvent<any>) {
     const { device, sdk } = event
     if (device && sdk.platform === 'ohbug-browser') {
       const { url, title, version, language, platform, userAgent } = device
+
       if (userAgent) {
-        const { browser, engine, os, device } = new UA(userAgent)
+        const parser = new UA()
+        parser.setUA(userAgent)
+        const result = parser.getResult()
+        const { browser, device, engine, os } = result
         return {
           url,
           title,

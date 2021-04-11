@@ -10,7 +10,6 @@ import Title from './components/Title'
 import Profile from './components/Profile'
 import Detail from './components/Detail'
 import Trend from './components/Trend'
-// import Description from './components/Description';
 
 interface EventTabProps {
   event: EventState['current']
@@ -122,8 +121,6 @@ const Event: React.FC<RouteComponentProps> = () => {
 
       {/* tab */}
       {event && issue && <EventTab event={event} issue={issue} />}
-
-      {/* <Description /> */}
     </Layout>
   )
 }

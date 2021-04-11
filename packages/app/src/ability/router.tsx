@@ -31,6 +31,7 @@ const Container: React.FC = ({ children }) => {
   const [route, setRoute] = React.useState<Route | null>(null)
   React.useEffect(() => {
     setRoute(matchRoute(routes, location))
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location.key])
 
   const Wrapper = route?.wrapper ? route.wrapper : React.Fragment
@@ -40,13 +41,21 @@ const Container: React.FC = ({ children }) => {
       <Wrapper>
         <Layout>
           {!(route?.layout?.hideNav === true) && (
-            <Layout.Sider width={65}>
+            <Layout.Sider
+              width={65}
+              style={{
+                overflow: 'auto',
+                height: '100vh',
+                position: 'fixed',
+                left: 0,
+              }}
+            >
               <Sider />
             </Layout.Sider>
           )}
 
           <React.Suspense fallback={<Loading />}>
-            <Layout>
+            <Layout style={{ marginLeft: 65 }}>
               <Layout.Content>{children}</Layout.Content>
 
               {!(route?.layout?.hideFooter === true) && <Footer />}

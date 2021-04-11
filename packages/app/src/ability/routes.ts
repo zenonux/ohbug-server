@@ -47,16 +47,9 @@ const routes: Route[] = [
       name: '问题',
       icon: 'icon-ohbug-error-warning-line',
     },
-    routes: [
-      {
-        path: '/issue/:issue_id/event/:event_id',
-        component: Event,
-        wrapper: Auth,
-      },
-    ],
   },
   {
-    path: '/event/:target',
+    path: '/issue/:issue_id/event/:event_id',
     component: Event,
     wrapper: Auth,
   },

@@ -18,7 +18,7 @@ export const store = init<RootModel, FullModel>({
       timeout: 1000,
       key: 'redux-storage',
       storage,
-      whitelist: ['project'],
+      whitelist: ['project', 'issue', 'event'],
     }),
   ],
 })
