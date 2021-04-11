@@ -2,22 +2,23 @@ import React from 'react'
 
 import { Loading } from '@/components'
 import { RouteComponentProps, useModel, navigate } from '@/ability'
-import { useMount } from '@/hooks'
+import { useMount, useBoolean } from '@/hooks'
 
 const Auth: React.FC<RouteComponentProps> = ({ children }) => {
   const projectModel = useModel('project')
-  const loadingModel = useModel('loading')
-  const loading = loadingModel.state.effects.project.get
+  const [loading, { toggle: setLoading }] = useBoolean(true)
 
-  useMount(() => {
-    projectModel.dispatch.get()
+  useMount(async () => {
+    setLoading(true)
+    await projectModel.dispatch.get()
+    setLoading(false)
   })
 
   if (loading) {
     return React.createElement(Loading)
   }
 
-  if (projectModel.state.current) {
+  if (!loading && projectModel.state.current) {
     if (React.isValidElement(children)) {
       return children
     }

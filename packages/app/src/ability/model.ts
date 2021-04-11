@@ -2,7 +2,7 @@ import { init, RematchDispatch, RematchRootState } from '@rematch/core'
 import loading, { ExtraModelsFromLoading } from '@rematch/loading'
 import updated, { ExtraModelsFromUpdated } from '@rematch/updated'
 import persist from '@rematch/persist'
-import storage from 'redux-persist/lib/storage'
+import storage from 'redux-persist/lib/storage/session'
 import { useSelector, useDispatch } from 'react-redux'
 
 import { models, RootModel } from '@/models'
@@ -18,7 +18,7 @@ export const store = init<RootModel, FullModel>({
       timeout: 1000,
       key: 'redux-storage',
       storage,
-      whitelist: ['project', 'issue', 'event'],
+      whitelist: ['project'],
     }),
   ],
 })
