@@ -35,7 +35,6 @@ coverage
 
 # config
 .env
-.env*
 
 docs
 temp
