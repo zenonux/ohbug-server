@@ -1,4 +1,4 @@
-import { Method } from 'axios'
+import type { Method } from 'axios'
 import { request } from '@/ability'
 
 interface CreateApiParam<T> {

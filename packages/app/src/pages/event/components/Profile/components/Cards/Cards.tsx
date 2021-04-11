@@ -18,15 +18,15 @@ const Cards: React.FC<CardsProps> = ({ event }) => {
       {/* 浏览器 */}
       {deviceInfo?.browser && (
         <ProgressCard
-          title={deviceInfo?.browser?.name}
-          description={deviceInfo?.browser?.version?.original}
+          title={deviceInfo?.browser?.name ?? ''}
+          description={deviceInfo?.browser?.version ?? ''}
         />
       )}
       {/* 系统 */}
       {deviceInfo?.os && (
         <ProgressCard
-          title={deviceInfo?.os?.name}
-          description={deviceInfo?.os?.version?.original}
+          title={deviceInfo?.os?.name ?? ''}
+          description={deviceInfo?.os?.version ?? ''}
         />
       )}
       {/* App */}

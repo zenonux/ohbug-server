@@ -15,7 +15,7 @@
   "license": "Apache-2.0",
   "scripts": {
     "start": "vite",
-    "build": "tsc",
+    "build": "tsc && vite build",
     "serve": "vite preview",
     "prettier": "prettier --write '**/*.{js,jsx,tsx,ts,less,md,json}'"
   },

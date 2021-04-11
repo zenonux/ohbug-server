@@ -5,7 +5,7 @@ import * as echarts from 'echarts'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
 import 'dayjs/locale/zh-cn'
-import 'antd/dist/antd.less'
+import 'antd/es/style/index.less'
 
 import { renderEmpty } from '@/components'
 import Router from '@/ability/router'

@@ -2,6 +2,7 @@ import path from 'path'
 import fs from 'fs'
 import { defineConfig, UserConfig } from 'vite'
 import reactRefresh from '@vitejs/plugin-react-refresh'
+import vitePluginImp from 'vite-plugin-imp'
 // @ts-ignore
 import lessToJS from 'less-vars-to-js'
 import { mergeDeepRight } from 'ramda'
@@ -24,14 +25,20 @@ const baseConfig: UserConfig = {
       },
     },
   },
-  plugins: [reactRefresh()],
+  plugins: [
+    reactRefresh(),
+    vitePluginImp({
+      libList: [
+        {
+          libName: 'antd',
+          style: (name) => `antd/es/${name}/style`,
+        },
+      ],
+    }),
+  ],
 }
 
 const developmentConfig: UserConfig = {
-  define: {
-    baseURL: `'/'`,
-    oauth2GithubClientId: `'92d822348018daa85584'`,
-  },
   server: {
     proxy: {
       '/v1': {
@@ -42,12 +49,7 @@ const developmentConfig: UserConfig = {
   },
 }
 
-const productionConfig: UserConfig = {
-  define: {
-    baseURL: `'/api'`,
-    oauth2GithubClientId: `'92d822348018daa85584'`,
-  },
-}
+const productionConfig: UserConfig = {}
 
 export default defineConfig(({ mode }) => {
   return mergeDeepRight(
