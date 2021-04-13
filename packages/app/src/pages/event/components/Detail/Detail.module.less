@@ -1,4 +1,14 @@
 .root {
+  :global {
+    .ant-timeline-item-head-custom {
+      left: 8px;
+      font-size: 20px;
+    }
+    .ant-timeline-item-tail {
+      left: 7px;
+    }
+  }
+
   .descriptions {
     margin-bottom: @space;
   }
@@ -6,6 +16,7 @@
   .actions {
     max-height: 400px;
     overflow: auto;
+    padding-top: 3px;
 
     :global {
       .ant-timeline-item {

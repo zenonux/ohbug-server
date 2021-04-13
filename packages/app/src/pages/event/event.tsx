@@ -45,8 +45,7 @@ const EventTab: React.FC<EventTabProps> = ({ event, issue }) => {
           element: (
             <ReactJson
               src={event.metaData[key]}
-              theme="summerfruit:inverted"
-              indentWidth={2}
+              iconStyle="circle"
               collapsed={2}
               style={{
                 fontFamily:
@@ -68,8 +67,7 @@ const EventTab: React.FC<EventTabProps> = ({ event, issue }) => {
         element: (
           <ReactJson
             src={event.user!}
-            theme="summerfruit:inverted"
-            indentWidth={2}
+            iconStyle="circle"
             collapsed={2}
             style={{
               fontFamily:
