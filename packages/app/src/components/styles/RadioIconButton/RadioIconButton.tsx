@@ -4,6 +4,7 @@ import { RadioGroupProps } from 'antd/lib/radio'
 import clsx from 'clsx'
 
 import { Icon } from '@/components'
+import { useCreation } from '@/hooks'
 
 import styles from './RadioIconButton.module.less'
 
@@ -20,7 +21,7 @@ const RadioIconButton: React.FC<RadioIconButtonProps> = ({
   dataSource,
   ...args
 }) => {
-  const classes = React.useMemo(() => clsx(className, styles.root), [className])
+  const classes = useCreation(() => clsx(className, styles.root), [className])
   return (
     <Radio.Group className={classes} {...args}>
       {dataSource.map((item) => {

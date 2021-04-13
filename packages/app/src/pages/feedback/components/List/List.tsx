@@ -2,7 +2,7 @@ import React from 'react'
 import { Card, Table } from 'antd'
 
 import { useModel, useQuery } from '@/ability'
-import { useMount } from '@/hooks'
+import { useMount, usePersistFn } from '@/hooks'
 import type { Event } from '@/models'
 import { RelativeTime } from '@/components'
 
@@ -17,12 +17,9 @@ const List: React.FC = () => {
   const count = feedbackModel.state.count
   const loading = loadingModel.state.effects.feedback.searchFeedbacks
 
-  const handleTablePaginationChange = React.useCallback(
-    (current) => {
-      feedbackModel.dispatch.searchFeedbacks({ page: current - 1 })
-    },
-    [feedbackModel.dispatch]
-  )
+  const handleTablePaginationChange = usePersistFn((current) => {
+    feedbackModel.dispatch.searchFeedbacks({ page: current - 1 })
+  })
 
   useMount(() => {
     const issue_id = parseInt(query.get('issue_id') || '', 10)

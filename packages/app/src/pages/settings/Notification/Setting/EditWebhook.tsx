@@ -3,7 +3,7 @@ import { Modal, Form, Input, Space, Tooltip, Button } from 'antd'
 
 import { useModel } from '@/ability'
 import { NotificationSettingWebHook } from '@/models'
-import { useUpdateEffect } from '@/hooks'
+import { usePersistFn, useUpdateEffect } from '@/hooks'
 import { IconButton, RadioIconButton, Icon } from '@/components'
 
 import styles from './EditWebhook.module.less'
@@ -54,28 +54,25 @@ const EditWebhook: React.FC<EditWebhookProps> = ({
     }
   }, [initialValues])
 
-  const handleOk = React.useCallback(() => {
+  const handleOk = usePersistFn(() => {
     form.submit()
-  }, [])
-  const handleFinish = React.useCallback(
-    (value) => {
-      const payload = {
-        open: true,
-        ...value,
-      }
-      if (type === 'update') {
-        payload.id = initialValues?.id
-      }
-      if (type === 'create') {
-        notificationModel.dispatch.createWebhooksSetting(payload)
-      }
-      if (type === 'update') {
-        notificationModel.dispatch.updateWebhooksSetting(payload)
-      }
-      onCancel?.()
-    },
-    [type, onCancel, initialValues?.id, notificationModel.dispatch]
-  )
+  })
+  const handleFinish = usePersistFn((value) => {
+    const payload = {
+      open: true,
+      ...value,
+    }
+    if (type === 'update') {
+      payload.id = initialValues?.id
+    }
+    if (type === 'create') {
+      notificationModel.dispatch.createWebhooksSetting(payload)
+    }
+    if (type === 'update') {
+      notificationModel.dispatch.updateWebhooksSetting(payload)
+    }
+    onCancel?.()
+  })
 
   return (
     <Modal

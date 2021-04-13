@@ -1,7 +1,7 @@
 import React from 'react'
 import clsx from 'clsx'
 
-import { useRect } from '@/hooks'
+import { useRect, usePersistFn, useCreation } from '@/hooks'
 import type { Col, Row, TreeDataSource } from './Tree.interface'
 import { TreeContext } from './Tree.context'
 import Line from './Line'
@@ -78,16 +78,16 @@ const NodeWrapper: React.FC<NodeWrapperProps> = ({ rowData, colData }) => {
     nodeWidth,
     nodeSpace,
   } = React.useContext(TreeContext)
-  const handleNodeClick = React.useCallback(() => {
+  const handleNodeClick = usePersistFn(() => {
     handleSelectedNodeChange(col.key)
-  }, [col])
+  })
   const isCurrentNode = currentNode == col.key
-  const classes = React.useMemo(
+  const classes = useCreation(
     () =>
       clsx(styles.node, nodeClassName, {
         [selectedNodeClassName || '']: isCurrentNode,
       }),
-    [selectedNodeClassName, currentNode, col.key]
+    [nodeClassName, selectedNodeClassName, isCurrentNode]
   )
 
   const top = `calc(${nodeSpace} * ${rowNumber})`

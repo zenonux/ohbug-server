@@ -3,17 +3,18 @@ import dayjs from 'dayjs'
 
 import { DatePicker } from '@/components'
 import { useModel } from '@/ability'
+import { usePersistFn } from '@/hooks'
 
 import styles from './Search.module.less'
 
 const Search: React.FC = () => {
   const feedbackModel = useModel('feedback')
 
-  const handleDatePickerChange = React.useCallback((_, dateStrings) => {
+  const handleDatePickerChange = usePersistFn((_, dateStrings) => {
     const start = dayjs(dateStrings[0]).toISOString()
     const end = dayjs(dateStrings[1]).toISOString()
     feedbackModel.dispatch.searchFeedbacks({ page: 0, start, end })
-  }, []) //eslint-disable-line
+  })
 
   return (
     <div className={styles.root}>

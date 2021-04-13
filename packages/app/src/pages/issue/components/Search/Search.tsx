@@ -2,6 +2,8 @@ import React from 'react'
 import { Input } from 'antd'
 import { types } from '@ohbug/browser'
 
+import { usePersistFn } from '@/hooks'
+
 import styles from './Search.module.less'
 
 const SEARCH_OPTIONS = [
@@ -38,10 +40,10 @@ const SEARCH_OPTIONS = [
 ]
 
 const Search: React.FC = () => {
-  const handleSearch = React.useCallback((value) => {
+  const handleSearch = usePersistFn((value) => {
     // eslint-disable-next-line no-console
     console.log(SEARCH_OPTIONS, value)
-  }, [])
+  })
 
   return (
     <Input.Search

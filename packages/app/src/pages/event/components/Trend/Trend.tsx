@@ -5,6 +5,7 @@ import dayjs from 'dayjs'
 import { useModel } from '@/ability'
 import type { IssueState } from '@/models'
 import { MiniChart } from '@/components'
+import { useCreation } from '@/hooks'
 
 import HoverCard from '../HoverCard'
 
@@ -26,12 +27,8 @@ const Trend: React.FC<TrendProps> = ({ issue }) => {
 
   const trend = issueModel.state.trend
   const loading = loadingModel.state.effects.issue.getCurrentTrend
-  const data_14d = React.useMemo(() => trend?.current?.['14d']?.buckets, [
-    trend,
-  ])
-  const data_24h = React.useMemo(() => trend?.current?.['24h']?.buckets, [
-    trend,
-  ])
+  const data_14d = useCreation(() => trend?.current?.['14d']?.buckets, [trend])
+  const data_24h = useCreation(() => trend?.current?.['24h']?.buckets, [trend])
 
   return (
     <div className={styles.root}>

@@ -3,7 +3,7 @@ import dayjs from 'dayjs'
 
 import { useModel } from '@/ability'
 import { DatePicker } from '@/components'
-import { useMount } from '@/hooks'
+import { useMount, usePersistFn } from '@/hooks'
 
 const today = [dayjs().subtract(23, 'hour'), dayjs()]
 const twoWeeks = [dayjs().subtract(13, 'day'), dayjs()]
@@ -24,17 +24,14 @@ const TimePicker: React.FC = () => {
     })
   })
 
-  const handleTimeChange = React.useCallback(
-    (dates: any) => {
-      const [start, end] = dates
-      issueModel.dispatch.searchIssues({
-        page: 0,
-        start: (start.toISOString() as unknown) as Date,
-        end: (end.toISOString() as unknown) as Date,
-      })
-    },
-    [issueModel.dispatch]
-  )
+  const handleTimeChange = usePersistFn((dates: any) => {
+    const [start, end] = dates
+    issueModel.dispatch.searchIssues({
+      page: 0,
+      start: (start.toISOString() as unknown) as Date,
+      end: (end.toISOString() as unknown) as Date,
+    })
+  })
 
   return (
     <DatePicker.RangePicker

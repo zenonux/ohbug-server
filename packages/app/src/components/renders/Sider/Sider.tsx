@@ -5,6 +5,7 @@ import clsx from 'clsx'
 import { Link } from '@/ability'
 import routes, { Route } from '@/ability/routes'
 import { Icon } from '@/components'
+import { useCreation } from '@/hooks'
 import logo from '@/static/logo.svg'
 
 import styles from './Sider.module.less'
@@ -21,7 +22,7 @@ function generateMenuItemData(routes: Route[]): Route[] {
 }
 
 const Sider: React.FC = () => {
-  const menuItemData = React.useMemo(() => generateMenuItemData(routes), [])
+  const menuItemData = useCreation(() => generateMenuItemData(routes), [])
 
   return (
     <div className={styles.root}>

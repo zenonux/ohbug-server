@@ -4,6 +4,7 @@ import dayjs from 'dayjs'
 
 import type { EventState } from '@/models'
 import { Icon, RelativeTime } from '@/components'
+import { useCreation } from '@/hooks'
 
 import Cards from './components/Cards'
 import TooltipTags from './components/TooltipTags'
@@ -14,7 +15,7 @@ interface ProfileProps {
   event: EventState['current']
 }
 const Profile: React.FC<ProfileProps> = ({ event }) => {
-  const tooltipTagsList = React.useMemo(() => {
+  const tooltipTagsList = useCreation(() => {
     const result = []
     if (event?.timestamp) {
       result.push({

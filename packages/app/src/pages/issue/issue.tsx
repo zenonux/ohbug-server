@@ -4,6 +4,7 @@ import dayjs from 'dayjs'
 
 import { RouteComponentProps, useModel, Link } from '@/ability'
 import { Layout, MiniChart, LineChart } from '@/components'
+import { usePersistFn } from '@/hooks'
 
 import TimePicker from './components/TimePicker'
 
@@ -17,23 +18,20 @@ const Issue: React.FC<RouteComponentProps> = ({ children }) => {
   const count = issueModel.state.count
   const trend = issueModel.state.trend
 
-  const handleTablePaginationChange = React.useCallback((current) => {
+  const handleTablePaginationChange = usePersistFn((current) => {
     issueModel.dispatch.searchIssues({
       page: current - 1,
     })
-  }, [])
+  })
 
   const [trendValue, setTrendValue] = React.useState<'24h' | '14d'>('24h')
-  const handleTrendChange = React.useCallback(
-    (e) => {
-      const period = e.target.value
-      setTrendValue(period)
+  const handleTrendChange = usePersistFn((e) => {
+    const period = e.target.value
+    setTrendValue(period)
 
-      const ids = issue?.map((v) => v.id)
-      issueModel.dispatch.getTrends({ ids, period })
-    },
-    [issue]
-  )
+    const ids = issue?.map((v) => v.id)
+    issueModel.dispatch.getTrends({ ids, period })
+  })
 
   const loading = loadingModel.state.effects.issue.searchIssues
   const trendChartLoading = loadingModel.state.effects.issue.getTrends
@@ -62,11 +60,15 @@ const Issue: React.FC<RouteComponentProps> = ({ children }) => {
             itemLayout="horizontal"
             loading={loading}
             dataSource={issue}
-            pagination={{
-              onChange: handleTablePaginationChange,
-              pageSize: 20,
-              total: count,
-            }}
+            pagination={
+              count
+                ? {
+                    onChange: handleTablePaginationChange,
+                    pageSize: 20,
+                    total: count,
+                  }
+                : false
+            }
             header={
               <div className={styles.header} style={{ paddingLeft: 0 }}>
                 <div className={styles.title}>异常信息</div>

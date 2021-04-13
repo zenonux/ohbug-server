@@ -1,6 +1,8 @@
 import React from 'react'
 import clsx from 'clsx'
 
+import { useCreation, usePersistFn } from '@/hooks'
+
 import { expandDataSource, render } from './Tree.core'
 import type { TreeDataSource } from './Tree.interface'
 import { TreeContext } from './Tree.context'
@@ -50,23 +52,20 @@ const Tree: React.FC<TreeProps<any>> = ({
   const [currentNode, setCurrentNode] = React.useState<number | string>(
     () => value!
   )
-  const handleSelectedNodeChange = React.useCallback(
-    (key: number | string) => {
-      setCurrentNode(key)
-      if (currentNode !== key) {
-        onChange?.(key)
-      }
-    },
-    [currentNode, onChange]
-  )
+  const handleSelectedNodeChange = usePersistFn((key: number | string) => {
+    setCurrentNode(key)
+    if (currentNode !== key) {
+      onChange?.(key)
+    }
+  })
 
-  const flatDataSource = React.useMemo(() => expandDataSource(dataSource), [
+  const flatDataSource = useCreation(() => expandDataSource(dataSource), [
     dataSource,
   ])
 
-  const classes = React.useMemo(() => clsx(className, styles.root), [className])
+  const classes = useCreation(() => clsx(className, styles.root), [className])
 
-  return React.useMemo(
+  return useCreation(
     () => (
       <TreeContext.Provider
         value={{

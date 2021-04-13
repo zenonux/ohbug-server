@@ -3,6 +3,7 @@ import { Card, Menu } from 'antd'
 
 import { RouteComponentProps, useLocation, navigate } from '@/ability'
 import { Layout } from '@/components'
+import { useCreation } from '@/hooks'
 
 import styles from './settings.module.less'
 
@@ -55,7 +56,7 @@ function renderMenu(
 
 const Settings: React.FC<RouteComponentProps> = ({ children }) => {
   const location = useLocation()
-  const selectedKeys = React.useMemo(() => {
+  const selectedKeys = useCreation(() => {
     const [, key] = location.pathname.split(`/settings/`)
     return [key]
   }, [location])

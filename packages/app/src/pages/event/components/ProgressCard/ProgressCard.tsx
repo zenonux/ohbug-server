@@ -2,6 +2,8 @@ import React from 'react'
 import { Card, Typography } from 'antd'
 import clsx from 'clsx'
 
+import { useCreation } from '@/hooks'
+
 import styles from './ProgressCard.module.less'
 
 interface ProgressCardProps {
@@ -16,7 +18,7 @@ const ProgressCard: React.FC<ProgressCardProps> = ({
   description,
   percent,
 }) => {
-  const progressStyles = React.useMemo(
+  const progressStyles = useCreation(
     () =>
       clsx(styles.progress, {
         [styles.white]: percent && percent >= 60,

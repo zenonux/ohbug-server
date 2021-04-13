@@ -5,6 +5,7 @@ import ReactJson from 'react-json-view'
 import { RouteComponentProps, useModel, navigate, useParams } from '@/ability'
 import { Layout } from '@/components'
 import type { EventState, IssueState } from '@/models'
+import { useCreation, usePersistFn } from '@/hooks'
 
 import Title from './components/Title'
 import Profile from './components/Profile'
@@ -16,7 +17,7 @@ interface EventTabProps {
   issue: IssueState['current']
 }
 const EventTab: React.FC<EventTabProps> = ({ event, issue }) => {
-  const tabList = React.useMemo(() => {
+  const tabList = useCreation(() => {
     const base = [
       {
         key: 'detail',
@@ -83,13 +84,13 @@ const EventTab: React.FC<EventTabProps> = ({ event, issue }) => {
     }
     return base
   }, [event, issue])
-  const handlePreviousClick = React.useCallback(() => {
+  const handlePreviousClick = usePersistFn(() => {
     if (event?.previous)
       navigate(`/issue/${issue?.id}/event/${event?.previous?.id}`)
-  }, [event?.previous, issue?.id])
-  const handleNextClick = React.useCallback(() => {
+  })
+  const handleNextClick = usePersistFn(() => {
     if (event?.next) navigate(`/issue/${issue?.id}/event/${event?.next?.id}`)
-  }, [event?.next, issue?.id])
+  })
 
   return (
     <Tabs

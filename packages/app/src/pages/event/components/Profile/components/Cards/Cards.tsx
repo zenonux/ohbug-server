@@ -3,6 +3,7 @@ import { Skeleton } from 'antd'
 import type { OhbugEvent } from '@ohbug/types'
 
 import { getDeviceInfo } from '@/utils'
+import { useCreation } from '@/hooks'
 import ProgressCard from '@/pages/event/components/ProgressCard'
 
 interface CardsProps {
@@ -10,7 +11,7 @@ interface CardsProps {
 }
 
 const Cards: React.FC<CardsProps> = ({ event }) => {
-  const deviceInfo = React.useMemo(() => getDeviceInfo(event), [event])
+  const deviceInfo = useCreation(() => getDeviceInfo(event), [event])
   const loading = !event
 
   return (

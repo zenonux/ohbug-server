@@ -4,7 +4,7 @@ import { Form, Switch, Input, Space, Button, Table, Modal } from 'antd'
 import { RouteComponentProps, useModel } from '@/ability'
 import type { NotificationSetting, NotificationSettingWebHook } from '@/models'
 import { Zone, IconButton } from '@/components'
-import { useUpdateEffect, useBoolean } from '@/hooks'
+import { useUpdateEffect, useBoolean, usePersistFn } from '@/hooks'
 import { registerServiceWorker, askNotificationPermission } from '@/utils'
 
 import EditWebhook from './EditWebhook'
@@ -50,52 +50,46 @@ const Setting: React.FC<RouteComponentProps> = () => {
     { setTrue: webhookModalShow, setFalse: webhookModalOnCancel },
   ] = useBoolean(false)
 
-  const handleBrowserChange = React.useCallback(
-    (checked: boolean) => {
-      if (checked === true) {
-        // 获取浏览器通知权限
-        askNotificationPermission()
-          .then(() => {
-            registerServiceWorker().then((subscribeOptions) => {
-              if (subscribeOptions) {
-                notificationModel.dispatch.updateSetting({
-                  browser: {
-                    open: checked,
-                    data: JSON.parse(JSON.stringify(subscribeOptions)),
-                  },
-                })
-              }
-            })
+  const handleBrowserChange = usePersistFn((checked: boolean) => {
+    if (checked === true) {
+      // 获取浏览器通知权限
+      askNotificationPermission()
+        .then(() => {
+          registerServiceWorker().then((subscribeOptions) => {
+            if (subscribeOptions) {
+              notificationModel.dispatch.updateSetting({
+                browser: {
+                  open: checked,
+                  data: JSON.parse(JSON.stringify(subscribeOptions)),
+                },
+              })
+            }
           })
-          .catch((err) => {
-            appModel.dispatch.error(err.message)
-            form.setFieldsValue({
-              browser: false,
-            })
+        })
+        .catch((err) => {
+          appModel.dispatch.error(err.message)
+          form.setFieldsValue({
+            browser: false,
           })
-      } else {
-        notificationModel.dispatch.updateSetting({
-          browser: {
-            open: checked,
-            data: null,
-          },
         })
-      }
-    },
-    [appModel.dispatch, form, notificationModel.dispatch]
-  )
-  const handleFinish = React.useCallback(
-    (values) => {
-      const payload: NotificationSetting = {}
-      if (form.isFieldTouched('emails')) {
-        payload.emails = values.emails
-        notificationModel.dispatch.updateSetting({
-          ...payload,
-        })
-      }
-    },
-    [form, notificationModel.dispatch]
-  )
+    } else {
+      notificationModel.dispatch.updateSetting({
+        browser: {
+          open: checked,
+          data: null,
+        },
+      })
+    }
+  })
+  const handleFinish = usePersistFn((values) => {
+    const payload: NotificationSetting = {}
+    if (form.isFieldTouched('emails')) {
+      payload.emails = values.emails
+      notificationModel.dispatch.updateSetting({
+        ...payload,
+      })
+    }
+  })
 
   return (
     <section className={styles.root}>

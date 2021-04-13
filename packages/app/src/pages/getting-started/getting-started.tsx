@@ -4,7 +4,7 @@ import SyntaxHighlighter from 'react-syntax-highlighter'
 import { githubGist as highlighterStyles } from 'react-syntax-highlighter/dist/esm/styles/hljs'
 
 import { RouteComponentProps, useModel } from '@/ability'
-import { useMount } from '@/hooks'
+import { useMount, usePersistFn } from '@/hooks'
 import { Icon } from '@/components'
 
 import styles from './getting-started.module.less'
@@ -19,9 +19,9 @@ const GettingStarted: React.FC<RouteComponentProps> = () => {
     projectModel.dispatch.get()
   })
 
-  const handleCreateProject = React.useCallback(() => {
+  const handleCreateProject = usePersistFn(() => {
     projectModel.dispatch.create()
-  }, [projectModel.dispatch])
+  })
 
   if (project) {
     return (

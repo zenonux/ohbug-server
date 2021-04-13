@@ -3,6 +3,8 @@ import { Typography, Badge } from 'antd'
 import ReactEcharts, { EChartsOption } from 'echarts-for-react'
 import dayjs from 'dayjs'
 
+import { useCreation } from '@/hooks'
+
 import './LineChart.module.less'
 
 // 判断时间是 近14天/近24h/其他时间
@@ -36,129 +38,132 @@ interface LineChartProps {
   title?: string
 }
 
-const LineChart: React.FC<LineChartProps> = ({ data, loading, title }) => {
-  const option = React.useMemo<EChartsOption | undefined>(() => {
-    if (data) {
-      const start = data[0]
-      const end = data[data.length - 1]
-      const timeFormat = switchTimeRange(start, end)
-      return {
-        dataset: {
-          source: data,
-          dimensions: [{ name: 'timestamp' }, { name: 'count' }],
-        },
-        xAxis: {
-          type: 'category',
-          axisTick: {
-            show: false,
+const LineChart: React.FC<LineChartProps> = React.memo(
+  ({ data, loading, title }) => {
+    const option = useCreation<EChartsOption | null>(() => {
+      if (data) {
+        const start = data[0]
+        const end = data[data.length - 1]
+        const timeFormat = switchTimeRange(start, end)
+        return {
+          dataset: {
+            source: data,
+            dimensions: [{ name: 'timestamp' }, { name: 'count' }],
           },
-          axisLine: {
-            show: false,
-          },
-          axisLabel: {
-            lineHeight: 25,
-            formatter(timestamp: number) {
-              return dayjs(timestamp).format(timeFormat)
+          xAxis: {
+            type: 'category',
+            axisTick: {
+              show: false,
+            },
+            axisLine: {
+              show: false,
+            },
+            axisLabel: {
+              lineHeight: 25,
+              formatter(timestamp: number) {
+                return dayjs(timestamp).format(timeFormat)
+              },
             },
           },
-        },
-        yAxis: {
-          type: 'value',
-          show: false,
-        },
-        grid: {
-          top: 10,
-          bottom: 25,
-          left: 0,
-          right: 0,
-        },
-        tooltip: {
-          trigger: 'axis',
-          padding: [8, 16],
-          backgroundColor: 'rgba(50, 50, 50, 0.9)',
-          formatter(params: any) {
-            const [{ value }] = params
-            const { timestamp, count } = value
-            return `<div class="tooltip-time">${dayjs(timestamp).format(
-              timeFormat
-            )}</div>
+          yAxis: {
+            type: 'value',
+            show: false,
+          },
+          grid: {
+            top: 10,
+            bottom: 25,
+            left: 0,
+            right: 0,
+          },
+          tooltip: {
+            trigger: 'axis',
+            padding: [8, 16],
+            backgroundColor: 'rgba(50, 50, 50, 0.9)',
+            formatter(params: any) {
+              const [{ value }] = params
+              const { timestamp, count } = value
+              return `<div class="tooltip-time">${dayjs(timestamp).format(
+                timeFormat
+              )}</div>
 
             <div class="tooltip-value">${count} issues</div>
 
             <span class="tooltip-arrow" />
           `
+            },
+            textStyle: {
+              fontWeight: 'bolder',
+              fontSize: 12,
+              lineHeight: 1,
+              color: '#fafafa',
+            },
+            extraCssText: 'text-align: center;',
           },
-          textStyle: {
-            fontWeight: 'bolder',
-            fontSize: 12,
-            lineHeight: 1,
-            color: '#fafafa',
-          },
-          extraCssText: 'text-align: center;',
-        },
-        series: [
-          {
-            name: 'issues',
-            type: 'line',
-            smooth: true,
-            symbolSize: 6,
-            showSymbol: false,
-            itemStyle: {
-              lineStyle: {
-                width: 4,
+          series: [
+            {
+              name: 'issues',
+              type: 'line',
+              smooth: true,
+              symbolSize: 6,
+              showSymbol: false,
+              itemStyle: {
+                lineStyle: {
+                  width: 4,
+                },
+              },
+              areaStyle: {
+                color: {
+                  type: 'linear',
+                  x: 0,
+                  y: 0,
+                  x2: 0,
+                  y2: 1,
+                  colorStops: [
+                    {
+                      offset: 0,
+                      color: 'rgba(255,111,97,0.25)',
+                    },
+                    {
+                      offset: 0.333,
+                      color: 'rgba(255,111,97,0.2)',
+                    },
+                    {
+                      offset: 0.666,
+                      color: 'rgba(255,111,97,0.1)',
+                    },
+                    {
+                      offset: 1,
+                      color: 'rgba(255,111,97,0)',
+                    },
+                  ],
+                },
               },
             },
-            areaStyle: {
-              color: {
-                type: 'linear',
-                x: 0,
-                y: 0,
-                x2: 0,
-                y2: 1,
-                colorStops: [
-                  {
-                    offset: 0,
-                    color: 'rgba(255,111,97,0.25)',
-                  },
-                  {
-                    offset: 0.333,
-                    color: 'rgba(255,111,97,0.2)',
-                  },
-                  {
-                    offset: 0.666,
-                    color: 'rgba(255,111,97,0.1)',
-                  },
-                  {
-                    offset: 1,
-                    color: 'rgba(255,111,97,0)',
-                  },
-                ],
-              },
-            },
-          },
-        ],
+          ],
+        }
       }
-    }
-    return undefined
-  }, [data])
+      return null
+    }, [data])
 
-  return data ? (
-    <div>
-      {title && (
-        <div>
-          <Badge status="processing" />
-          <Typography.Text strong>{title}</Typography.Text>
-        </div>
-      )}
-      <ReactEcharts
-        option={option!}
-        style={{ height: '160px' }}
-        opts={{ renderer: 'svg' }}
-        showLoading={loading}
-        theme="ohbug"
-      />
-    </div>
-  ) : null
-}
+    return option ? (
+      <div>
+        {title && (
+          <div>
+            <Badge status="processing" />
+            <Typography.Text strong>{title}</Typography.Text>
+          </div>
+        )}
+        <ReactEcharts
+          option={option}
+          style={{ height: '160px' }}
+          showLoading={loading}
+          theme="ohbug"
+        />
+      </div>
+    ) : null
+  }
+)
+
+LineChart.displayName = 'LineChart'
 
 export default LineChart

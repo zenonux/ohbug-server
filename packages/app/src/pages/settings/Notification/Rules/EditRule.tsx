@@ -14,7 +14,7 @@ import { types } from '@ohbug/browser'
 import { useModel } from '@/ability'
 import type { NotificationRule, NotificationRuleLevel } from '@/models'
 import { IconButton } from '@/components'
-import { useUpdateEffect } from '@/hooks'
+import { usePersistFn, useUpdateEffect } from '@/hooks'
 
 import { levelList, intervalList } from './Rules.core'
 
@@ -23,12 +23,9 @@ interface LevelComponentProps {
   onChange?: (key: NotificationRuleLevel) => void
 }
 const LevelComponent: React.FC<LevelComponentProps> = ({ value, onChange }) => {
-  const handleChange = React.useCallback(
-    (tag, checked) => {
-      if (checked) onChange?.(tag)
-    },
-    [onChange]
-  )
+  const handleChange = usePersistFn((tag, checked) => {
+    if (checked) onChange?.(tag)
+  })
   return (
     <>
       {levelList.map((item) => (
@@ -106,25 +103,22 @@ const EditRule: React.FC<EditRuleProps> = ({
     }
   }, [initialValues])
 
-  const handleOk = React.useCallback(() => {
+  const handleOk = usePersistFn(() => {
     form.submit()
-  }, [])
-  const handleFinish = React.useCallback(
-    (value) => {
-      const payload = value
-      if (type === 'update') {
-        payload.rule_id = initialValues?.id
-      }
-      if (type === 'create') {
-        notificationModel.dispatch.createRules(payload)
-      }
-      if (type === 'update') {
-        notificationModel.dispatch.updateRules(payload)
-      }
-      onCancel?.()
-    },
-    [type, onCancel, initialValues?.id, notificationModel.dispatch]
-  )
+  })
+  const handleFinish = usePersistFn((value) => {
+    const payload = value
+    if (type === 'update') {
+      payload.rule_id = initialValues?.id
+    }
+    if (type === 'create') {
+      notificationModel.dispatch.createRules(payload)
+    }
+    if (type === 'update') {
+      notificationModel.dispatch.updateRules(payload)
+    }
+    onCancel?.()
+  })
 
   return (
     <Modal

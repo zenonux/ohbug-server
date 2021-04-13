@@ -3,6 +3,8 @@ import { Radio, Collapse } from 'antd'
 import clsx from 'clsx'
 import type { Result } from 'source-map-trace/dist/interfaces'
 
+import { useCreation, usePersistFn } from '@/hooks'
+
 import styles from './StackInfo.module.less'
 
 interface StackInfoProps {
@@ -12,10 +14,10 @@ interface StackInfoProps {
 
 const StackInfo: React.FC<StackInfoProps> = ({ stack, source }) => {
   const [toggle, setToggle] = React.useState('raw')
-  const handleToggleChange = React.useCallback((e) => {
+  const handleToggleChange = usePersistFn((e) => {
     setToggle(e.target.value)
-  }, [])
-  const title = React.useMemo(() => {
+  })
+  const title = useCreation(() => {
     return (
       <div className={styles.title}>
         <code className={styles.strong}>{source?.parsed?.source}</code>
@@ -27,7 +29,7 @@ const StackInfo: React.FC<StackInfoProps> = ({ stack, source }) => {
       </div>
     )
   }, [source])
-  const content = React.useMemo((): React.ReactNode => {
+  const content = useCreation((): React.ReactNode => {
     switch (toggle) {
       case 'raw':
         return typeof stack === 'string' ? stack : JSON.stringify(stack)
