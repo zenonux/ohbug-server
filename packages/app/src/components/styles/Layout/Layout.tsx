@@ -8,20 +8,14 @@ const { Content } = Layout
 
 interface BasicLayoutProps {
   className?: string
-  pageHeader?: React.ReactNode
 }
 
-const BasicLayout: React.FC<BasicLayoutProps> = ({
-  children,
-  pageHeader,
-  className,
-}) => {
+const BasicLayout: React.FC<BasicLayoutProps> = ({ children, className }) => {
   const classes = clsx(styles.content, className)
 
   return (
     <Layout className={styles.root}>
       <Layout className={styles.container}>
-        {pageHeader}
         <Content className={classes}>{children}</Content>
       </Layout>
     </Layout>

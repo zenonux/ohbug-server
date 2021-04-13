@@ -59,6 +59,28 @@ const EventTab: React.FC<EventTabProps> = ({ event, issue }) => {
         })
       })
     }
+    if (event?.user) {
+      base.splice(1, 0, {
+        key: 'user',
+        tab: 'user',
+        disabled: false,
+        element: (
+          <ReactJson
+            src={event.user!}
+            theme="summerfruit:inverted"
+            indentWidth={2}
+            collapsed={2}
+            style={{
+              fontFamily:
+                'JetBrains Mono, -apple-system, BlinkMacSystemFont, monospace, Roboto',
+              background: 'none',
+              maxHeight: '60vh',
+              overflowY: 'auto',
+            }}
+          />
+        ),
+      })
+    }
     return base
   }, [event, issue])
   const handlePreviousClick = React.useCallback(() => {

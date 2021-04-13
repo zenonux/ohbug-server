@@ -1,6 +1,6 @@
 import React from 'react'
 import { match } from 'path-to-regexp'
-import { Layout } from 'antd'
+import { Layout, PageHeader } from 'antd'
 
 import {
   Redirect,
@@ -35,7 +35,7 @@ const Container: React.FC = ({ children }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location.key])
 
-  const Wrapper = route?.wrapper ? route?.wrapper! : React.Fragment
+  const Wrapper = route?.wrapper ? route?.wrapper : React.Fragment
   // wrapper 和 redirect 同时存在时优先处理 redirect
   if (route?.wrapper && route.redirect) {
     navigate(route.redirect, { replace: true })
@@ -61,6 +61,17 @@ const Container: React.FC = ({ children }) => {
 
           <React.Suspense fallback={<Loading />}>
             <Layout style={{ marginLeft: 65 }}>
+              {route?.title && (
+                <Layout.Header
+                  style={{ position: 'sticky', top: 0, zIndex: 10 }}
+                >
+                  <PageHeader
+                    title={route.title}
+                    onBack={() => navigate(-1)}
+                    ghost={false}
+                  />
+                </Layout.Header>
+              )}
               <Layout.Content>{children}</Layout.Content>
 
               {!(route?.layout?.hideFooter === true) && <Footer />}
@@ -76,7 +87,7 @@ function renderRoutes(routes: Route[]) {
   return routes
     .map((route) => {
       if (route.component) {
-        const Component = route?.component!
+        const Component = route?.component
 
         if (!route.routes) {
           if (route.redirect) {
