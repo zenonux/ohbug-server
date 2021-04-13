@@ -132,7 +132,8 @@ const Event: React.FC<RouteComponentProps> = () => {
       })
     }
     issueModel.dispatch.get({ issue_id })
-  }, [eventModel.dispatch, event_id, issueModel.dispatch, issue_id])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [event_id, issue_id])
 
   const event = eventModel.state.current
   const issue = issueModel.state.current

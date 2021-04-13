@@ -5,7 +5,7 @@ import dayjs from 'dayjs'
 import { RouteComponentProps, useModel } from '@/ability'
 import type { NotificationRule } from '@/models'
 import { Zone } from '@/components'
-import { useBoolean } from '@/hooks'
+import { useBoolean, useMount } from '@/hooks'
 
 import EditRule from './EditRule'
 import { levelList } from './Rules.core'
@@ -24,9 +24,9 @@ const Rules: React.FC<RouteComponentProps> = () => {
   >(undefined)
   const [currentSwitch, setCurrentSwitch] = React.useState<number>()
 
-  React.useEffect(() => {
+  useMount(() => {
     notificationModel.dispatch.getRules()
-  }, [notificationModel.dispatch])
+  })
   const rules = notificationModel.state.ruleData
   const switchLoading = loadingModel.state.effects.notification.updateRules
 

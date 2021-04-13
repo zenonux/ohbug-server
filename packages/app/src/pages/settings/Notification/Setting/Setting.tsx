@@ -4,7 +4,7 @@ import { Form, Switch, Input, Space, Button, Table, Modal } from 'antd'
 import { RouteComponentProps, useModel } from '@/ability'
 import type { NotificationSetting, NotificationSettingWebHook } from '@/models'
 import { Zone, IconButton } from '@/components'
-import { useUpdateEffect, useBoolean, usePersistFn } from '@/hooks'
+import { useUpdateEffect, useBoolean, usePersistFn, useMount } from '@/hooks'
 import { registerServiceWorker, askNotificationPermission } from '@/utils'
 
 import EditWebhook from './EditWebhook'
@@ -27,9 +27,9 @@ const Setting: React.FC<RouteComponentProps> = () => {
     return true
   })
 
-  React.useEffect(() => {
+  useMount(() => {
     notificationModel.dispatch.getSetting()
-  }, [notificationModel.dispatch])
+  })
   const setting = notificationModel.state.settingData
   const browserSwitchLoading =
     loadingModel.state.effects.notification.updateSetting

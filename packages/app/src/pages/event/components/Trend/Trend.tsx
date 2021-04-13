@@ -23,7 +23,8 @@ const Trend: React.FC<TrendProps> = ({ issue }) => {
       const ids = [issue.id]
       issueModel.dispatch.getCurrentTrend({ ids, period: 'all' })
     }
-  }, [issue, issueModel.dispatch])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [issue])
 
   const trend = issueModel.state.trend
   const loading = loadingModel.state.effects.issue.getCurrentTrend
