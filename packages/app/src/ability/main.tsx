@@ -5,13 +5,19 @@ import * as echarts from 'echarts'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
 import 'dayjs/locale/zh-cn'
-import 'antd/es/style/index.less'
 
 import { renderEmpty } from '@/components'
 import Router from '@/ability/router'
 import { Provider, store } from '@/ability/model'
 import chartTheme from '@/styles/chart.json'
 import '@/styles'
+
+if (import.meta.env.DEV) {
+  import('antd/dist/antd.less')
+}
+if (import.meta.env.PROD) {
+  import('antd/es/style/index.less')
+}
 
 dayjs.extend(relativeTime)
 dayjs.locale('zh-cn')

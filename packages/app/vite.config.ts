@@ -25,17 +25,7 @@ const baseConfig: UserConfig = {
       },
     },
   },
-  plugins: [
-    reactRefresh(),
-    vitePluginImp({
-      libList: [
-        {
-          libName: 'antd',
-          style: (name) => `antd/es/${name}/style`,
-        },
-      ],
-    }),
-  ],
+  plugins: [reactRefresh()],
 }
 
 const developmentConfig: UserConfig = {
@@ -49,7 +39,18 @@ const developmentConfig: UserConfig = {
   },
 }
 
-const productionConfig: UserConfig = {}
+const productionConfig: UserConfig = {
+  plugins: [
+    vitePluginImp({
+      libList: [
+        {
+          libName: 'antd',
+          style: (name) => `antd/es/${name}/style`,
+        },
+      ],
+    }),
+  ],
+}
 
 export default defineConfig(({ mode }) => {
   return mergeDeepRight(
