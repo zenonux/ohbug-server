@@ -1,7 +1,6 @@
 import {
   IsString,
   IsNumber,
-  IsNumberString,
   IsOptional,
   IsArray,
   ValidateIf,
@@ -9,6 +8,7 @@ import {
   IsObject,
   IsUUID,
 } from 'class-validator'
+import { Type } from 'class-transformer'
 import type {
   NotificationRuleData,
   NotificationRuleWhiteList,
@@ -20,12 +20,18 @@ import type {
   NotificationSettingWebHookType,
 } from '@ohbug-server/common'
 
+export class BaseNotificationDto {
+  @Type(() => Number)
+  @IsNumber()
+  readonly project_id: number
+}
 export class BaseNotificationRuleDto {
-  @IsNumberString()
-  readonly rule_id: number | string
+  @Type(() => Number)
+  @IsNumber()
+  readonly rule_id: number
 }
 
-export class NotificationRuleDto {
+export class NotificationRuleDto extends BaseNotificationDto {
   @IsString({ message: '通知名称错误' })
   @IsOptional()
   readonly name?: string
@@ -63,7 +69,7 @@ export class NotificationSettingDto {
   readonly webhooks: NotificationSettingWebHooks
 }
 
-export class UpdateNotificationSettingDto {
+export class UpdateNotificationSettingDto extends BaseNotificationDto {
   @IsArray()
   @IsOptional()
   readonly emails?: NotificationSettingEmails
@@ -77,7 +83,7 @@ export class UpdateNotificationSettingDto {
   readonly webhooks?: NotificationSettingWebHooks
 }
 
-export class NotificationSettingWebhookDto {
+export class NotificationSettingWebhookDto extends BaseNotificationDto {
   @IsString({ message: '第三方通知类型错误' })
   @IsOptional()
   type?: NotificationSettingWebHookType

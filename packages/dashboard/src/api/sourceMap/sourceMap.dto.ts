@@ -1,4 +1,5 @@
-import { IsString, IsOptional, IsNumberString } from 'class-validator'
+import { IsString, IsOptional, IsNumber } from 'class-validator'
+import { Type } from 'class-transformer'
 
 export class ReceiveSourceMapDto {
   @IsString()
@@ -18,6 +19,7 @@ export class GetSourceMapsDto {
 }
 
 export class DeleteSourceMapsDto {
-  @IsNumberString()
-  readonly id: number | string
+  @Type(() => Number)
+  @IsNumber()
+  readonly id: number
 }

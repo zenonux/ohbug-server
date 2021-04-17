@@ -11,7 +11,7 @@ export const analysis = {
   get: createApi<Get, any>({
     url: ({ type }) => `/analysis/${type}`,
     method: 'get',
-    data: ({ start, end, performanceType }) => ({
+    params: ({ start, end, performanceType }) => ({
       start,
       end,
       type: performanceType,

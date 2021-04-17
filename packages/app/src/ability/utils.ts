@@ -5,41 +5,44 @@ interface CreateApiParam<T> {
   url: string | ((data: T) => string)
   method: Method
   data?: (data: T) => any
+  params?: (data: T) => any
 }
 
 export function createApi<T = any, R = any | void>({
   url,
   method,
   data,
+  params,
 }: CreateApiParam<T>) {
-  async function call(_data: T) {
-    let params = {}
-    let body = {}
-    const hasBody: Method[] = [
-      'DELETE',
-      'delete',
-      'PATCH',
-      'patch',
-      'POST',
-      'post',
-      'PUT',
-      'put',
-    ]
-    const __data = data === undefined ? _data : data(_data)
-    // has body
-    if (!hasBody.includes(method)) {
-      params = __data
-    } else {
-      body = __data
+  async function call(value: T) {
+    let _body = data?.(value) || {}
+    let _params = params?.(value) || {}
+
+    if (!data && !params) {
+      const hasBody: Method[] = [
+        'DELETE',
+        'delete',
+        'PATCH',
+        'patch',
+        'POST',
+        'post',
+        'PUT',
+        'put',
+      ]
+      if (hasBody.includes(method)) {
+        _body = value
+      } else {
+        _params = value
+      }
     }
 
     try {
       const result = await request(
-        typeof url === 'string' ? url : url?.(_data),
+        typeof url === 'string' ? url : url?.(value),
         {
           method,
-          data: body,
-          params,
+          data: _body,
+          params: _params,
         }
       )
       if (result.data) {

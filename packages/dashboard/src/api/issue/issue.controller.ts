@@ -18,7 +18,7 @@ export class IssueController {
    *
    * @param issue_id
    */
-  @Get('/:issue_id')
+  @Get(':issue_id')
   async get(
     @Param()
     { issue_id }: GetIssueByIssueIdDto
@@ -31,6 +31,7 @@ export class IssueController {
   /**
    * 查询 issues
    *
+   * @param project_id
    * @param page
    * @param start
    * @param end
@@ -38,11 +39,12 @@ export class IssueController {
   @Get()
   async getAll(
     @Query()
-    { page, start, end }: GetIssueDto
+    { project_id, page, start, end }: GetIssueDto
   ) {
-    const skip = parseInt(page, 10) * limit
+    const skip = parseInt((page as unknown) as string, 10) * limit
     const searchCondition = { start, end }
     return await this.issueService.searchIssues({
+      project_id,
       searchCondition,
       limit,
       skip,

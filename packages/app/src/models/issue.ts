@@ -93,22 +93,27 @@ export const issue = createModel<RootModel>()({
       }
     },
 
-    async searchIssues({
-      page = 0,
-      start,
-      end,
-    }: {
-      page: number
-      start?: Date
-      end?: Date
-    }) {
-      if (start && end) {
+    async searchIssues(
+      {
+        page = 0,
+        start,
+        end,
+      }: {
+        page: number
+        start?: Date
+        end?: Date
+      },
+      state
+    ) {
+      const project = state.project.current
+      if (project && start && end) {
         await dispatch.project.trend({
           start,
           end,
         })
 
         const res = await api.issue.getMany.call({
+          project_id: project.id,
           page,
           start,
           end,

@@ -1,17 +1,23 @@
 import {
-  IsNumberString,
+  IsNumber,
   IsBooleanString,
   IsOptional,
   IsDateString,
   IsArray,
   IsString,
 } from 'class-validator'
+import { Type } from 'class-transformer'
 
 import type { Period } from './issue.interface'
 
 export class GetIssueDto {
-  @IsNumberString()
-  readonly page: string
+  @Type(() => Number)
+  @IsNumber()
+  readonly project_id: number
+
+  @Type(() => Number)
+  @IsNumber()
+  readonly page: number
 
   @IsOptional()
   @IsDateString()
@@ -24,15 +30,16 @@ export class GetIssueDto {
 
 export class GetTrendByIssueIdDto {
   @IsArray()
-  readonly ids: string[]
+  readonly ids: number[]
 
   @IsString()
   readonly period: Period
 }
 
 export class GetIssueByIssueIdDto {
-  @IsNumberString()
-  readonly issue_id: number | string
+  @Type(() => Number)
+  @IsNumber()
+  readonly issue_id: number
 }
 export class GetEventsDto extends GetIssueDto {
   @IsBooleanString()

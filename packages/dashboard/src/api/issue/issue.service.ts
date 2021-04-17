@@ -39,16 +39,18 @@ export class IssueService {
   /**
    * 查询 issues
    *
+   * @param project_id
    * @param searchCondition
    * @param limit
    * @param skip
    */
   async searchIssues({
+    project_id,
     searchCondition,
     limit,
     skip,
   }: GetIssuesByProjectIdParams) {
-    const { apiKey } = await this.projectService.getProject()
+    const { apiKey } = await this.projectService.getProject({ project_id })
     return await this.managerClient
       .send(TOPIC_DASHBOARD_MANAGER_SEARCH_ISSUES, {
         apiKey,
@@ -65,7 +67,7 @@ export class IssueService {
    * @param ids
    * @param period
    */
-  async getTrendByIssueId(ids: string[], period: Period) {
+  async getTrendByIssueId(ids: number[], period: Period) {
     return await this.managerClient
       .send(TOPIC_DASHBOARD_MANAGER_GET_TREND, { ids, period })
       .toPromise()

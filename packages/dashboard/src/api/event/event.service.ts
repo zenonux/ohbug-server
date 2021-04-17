@@ -20,7 +20,7 @@ export class EventService {
    * @param event_id
    * @param issue_id
    */
-  async getEventByEventId(event_id: string, issue_id: string | number) {
+  async getEventByEventId(event_id: number | string, issue_id: number) {
     const event = await this.managerClient
       .send(TOPIC_DASHBOARD_MANAGER_GET_EVENT, { event_id, issue_id })
       .toPromise()
@@ -44,7 +44,7 @@ export class EventService {
    *
    * @param issue_id
    */
-  async getLatestEventByIssueId(issue_id: number | string) {
+  async getLatestEventByIssueId(issue_id: number) {
     const event = await this.managerClient
       .send(TOPIC_DASHBOARD_MANAGER_GET_LATEST_EVENT, issue_id)
       .toPromise()

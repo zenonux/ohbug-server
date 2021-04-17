@@ -5,7 +5,7 @@ export const sourceMap = {
   get: createApi<string>({
     url: (apiKey) => `/sourceMap/${apiKey}`,
     method: 'get',
-    data: () => ({}),
+    params: () => ({}),
   }),
   delete: createApi<number, SourceMap>({
     url: (sourceMap_id) => `/sourceMap/${sourceMap_id}`,

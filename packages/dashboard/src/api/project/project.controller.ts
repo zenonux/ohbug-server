@@ -4,7 +4,7 @@ import { ProjectService } from './project.service'
 import { GetTrendDto } from './project.dto'
 import { Project } from './project.entity'
 
-@Controller('project')
+@Controller('projects')
 export class ProjectController {
   constructor(private readonly projectService: ProjectService) {}
 
@@ -17,25 +17,27 @@ export class ProjectController {
   }
 
   /**
-   * 查询 project
+   * 查询 projects
    */
   @Get()
-  async getProject(): Promise<Project> {
-    return await this.projectService.getProject()
+  async getAll(): Promise<Project[]> {
+    return await this.projectService.getProjects()
   }
 
   /**
    * 获取指定时间段内的 trend
    *
+   * @param project_id
    * @param start
    * @param end
    */
   @Get('trend')
   async getProjectTrend(
     @Query()
-    { start, end }: GetTrendDto
+    { project_id, start, end }: GetTrendDto
   ) {
     return await this.projectService.getProjectTrend({
+      project_id,
       start,
       end,
     })

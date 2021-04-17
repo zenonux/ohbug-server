@@ -1,21 +1,22 @@
-import { Injectable, Inject, forwardRef } from '@nestjs/common'
+import { forwardRef, Inject, Injectable } from '@nestjs/common'
 import { Repository } from 'typeorm'
 import { InjectRepository } from '@nestjs/typeorm'
 import { v4 as uuid } from 'uuid'
 
-import { ForbiddenException } from '@ohbug-server/common'
 import type { NotificationSettingWebHook } from '@ohbug-server/common'
+import { ForbiddenException } from '@ohbug-server/common'
 import { ProjectService } from '@/api/project/project.service'
 
 import { NotificationRule } from './notification.rule.entity'
 import { NotificationSetting } from './notification.setting.entity'
 import {
-  NotificationRuleDto,
+  BaseNotificationDto,
   BaseNotificationRuleDto,
-  NotificationSettingDto,
-  UpdateNotificationSettingDto,
-  NotificationSettingWebhookDto,
   BaseNotificationSettingWebhookDto,
+  NotificationRuleDto,
+  NotificationSettingDto,
+  NotificationSettingWebhookDto,
+  UpdateNotificationSettingDto,
 } from './notification.dto'
 
 const MAX_RULES_NUMBER = 10
@@ -36,6 +37,7 @@ export class NotificationService {
   /**
    * 创建 notification rule
    *
+   * @param project_id
    * @param name
    * @param data
    * @param whiteList
@@ -45,6 +47,7 @@ export class NotificationService {
    * @param open
    */
   async createNotificationRule({
+    project_id,
     name,
     data,
     whiteList,
@@ -54,8 +57,8 @@ export class NotificationService {
     open,
   }: NotificationRuleDto): Promise<NotificationRule> {
     try {
-      const project = await this.projectService.getProject()
-      const rules = await this.getNotificationRules()
+      const project = await this.projectService.getProject({ project_id })
+      const rules = await this.getNotificationRules({ project_id })
       if (!rules || rules.length < MAX_RULES_NUMBER) {
         const notificationRule = this.notificationRuleRepository.create({
           name,
@@ -78,11 +81,14 @@ export class NotificationService {
 
   /**
    * 查询 notification rules
+   * @param project_id
    */
-  async getNotificationRules(): Promise<NotificationRule[]> {
+  async getNotificationRules({
+    project_id,
+  }: BaseNotificationDto): Promise<NotificationRule[]> {
     try {
-      const project = await this.projectService.getProject()
-      const rules = await this.notificationRuleRepository.find({
+      const project = await this.projectService.getProject({ project_id })
+      return await this.notificationRuleRepository.find({
         where: {
           project,
         },
@@ -90,7 +96,6 @@ export class NotificationService {
           id: 'ASC',
         },
       })
-      return rules
     } catch (error) {
       throw new ForbiddenException(4001101, error)
     }
@@ -100,6 +105,7 @@ export class NotificationService {
    * 更新 notification rule
    *
    * @param rule_id
+   * @param project_id
    * @param name
    * @param data
    * @param whiteList
@@ -110,6 +116,7 @@ export class NotificationService {
    */
   async updateNotificationRule({
     rule_id,
+    project_id,
     name,
     data,
     whiteList,
@@ -119,6 +126,10 @@ export class NotificationService {
     open,
   }: NotificationRuleDto & BaseNotificationRuleDto): Promise<NotificationRule> {
     try {
+      const project = await this.projectService.getProject({ project_id })
+      if (!project) {
+        throw new Error(`不合法的 Project: ${project_id}`)
+      }
       const rule = await this.notificationRuleRepository.findOneOrFail(rule_id)
       if (name !== undefined) rule.name = name
       if (data !== undefined) rule.data = data
@@ -137,11 +148,17 @@ export class NotificationService {
    * 删除 notification rule
    *
    * @param rule_id
+   * @param project_id
    */
   async deleteNotificationRule({
     rule_id,
-  }: BaseNotificationRuleDto): Promise<boolean> {
+    project_id,
+  }: BaseNotificationRuleDto & BaseNotificationDto): Promise<boolean> {
     try {
+      const project = await this.projectService.getProject({ project_id })
+      if (!project) {
+        throw new Error(`不合法的 Project: ${project_id}`)
+      }
       const rule = await this.notificationRuleRepository.findOneOrFail(rule_id)
       return Boolean(await this.notificationRuleRepository.remove(rule))
     } catch (error) {
@@ -162,12 +179,11 @@ export class NotificationService {
     webhooks,
   }: NotificationSettingDto) {
     try {
-      const notificationSetting = this.notificationSettingRepository.create({
+      return this.notificationSettingRepository.create({
         emails,
         browser,
         webhooks,
       })
-      return notificationSetting
     } catch (error) {
       throw new ForbiddenException(4001110, error)
     }
@@ -175,16 +191,17 @@ export class NotificationService {
 
   /**
    * 获取 notification setting
+   *
+   * @param project_id
    */
-  async getNotificationSetting(): Promise<NotificationSetting> {
+  async getNotificationSetting({
+    project_id,
+  }: BaseNotificationDto): Promise<NotificationSetting> {
     try {
-      const project = await this.projectService.getProject()
-      const notificationSetting = await this.notificationSettingRepository.findOneOrFail(
-        {
-          project,
-        }
-      )
-      return notificationSetting
+      const project = await this.projectService.getProject({ project_id })
+      return await this.notificationSettingRepository.findOneOrFail({
+        project,
+      })
     } catch (error) {
       throw new ForbiddenException(4001111, error)
     }
@@ -193,17 +210,22 @@ export class NotificationService {
   /**
    * 更新 notification setting
    *
+   * @param project_id
    * @param emails
    * @param browser
    * @param webhooks
    */
   async updateNotificationSetting({
+    project_id,
     emails,
     browser,
     webhooks,
-  }: UpdateNotificationSettingDto): Promise<NotificationSetting> {
+  }: UpdateNotificationSettingDto &
+    BaseNotificationDto): Promise<NotificationSetting> {
     try {
-      const notificationSetting = await this.getNotificationSetting()
+      const notificationSetting = await this.getNotificationSetting({
+        project_id,
+      })
       if (emails !== undefined) {
         if (emails.length > MAX_EMAILS_NUMBER) {
           throw new Error(`每个项目最多拥有 ${MAX_EMAILS_NUMBER} 个邮箱通知`)
@@ -221,6 +243,7 @@ export class NotificationService {
   /**
    * 创建 notification setting webhooks
    *
+   * @param project_id
    * @param type
    * @param name
    * @param link
@@ -228,6 +251,7 @@ export class NotificationService {
    * @param at
    */
   async createNotificationSettingWebhook({
+    project_id,
     type,
     name,
     link,
@@ -235,7 +259,9 @@ export class NotificationService {
     at,
   }: NotificationSettingWebhookDto): Promise<NotificationSettingWebHook> {
     try {
-      const notificationSetting = await this.getNotificationSetting()
+      const notificationSetting = await this.getNotificationSetting({
+        project_id,
+      })
       if (
         !notificationSetting.webhooks ||
         notificationSetting.webhooks.length < MAX_WEBHOOKS_NUMBER
@@ -266,6 +292,7 @@ export class NotificationService {
   /**
    * 更新 notification setting
    *
+   * @param project_id
    * @param id
    * @param type
    * @param name
@@ -274,6 +301,7 @@ export class NotificationService {
    * @param at
    */
   async updateNotificationSettingWebhook({
+    project_id,
     id,
     type,
     name,
@@ -283,7 +311,9 @@ export class NotificationService {
   }: NotificationSettingWebhookDto &
     BaseNotificationSettingWebhookDto): Promise<NotificationSettingWebHook> {
     try {
-      const notificationSetting = await this.getNotificationSetting()
+      const notificationSetting = await this.getNotificationSetting({
+        project_id,
+      })
       let result: NotificationSettingWebHook
       notificationSetting.webhooks.forEach((item) => {
         if (item.id === id) {
@@ -306,13 +336,18 @@ export class NotificationService {
   /**
    * 删除 notification setting
    *
+   * @param project_id
    * @param id
    */
   async deleteNotificationSettingWebhook({
+    project_id,
     id,
-  }: BaseNotificationSettingWebhookDto): Promise<boolean> {
+  }: BaseNotificationSettingWebhookDto &
+    BaseNotificationDto): Promise<boolean> {
     try {
-      const notificationSetting = await this.getNotificationSetting()
+      const notificationSetting = await this.getNotificationSetting({
+        project_id,
+      })
       notificationSetting.webhooks = notificationSetting.webhooks.filter(
         (item) => item.id !== id
       )

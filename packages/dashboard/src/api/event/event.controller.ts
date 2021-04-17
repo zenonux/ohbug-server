@@ -23,7 +23,7 @@ export class EventController {
    * @param issue_id
    * @param event_index
    */
-  @Get('/:event_id')
+  @Get(':event_id')
   @UseInterceptors(ClassSerializerInterceptor)
   async get(
     @Param()

@@ -10,6 +10,7 @@ export interface SearchCondition {
 }
 
 export interface GetIssuesByProjectIdParams {
+  project_id: number
   searchCondition: SearchCondition
   limit?: number
   skip?: number

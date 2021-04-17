@@ -6,8 +6,8 @@ import type { Queue } from 'bull'
 import { getStackFrame, getTheSourceByError } from 'source-map-trace'
 import { unlinkSync } from 'fs'
 
-import { ForbiddenException } from '@ohbug-server/common'
 import type { OhbugEventLike } from '@ohbug-server/common'
+import { ForbiddenException } from '@ohbug-server/common'
 import { ProjectService } from '@/api/project/project.service'
 
 import { SourceMap } from './sourceMap.entity'
@@ -98,8 +98,7 @@ export class SourceMapService {
    */
   async getSourceMapsByApiKey({ apiKey }: GetSourceMapsDto) {
     try {
-      const sourceMaps = await this.sourceMapRepository.find({ apiKey })
-      return sourceMaps
+      return await this.sourceMapRepository.find({ apiKey })
     } catch (error) {
       throw new ForbiddenException(400904, error)
     }

@@ -11,7 +11,7 @@ import {
 } from '@ohbug-server/common'
 
 import { Project } from './project.entity'
-import { GetTrendDto } from './project.dto'
+import { BaseProjectDto, GetTrendDto } from './project.dto'
 
 @Injectable()
 export class ProjectService {
@@ -56,6 +56,19 @@ export class ProjectService {
       })
       return await this.projectRepository.save(project)
     } catch (error) {
+      throw new ForbiddenException(400201, error)
+    }
+  }
+
+  /**
+   * 查询 projects
+   */
+  async getProjects(): Promise<Project[]> {
+    try {
+      const result = await this.projectRepository.find()
+      if (result) return result
+      throw new Error('未初始化')
+    } catch (error) {
       throw new ForbiddenException(400202, error)
     }
   }
@@ -63,11 +76,9 @@ export class ProjectService {
   /**
    * 查询 project
    */
-  async getProject(): Promise<Project> {
+  async getProject({ project_id }: BaseProjectDto): Promise<Project> {
     try {
-      const result = (await this.projectRepository.find())[0]
-      if (result) return result
-      throw new Error('未初始化')
+      return await this.projectRepository.findOneOrFail(project_id)
     } catch (error) {
       throw new ForbiddenException(400203, error)
     }
@@ -91,12 +102,12 @@ export class ProjectService {
   /**
    * 获取指定时间段内的 trend
    *
+   * @param project_id
    * @param start
    * @param end
    */
-  async getProjectTrend({ start, end }: GetTrendDto) {
-    const { apiKey } = await this.getProject()
-
+  async getProjectTrend({ project_id, start, end }: GetTrendDto) {
+    const { apiKey } = await this.getProject({ project_id })
     return await this.managerClient
       .send(TOPIC_DASHBOARD_MANAGER_GET_PROJECT_TREND, {
         apiKey,

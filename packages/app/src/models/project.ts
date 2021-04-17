@@ -16,6 +16,7 @@ export interface Project {
   createdAt: string
 }
 export interface ProjectState {
+  data?: Project[]
   current?: Project
   currentTrend?: ProjectTrend
 }
@@ -23,6 +24,7 @@ export interface ProjectState {
 export const project = createModel<RootModel>()({
   state: {
     current: undefined,
+    data: undefined,
   } as ProjectState,
   reducers: {
     setState(state, payload: ProjectState) {
@@ -47,28 +49,29 @@ export const project = createModel<RootModel>()({
     },
 
     async get(_, state) {
-      if (!state.project.current) {
+      if (!state.project.data) {
         const data = await api.project.get.call(null)
 
         // 不存在 project 进入引导
-        if (data.errorCode === 400203) {
+        if (data.errorCode === 400202) {
           if (window.location.pathname !== '/getting-started') {
             return navigate('/getting-started')
           }
         }
 
         if (data.success === false) {
-          dispatch.project.setState({ current: undefined })
+          dispatch.project.setState({ data: undefined })
         } else {
-          dispatch.project.setState({ current: data })
+          dispatch.project.setState({ data, current: data[0] })
         }
       }
     },
 
     async trend({ start, end }: { start: Date; end: Date }, state) {
-      const current = state.project.current
-      if (current) {
+      const project = state.project.current
+      if (project) {
         const data = await api.project.trend.call({
+          project_id: project.id,
           start,
           end,
         })

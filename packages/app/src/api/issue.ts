@@ -5,6 +5,7 @@ interface Get {
   issue_id: number
 }
 interface GetMany {
+  project_id: number
   page: number
   start?: Date
   end?: Date
@@ -19,7 +20,7 @@ export const issue = {
   get: createApi<Get, Issue>({
     url: ({ issue_id }) => `/issues/${issue_id}`,
     method: 'get',
-    data: () => ({}),
+    params: () => ({}),
   }),
   getMany: createApi<GetMany, [Issue[], number]>({
     url: '/issues',

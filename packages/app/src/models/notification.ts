@@ -96,24 +96,63 @@ export const notification = createModel<RootModel>()({
     },
   },
   effects: (dispatch) => ({
-    async createRules({
-      name,
-      data,
-      whiteList,
-      blackList,
-      level,
-      interval,
-      open = true,
-    }: {
-      name: string
-      data: string
-      whiteList: string
-      blackList: string
-      level: 'serious' | 'warning' | 'default'
-      interval: number
-      open: boolean
-    }) {
-      const result = await api.notification.createRule.call({
+    async createRules(
+      {
+        name,
+        data,
+        whiteList,
+        blackList,
+        level,
+        interval,
+        open = true,
+      }: {
+        name: string
+        data: string
+        whiteList: string
+        blackList: string
+        level: 'serious' | 'warning' | 'default'
+        interval: number
+        open: boolean
+      },
+      state
+    ) {
+      const project = state.project.current
+      if (project) {
+        const result = await api.notification.createRule.call({
+          project_id: project.id,
+          name,
+          data,
+          whiteList,
+          blackList,
+          level,
+          interval,
+          open,
+        })
+
+        if (result) {
+          dispatch.notification.getRules()
+        }
+      }
+    },
+
+    async getRules(_, state) {
+      const project = state.project.current
+      if (project) {
+        const result = await api.notification.getRules.call({
+          project_id: project.id,
+        })
+
+        if (result) {
+          dispatch.notification.setState({
+            ruleData: result,
+          })
+        }
+      }
+    },
+
+    async updateRules(
+      {
+        rule_id,
         name,
         data,
         whiteList,
@@ -121,44 +160,22 @@ export const notification = createModel<RootModel>()({
         level,
         interval,
         open,
-      })
-
-      if (result) {
-        dispatch.notification.getRules()
-      }
-    },
-
-    async getRules() {
-      const result = await api.notification.getRules.call(null)
-
-      if (result) {
-        dispatch.notification.setState({
-          ruleData: result,
-        })
-      }
-    },
-
-    async updateRules({
-      rule_id,
-      name,
-      data,
-      whiteList,
-      blackList,
-      level,
-      interval,
-      open,
-    }: {
-      rule_id: number
-      name?: string
-      data?: string
-      whiteList?: string
-      blackList?: string
-      level?: 'serious' | 'warning' | 'default'
-      interval?: number
-      open?: boolean
-    }) {
-      if (rule_id) {
+      }: {
+        rule_id: number
+        name?: string
+        data?: string
+        whiteList?: string
+        blackList?: string
+        level?: 'serious' | 'warning' | 'default'
+        interval?: number
+        open?: boolean
+      },
+      state
+    ) {
+      const project = state.project.current
+      if (rule_id && project) {
         const result = await api.notification.updateRule.call({
+          project_id: project.id,
           rule_id,
           name,
           data,
@@ -175,9 +192,11 @@ export const notification = createModel<RootModel>()({
       }
     },
 
-    async deleteRule({ rule_id }: { rule_id: number }) {
-      if (rule_id) {
+    async deleteRule({ rule_id }: { rule_id: number }, state) {
+      const project = state.project.current
+      if (rule_id && project) {
         const result = await api.notification.deleteRule.call({
+          project_id: project.id,
           rule_id,
         })
 
@@ -187,79 +206,103 @@ export const notification = createModel<RootModel>()({
       }
     },
 
-    async getSetting() {
-      const result = await api.notification.getSetting.call(null)
-
-      if (result) {
-        dispatch.notification.setState({
-          settingData: result,
+    async getSetting(_, state) {
+      const project = state.project.current
+      if (project) {
+        const result = await api.notification.getSetting.call({
+          project_id: project.id,
         })
+
+        if (result) {
+          dispatch.notification.setState({
+            settingData: result,
+          })
+        }
       }
     },
 
-    async updateSetting({
-      emails,
-      browser,
-      webhooks,
-    }: {
-      emails?: NotificationSettingEmails
-      browser?: NotificationSettingBrowser
-      webhooks?: NotificationSettingWebHook[]
-    }) {
-      const result = await api.notification.updateSetting.call({
+    async updateSetting(
+      {
         emails,
         browser,
         webhooks,
-      })
+      }: {
+        emails?: NotificationSettingEmails
+        browser?: NotificationSettingBrowser
+        webhooks?: NotificationSettingWebHook[]
+      },
+      state
+    ) {
+      const project = state.project.current
+      if (project) {
+        const result = await api.notification.updateSetting.call({
+          project_id: project.id,
+          emails,
+          browser,
+          webhooks,
+        })
 
-      if (result) {
-        dispatch.notification.getSetting()
+        if (result) {
+          dispatch.notification.getSetting()
+        }
       }
     },
 
-    async createWebhooksSetting({
-      type,
-      name,
-      link,
-      open,
-      at,
-    }: {
-      type: NotificationSettingWebHookType
-      name: string
-      link: string
-      open?: boolean
-      at?: { value: string }[]
-    }) {
-      const result = await api.notification.createSettingWebhook.call({
+    async createWebhooksSetting(
+      {
         type,
         name,
         link,
         open,
         at,
-      })
+      }: {
+        type: NotificationSettingWebHookType
+        name: string
+        link: string
+        open?: boolean
+        at?: { value: string }[]
+      },
+      state
+    ) {
+      const project = state.project.current
+      if (project) {
+        const result = await api.notification.createSettingWebhook.call({
+          project_id: project.id,
+          type,
+          name,
+          link,
+          open,
+          at,
+        })
 
-      if (result) {
-        dispatch.notification.getSetting()
+        if (result) {
+          dispatch.notification.getSetting()
+        }
       }
     },
 
-    async updateWebhooksSetting({
-      id,
-      type,
-      name,
-      link,
-      open,
-      at,
-    }: {
-      id: string
-      type?: NotificationSettingWebHookType
-      name?: string
-      link?: string
-      open?: boolean
-      at?: { value: string }[]
-    }) {
-      if (id) {
+    async updateWebhooksSetting(
+      {
+        id,
+        type,
+        name,
+        link,
+        open,
+        at,
+      }: {
+        id: string
+        type?: NotificationSettingWebHookType
+        name?: string
+        link?: string
+        open?: boolean
+        at?: { value: string }[]
+      },
+      state
+    ) {
+      const project = state.project.current
+      if (id && project) {
         const result = await api.notification.updateSettingWebhook.call({
+          project_id: project.id,
           id,
           type,
           name,
@@ -274,9 +317,11 @@ export const notification = createModel<RootModel>()({
       }
     },
 
-    async deleteWebhooksSetting({ id }: { id: string }) {
-      if (id) {
+    async deleteWebhooksSetting({ id }: { id: string }, state) {
+      const project = state.project.current
+      if (id && project) {
         const result = await api.notification.deleteSettingWebhook.call({
+          project_id: project.id,
           id,
         })
 
