@@ -11,7 +11,7 @@ import {
 } from '@ohbug-server/common'
 
 import { Project } from './project.entity'
-import { BaseProjectDto, GetTrendDto } from './project.dto'
+import { BaseProjectDto, CreateProjectDto, GetTrendDto } from './project.dto'
 
 @Injectable()
 export class ProjectService {
@@ -25,10 +25,13 @@ export class ProjectService {
   @Inject('MICROSERVICE_MANAGER_CLIENT')
   private readonly managerClient: ClientProxy
 
-  private static createApiKey(): string {
+  private static createApiKey(data: CreateProjectDto): string {
     try {
       const secret = process.env.APP_SECRET
-      return crypto.createHmac('sha256', secret!).digest('hex')
+      return crypto
+        .createHmac('sha256', secret!)
+        .update(JSON.stringify(data) + new Date().getTime())
+        .digest('hex')
     } catch (error) {
       throw new ForbiddenException(400200, error)
     }
@@ -37,9 +40,9 @@ export class ProjectService {
   /**
    * 创建 project
    */
-  async createProject(): Promise<Project> {
+  async createProject({ name, type }: CreateProjectDto): Promise<Project> {
     try {
-      const apiKey = ProjectService.createApiKey()
+      const apiKey = ProjectService.createApiKey({ name, type })
       const notificationSetting = this.notificationService.createNotificationSetting(
         {
           emails: [],
@@ -52,6 +55,8 @@ export class ProjectService {
       )
       const project = this.projectRepository.create({
         apiKey,
+        name,
+        type,
         notificationSetting,
       })
       return await this.projectRepository.save(project)

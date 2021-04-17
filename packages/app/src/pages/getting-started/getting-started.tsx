@@ -3,7 +3,7 @@ import { Typography, Button } from 'antd'
 import SyntaxHighlighter from 'react-syntax-highlighter'
 import { githubGist as highlighterStyles } from 'react-syntax-highlighter/dist/esm/styles/hljs'
 
-import { RouteComponentProps, useModel } from '@/ability'
+import { RouteComponentProps, useModel, navigate } from '@/ability'
 import { useMount, usePersistFn } from '@/hooks'
 import { Icon } from '@/components'
 
@@ -20,7 +20,7 @@ const GettingStarted: React.FC<RouteComponentProps> = () => {
   })
 
   const handleCreateProject = usePersistFn(() => {
-    projectModel.dispatch.create()
+    navigate('create-project')
   })
 
   if (project) {

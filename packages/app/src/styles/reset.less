@@ -63,15 +63,16 @@ label {
   background: transparent;
 }
 .ant-layout-header {
-  padding: 0;
-  height: 72px;
-  line-height: 72px;
+  height: 72px !important;
+  line-height: 72px !important;
   .flex();
   flex-direction: column;
   justify-content: center;
-  padding: 0 @space-2;
+  padding: 0 @space-2 !important;
+  background: none !important;
   .ant-page-header {
     padding: 0;
+    background: none;
   }
 }
 .ant-form-item-explain,

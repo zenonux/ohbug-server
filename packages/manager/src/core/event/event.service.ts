@@ -3,8 +3,6 @@ import { FindConditions, Repository } from 'typeorm'
 import { InjectRepository } from '@nestjs/typeorm'
 import type { Queue } from 'bull'
 import { InjectQueue } from '@nestjs/bull'
-import { OhbugEvent } from '@ohbug/types'
-import dayjs from 'dayjs'
 
 import { ForbiddenException } from '@ohbug-server/common'
 import type { OhbugEventLike } from '@ohbug-server/common'
@@ -14,7 +12,6 @@ import type { GetEventByEventId, OhbugEventDetail } from './event.interface'
 import {
   getMd5FromAggregationData,
   switchErrorDetailAndGetAggregationDataAndMetaData,
-  eventIndices,
 } from './event.core'
 import { Event } from './event.entity'
 
@@ -55,17 +52,6 @@ export class EventService {
     }
   }
 
-  getIndexOrKeyByEvent(event: OhbugEvent<any> | OhbugEventLike) {
-    const { category, key, index } = eventIndices.find(
-      (item) => item.category === event?.category
-    )!
-    return {
-      category,
-      key,
-      index: `${index}-${dayjs().format('YYYY.MM.DD')}`,
-    }
-  }
-
   /**
    * 创建 event
    *
@@ -88,7 +74,7 @@ export class EventService {
   /**
    * 删除 event
    *
-   * @param interval
+   * @param conditions
    */
   async deleteEvents(conditions: FindConditions<any>) {
     try {
@@ -101,26 +87,27 @@ export class EventService {
   /**
    * 根据 event_id 查询 event
    *
-   * @param id
+   * @param event_id
+   * @param issue_id
    */
-  async getEventByEventId({ event_id, issue_id }: GetEventByEventId) {
+  async getEventByEventId({
+    event_id,
+    issue_id,
+  }: GetEventByEventId): Promise<Event & { previous: Event; next: Event }> {
     try {
       const issue = await this.issueService.getIssueByIssueId({
         issue_id,
         relations: ['events'],
       })
-      const event = issue.events.find(
-        (e) => e.id === parseInt(event_id as string, 10)
-      )
-      const eventIndex = issue.events.findIndex(
-        (e) => e.id === parseInt(event_id as string, 10)
-      )
+      const event = issue.events.find((e) => e.id === event_id) as Event & {
+        previous: Event
+        next: Event
+      }
+      const eventIndex = issue.events.findIndex((e) => e.id === event_id)
       if (event && eventIndex) {
         const previousEvent = issue.events[eventIndex - 1]
         const nextEvent = issue.events[eventIndex + 1]
-        // @ts-ignore
         if (previousEvent) event.previous = previousEvent
-        // @ts-ignore
         if (nextEvent) event.next = nextEvent
       }
 
@@ -132,6 +119,7 @@ export class EventService {
 
   async groupEvents(
     query: {
+      apiKey?: string
       issueId?: number
       range: { gte: Date; lte: Date }
     },
@@ -154,6 +142,25 @@ export class EventService {
         )
         .addSelect('COUNT(*)', 'count')
         .where(`event.issueId = :issueId`, { issueId: query.issueId })
+        .andWhere(`event.createdAt >= :start AND event.createdAt <= :end`, {
+          start: query.range?.gte,
+          end: query.range?.lte,
+        })
+        .groupBy(
+          `to_char(event.createdAt AT TIME ZONE 'Asia/Shanghai', '${trend.format}')`
+        )
+        .orderBy(`"timestamp"`)
+        .execute()
+    }
+    if (query.apiKey) {
+      return await this.eventRepository
+        .createQueryBuilder('event')
+        .select(
+          `to_char(event.createdAt AT TIME ZONE 'Asia/Shanghai', '${trend.format}')`,
+          'timestamp'
+        )
+        .addSelect('COUNT(*)', 'count')
+        .where(`event.apiKey = :apiKey`, { apiKey: query.apiKey })
         .andWhere(`event.createdAt >= :start AND event.createdAt <= :end`, {
           start: query.range?.gte,
           end: query.range?.lte,

@@ -1,7 +1,7 @@
-import { Controller, Post, Get, Query } from '@nestjs/common'
+import { Controller, Post, Get, Param, Body } from '@nestjs/common'
 
 import { ProjectService } from './project.service'
-import { GetTrendDto } from './project.dto'
+import { BaseProjectDto, CreateProjectDto, GetTrendDto } from './project.dto'
 import { Project } from './project.entity'
 
 @Controller('projects')
@@ -12,16 +12,28 @@ export class ProjectController {
    * 创建 project
    */
   @Post()
-  async create(): Promise<Project> {
-    return await this.projectService.createProject()
+  async create(@Body() { name, type }: CreateProjectDto): Promise<Project> {
+    return await this.projectService.createProject({ name, type })
   }
 
   /**
    * 查询 projects
    */
   @Get()
-  async getAll(): Promise<Project[]> {
+  async getMany(): Promise<Project[]> {
     return await this.projectService.getProjects()
+  }
+
+  /**
+   * 查询 project
+   * @param project_id {number}
+   */
+  @Get(':project_id')
+  async get(
+    @Param()
+    { project_id }: BaseProjectDto
+  ): Promise<Project> {
+    return await this.projectService.getProject({ project_id })
   }
 
   /**
@@ -31,9 +43,9 @@ export class ProjectController {
    * @param start
    * @param end
    */
-  @Get('trend')
+  @Post('trend')
   async getProjectTrend(
-    @Query()
+    @Body()
     { project_id, start, end }: GetTrendDto
   ) {
     return await this.projectService.getProjectTrend({

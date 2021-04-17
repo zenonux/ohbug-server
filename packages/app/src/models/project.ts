@@ -12,6 +12,8 @@ export interface ProjectTrend {
 }
 export interface Project {
   id: number
+  name: string
+  type: string
   apiKey: string
   createdAt: string
 }
@@ -33,24 +35,32 @@ export const project = createModel<RootModel>()({
         ...payload,
       }
     },
+    setCurrentProject(state, payload: number) {
+      const project = state.data!.find((v) => v.id === payload)
+      return {
+        ...state,
+        current: project,
+      }
+    },
   },
   effects: (dispatch) => ({
-    async create(_, state) {
-      if (!state.project.current) {
-        const data = await api.project.create.call(null)
+    async create({ name, type }: { name: string; type: string }, state) {
+      const data = await api.project.create.call({ name, type })
 
+      if (data) {
         if (data) {
-          if (data) {
-            dispatch.project.setState({ current: data })
-          }
-          navigate('/issue')
+          dispatch.project.setState({
+            data: [...(state.project.data || []), data],
+            current: data,
+          })
         }
+        navigate('/issue')
       }
     },
 
     async get(_, state) {
       if (!state.project.data) {
-        const data = await api.project.get.call(null)
+        const data = await api.project.getMany.call(null)
 
         // 不存在 project 进入引导
         if (data.errorCode === 400202) {
@@ -67,11 +77,18 @@ export const project = createModel<RootModel>()({
       }
     },
 
-    async trend({ start, end }: { start: Date; end: Date }, state) {
+    async trend(
+      {
+        project_id,
+        start,
+        end,
+      }: { project_id?: number; start: Date; end: Date },
+      state
+    ) {
       const project = state.project.current
-      if (project) {
+      if (project_id || project) {
         const data = await api.project.trend.call({
-          project_id: project.id,
+          project_id: project_id || project!.id,
           start,
           end,
         })

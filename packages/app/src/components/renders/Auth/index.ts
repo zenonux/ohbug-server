@@ -24,7 +24,7 @@ const Auth: React.FC<RouteComponentProps> = ({ children }) => {
     }
   }
 
-  navigate('/403')
+  navigate('/getting-started')
   return null
 }
 

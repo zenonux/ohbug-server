@@ -56,7 +56,7 @@ export class MessageController {
   }
 
   @MessagePattern(TOPIC_DASHBOARD_MANAGER_GET_LATEST_EVENT)
-  async getLatestEventByIssueId(@Payload() payload: number | string) {
+  async getLatestEventByIssueId(@Payload() payload: number) {
     return await this.issueService.getLatestEventByIssueId(payload)
   }
 

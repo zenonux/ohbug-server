@@ -2,7 +2,7 @@ import React from 'react'
 import { Card, Space, List, Skeleton, Radio, Typography, Row, Col } from 'antd'
 import dayjs from 'dayjs'
 
-import { RouteComponentProps, useModel, Link } from '@/ability'
+import { RouteComponentProps, useModel, Link, useQuery } from '@/ability'
 import { Layout, MiniChart, LineChart } from '@/components'
 import { usePersistFn } from '@/hooks'
 
@@ -11,6 +11,7 @@ import TimePicker from './components/TimePicker'
 import styles from './issue.module.less'
 
 const Issue: React.FC<RouteComponentProps> = ({ children }) => {
+  const query = useQuery()
   const issueModel = useModel('issue')
   const projectModel = useModel('project')
   const loadingModel = useModel('loading')
@@ -19,9 +20,13 @@ const Issue: React.FC<RouteComponentProps> = ({ children }) => {
   const trend = issueModel.state.trend
 
   const handleTablePaginationChange = usePersistFn((current) => {
-    issueModel.dispatch.searchIssues({
-      page: current - 1,
-    })
+    const project_id = query.get('project_id')
+    if (project_id) {
+      issueModel.dispatch.searchIssues({
+        project_id: parseInt(project_id, 10),
+        page: current - 1,
+      })
+    }
   })
 
   const [trendValue, setTrendValue] = React.useState<'24h' | '14d'>('24h')

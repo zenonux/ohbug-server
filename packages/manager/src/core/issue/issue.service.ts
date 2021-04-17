@@ -1,12 +1,10 @@
 import { forwardRef, Inject, Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
-import { Repository } from 'typeorm'
 import type { FindConditions } from 'typeorm'
+import { Repository } from 'typeorm'
 import { uniq } from 'ramda'
 import dayjs from 'dayjs'
 import duration from 'dayjs/plugin/duration'
-dayjs.extend(duration)
-
 import { ForbiddenException } from '@ohbug-server/common'
 
 import { EventService } from '@/core/event/event.service'
@@ -16,13 +14,15 @@ import type {
   CreateOrUpdateIssueByIntroParams,
   GetIssueByIssueIdParams,
   GetIssuesByProjectIdParams,
-  GetTrendByIssueIdParams,
   GetProjectTrendByApiKeyParams,
+  GetTrendByIssueIdParams,
 } from './issue.interface'
 import {
   getWhereOptions,
   switchTimeRangeAndGetDateHistogram,
 } from './issue.core'
+
+dayjs.extend(duration)
 
 @Injectable()
 export class IssueService {
@@ -93,6 +93,7 @@ export class IssueService {
    * 根据 issue_id 取到对应 issue
    *
    * @param issue_id
+   * @param relations
    */
   async getIssueByIssueId({ issue_id, relations }: GetIssueByIssueIdParams) {
     try {
@@ -105,6 +106,7 @@ export class IssueService {
   /**
    * 搜索 issues
    *
+   * @param apiKey
    * @param searchCondition
    * @param limit
    * @param skip
@@ -116,7 +118,7 @@ export class IssueService {
     skip,
   }: GetIssuesByProjectIdParams) {
     try {
-      const result = await this.issueRepository.findAndCount({
+      return await this.issueRepository.findAndCount({
         where: {
           apiKey,
           ...getWhereOptions(searchCondition),
@@ -127,7 +129,6 @@ export class IssueService {
         skip,
         take: limit,
       })
-      return result
     } catch (error) {
       throw new ForbiddenException(400401, error)
     }
@@ -135,6 +136,7 @@ export class IssueService {
 
   private async getTrend(
     query: {
+      apiKey?: string
       issueId?: number
       range: { gte: Date; lte: Date }
     },
@@ -263,7 +265,7 @@ export class IssueService {
    *
    * @param issue_id
    */
-  async getLatestEventByIssueId(issue_id: number | string) {
+  async getLatestEventByIssueId(issue_id: number) {
     try {
       const issue = await this.issueRepository.findOne(issue_id, {
         relations: ['events'],
@@ -286,11 +288,12 @@ export class IssueService {
    * @param end
    */
   async getProjectTrendByApiKey({
-    // apiKey,
+    apiKey,
     start,
     end,
   }: GetProjectTrendByApiKeyParams) {
     const query = {
+      apiKey,
       range: {
         gte: dayjs(start).toDate(),
         lte: dayjs(end).toDate(),

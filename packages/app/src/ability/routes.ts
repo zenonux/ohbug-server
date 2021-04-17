@@ -23,6 +23,12 @@ import Auth from '@/components/renders/Auth'
 const GettingStarted = React.lazy<React.FC<RouteComponentProps>>(
   () => import('../pages/getting-started')
 )
+const CreateProject = React.lazy<React.FC<RouteComponentProps>>(
+  () => import('../pages/create-project')
+)
+const Project = React.lazy<React.FC<RouteComponentProps>>(
+  () => import('../pages/project')
+)
 const Issue = React.lazy<React.FC<RouteComponentProps>>(
   () => import('../pages/issue')
 )
@@ -57,6 +63,20 @@ const routes: Route[] = [
   {
     path: '/getting-started',
     component: GettingStarted,
+  },
+  {
+    path: '/create-project',
+    component: CreateProject,
+  },
+  {
+    path: '/project',
+    component: Project,
+    wrapper: Auth,
+    // layout
+    menu: {
+      name: '项目',
+      icon: 'icon-ohbug-projector-line',
+    },
   },
   {
     path: '/issue',

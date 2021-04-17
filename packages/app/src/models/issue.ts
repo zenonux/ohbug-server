@@ -95,31 +95,35 @@ export const issue = createModel<RootModel>()({
 
     async searchIssues(
       {
+        project_id,
         page = 0,
         start,
         end,
       }: {
+        project_id?: number
         page: number
         start?: Date
         end?: Date
       },
       state
     ) {
-      const project = state.project.current
-      if (project && start && end) {
+      if (start && end) {
+        // eslint-disable-next-line
+        const id = project_id || state.project.current?.id!
         await dispatch.project.trend({
+          project_id: id,
           start,
           end,
         })
 
-        const res = await api.issue.getMany.call({
-          project_id: project.id,
+        const result = await api.issue.getMany.call({
+          project_id: id,
           page,
           start,
           end,
         })
-        if (res) {
-          const [data, count] = res
+        if (result) {
+          const [data, count] = result
           dispatch.issue.setIssues({
             data,
             count,
@@ -140,12 +144,12 @@ export const issue = createModel<RootModel>()({
       ids: number[]
       period: '24h' | '14d' | 'all'
     }) {
-      const res = await api.issue.getTrend.call({
+      const result = await api.issue.getTrend.call({
         ids,
         period,
       })
 
-      dispatch.issue.setTrends(res)
+      dispatch.issue.setTrends(result)
     },
 
     async getCurrentTrend({

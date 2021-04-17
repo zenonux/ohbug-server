@@ -21,11 +21,6 @@ export type OhbugEventDetail = UncaughtErrorDetail &
   VueErrorDetail &
   any
 
-export interface OhbugDocument {
-  document_id: string
-  index: string
-}
-
 export interface MetaData {
   type: string
   message: string
@@ -40,6 +35,6 @@ export interface AggregationDataAndMetaData {
 }
 
 export interface GetEventByEventId {
-  event_id: string | number
-  issue_id: string | number
+  event_id: number
+  issue_id: number
 }

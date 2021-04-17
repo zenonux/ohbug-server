@@ -1,6 +1,13 @@
 import { createApi } from '@/ability'
 import type { Project } from '@/models'
 
+interface Get {
+  project_id: number
+}
+interface Create {
+  name: string
+  type: string
+}
 interface Trend {
   project_id: number
   start: Date
@@ -8,17 +15,22 @@ interface Trend {
 }
 
 export const project = {
-  create: createApi<null, Project>({
+  create: createApi<Create, Project>({
     url: '/projects',
     method: 'post',
   }),
-  get: createApi<null, Project[]>({
+  get: createApi<Get, Project>({
+    url: ({ project_id }) => `/projects/${project_id}`,
+    method: 'get',
+    params: () => ({}),
+  }),
+  getMany: createApi<null, Project[]>({
     url: '/projects',
     method: 'get',
   }),
   trend: createApi<Trend, any>({
     url: `/projects/trend`,
-    method: 'get',
-    params: ({ project_id, start, end }) => ({ project_id, start, end }),
+    method: 'post',
+    data: ({ project_id, start, end }) => ({ project_id, start, end }),
   }),
 }

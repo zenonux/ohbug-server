@@ -20,6 +20,12 @@ export class Project {
   @Column({ type: 'text' })
   apiKey: string
 
+  @Column({ type: 'text' })
+  name: string
+
+  @Column({ type: 'text' })
+  type: string
+
   /**
    * project 创建时间
    *

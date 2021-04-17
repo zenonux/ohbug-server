@@ -37,7 +37,7 @@ export class IssueController {
    * @param end
    */
   @Get()
-  async getAll(
+  async getMany(
     @Query()
     { project_id, page, start, end }: GetIssueDto
   ) {

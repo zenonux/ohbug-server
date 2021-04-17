@@ -1,7 +1,7 @@
 import React from 'react'
 import dayjs from 'dayjs'
 
-import { useModel } from '@/ability'
+import { useModel, useQuery } from '@/ability'
 import { DatePicker } from '@/components'
 import { useMount, usePersistFn } from '@/hooks'
 
@@ -14,23 +14,31 @@ const ranges = {
 }
 
 const TimePicker: React.FC = () => {
+  const query = useQuery()
   const issueModel = useModel('issue')
+  const project_id = query.get('project_id')
 
   useMount(() => {
-    issueModel.dispatch.searchIssues({
-      page: 0,
-      start: (defaultValue[0].toISOString() as unknown) as Date,
-      end: (defaultValue[1].toISOString() as unknown) as Date,
-    })
+    if (project_id) {
+      issueModel.dispatch.searchIssues({
+        project_id: parseInt(project_id, 10),
+        page: 0,
+        start: (defaultValue[0].toISOString() as unknown) as Date,
+        end: (defaultValue[1].toISOString() as unknown) as Date,
+      })
+    }
   })
 
   const handleTimeChange = usePersistFn((dates: any) => {
     const [start, end] = dates
-    issueModel.dispatch.searchIssues({
-      page: 0,
-      start: (start.toISOString() as unknown) as Date,
-      end: (end.toISOString() as unknown) as Date,
-    })
+    if (project_id) {
+      issueModel.dispatch.searchIssues({
+        project_id: parseInt(project_id, 10),
+        page: 0,
+        start: (start.toISOString() as unknown) as Date,
+        end: (end.toISOString() as unknown) as Date,
+      })
+    }
   })
 
   return (
