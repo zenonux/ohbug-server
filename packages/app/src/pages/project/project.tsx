@@ -16,19 +16,17 @@ const Project: React.FC<RouteComponentProps> = () => {
   const projectModel = useModel('project')
 
   const projects = projectModel.state.data
+  const project = projectModel.state.current
 
   if (projects) {
     return (
       <Layout
         className={styles.root}
-        pageHeader={
-          <div>
-            <Button onClick={handleToCreateProject}>创建项目</Button>
-          </div>
-        }
+        title="项目"
+        extra={<Button onClick={handleToCreateProject}>创建项目</Button>}
       >
-        {projects.map((project) => (
-          <ProjectCard project={project} key={project.id} />
+        {projects.map((v) => (
+          <ProjectCard project={v} active={v.id === project?.id} key={v.id} />
         ))}
       </Layout>
     )

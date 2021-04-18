@@ -1,6 +1,6 @@
 import { createModel } from '@rematch/core'
 
-import type { RootModel, Project } from '@/models'
+import type { RootModel } from '@/models'
 import * as api from '@/api'
 
 export interface SourceMap {
@@ -38,7 +38,8 @@ export const sourceMap = createModel<RootModel>()({
     },
   },
   effects: (dispatch) => ({
-    async get({ project }: { project: Project }) {
+    async get(_, state) {
+      const project = state.project.current
       if (project) {
         const data = await api.sourceMap.get.call(project.apiKey)
 
@@ -50,20 +51,12 @@ export const sourceMap = createModel<RootModel>()({
       }
     },
 
-    async delete({
-      sourceMap_id,
-      project,
-    }: {
-      sourceMap_id: number
-      project: Project
-    }) {
+    async delete({ sourceMap_id }: { sourceMap_id: number }) {
       if (sourceMap_id) {
         const result = await api.sourceMap.delete.call(sourceMap_id)
 
         if (result) {
-          dispatch.sourceMap.get({
-            project,
-          })
+          dispatch.sourceMap.get()
         }
       }
     },

@@ -15,7 +15,7 @@ const CreateProject: React.FC = () => {
   })
 
   return (
-    <Layout className={styles.root}>
+    <Layout className={styles.root} title="创建项目">
       <Form className={styles.form} onFinish={handleFinish} hideRequiredMark>
         <Form.Item
           label="项目名称"

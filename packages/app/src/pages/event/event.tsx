@@ -137,7 +137,7 @@ const Event: React.FC<RouteComponentProps> = () => {
   const issue = issueModel.state.current
 
   return (
-    <Layout>
+    <Layout title="事件">
       {/* 标题信息 */}
       {event && issue && <Title event={event} issue={issue} />}
 

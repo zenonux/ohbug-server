@@ -2,7 +2,7 @@ import React from 'react'
 import { Card, Space, List, Skeleton, Radio, Typography, Row, Col } from 'antd'
 import dayjs from 'dayjs'
 
-import { RouteComponentProps, useModel, Link, useQuery } from '@/ability'
+import { RouteComponentProps, useModel, Link } from '@/ability'
 import { Layout, MiniChart, LineChart } from '@/components'
 import { usePersistFn } from '@/hooks'
 
@@ -11,19 +11,18 @@ import TimePicker from './components/TimePicker'
 import styles from './issue.module.less'
 
 const Issue: React.FC<RouteComponentProps> = ({ children }) => {
-  const query = useQuery()
   const issueModel = useModel('issue')
   const projectModel = useModel('project')
   const loadingModel = useModel('loading')
   const issue = issueModel.state.data!
   const count = issueModel.state.count
   const trend = issueModel.state.trend
+  const project = projectModel.state.current
 
   const handleTablePaginationChange = usePersistFn((current) => {
-    const project_id = query.get('project_id')
-    if (project_id) {
+    if (project) {
       issueModel.dispatch.searchIssues({
-        project_id: parseInt(project_id, 10),
+        project_id: project.id,
         page: current - 1,
       })
     }
@@ -40,11 +39,10 @@ const Issue: React.FC<RouteComponentProps> = ({ children }) => {
 
   const loading = loadingModel.state.effects.issue.searchIssues
   const trendChartLoading = loadingModel.state.effects.issue.getTrends
-
   const projectTrend = projectModel.state.currentTrend
 
   return (
-    <Layout className={styles.root}>
+    <Layout className={styles.root} title="问题">
       <Space size="middle" direction="vertical">
         {projectTrend && (
           <Card className={styles.chart}>

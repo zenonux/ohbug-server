@@ -5,7 +5,7 @@ import dayjs from 'dayjs'
 import { RouteComponentProps, useModel } from '@/ability'
 import type { NotificationRule } from '@/models'
 import { Zone } from '@/components'
-import { useBoolean, useMount } from '@/hooks'
+import { useBoolean } from '@/hooks'
 
 import EditRule from './EditRule'
 import { levelList } from './Rules.core'
@@ -15,6 +15,7 @@ import styles from './Rules.module.less'
 const Rules: React.FC<RouteComponentProps> = () => {
   const notificationModel = useModel('notification')
   const loadingModel = useModel('loading')
+  const projectModel = useModel('project')
   const [
     modalVisible,
     { setTrue: modalShow, setFalse: modalOnCancel },
@@ -24,9 +25,10 @@ const Rules: React.FC<RouteComponentProps> = () => {
   >(undefined)
   const [currentSwitch, setCurrentSwitch] = React.useState<number>()
 
-  useMount(() => {
+  React.useEffect(() => {
     notificationModel.dispatch.getRules()
-  })
+    // eslint-disable-next-line
+  }, [projectModel.state.current])
   const rules = notificationModel.state.ruleData
   const switchLoading = loadingModel.state.effects.notification.updateRules
 

@@ -1,6 +1,7 @@
 import React from 'react'
 import dayjs from 'dayjs'
 import { Card } from 'antd'
+import clsx from 'clsx'
 
 import { useRequest, usePersistFn } from '@/hooks'
 import { navigate, useModel } from '@/ability'
@@ -15,6 +16,7 @@ import styles from './ProjectCard.module.less'
 
 interface ProjectCardProps {
   project: Project
+  active?: boolean
 }
 
 function getTrend(project_id: number) {
@@ -28,7 +30,7 @@ function getTrend(project_id: number) {
     })
 }
 
-const ProjectCard: React.FC<ProjectCardProps> = ({ project }) => {
+const ProjectCard: React.FC<ProjectCardProps> = ({ project, active }) => {
   const projectModel = useModel('project')
   const { data, loading } = useRequest(getTrend(project.id), {
     initialData: { buckets: [] },
@@ -36,12 +38,14 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project }) => {
 
   const handleToIssue = usePersistFn(() => {
     projectModel.dispatch.setCurrentProject(project.id)
-    navigate(`/issue?project_id=${project.id}`)
+    navigate(`/issue`)
   })
 
   return (
     <Card
-      className={styles.root}
+      className={clsx(styles.root, {
+        [styles.active]: active,
+      })}
       hoverable
       title={project.name}
       // actions={[<Icon type="icon-ohbug-settings-3-line" key="setting" />]}

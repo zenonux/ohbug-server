@@ -1,6 +1,6 @@
 import React from 'react'
 import { match } from 'path-to-regexp'
-import { Layout, PageHeader } from 'antd'
+import { Layout } from 'antd'
 
 import {
   Redirect,
@@ -61,17 +61,6 @@ const Container: React.FC = ({ children }) => {
 
           <React.Suspense fallback={<Loading />}>
             <Layout style={{ marginLeft: 65 }}>
-              {route?.title && (
-                <Layout.Header
-                  style={{ position: 'sticky', top: 0, zIndex: 10 }}
-                >
-                  <PageHeader
-                    title={route.title}
-                    onBack={() => navigate(-1)}
-                    ghost={false}
-                  />
-                </Layout.Header>
-              )}
               <Layout.Content>{children}</Layout.Content>
 
               {!(route?.layout?.hideFooter === true) && <Footer />}

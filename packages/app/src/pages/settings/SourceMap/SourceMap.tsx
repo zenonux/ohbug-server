@@ -5,7 +5,6 @@ import dayjs from 'dayjs'
 import { RouteComponentProps, useModel } from '@/ability'
 import type { SourceMap } from '@/models'
 import { Zone } from '@/components'
-import { useMount } from '@/hooks'
 
 import styles from './SourceMap.module.less'
 
@@ -14,13 +13,13 @@ const SourceMapCompnent: React.FC<RouteComponentProps> = () => {
   const projectModel = useModel('project')
   const loadingModel = useModel('loading')
 
-  const project = projectModel.state.current
   const dataSource = sourceMapModel.state.data
   const loading = loadingModel.state.effects.sourceMap.get
 
-  useMount(() => {
-    sourceMapModel.dispatch.get({ project: project! })
-  })
+  React.useEffect(() => {
+    sourceMapModel.dispatch.get()
+    // eslint-disable-next-line
+  }, [projectModel.state.current])
 
   return (
     <section className={styles.root}>
@@ -74,7 +73,6 @@ const SourceMapCompnent: React.FC<RouteComponentProps> = () => {
                       onOk() {
                         sourceMapModel.dispatch.delete({
                           sourceMap_id: item?.id,
-                          project: project!,
                         })
                       },
                     })

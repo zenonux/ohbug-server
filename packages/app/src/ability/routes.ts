@@ -6,7 +6,6 @@ export interface Route {
   wrapper?: React.FC
   redirect?: string
   component?: React.FC<RouteComponentProps>
-  title?: React.ReactNode
   menu?: {
     name: string
     icon: string
@@ -92,7 +91,6 @@ const routes: Route[] = [
     path: '/issue/:issue_id/event/:event_id',
     component: Event,
     wrapper: Auth,
-    title: 'Event',
   },
   {
     path: '/settings',

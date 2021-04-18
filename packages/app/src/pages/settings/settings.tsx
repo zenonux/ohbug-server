@@ -62,7 +62,7 @@ const Settings: React.FC<RouteComponentProps> = ({ children }) => {
   }, [location])
 
   return (
-    <Layout className={styles.root}>
+    <Layout className={styles.root} title="设置">
       <Card>
         <Menu
           className={styles.leftMenu}

@@ -1,9 +1,9 @@
 import React from 'react'
 import dayjs from 'dayjs'
 
-import { useModel, useQuery } from '@/ability'
+import { useModel } from '@/ability'
 import { DatePicker } from '@/components'
-import { useMount, usePersistFn } from '@/hooks'
+import { usePersistFn } from '@/hooks'
 
 const today = [dayjs().subtract(23, 'hour'), dayjs()]
 const twoWeeks = [dayjs().subtract(13, 'day'), dayjs()]
@@ -14,26 +14,28 @@ const ranges = {
 }
 
 const TimePicker: React.FC = () => {
-  const query = useQuery()
   const issueModel = useModel('issue')
-  const project_id = query.get('project_id')
+  const projectModel = useModel('project')
 
-  useMount(() => {
-    if (project_id) {
+  const project = projectModel.state.current
+
+  React.useEffect(() => {
+    if (project) {
       issueModel.dispatch.searchIssues({
-        project_id: parseInt(project_id, 10),
+        project_id: project.id,
         page: 0,
         start: (defaultValue[0].toISOString() as unknown) as Date,
         end: (defaultValue[1].toISOString() as unknown) as Date,
       })
     }
-  })
+    // eslint-disable-next-line
+  }, [project])
 
   const handleTimeChange = usePersistFn((dates: any) => {
     const [start, end] = dates
-    if (project_id) {
+    if (project) {
       issueModel.dispatch.searchIssues({
-        project_id: parseInt(project_id, 10),
+        project_id: project.id,
         page: 0,
         start: (start.toISOString() as unknown) as Date,
         end: (end.toISOString() as unknown) as Date,
