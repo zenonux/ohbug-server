@@ -3,6 +3,17 @@
   .container {
     position: relative;
 
+    .header {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      transition: @transition;
+      &.active {
+        background-color: #fff !important;
+        box-shadow: 0 4px 2px -2px @shadow-color;
+      }
+    }
+
     .content {
       padding: @space-2;
       padding-top: 0;

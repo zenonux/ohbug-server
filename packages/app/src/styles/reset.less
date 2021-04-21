@@ -1,9 +1,13 @@
+html,
+body {
+  height: auto;
+  min-height: 100vh;
+}
 #root {
-  height: 100%;
-  min-height: 100%;
+  min-height: 100vh;
   background-color: @layout-body-background;
   & > * {
-    min-height: 100%;
+    min-height: 100vh;
   }
 }
 img {
@@ -63,8 +67,6 @@ label {
   background: transparent;
 }
 .ant-layout-header {
-  height: 72px !important;
-  line-height: 72px !important;
   .flex();
   flex-direction: column;
   justify-content: center;

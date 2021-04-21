@@ -3,9 +3,9 @@ import { Layout, PageHeader, Select } from 'antd'
 import clsx from 'clsx'
 
 import { navigate, useModel } from '@/ability'
+import { useBoolean, usePersistFn, useMount } from '@/hooks'
 
 import styles from './Layout.module.less'
-import { usePersistFn } from 'ahooks'
 
 const { Header, Content } = Layout
 
@@ -23,6 +23,7 @@ const BasicLayout: React.FC<BasicLayoutProps> = ({
 }) => {
   const classes = clsx(styles.content, className)
   const projectModel = useModel('project')
+  const [isTop, { toggle: toggleIsTop }] = useBoolean(true)
 
   const projects = projectModel.state.data
   const project = projectModel.state.current
@@ -30,11 +31,30 @@ const BasicLayout: React.FC<BasicLayoutProps> = ({
   const handleProjectChange = usePersistFn((project_id: number) => {
     projectModel.dispatch.setCurrentProject(project_id)
   })
+  const handleScroll = usePersistFn(() => {
+    const scrollTop = window.scrollY
+    if (scrollTop > 0) {
+      if (isTop) toggleIsTop(false)
+    } else {
+      toggleIsTop(true)
+    }
+  })
+
+  useMount(() => {
+    window.addEventListener('scroll', handleScroll)
+    return () => {
+      window.removeEventListener('scroll', handleScroll)
+    }
+  })
 
   return (
     <Layout className={styles.root}>
       <Layout className={styles.container}>
-        <Header style={{ position: 'sticky', top: 0, zIndex: 10 }}>
+        <Header
+          className={clsx(styles.header, {
+            [styles.active]: !isTop,
+          })}
+        >
           <PageHeader
             title={title}
             extra={[
