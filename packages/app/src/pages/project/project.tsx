@@ -23,7 +23,11 @@ const Project: React.FC<RouteComponentProps> = () => {
       <Layout
         className={styles.root}
         title="项目"
-        extra={<Button onClick={handleToCreateProject}>创建项目</Button>}
+        extra={
+          <Button key="createProject" onClick={handleToCreateProject}>
+            创建项目
+          </Button>
+        }
       >
         {projects.map((v) => (
           <ProjectCard project={v} active={v.id === project?.id} key={v.id} />

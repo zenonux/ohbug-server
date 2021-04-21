@@ -1,4 +1,5 @@
 import React from 'react'
+import jsxRuntime from 'react/jsx-runtime'
 import { render } from 'react-dom'
 import { ConfigProvider } from 'antd'
 import * as echarts from 'echarts'
@@ -11,6 +12,9 @@ import Router from '@/ability/router'
 import { Provider, store } from '@/ability/model'
 import chartTheme from '@/styles/chart.json'
 import '@/styles'
+
+window.React = React
+window.jsxRuntime = jsxRuntime
 
 if (import.meta.env.DEV) {
   import('antd/dist/antd.less')
