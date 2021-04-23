@@ -1,6 +1,8 @@
 {
   "extends": "@chenyueban/tsconfig",
   "compilerOptions": {
+    "module": "CommonJS",
+    "noEmit": false,
     "baseUrl": "./packages",
     "paths": {
       "@ohbug-server/*": ["packages/*/src"]

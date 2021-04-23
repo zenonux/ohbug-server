@@ -28,6 +28,7 @@ const ExtensionUI: React.FC<ExtensionUIProps> = ({ data, event }) => {
   }
 
   if (status === 'ready') {
+    // @ts-ignore
     const Component = window.OhbugExtensionUIRrweb?.components.event(React)
     return <Component event={event} />
   }

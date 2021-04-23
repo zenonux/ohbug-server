@@ -34,6 +34,9 @@ const Issue = React.lazy<React.FC<RouteComponentProps>>(
 const Event = React.lazy<React.FC<RouteComponentProps>>(
   () => import('../pages/event')
 )
+const Market = React.lazy<React.FC<RouteComponentProps>>(
+  () => import('../pages/market')
+)
 const Settings = React.lazy<React.FC<RouteComponentProps>>(
   () => import('../pages/settings')
 )
@@ -91,6 +94,16 @@ const routes: Route[] = [
     path: '/issue/:issue_id/event/:event_id',
     component: Event,
     wrapper: Auth,
+  },
+  {
+    path: '/market',
+    component: Market,
+    wrapper: Auth,
+    // layout
+    menu: {
+      name: '插件市场',
+      icon: 'icon-ohbug-store-line',
+    },
   },
   {
     path: '/settings',
