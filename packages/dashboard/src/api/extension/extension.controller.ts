@@ -17,7 +17,7 @@ export class ExtensionController {
    */
   @Get(':extension_id')
   async get(@Param() { extension_id }: GetExtensionDto): Promise<Extension> {
-    return await this.extensionService.getExtensionById(extension_id)
+    return await this.extensionService.getExtensionDetailById(extension_id)
   }
 
   /**

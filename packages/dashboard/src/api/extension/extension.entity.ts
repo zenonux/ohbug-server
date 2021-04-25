@@ -1,10 +1,11 @@
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm'
+import { Entity, PrimaryGeneratedColumn, Column, ManyToMany } from 'typeorm'
 
 import type {
   OhbugExtension,
   OhbugExtensionRepository,
   OhbugExtensionUI,
 } from './extension.interface'
+import { Project } from '@/api/project/project.entity'
 
 @Entity()
 export class Extension implements OhbugExtension {
@@ -89,4 +90,7 @@ export class Extension implements OhbugExtension {
    */
   @Column({ type: 'jsonb', nullable: true })
   ui?: OhbugExtensionUI
+
+  @ManyToMany(() => Project, (project) => project.extensions)
+  projects: Project[]
 }

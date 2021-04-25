@@ -6,11 +6,14 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   OneToOne,
+  ManyToMany,
+  JoinTable,
 } from 'typeorm'
 import { Exclude } from 'class-transformer'
 
 import { NotificationRule } from '@/api/notification/notification.rule.entity'
 import { NotificationSetting } from '@/api/notification/notification.setting.entity'
+import { Extension } from '@/api/extension/extension.entity'
 
 @Entity()
 export class Project {
@@ -64,4 +67,8 @@ export class Project {
     cascade: true,
   })
   notificationSetting: NotificationSetting
+
+  @ManyToMany(() => Extension, (extension) => extension.projects)
+  @JoinTable()
+  extensions: Extension[]
 }

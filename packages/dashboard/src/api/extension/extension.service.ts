@@ -58,9 +58,11 @@ export class ExtensionService {
    *
    * @param id extension_id
    */
-  async getExtensionById(id: number): Promise<Extension & any> {
+  async getExtensionDetailById(id: number): Promise<Extension & any> {
     try {
-      const extension = await this.extensionRepository.findOneOrFail(id)
+      const extension = await this.extensionRepository.findOneOrFail(id, {
+        relations: ['projects'],
+      })
       const { user, repo } = getRepositoryInfo(extension.repository)
       let repos
       try {
@@ -106,6 +108,19 @@ export class ExtensionService {
       })
     } catch (error) {
       throw new ForbiddenException(4001202, error)
+    }
+  }
+
+  /**
+   * 搜索 extensions
+   *
+   * @param id
+   */
+  async getExtensionById(id: number): Promise<Extension> {
+    try {
+      return await this.extensionRepository.findOneOrFail(id)
+    } catch (error) {
+      throw new ForbiddenException(4001203, error)
     }
   }
 }
