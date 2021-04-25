@@ -2,21 +2,32 @@ import React from 'react'
 import ReactJson from 'react-json-view'
 import { Spin } from 'antd'
 
-import { useMount, useExternal } from '@/hooks'
+import { useCreation, useMount, useExternal } from '@/hooks'
+import { useModel } from '@/ability'
 import type { OhbugEvent } from '@ohbug/types'
 
 interface ExtensionUIProps {
   data: any
+  extensionKey: string
   event: OhbugEvent<any>
 }
 
-const ExtensionUI: React.FC<ExtensionUIProps> = ({ data, event }) => {
-  const [status, { load, unload }] = useExternal(
-    'https://cdn.jsdelivr.net/npm/@ohbug/extension-rrweb@latest/dist/ui.umd.min.js',
-    {
-      async: false,
-    }
+const ExtensionUI: React.FC<ExtensionUIProps> = ({
+  extensionKey,
+  data,
+  event,
+}) => {
+  const projectModel = useModel('project')
+  const extension = useCreation(
+    () =>
+      (projectModel.state.current?.extensions || []).find(
+        (v) => v.key === extensionKey
+      ),
+    [extensionKey, projectModel.state.current]
   )
+  const [status, { load, unload }] = useExternal(extension?.ui?.cdn ?? '', {
+    async: false,
+  })
 
   useMount(() => {
     load()
@@ -28,9 +39,12 @@ const ExtensionUI: React.FC<ExtensionUIProps> = ({ data, event }) => {
   }
 
   if (status === 'ready') {
-    // @ts-ignore
-    const Component = window.OhbugExtensionUIRrweb?.components.event(React)
-    return <Component event={event} />
+    const name = extension?.ui?.name
+    if (name) {
+      // @ts-ignore
+      const Component = window?.[name]?.components?.event(React)
+      return <Component event={event} />
+    }
   }
 
   return (

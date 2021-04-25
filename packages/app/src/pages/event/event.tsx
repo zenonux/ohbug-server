@@ -43,7 +43,13 @@ const EventTab: React.FC<EventTabProps> = ({ event, issue }) => {
           key,
           tab: key,
           disabled: false,
-          element: <ExtensionUI data={event.metaData[key]} event={event} />,
+          element: (
+            <ExtensionUI
+              extensionKey={key}
+              data={event.metaData[key]}
+              event={event}
+            />
+          ),
         })
       })
     }

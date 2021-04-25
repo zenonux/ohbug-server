@@ -150,14 +150,16 @@ export class ProjectService {
       const extension = await this.extensionService.getExtensionById(
         extension_id
       )
-      const targetExtensionIndex = project.extensions.findIndex(
+      const targetExtension = project.extensions.find(
         (v) => v.id === extension_id
       )
       if (Array.isArray(project.extensions)) {
         // 已经绑定
-        if (targetExtensionIndex > -1) {
+        if (targetExtension) {
           if (!enabled) {
-            project.extensions.splice(targetExtensionIndex, 1)
+            project.extensions = project.extensions.filter(
+              (v) => v.id !== targetExtension.id
+            )
           }
           // 未绑定
         } else {
