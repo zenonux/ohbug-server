@@ -1,0 +1,24 @@
+.root {
+  .profile {
+    .flex();
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: @space-3;
+    .line {
+      .flex();
+      align-items: center;
+      & > *:first-child {
+        width: 30px;
+        margin-right: @space / 2;
+      }
+    }
+  }
+
+  .container {
+    & pre {
+      background-color: #f6f8fa !important;
+      border-radius: 6px;
+      padding: 16px !important;
+    }
+  }
+}

@@ -3,6 +3,7 @@ import type { Models } from '@rematch/core'
 import { analysis } from './analysis'
 import { app } from './app'
 import { event } from './event'
+import { extension } from './extension'
 import { feedback } from './feedback'
 import { issue } from './issue'
 import { notification } from './notification'
@@ -16,6 +17,7 @@ export interface RootModel extends Models<RootModel> {
   event: typeof event
   feedback: typeof feedback
   issue: typeof issue
+  extension: typeof extension
   notification: typeof notification
   project: typeof project
   sourceMap: typeof sourceMap
@@ -28,6 +30,7 @@ export const models: RootModel = {
   event,
   feedback,
   issue,
+  extension,
   notification,
   project,
   sourceMap,
@@ -37,6 +40,7 @@ export const models: RootModel = {
 export * from './analysis'
 export * from './app'
 export * from './event'
+export * from './extension'
 export * from './feedback'
 export * from './issue'
 export * from './notification'

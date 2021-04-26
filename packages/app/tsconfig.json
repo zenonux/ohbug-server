@@ -2,11 +2,11 @@
   "extends": "../../tsconfig.json",
   "compilerOptions": {
     "module": "ESNext",
-    "lib": ["DOM", "ESNext"],
+    "target": "ESNext",
+    "lib": ["ESNext", "DOM"],
     "types": ["vite/client"],
-    "jsx": "react",
-    "baseUrl": ".",
     "noEmit": true,
+    "baseUrl": ".",
     "paths": {
       "@/*": ["src/*"]
     }

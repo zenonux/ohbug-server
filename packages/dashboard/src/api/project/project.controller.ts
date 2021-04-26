@@ -1,7 +1,12 @@
 import { Controller, Post, Get, Param, Body } from '@nestjs/common'
 
 import { ProjectService } from './project.service'
-import { BaseProjectDto, CreateProjectDto, GetTrendDto } from './project.dto'
+import {
+  BaseProjectDto,
+  CreateProjectDto,
+  GetTrendDto,
+  SwitchExtensionDto,
+} from './project.dto'
 import { Project } from './project.entity'
 
 @Controller('projects')
@@ -52,6 +57,25 @@ export class ProjectController {
       project_id,
       start,
       end,
+    })
+  }
+
+  /**
+   * 绑定/解绑项目与扩展
+   *
+   * @param project_id
+   * @param extension_id
+   * @param enabled
+   */
+  @Post('switchExtension')
+  async switchExtension(
+    @Body()
+    { project_id, extension_id, enabled }: SwitchExtensionDto
+  ) {
+    return await this.projectService.switchExtension({
+      project_id,
+      extension_id,
+      enabled,
     })
   }
 }

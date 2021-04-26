@@ -5,13 +5,19 @@ import { ClientProxy } from '@nestjs/microservices'
 import * as crypto from 'crypto'
 
 import { NotificationService } from '@/api/notification/notification.service'
+import { ExtensionService } from '@/api/extension/extension.service'
 import {
   ForbiddenException,
   TOPIC_DASHBOARD_MANAGER_GET_PROJECT_TREND,
 } from '@ohbug-server/common'
 
 import { Project } from './project.entity'
-import { BaseProjectDto, CreateProjectDto, GetTrendDto } from './project.dto'
+import {
+  BaseProjectDto,
+  CreateProjectDto,
+  GetTrendDto,
+  SwitchExtensionDto,
+} from './project.dto'
 
 @Injectable()
 export class ProjectService {
@@ -19,7 +25,8 @@ export class ProjectService {
     @InjectRepository(Project)
     private readonly projectRepository: Repository<Project>,
     @Inject(forwardRef(() => NotificationService))
-    private readonly notificationService: NotificationService
+    private readonly notificationService: NotificationService,
+    private readonly extensionService: ExtensionService
   ) {}
 
   @Inject('MICROSERVICE_MANAGER_CLIENT')
@@ -70,7 +77,9 @@ export class ProjectService {
    */
   async getProjects(): Promise<Project[]> {
     try {
-      const result = await this.projectRepository.find()
+      const result = await this.projectRepository.find({
+        relations: ['extensions'],
+      })
       if (result) return result
       throw new Error('未初始化')
     } catch (error) {
@@ -83,7 +92,9 @@ export class ProjectService {
    */
   async getProject({ project_id }: BaseProjectDto): Promise<Project> {
     try {
-      return await this.projectRepository.findOneOrFail(project_id)
+      return await this.projectRepository.findOneOrFail(project_id, {
+        relations: ['extensions'],
+      })
     } catch (error) {
       throw new ForbiddenException(400203, error)
     }
@@ -120,5 +131,46 @@ export class ProjectService {
         end,
       })
       .toPromise()
+  }
+
+  /**
+   * 绑定/解绑项目与扩展
+   *
+   * @param project_id
+   * @param extension_id
+   * @param enabled
+   */
+  async switchExtension({
+    project_id,
+    extension_id,
+    enabled,
+  }: SwitchExtensionDto): Promise<Project> {
+    try {
+      const project = await this.getProject({ project_id })
+      const extension = await this.extensionService.getExtensionById(
+        extension_id
+      )
+      const targetExtension = project.extensions.find(
+        (v) => v.id === extension_id
+      )
+      if (Array.isArray(project.extensions)) {
+        // 已经绑定
+        if (targetExtension) {
+          if (!enabled) {
+            project.extensions = project.extensions.filter(
+              (v) => v.id !== targetExtension.id
+            )
+          }
+          // 未绑定
+        } else {
+          if (enabled) {
+            project.extensions = [...project.extensions, extension]
+          }
+        }
+      }
+      return await this.projectRepository.save(project)
+    } catch (error) {
+      throw new ForbiddenException(400205, error)
+    }
   }
 }

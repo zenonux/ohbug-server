@@ -1,4 +1,4 @@
-import type { Method } from 'axios'
+import type { AxiosRequestConfig, Method } from 'axios'
 import { request } from '@/ability'
 
 interface CreateApiParam<T> {
@@ -14,7 +14,8 @@ export function createApi<T = any, R = any | void>({
   data,
   params,
 }: CreateApiParam<T>) {
-  async function call(value: T) {
+  async function call(value: T, options?: AxiosRequestConfig) {
+    options = options || {}
     let _body = data?.(value) || {}
     let _params = params?.(value) || {}
 
@@ -40,6 +41,7 @@ export function createApi<T = any, R = any | void>({
       const result = await request(
         typeof url === 'string' ? url : url?.(value),
         {
+          ...options,
           method,
           data: _body,
           params: _params,

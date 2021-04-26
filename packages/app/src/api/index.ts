@@ -1,5 +1,6 @@
 export * from './analysis'
 export * from './event'
+export * from './extension'
 export * from './feedback'
 export * from './issue'
 export * from './notification'

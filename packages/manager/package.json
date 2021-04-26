@@ -12,15 +12,12 @@
     "prebuild": "rimraf dist",
     "start": "cross-env NODE_ENV=development nest start --watch",
     "build": "nest build",
-    "start:debug": "cross-env pm2 start ./ecosystem.config.js --env production",
-    "start:prod": "cross-env pm2-runtime start ./ecosystem.config.js --env production",
     "prettier": "prettier --write \"src/**/*.ts\"",
     "lint": "eslint '{src,apps,libs,test}/**/*.ts' --fix",
     "test": "jest",
     "test:watch": "jest --watch"
   },
   "dependencies": {
-    "@nestjs/schedule": "^0.4.2",
     "@ohbug-server/common": "^0.0.0",
     "vue": "^2.6.12"
   }

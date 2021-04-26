@@ -58,5 +58,10 @@
   "4001112": "更新 notification setting 失败",
   "4001113": "创建 notification setting webhook 失败",
   "4001114": "更新 notification setting webhook 失败",
-  "4001115": "删除 notification setting webhook 失败"
+  "4001115": "删除 notification setting webhook 失败",
+
+  "4001200": "从 awesome-ohbug 获取 extension list 失败",
+  "4001201": "根据 id 获取 Extension 详情失败",
+  "4001202": "搜索 extensions 失败",
+  "4001203": "根据 id 获取 Extension 失败"
 }

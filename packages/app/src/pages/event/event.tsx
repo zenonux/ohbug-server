@@ -11,6 +11,7 @@ import Title from './components/Title'
 import Profile from './components/Profile'
 import Detail from './components/Detail'
 import Trend from './components/Trend'
+import ExtensionUI from './components/ExtensionUI'
 
 interface EventTabProps {
   event: EventState['current']
@@ -43,17 +44,10 @@ const EventTab: React.FC<EventTabProps> = ({ event, issue }) => {
           tab: key,
           disabled: false,
           element: (
-            <ReactJson
-              src={event.metaData[key]}
-              iconStyle="circle"
-              collapsed={2}
-              style={{
-                fontFamily:
-                  'JetBrains Mono, -apple-system, BlinkMacSystemFont, monospace, Roboto',
-                background: 'none',
-                maxHeight: '60vh',
-                overflowY: 'auto',
-              }}
+            <ExtensionUI
+              extensionKey={key}
+              data={event.metaData[key]}
+              event={event}
             />
           ),
         })

@@ -13,6 +13,11 @@ interface Trend {
   start: Date
   end: Date
 }
+interface SwitchExtension {
+  project_id: number
+  extension_id: number
+  enabled: boolean
+}
 
 export const project = {
   create: createApi<Create, Project>({
@@ -32,5 +37,9 @@ export const project = {
     url: `/projects/trend`,
     method: 'post',
     data: ({ project_id, start, end }) => ({ project_id, start, end }),
+  }),
+  switchExtension: createApi<SwitchExtension, Project>({
+    url: '/projects/switchExtension',
+    method: 'post',
   }),
 }

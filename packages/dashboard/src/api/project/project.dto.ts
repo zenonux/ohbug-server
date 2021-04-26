@@ -1,4 +1,4 @@
-import { IsNumber, IsString, IsDateString } from 'class-validator'
+import { IsNumber, IsString, IsDateString, IsBoolean } from 'class-validator'
 import { Type } from 'class-transformer'
 
 export class BaseProjectDto {
@@ -21,4 +21,13 @@ export class GetTrendDto extends BaseProjectDto {
 
   @IsDateString()
   readonly end: Date
+}
+
+export class SwitchExtensionDto extends BaseProjectDto {
+  @Type(() => Number)
+  @IsNumber({}, { message: 'Project ID 错误' })
+  readonly extension_id: number
+
+  @IsBoolean()
+  readonly enabled: boolean
 }

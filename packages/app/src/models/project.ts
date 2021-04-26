@@ -1,8 +1,9 @@
 import { createModel } from '@rematch/core'
 
-import type { RootModel } from '@/models'
+import type { Extension, RootModel } from '@/models'
 import * as api from '@/api'
 import { navigate } from '@/ability'
+
 export interface ProjectTrend {
   'event.apiKey': string
   buckets: {
@@ -16,6 +17,7 @@ export interface Project {
   type: string
   apiKey: string
   createdAt: string
+  extensions?: Extension[]
 }
 export interface ProjectState {
   data?: Project[]
@@ -95,6 +97,25 @@ export const project = createModel<RootModel>()({
         if (data) {
           dispatch.project.setState({
             currentTrend: data,
+          })
+        }
+      }
+    },
+
+    async switchExtension(
+      { extension_id, enabled }: { extension_id: number; enabled: boolean },
+      state
+    ) {
+      const project = state.project.current
+      if (project) {
+        const data = await api.project.switchExtension.call({
+          project_id: project.id,
+          extension_id,
+          enabled,
+        })
+        if (data) {
+          dispatch.project.setState({
+            current: data,
           })
         }
       }
