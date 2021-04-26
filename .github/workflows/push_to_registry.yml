@@ -2,7 +2,7 @@ name: push_to_registry
 
 on:
   push:
-    branches: master
+    branches: main
 
 jobs:
   push_to_registry:
