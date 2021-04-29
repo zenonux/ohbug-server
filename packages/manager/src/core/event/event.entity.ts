@@ -15,6 +15,7 @@ import type {
   OhbugAction,
 } from '@ohbug/types'
 import type { OhbugEventLike } from '@ohbug-server/common'
+// eslint-disable-next-line import/no-cycle
 import { Issue } from '../issue/issue.entity'
 
 @Entity()

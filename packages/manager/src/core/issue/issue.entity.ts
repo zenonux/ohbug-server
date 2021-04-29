@@ -10,7 +10,8 @@ import { Exclude } from 'class-transformer'
 
 import type { MetaData } from '@/core/event/event.interface'
 import type { OhbugUser } from '@ohbug-server/common'
-import type { Event } from '../event/event.entity'
+// eslint-disable-next-line import/no-cycle
+import { Event } from '../event/event.entity'
 
 @Entity()
 export class Issue {

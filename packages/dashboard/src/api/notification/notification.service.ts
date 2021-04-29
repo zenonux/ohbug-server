@@ -307,32 +307,28 @@ export class NotificationService {
     open,
     at,
   }: NotificationSettingWebhookDto &
-    BaseNotificationSettingWebhookDto): Promise<NotificationSettingWebHook> {
+    BaseNotificationSettingWebhookDto): Promise<NotificationSetting> {
     try {
       const notificationSetting = await this.getNotificationSetting({
         projectId,
       })
-      let result: NotificationSettingWebHook
       notificationSetting.webhooks.forEach(
-        (item: {
-          id: string
-          type: string
-          name: string
-          link: string
-          open: boolean
-          at: { value: string }[]
-        }) => {
+        (item: NotificationSettingWebHook) => {
           if (item.id === id) {
-            if (type !== undefined) result.type = type
-            if (name !== undefined) result.name = name
-            if (link !== undefined) result.link = link
-            if (open !== undefined) result.open = open
-            if (at !== undefined) result.at = at
+            // eslint-disable-next-line no-param-reassign
+            if (type !== undefined) item.type = type
+            // eslint-disable-next-line no-param-reassign
+            if (name !== undefined) item.name = name
+            // eslint-disable-next-line no-param-reassign
+            if (link !== undefined) item.link = link
+            // eslint-disable-next-line no-param-reassign
+            if (open !== undefined) item.open = open
+            // eslint-disable-next-line no-param-reassign
+            if (at !== undefined) item.at = at
           }
         }
       )
-      await this.notificationSettingRepository.save(notificationSetting)
-      return result
+      return this.notificationSettingRepository.save(notificationSetting)
     } catch (error) {
       throw new ForbiddenException(4001114, error)
     }
@@ -354,14 +350,7 @@ export class NotificationService {
         projectId,
       })
       notificationSetting.webhooks = notificationSetting.webhooks.filter(
-        (item: {
-          id: string
-          type: string
-          name: string
-          link: string
-          open: boolean
-          at: { value: string }[]
-        }) => item.id !== id
+        (item: NotificationSettingWebHook) => item.id !== id
       )
       return Boolean(
         await this.notificationSettingRepository.save(notificationSetting)
