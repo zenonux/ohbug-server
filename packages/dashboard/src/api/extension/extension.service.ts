@@ -54,6 +54,19 @@ export class ExtensionService {
   }
 
   /**
+   * 程序启动 10 秒后检查有无 extensions
+   * 没有则拉取一次数据
+   */
+  @Cron(new Date(Date.now() + 10 * 1000))
+  async handleAppInitial() {
+    const extensionsCount = await this.extensionRepository.count()
+    if (extensionsCount > 0) {
+      return
+    }
+    return this.handleGetExtensionsFromAwesomeOhbug()
+  }
+
+  /**
    * 根据 id 获取库里的指定 Extension
    *
    * @param id extensionId
