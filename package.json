@@ -58,7 +58,7 @@
     "typeorm": "^0.2.32"
   },
   "devDependencies": {
-    "@chenyueban/lint": "^0.2.10",
+    "@chenyueban/lint": "^0.2.11",
     "@chenyueban/tsconfig": "^0.1.8",
     "@nestjs/cli": "^7.6.0",
     "@nestjs/testing": "^7.6.11",

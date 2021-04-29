@@ -418,10 +418,10 @@
   resolved "https://registry.npmjs.org/@bcoe/v8-coverage/-/v8-coverage-0.2.3.tgz#75a2e8b51cb758a7553d6804a5932d7aace75c39"
   integrity sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==
 
-"@chenyueban/lint@^0.2.10":
-  version "0.2.10"
-  resolved "https://registry.npmjs.org/@chenyueban/lint/-/lint-0.2.10.tgz#dc79a16d46bf4c53a8593dd5c02475aefc35246f"
-  integrity sha512-pV6A4XwDihOVnJHiqlFr6MvcZHB2UamI22sl5lg4MTnsJEQ/uavhFew8wrzEOFsiwJRqa1wKtlDG00RgkzMhxg==
+"@chenyueban/lint@^0.2.11":
+  version "0.2.11"
+  resolved "https://registry.npmjs.org/@chenyueban/lint/-/lint-0.2.11.tgz#13fc80d1ddcc4a42edb4c414b59f083cd712a8c1"
+  integrity sha512-oQd6iXmHOsBOaxpcKcPv/XCBBgH5+syZRRd5SCv6uRrOgALfMTNm7E4/WqwBj/JSDf7OXOGd8+of78zFrlHBNw==
   dependencies:
     "@commitlint/cli" "^12.1.1"
     "@commitlint/config-conventional" "^12.1.1"

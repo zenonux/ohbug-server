@@ -8,5 +8,12 @@
       "@ohbug-server/*": ["packages/*/src"]
     }
   },
+  "include": [
+    "packages/**/*",
+    ".eslintrc.js",
+    ".prettierrc.js",
+    "commitlint.config.js",
+    "lint-staged.config.js"
+  ],
   "exclude": ["node_modules/", "dist/"]
 }
