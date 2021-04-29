@@ -1,7 +1,7 @@
 import type { FindOperator } from 'typeorm'
 
 export interface GetIssueByIssueIdParams {
-  issue_id: number | string
+  issueId: number | string
 }
 
 export interface SearchCondition {
@@ -10,7 +10,7 @@ export interface SearchCondition {
 }
 
 export interface GetIssuesByProjectIdParams {
-  project_id: number
+  projectId: number
   searchCondition: SearchCondition
   limit?: number
   skip?: number

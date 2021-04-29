@@ -119,7 +119,7 @@ export const notification = createModel<RootModel>()({
       const project = state.project.current
       if (project) {
         const result = await api.notification.createRule.call({
-          project_id: project.id,
+          projectId: project.id,
           name,
           data,
           whiteList,
@@ -139,7 +139,7 @@ export const notification = createModel<RootModel>()({
       const project = state.project.current
       if (project) {
         const result = await api.notification.getRules.call({
-          project_id: project.id,
+          projectId: project.id,
         })
 
         if (result) {
@@ -152,7 +152,7 @@ export const notification = createModel<RootModel>()({
 
     async updateRules(
       {
-        rule_id,
+        ruleId,
         name,
         data,
         whiteList,
@@ -161,7 +161,7 @@ export const notification = createModel<RootModel>()({
         interval,
         open,
       }: {
-        rule_id: number
+        ruleId: number
         name?: string
         data?: string
         whiteList?: string
@@ -173,10 +173,10 @@ export const notification = createModel<RootModel>()({
       state
     ) {
       const project = state.project.current
-      if (rule_id && project) {
+      if (ruleId && project) {
         const result = await api.notification.updateRule.call({
-          project_id: project.id,
-          rule_id,
+          projectId: project.id,
+          ruleId,
           name,
           data,
           whiteList,
@@ -192,12 +192,12 @@ export const notification = createModel<RootModel>()({
       }
     },
 
-    async deleteRule({ rule_id }: { rule_id: number }, state) {
+    async deleteRule({ ruleId }: { ruleId: number }, state) {
       const project = state.project.current
-      if (rule_id && project) {
+      if (ruleId && project) {
         const result = await api.notification.deleteRule.call({
-          project_id: project.id,
-          rule_id,
+          projectId: project.id,
+          ruleId,
         })
 
         if (result) {
@@ -210,7 +210,7 @@ export const notification = createModel<RootModel>()({
       const project = state.project.current
       if (project) {
         const result = await api.notification.getSetting.call({
-          project_id: project.id,
+          projectId: project.id,
         })
 
         if (result) {
@@ -236,7 +236,7 @@ export const notification = createModel<RootModel>()({
       const project = state.project.current
       if (project) {
         const result = await api.notification.updateSetting.call({
-          project_id: project.id,
+          projectId: project.id,
           emails,
           browser,
           webhooks,
@@ -267,7 +267,7 @@ export const notification = createModel<RootModel>()({
       const project = state.project.current
       if (project) {
         const result = await api.notification.createSettingWebhook.call({
-          project_id: project.id,
+          projectId: project.id,
           type,
           name,
           link,
@@ -302,7 +302,7 @@ export const notification = createModel<RootModel>()({
       const project = state.project.current
       if (id && project) {
         const result = await api.notification.updateSettingWebhook.call({
-          project_id: project.id,
+          projectId: project.id,
           id,
           type,
           name,
@@ -321,7 +321,7 @@ export const notification = createModel<RootModel>()({
       const project = state.project.current
       if (id && project) {
         const result = await api.notification.deleteSettingWebhook.call({
-          project_id: project.id,
+          projectId: project.id,
           id,
         })
 

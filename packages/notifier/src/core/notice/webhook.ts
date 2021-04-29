@@ -55,7 +55,7 @@ export async function main(
     { title, text, markdown },
     webhook
   )
-  return await httpService.post(webhook.link, result).toPromise()
+  return httpService.post(webhook.link, result).toPromise()
 }
 
 export default main

@@ -3,9 +3,9 @@ import type { OhbugEvent } from '@ohbug/types'
 
 export function getDeviceInfo(event?: OhbugEvent<any>) {
   if (event) {
-    const { device, sdk } = event
-    if (device && sdk.platform === 'ohbug-browser') {
-      const { url, title, version, language, platform, userAgent } = device
+    const { device: eventDevice, sdk } = event
+    if (eventDevice && sdk.platform === 'ohbug-browser') {
+      const { url, title, version, language, platform, userAgent } = eventDevice
 
       if (userAgent) {
         const parser = new UA()
@@ -27,7 +27,7 @@ export function getDeviceInfo(event?: OhbugEvent<any>) {
       }
     }
 
-    if (device && sdk.platform === 'ohbug-miniapp') {
+    if (eventDevice && sdk.platform === 'ohbug-miniapp') {
       const {
         app,
         version,
@@ -51,5 +51,5 @@ export function getDeviceInfo(event?: OhbugEvent<any>) {
   return null
 }
 
-export const isAdmin = (admin_id: any, user_id: any) =>
-  Number(admin_id) === Number(user_id)
+export const isAdmin = (adminId: any, userId: any) =>
+  Number(adminId) === Number(userId)

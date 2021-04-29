@@ -15,14 +15,14 @@ export class EventService {
   private readonly managerClient: ClientProxy
 
   /**
-   * 根据 event_id 查询 event
+   * 根据 eventId 查询 event
    *
-   * @param event_id
-   * @param issue_id
+   * @param eventId
+   * @param issueId
    */
-  async getEventByEventId(event_id: number | string, issue_id: number) {
+  async getEventByEventId(eventId: number | string, issueId: number) {
     const event = await this.managerClient
-      .send(TOPIC_DASHBOARD_MANAGER_GET_EVENT, { event_id, issue_id })
+      .send(TOPIC_DASHBOARD_MANAGER_GET_EVENT, { eventId, issueId })
       .toPromise()
 
     try {
@@ -40,13 +40,13 @@ export class EventService {
   }
 
   /**
-   * 根据 issue_id 获取 issue 所对应的最新 event
+   * 根据 issueId 获取 issue 所对应的最新 event
    *
-   * @param issue_id
+   * @param issueId
    */
-  async getLatestEventByIssueId(issue_id: number) {
+  async getLatestEventByIssueId(issueId: number) {
     const event = await this.managerClient
-      .send(TOPIC_DASHBOARD_MANAGER_GET_LATEST_EVENT, issue_id)
+      .send(TOPIC_DASHBOARD_MANAGER_GET_LATEST_EVENT, issueId)
       .toPromise()
 
     try {

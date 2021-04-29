@@ -55,11 +55,11 @@ export async function getNotificationByApiKey(apiKey: string) {
 /**
  * 更新 notification_rule 的 recently 以及 count
  *
- * @param rule_id
+ * @param ruleId
  */
-export async function updateNotificationRule(rule_id: string | number) {
+export async function updateNotificationRule(ruleId: string | number) {
   const manager = getManager()
-  return await manager.query(
+  return manager.query(
     `
     UPDATE "notification_rule"
     SET "recently" = LOCALTIMESTAMP,
@@ -67,7 +67,7 @@ export async function updateNotificationRule(rule_id: string | number) {
     WHERE
       "id" = $1
   `,
-    [rule_id]
+    [ruleId]
   )
 }
 
@@ -110,9 +110,6 @@ function judgingList(
   const list = rule[type]
   if (Array.isArray(list)) {
     for (const item of list) {
-      if (!event?.detail) {
-        continue
-      }
       if (event.type === item.type) {
         if (matchMessageByRegExp(new RegExp(item.message), event?.detail)) {
           return true

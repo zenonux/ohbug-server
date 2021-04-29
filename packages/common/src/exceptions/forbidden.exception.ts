@@ -4,6 +4,7 @@ import status from '../constants/status.json'
 
 export class ForbiddenException extends HttpException {
   public readonly code: number
+
   public readonly showType: number
 
   /**

@@ -4,7 +4,7 @@ import { Type } from 'class-transformer'
 export class GetExtensionDto {
   @Type(() => Number)
   @IsNumber()
-  readonly extension_id: number
+  readonly extensionId: number
 }
 
 export class SearchExtensionsDto {

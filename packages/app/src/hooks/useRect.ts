@@ -7,9 +7,7 @@ function useRect<T extends HTMLElement = HTMLElement>(): [
   DOMRect | undefined,
   MutableRefObject<T>
 ]
-function useRect<T extends HTMLElement = HTMLElement>(
-  arg: Arg
-): [DOMRect | undefined]
+function useRect(arg: Arg): [DOMRect | undefined]
 function useRect<T extends HTMLElement = HTMLElement>(
   ...args: [Arg] | []
 ): [DOMRect | undefined, MutableRefObject<T>?] {
@@ -24,7 +22,7 @@ function useRect<T extends HTMLElement = HTMLElement>(
       typeof arg.current === 'function' ? arg.current() : arg.current
     const targetElement = hasPassedInElement ? passedInElement : element.current
     if (!targetElement) {
-      return () => void 0
+      return () => undefined
     }
 
     const resizeObserver = new ResizeObserver((entries: any) => {

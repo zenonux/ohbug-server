@@ -109,7 +109,7 @@ const EditRule: React.FC<EditRuleProps> = ({
   const handleFinish = usePersistFn((value) => {
     const payload = value
     if (type === 'update') {
-      payload.rule_id = initialValues?.id
+      payload.ruleId = initialValues?.id
     }
     if (type === 'create') {
       notificationModel.dispatch.createRules(payload)

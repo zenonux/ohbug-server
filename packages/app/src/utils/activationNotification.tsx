@@ -2,7 +2,7 @@ import { Button } from 'antd'
 import { store } from '@/ability'
 
 export function activationNotification(email: string) {
-  const dispatch = store.dispatch
+  const { dispatch } = store
   dispatch.app.notification({
     message: '用户激活',
     description: (

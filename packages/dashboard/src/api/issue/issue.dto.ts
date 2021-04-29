@@ -13,7 +13,7 @@ import type { Period } from './issue.interface'
 export class GetIssueDto {
   @Type(() => Number)
   @IsNumber()
-  readonly project_id: number
+  readonly projectId: number
 
   @Type(() => Number)
   @IsNumber()
@@ -39,7 +39,7 @@ export class GetTrendByIssueIdDto {
 export class GetIssueByIssueIdDto {
   @Type(() => Number)
   @IsNumber()
-  readonly issue_id: number
+  readonly issueId: number
 }
 export class GetEventsDto extends GetIssueDto {
   @IsBooleanString()

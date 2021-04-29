@@ -1,6 +1,8 @@
 import React from 'react'
 import type { RouteComponentProps } from '@/ability'
 
+import Auth from '@/components/renders/Auth'
+
 export interface Route {
   path: string
   wrapper?: React.FC
@@ -17,8 +19,6 @@ export interface Route {
   routes?: Route[]
   default?: boolean
 }
-
-import Auth from '@/components/renders/Auth'
 const GettingStarted = React.lazy<React.FC<RouteComponentProps>>(
   () => import('../pages/getting-started')
 )
@@ -91,7 +91,7 @@ const routes: Route[] = [
     },
   },
   {
-    path: '/issue/:issue_id/event/:event_id',
+    path: '/issue/:issueId/event/:eventId',
     component: Event,
     wrapper: Auth,
   },

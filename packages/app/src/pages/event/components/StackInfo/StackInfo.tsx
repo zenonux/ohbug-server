@@ -17,8 +17,8 @@ const StackInfo: React.FC<StackInfoProps> = ({ stack, source }) => {
   const handleToggleChange = usePersistFn((e) => {
     setToggle(e.target.value)
   })
-  const title = useCreation(() => {
-    return (
+  const title = useCreation(
+    () => (
       <div className={styles.title}>
         <code className={styles.strong}>{source?.parsed?.source}</code>
         <span>in</span>
@@ -27,8 +27,9 @@ const StackInfo: React.FC<StackInfoProps> = ({ stack, source }) => {
         <code className={styles.strong}>{source?.parsed?.line}:</code>
         <code className={styles.strong}>{source?.parsed?.column}</code>
       </div>
-    )
-  }, [source])
+    ),
+    [source]
+  )
   const content = useCreation((): React.ReactNode => {
     switch (toggle) {
       case 'raw':

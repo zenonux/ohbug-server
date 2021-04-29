@@ -1,5 +1,5 @@
 export interface SearchCondition {
-  issue_id?: number | string
+  issueId?: number | string
 
   type?: string
 

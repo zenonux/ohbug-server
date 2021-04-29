@@ -6,10 +6,12 @@ import clsx from 'clsx'
 import styles from './HoverCard.module.less'
 
 const HoverCard: React.FC<CardProps> = (props) => {
-  const classes = clsx(props.className, styles.root)
+  const { className, children } = props
+  const classes = clsx(className, styles.root)
+
   return (
     <Card {...props} className={classes}>
-      {props.children}
+      {children}
     </Card>
   )
 }

@@ -75,7 +75,7 @@ export class NotificationSetting {
    * @memberof NotificationSetting
    */
   @Exclude()
-  @OneToOne((_) => Project, (project) => project.notificationSetting, {
+  @OneToOne(() => Project, (project) => project.notificationSetting, {
     onDelete: 'CASCADE',
   })
   @JoinColumn()

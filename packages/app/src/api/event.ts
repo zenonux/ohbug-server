@@ -2,26 +2,26 @@ import { createApi } from '@/ability'
 import type { Event } from '@/models'
 
 interface Get {
-  event_id: string | number
-  issue_id: string | number
+  eventId: string | number
+  issueId: string | number
 }
 interface GetLatest {
-  issue_id: string | number
+  issueId: string | number
 }
 
 export const event = {
   get: createApi<Get, Event<any>>({
-    url: ({ event_id }) => `/events/${event_id}`,
+    url: ({ eventId }) => `/events/${eventId}`,
     method: 'get',
-    params: ({ issue_id }) => ({
-      issue_id,
+    params: ({ issueId }) => ({
+      issueId,
     }),
   }),
   getLatest: createApi<GetLatest, Event<any>>({
     url: '/events/latest',
     method: 'get',
-    params: ({ issue_id }) => ({
-      issue_id,
+    params: ({ issueId }) => ({
+      issueId,
     }),
   }),
 }

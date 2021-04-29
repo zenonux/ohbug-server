@@ -14,24 +14,24 @@ export class IssueController {
   constructor(private readonly issueService: IssueService) {}
 
   /**
-   * 根据 issue_id 取到对应 issue
+   * 根据 issueId 取到对应 issue
    *
-   * @param issue_id
+   * @param issueId
    */
-  @Get(':issue_id')
+  @Get(':issueId')
   async get(
     @Param()
-    { issue_id }: GetIssueByIssueIdDto
+    { issueId }: GetIssueByIssueIdDto
   ) {
-    return await this.issueService.getIssueByIssueId({
-      issue_id,
+    return this.issueService.getIssueByIssueId({
+      issueId,
     })
   }
 
   /**
    * 查询 issues
    *
-   * @param project_id
+   * @param projectId
    * @param page
    * @param start
    * @param end
@@ -39,12 +39,12 @@ export class IssueController {
   @Get()
   async getMany(
     @Query()
-    { project_id, page, start, end }: GetIssueDto
+    { projectId, page, start, end }: GetIssueDto
   ) {
     const skip = parseInt((page as unknown) as string, 10) * limit
     const searchCondition = { start, end }
-    return await this.issueService.searchIssues({
-      project_id,
+    return this.issueService.searchIssues({
+      projectId,
       searchCondition,
       limit,
       skip,
@@ -52,7 +52,7 @@ export class IssueController {
   }
 
   /**
-   * 根据 issue_id 获取 issue 对应的趋势信息
+   * 根据 issueId 获取 issue 对应的趋势信息
    *
    * @param ids
    * @param period
@@ -62,6 +62,6 @@ export class IssueController {
     @Body()
     { ids, period }: GetTrendByIssueIdDto
   ) {
-    return await this.issueService.getTrendByIssueId(ids, period)
+    return this.issueService.getTrendByIssueId(ids, period)
   }
 }

@@ -35,40 +35,40 @@ export class MessageController {
 
   @MessagePattern(TOPIC_TRANSFER_MANAGER_EVENT)
   async handleEvent(@Payload() payload: OhbugEventLike) {
-    return await this.eventService.handleEvent(payload)
+    return this.eventService.handleEvent(payload)
   }
 
   @UseInterceptors(ClassSerializerInterceptor)
   @MessagePattern(TOPIC_DASHBOARD_MANAGER_GET_ISSUE)
   async getIssueByIssueId(@Payload() payload: GetIssueByIssueIdParams) {
-    return await this.issueService.getIssueByIssueId(payload)
+    return this.issueService.getIssueByIssueId(payload)
   }
 
   @UseInterceptors(ClassSerializerInterceptor)
   @MessagePattern(TOPIC_DASHBOARD_MANAGER_SEARCH_ISSUES)
   async searchIssues(@Payload() payload: GetIssuesByProjectIdParams) {
-    return await this.issueService.searchIssues(payload)
+    return this.issueService.searchIssues(payload)
   }
 
   @MessagePattern(TOPIC_DASHBOARD_MANAGER_GET_TREND)
   async getTrendByIssueId(@Payload() payload: GetTrendByIssueIdParams) {
-    return await this.issueService.getTrendByIssueId(payload)
+    return this.issueService.getTrendByIssueId(payload)
   }
 
   @MessagePattern(TOPIC_DASHBOARD_MANAGER_GET_LATEST_EVENT)
   async getLatestEventByIssueId(@Payload() payload: number) {
-    return await this.issueService.getLatestEventByIssueId(payload)
+    return this.issueService.getLatestEventByIssueId(payload)
   }
 
   @MessagePattern(TOPIC_DASHBOARD_MANAGER_GET_EVENT)
   async getEventByEventId(@Payload() payload: GetEventByEventId) {
-    return await this.eventService.getEventByEventId(payload)
+    return this.eventService.getEventByEventId(payload)
   }
 
   @MessagePattern(TOPIC_DASHBOARD_MANAGER_GET_PROJECT_TREND)
   async getProjectTrendByApiKey(
     @Payload() payload: GetProjectTrendByApiKeyParams
   ) {
-    return await this.issueService.getProjectTrendByApiKey(payload)
+    return this.issueService.getProjectTrendByApiKey(payload)
   }
 }

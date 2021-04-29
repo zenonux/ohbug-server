@@ -3,7 +3,7 @@ import type { Event } from '@/models'
 
 interface GetMany {
   page: number
-  issue_id?: number
+  issueId?: number
   type?: string
   user?: string
   start?: number | string

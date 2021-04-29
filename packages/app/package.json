@@ -17,7 +17,8 @@
     "start": "vite",
     "build": "tsc && vite build",
     "serve": "vite preview",
-    "prettier": "prettier --write '**/*.{js,jsx,tsx,ts,less,md,json}'"
+    "prettier": "prettier --write '**/*.{js,jsx,tsx,ts,less,md,json}'",
+    "lint": "eslint **/*.{ts,tsx} --fix"
   },
   "dependencies": {
     "@ant-design/icons": "^4.6.2",

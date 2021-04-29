@@ -17,9 +17,9 @@ export function getWhereOptions(searchCondition: SearchCondition) {
 
 // 判断时间是 近14天/近24h/其他时间
 export function switchTimeRangeAndGetDateHistogram(start: Date, end: Date) {
-  const time_start = dayjs(start)
-  const time_end = dayjs(end)
-  const diff = time_end.diff(time_start, 'hour')
+  const timeStart = dayjs(start)
+  const timeEnd = dayjs(end)
+  const diff = timeEnd.diff(timeStart, 'hour')
   // 312 23
   switch (diff) {
     // 14天

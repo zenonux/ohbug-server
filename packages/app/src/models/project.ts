@@ -38,10 +38,10 @@ export const project = createModel<RootModel>()({
       }
     },
     setCurrentProject(state, payload: number) {
-      const project = state.data!.find((v) => v.id === payload)
+      const current = state.data!.find((v) => v.id === payload)
       return {
         ...state,
-        current: project,
+        current,
       }
     },
   },
@@ -80,17 +80,13 @@ export const project = createModel<RootModel>()({
     },
 
     async trend(
-      {
-        project_id,
-        start,
-        end,
-      }: { project_id?: number; start: Date; end: Date },
+      { projectId, start, end }: { projectId?: number; start: Date; end: Date },
       state
     ) {
-      const project = state.project.current
-      if (project_id || project) {
+      const currentProject = state.project.current
+      if (projectId || currentProject) {
         const data = await api.project.trend.call({
-          project_id: project_id || project!.id,
+          projectId: projectId || currentProject!.id,
           start,
           end,
         })
@@ -103,14 +99,14 @@ export const project = createModel<RootModel>()({
     },
 
     async switchExtension(
-      { extension_id, enabled }: { extension_id: number; enabled: boolean },
+      { extensionId, enabled }: { extensionId: number; enabled: boolean },
       state
     ) {
-      const project = state.project.current
-      if (project) {
+      const currentProject = state.project.current
+      if (currentProject) {
         const data = await api.project.switchExtension.call({
-          project_id: project.id,
-          extension_id,
+          projectId: currentProject.id,
+          extensionId,
           enabled,
         })
         if (data) {

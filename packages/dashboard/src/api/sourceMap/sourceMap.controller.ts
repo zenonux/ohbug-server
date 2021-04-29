@@ -39,10 +39,7 @@ export class SourceMapController {
     @UploadedFile() file: ReceiveSourceMapFile,
     @Body() receiveSourceMapDto: ReceiveSourceMapDto
   ): Promise<void> {
-    return await this.sourceMapService.handleSourceMap(
-      file,
-      receiveSourceMapDto
-    )
+    return this.sourceMapService.handleSourceMap(file, receiveSourceMapDto)
   }
 
   /**
@@ -53,7 +50,7 @@ export class SourceMapController {
   @Get(':apiKey')
   @UseInterceptors(ClassSerializerInterceptor)
   async get(@Param() { apiKey }: GetSourceMapsDto): Promise<SourceMap[]> {
-    return await this.sourceMapService.getSourceMapsByApiKey({ apiKey })
+    return this.sourceMapService.getSourceMapsByApiKey({ apiKey })
   }
 
   /**
@@ -67,7 +64,7 @@ export class SourceMapController {
     @Param()
     { id }: DeleteSourceMapsDto
   ): Promise<boolean> {
-    return await this.sourceMapService.deleteSourceMapById({
+    return this.sourceMapService.deleteSourceMapById({
       id,
     })
   }

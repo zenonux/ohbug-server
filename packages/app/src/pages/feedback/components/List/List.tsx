@@ -14,7 +14,7 @@ const List: React.FC = () => {
   const query = useQuery()
 
   const feedbacks = feedbackModel.state.data
-  const count = feedbackModel.state.count
+  const { count } = feedbackModel.state
   const loading = loadingModel.state.effects.feedback.searchFeedbacks
 
   const handleTablePaginationChange = usePersistFn((current) => {
@@ -22,8 +22,8 @@ const List: React.FC = () => {
   })
 
   useMount(() => {
-    const issue_id = parseInt(query.get('issue_id') || '', 10)
-    feedbackModel.dispatch.searchFeedbacks({ page: 0, issue_id })
+    const issueId = parseInt(query.get('issueId') || '', 10)
+    feedbackModel.dispatch.searchFeedbacks({ page: 0, issueId })
   })
 
   return (

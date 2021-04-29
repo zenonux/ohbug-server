@@ -56,7 +56,7 @@ export class ExtensionService {
   /**
    * 根据 id 获取库里的指定 Extension
    *
-   * @param id extension_id
+   * @param id extensionId
    */
   async getExtensionDetailById(id: number): Promise<Extension & any> {
     try {

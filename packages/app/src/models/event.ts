@@ -35,19 +35,19 @@ export const event = createModel<RootModel>()({
     },
   },
   effects: (dispatch) => ({
-    async get({ event_id, issue_id }: { event_id: number; issue_id: number }) {
+    async get({ eventId, issueId }: { eventId: number; issueId: number }) {
       const data = await api.event.get.call({
-        event_id,
-        issue_id,
+        eventId,
+        issueId,
       })
       if (data) {
         dispatch.event.setCurrentEvent(data)
       }
     },
 
-    async getLatestEvent({ issue_id }: { issue_id: number }) {
+    async getLatestEvent({ issueId }: { issueId: number }) {
       const data = await api.event.getLatest.call({
-        issue_id,
+        issueId,
       })
       if (data) {
         dispatch.event.setCurrentEvent(data)

@@ -20,12 +20,12 @@ export class MessageController {
   @UseInterceptors(ClassSerializerInterceptor)
   @MessagePattern(TOPIC_MANAGER_NOTIFIER_DISPATCH_NOTICE)
   async dispatchNotice(@Payload() payload: DispatchNotice) {
-    return await this.noticeService.dispatchNotice(payload)
+    return this.noticeService.dispatchNotice(payload)
   }
 
   @UseInterceptors(ClassSerializerInterceptor)
   @MessagePattern(TOPIC_DASHBOARD_NOTIFIER_SEND_EMAIL)
   async sendEmail(@Payload() payload: SendEmail) {
-    return await this.noticeService.sendEmail(payload)
+    return this.noticeService.sendEmail(payload)
   }
 }

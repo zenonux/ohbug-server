@@ -51,9 +51,9 @@ export const sourceMap = createModel<RootModel>()({
       }
     },
 
-    async delete({ sourceMap_id }: { sourceMap_id: number }) {
-      if (sourceMap_id) {
-        const result = await api.sourceMap.delete.call(sourceMap_id)
+    async delete({ sourceMapId }: { sourceMapId: number }) {
+      if (sourceMapId) {
+        const result = await api.sourceMap.delete.call(sourceMapId)
 
         if (result) {
           dispatch.sourceMap.get()

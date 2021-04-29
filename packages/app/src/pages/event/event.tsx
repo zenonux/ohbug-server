@@ -112,20 +112,19 @@ const EventTab: React.FC<EventTabProps> = ({ event, issue }) => {
 const Event: React.FC<RouteComponentProps> = () => {
   const eventModel = useModel('event')
   const issueModel = useModel('issue')
-  const { issue_id, event_id } = useParams()
+  const { issueId, eventId } = useParams()
 
   React.useEffect(() => {
-    if (event_id === 'latest' && issue_id) {
-      eventModel.dispatch.getLatestEvent({ issue_id })
+    if (eventId === 'latest' && issueId) {
+      eventModel.dispatch.getLatestEvent({ issueId })
     } else {
       eventModel.dispatch.get({
-        event_id,
-        issue_id,
+        eventId,
+        issueId,
       })
     }
-    issueModel.dispatch.get({ issue_id })
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [event_id, issue_id])
+    issueModel.dispatch.get({ issueId })
+  }, [eventId, issueId])
 
   const event = eventModel.state.current
   const issue = issueModel.state.current

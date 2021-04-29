@@ -23,12 +23,12 @@ import type {
 export class BaseNotificationDto {
   @Type(() => Number)
   @IsNumber()
-  readonly project_id: number
+  readonly projectId: number
 }
 export class BaseNotificationRuleDto {
   @Type(() => Number)
   @IsNumber()
-  readonly rule_id: number
+  readonly ruleId: number
 }
 
 export class NotificationRuleDto extends BaseNotificationDto {
@@ -65,7 +65,9 @@ export class NotificationRuleDto extends BaseNotificationDto {
 
 export class NotificationSettingDto {
   readonly emails: NotificationSettingEmails
+
   readonly browser: NotificationSettingBrowser
+
   readonly webhooks: NotificationSettingWebHooks
 }
 

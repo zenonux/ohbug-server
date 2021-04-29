@@ -16,7 +16,7 @@ const Market: FC<RouteComponentProps> = () => {
   const loadingModel = useModel('loading')
 
   const extensions = extensionModel.state.data
-  const extension_id = extensionModel.state.current_id
+  const extensionId = extensionModel.state.currentId
   const extension = extensionModel.state.current
   const loading = loadingModel.state.effects.extension.getExtensions
   const detailLoading = loadingModel.state.effects.extension.get
@@ -25,8 +25,8 @@ const Market: FC<RouteComponentProps> = () => {
     extensionModel.dispatch.getMany()
   })
 
-  const handleSelectExtension = usePersistFn((extension_id: number) => {
-    extensionModel.dispatch.get({ extension_id })
+  const handleSelectExtension = usePersistFn((id: number) => {
+    extensionModel.dispatch.get({ extensionId: id })
   })
 
   return (
@@ -36,18 +36,18 @@ const Market: FC<RouteComponentProps> = () => {
       ) : (
         <Row gutter={24}>
           <Col className={styles.extensions} span={6}>
-            {extensions?.map((extension) => (
+            {extensions?.map((v) => (
               <Card
                 className={clsx(styles.extension, {
-                  [styles.current]: extension.id === extension_id,
+                  [styles.current]: v.id === extensionId,
                 })}
-                onClick={() => handleSelectExtension(extension.id)}
-                key={extension.key}
+                onClick={() => handleSelectExtension(v.id)}
+                key={v.key}
               >
                 <Card.Meta
-                  avatar={<Avatar src={extension.logo ?? logo} />}
-                  title={extension.name}
-                  description={extension.description}
+                  avatar={<Avatar src={v.logo ?? logo} />}
+                  title={v.name}
+                  description={v.description}
                 />
               </Card>
             ))}

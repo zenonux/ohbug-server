@@ -6,7 +6,6 @@ import { useLocation } from '@/ability'
 import styles from './renderEmpty.module.less'
 
 const renderEmpty = (componentName?: string) => {
-  // eslint-disable-next-line react-hooks/rules-of-hooks
   const location = useLocation()
 
   let description: React.ReactNode

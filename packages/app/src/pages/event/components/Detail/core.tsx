@@ -51,6 +51,7 @@ export function getMessageAndIconByActionType(
           <Icon
             type="icon-ohbug-send-plane-fill"
             style={{
+              // eslint-disable-next-line no-nested-ternary
               color: status > 400 ? 'red' : status <= 200 ? 'green' : 'grey',
               fontSize: 20,
             }}
@@ -70,6 +71,7 @@ export function getMessageAndIconByActionType(
           <Icon
             type="icon-ohbug-send-plane-fill"
             style={{
+              // eslint-disable-next-line no-nested-ternary
               color: status > 400 ? 'red' : status <= 200 ? 'green' : 'grey',
               fontSize: 20,
             }}

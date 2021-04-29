@@ -4,12 +4,10 @@ import { Layout } from '@/components'
 
 import List from './components/List'
 
-const Feedback: React.FC = () => {
-  return (
-    <Layout>
-      <List />
-    </Layout>
-  )
-}
+const Feedback: React.FC = () => (
+  <Layout>
+    <List />
+  </Layout>
+)
 
 export default Feedback

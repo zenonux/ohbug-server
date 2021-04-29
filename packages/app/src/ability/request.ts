@@ -19,35 +19,34 @@ export const request = axios.create({
 
       if (data.success && typeof data.data !== 'undefined') {
         return data.data
-      } else {
-        if (data) {
-          const errorMessage = data?.errorMessage
-          const errorCode = data?.errorCode
+      }
+      if (data) {
+        const errorMessage = data?.errorMessage
+        const errorCode = data?.errorCode
 
-          switch (data?.showType) {
-            case ErrorShowType.SILENT:
-              break
-            case ErrorShowType.WARN_MESSAGE:
-              message.warn(errorMessage)
-              break
-            case ErrorShowType.ERROR_MESSAGE:
-              message.error(errorMessage)
-              break
-            case ErrorShowType.NOTIFICATION:
-              notification.open({
-                message: errorMessage,
-              })
-              break
-            case ErrorShowType.REDIRECT:
-              navigate('/403', { state: errorCode })
-              break
-            default:
-              message.error(errorMessage)
-              break
-          }
-        } else {
-          message.error(data.errorMessage || 'Request error, please retry.')
+        switch (data?.showType) {
+          case ErrorShowType.SILENT:
+            break
+          case ErrorShowType.WARN_MESSAGE:
+            message.warn(errorMessage)
+            break
+          case ErrorShowType.ERROR_MESSAGE:
+            message.error(errorMessage)
+            break
+          case ErrorShowType.NOTIFICATION:
+            notification.open({
+              message: errorMessage,
+            })
+            break
+          case ErrorShowType.REDIRECT:
+            navigate('/403', { state: errorCode })
+            break
+          default:
+            message.error(errorMessage)
+            break
         }
+      } else {
+        message.error(data.errorMessage || 'Request error, please retry.')
       }
 
       return data

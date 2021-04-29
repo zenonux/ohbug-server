@@ -15,14 +15,14 @@ const Issue: React.FC<RouteComponentProps> = ({ children }) => {
   const projectModel = useModel('project')
   const loadingModel = useModel('loading')
   const issue = issueModel.state.data!
-  const count = issueModel.state.count
-  const trend = issueModel.state.trend
+  const { count } = issueModel.state
+  const { trend } = issueModel.state
   const project = projectModel.state.current
 
   const handleTablePaginationChange = usePersistFn((current) => {
     if (project) {
       issueModel.dispatch.searchIssues({
-        project_id: project.id,
+        projectId: project.id,
         page: current - 1,
       })
     }

@@ -90,9 +90,9 @@ export class ProjectService {
   /**
    * 查询 project
    */
-  async getProject({ project_id }: BaseProjectDto): Promise<Project> {
+  async getProject({ projectId }: BaseProjectDto): Promise<Project> {
     try {
-      return await this.projectRepository.findOneOrFail(project_id, {
+      return await this.projectRepository.findOneOrFail(projectId, {
         relations: ['extensions'],
       })
     } catch (error) {
@@ -118,13 +118,13 @@ export class ProjectService {
   /**
    * 获取指定时间段内的 trend
    *
-   * @param project_id
+   * @param projectId
    * @param start
    * @param end
    */
-  async getProjectTrend({ project_id, start, end }: GetTrendDto) {
-    const { apiKey } = await this.getProject({ project_id })
-    return await this.managerClient
+  async getProjectTrend({ projectId, start, end }: GetTrendDto) {
+    const { apiKey } = await this.getProject({ projectId })
+    return this.managerClient
       .send(TOPIC_DASHBOARD_MANAGER_GET_PROJECT_TREND, {
         apiKey,
         start,
@@ -136,22 +136,22 @@ export class ProjectService {
   /**
    * 绑定/解绑项目与扩展
    *
-   * @param project_id
-   * @param extension_id
+   * @param projectId
+   * @param extensionId
    * @param enabled
    */
   async switchExtension({
-    project_id,
-    extension_id,
+    projectId,
+    extensionId,
     enabled,
   }: SwitchExtensionDto): Promise<Project> {
     try {
-      const project = await this.getProject({ project_id })
+      const project = await this.getProject({ projectId })
       const extension = await this.extensionService.getExtensionById(
-        extension_id
+        extensionId
       )
       const targetExtension = project.extensions.find(
-        (v) => v.id === extension_id
+        (v) => v.id === extensionId
       )
       if (Array.isArray(project.extensions)) {
         // 已经绑定
@@ -162,10 +162,8 @@ export class ProjectService {
             )
           }
           // 未绑定
-        } else {
-          if (enabled) {
-            project.extensions = [...project.extensions, extension]
-          }
+        } else if (enabled) {
+          project.extensions = [...project.extensions, extension]
         }
       }
       return await this.projectRepository.save(project)

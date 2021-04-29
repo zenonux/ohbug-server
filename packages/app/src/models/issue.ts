@@ -83,9 +83,9 @@ export const issue = createModel<RootModel>()({
     },
   },
   effects: (dispatch) => ({
-    async get({ issue_id }: { issue_id: number }) {
+    async get({ issueId }: { issueId: number }) {
       const data = await api.issue.get.call({
-        issue_id,
+        issueId,
       })
 
       if (data) {
@@ -95,12 +95,12 @@ export const issue = createModel<RootModel>()({
 
     async searchIssues(
       {
-        project_id,
+        projectId,
         page = 0,
         start,
         end,
       }: {
-        project_id?: number
+        projectId?: number
         page: number
         start?: Date
         end?: Date
@@ -109,15 +109,15 @@ export const issue = createModel<RootModel>()({
     ) {
       if (start && end) {
         // eslint-disable-next-line
-        const id = project_id || state.project.current?.id!
+        const id = projectId || state.project.current?.id!
         await dispatch.project.trend({
-          project_id: id,
+          projectId: id,
           start,
           end,
         })
 
         const result = await api.issue.getMany.call({
-          project_id: id,
+          projectId: id,
           page,
           start,
           end,

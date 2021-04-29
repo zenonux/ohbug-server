@@ -8,7 +8,7 @@ export const sourceMap = {
     params: () => ({}),
   }),
   delete: createApi<number, SourceMap>({
-    url: (sourceMap_id) => `/sourceMap/${sourceMap_id}`,
+    url: (sourceMapId) => `/sourceMap/${sourceMapId}`,
     method: 'delete',
     data: () => ({}),
   }),

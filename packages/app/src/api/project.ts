@@ -2,20 +2,20 @@ import { createApi } from '@/ability'
 import type { Project } from '@/models'
 
 interface Get {
-  project_id: number
+  projectId: number
 }
 interface Create {
   name: string
   type: string
 }
 interface Trend {
-  project_id: number
+  projectId: number
   start: Date
   end: Date
 }
 interface SwitchExtension {
-  project_id: number
-  extension_id: number
+  projectId: number
+  extensionId: number
   enabled: boolean
 }
 
@@ -25,7 +25,7 @@ export const project = {
     method: 'post',
   }),
   get: createApi<Get, Project>({
-    url: ({ project_id }) => `/projects/${project_id}`,
+    url: ({ projectId }) => `/projects/${projectId}`,
     method: 'get',
     params: () => ({}),
   }),
@@ -36,7 +36,7 @@ export const project = {
   trend: createApi<Trend, any>({
     url: `/projects/trend`,
     method: 'post',
-    data: ({ project_id, start, end }) => ({ project_id, start, end }),
+    data: ({ projectId, start, end }) => ({ projectId, start, end }),
   }),
   switchExtension: createApi<SwitchExtension, Project>({
     url: '/projects/switchExtension',

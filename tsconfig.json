@@ -7,5 +7,14 @@
     "paths": {
       "@ohbug-server/*": ["packages/*/src"]
     }
-  }
+  },
+  "include": [
+    "src/**/*",
+    "packages/**/*",
+    ".eslintrc.js",
+    ".prettierrc.js",
+    "commitlint.config.js",
+    "lint-staged.config.js"
+  ],
+  "exclude": ["node_modules/", "dist/"]
 }

@@ -35,6 +35,6 @@ export interface AggregationDataAndMetaData {
 }
 
 export interface GetEventByEventId {
-  event_id: number
-  issue_id: number
+  eventId: number
+  issueId: number
 }
