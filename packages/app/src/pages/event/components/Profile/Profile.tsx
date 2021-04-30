@@ -35,11 +35,11 @@ const Profile: React.FC<ProfileProps> = ({ event }) => {
         icon: <Icon type="icon-ohbug-id-line" />,
       })
     }
-    if (event?.user?.ip_address) {
+    if (event?.user?.ip) {
       result.push({
         key: 'ip',
-        title: `IP: ${event?.user?.ip_address}`,
-        value: event?.user?.ip_address,
+        title: `IP: ${event?.user?.ip}`,
+        value: event?.user?.ip,
         icon: <Icon type="icon-ohbug-ip-line" />,
       })
     }

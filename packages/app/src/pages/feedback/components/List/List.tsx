@@ -59,10 +59,7 @@ const List: React.FC = () => {
               <RelativeTime time={item.time} />
             )}
           />
-          <Table.Column<Event<any>>
-            title="user"
-            dataIndex={['user', 'ip_address']}
-          />
+          <Table.Column<Event<any>> title="user" dataIndex={['user', 'ip']} />
           <Table.Column<Event<any>> title="platform" dataIndex="platform" />
           <Table.Column<Event<any>> title="language" dataIndex="language" />
         </Table>
