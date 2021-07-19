@@ -13,8 +13,8 @@
     "start": "cross-env NODE_ENV=development nest start --watch",
     "build": "nest build",
     "prettier": "prettier --write \"src/**/*.ts\"",
-    "lint": "eslint **/*.ts --fix",
-    "test": "jest",
+    "lint": "eslint '{src,apps,libs,test}/**/*.ts' --fix",
+    "test": "jest --passWithNoTests",
     "test:watch": "jest --watch"
   },
   "dependencies": {
@@ -27,5 +27,19 @@
     "@types/markdown-it": "^12.0.1",
     "@types/nodemailer": "^6.4.0",
     "@types/web-push": "^3.3.0"
+  },
+  "jest": {
+    "moduleFileExtensions": [
+      "js",
+      "json",
+      "ts"
+    ],
+    "rootDir": "src",
+    "testRegex": ".spec.ts$",
+    "transform": {
+      "^.+\\.ts$": "ts-jest"
+    },
+    "coverageDirectory": "../coverage",
+    "testEnvironment": "node"
   }
 }
