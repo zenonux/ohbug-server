@@ -22,6 +22,7 @@ async function main({ config, to, title, text, html }: SendMail) {
   if (verify) {
     return transporter.sendMail(info)
   }
+  return null
 }
 
 export default main

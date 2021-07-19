@@ -17,10 +17,7 @@ async function bootstrap() {
     }
   )
 
-  app.listen(() =>
-    // eslint-disable-next-line no-console
-    console.log(`Manager is running on: ${MICROSERVICE_MANAGER_PORT}`)
-  )
+  app.listen()
 }
 bootstrap().catch((error) => {
   console.error(error)

@@ -1,7 +1,7 @@
 import { forwardRef, Inject, Injectable } from '@nestjs/common'
 import { Repository } from 'typeorm'
 import { InjectRepository } from '@nestjs/typeorm'
-import { v4 as uuid } from 'uuid'
+import { nanoid } from 'nanoid'
 
 import type { NotificationSettingWebHook } from '@ohbug-server/common'
 import { ForbiddenException } from '@ohbug-server/common'
@@ -265,7 +265,7 @@ export class NotificationService {
         !notificationSetting.webhooks ||
         notificationSetting.webhooks.length < MAX_WEBHOOKS_NUMBER
       ) {
-        const id = uuid()
+        const id = nanoid()
         const webhook: NotificationSettingWebHook = {
           id,
           type: type!,

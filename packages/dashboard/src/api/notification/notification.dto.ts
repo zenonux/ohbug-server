@@ -6,7 +6,6 @@ import {
   ValidateIf,
   IsBoolean,
   IsObject,
-  IsUUID,
 } from 'class-validator'
 import { Type } from 'class-transformer'
 import type {
@@ -108,6 +107,6 @@ export class NotificationSettingWebhookDto extends BaseNotificationDto {
 }
 
 export class BaseNotificationSettingWebhookDto {
-  @IsUUID()
+  @IsString()
   readonly id: string
 }
