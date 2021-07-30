@@ -1,6 +1,6 @@
 {
   "name": "@ohbug-server/transfer",
-  "version": "0.0.0",
+  "version": "1.0.0-alpha.0",
   "description": "ohbug server microservices transfer",
   "author": "chenyueban",
   "scripts": {
@@ -15,7 +15,7 @@
     "test:e2e": "jest --config ./test/jest-e2e.json"
   },
   "dependencies": {
-    "@ohbug-server/common": "^0.0.0",
+    "@ohbug-server/common": "^1.0.0-alpha.0",
     "raw-body": "^2.4.1"
   },
   "jest": {
