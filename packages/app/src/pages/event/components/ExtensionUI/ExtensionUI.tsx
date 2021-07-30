@@ -1,10 +1,14 @@
 import React from 'react'
-import ReactJson from 'react-json-view'
-import { Spin } from 'antd'
 
-import { useCreation, useMount, useExternal } from '@/hooks'
-import { useModel } from '@/ability'
 import type { OhbugEvent } from '@ohbug/types'
+
+import { useCreation, useMount } from '@/hooks'
+import { useModel } from '@/ability'
+
+// eslint-disable-next-line import/extensions
+import frameURL from './frame.html?url'
+
+import styles from './ExtensionUI.module.less'
 
 interface ExtensionUIProps {
   data: any
@@ -25,43 +29,25 @@ const ExtensionUI: React.FC<ExtensionUIProps> = ({
       ),
     [extensionKey, projectModel.state.current]
   )
-  const [status, { load, unload }] = useExternal(extension?.ui?.cdn ?? '', {
-    async: false,
-  })
+  const ref = React.useRef<HTMLIFrameElement>(null)
 
   useMount(() => {
-    load()
-    return () => unload()
+    const window = ref.current?.contentWindow
+    if (window) {
+      window.onload = () => {
+        window.postMessage?.({ event, data, extension }, '*')
+      }
+    }
   })
 
-  if (status === 'loading') {
-    return <Spin />
-  }
-
-  if (status === 'ready') {
-    const name = extension?.ui?.name
-    if (name) {
-      // @ts-ignore
-      const Component = window?.[name]?.components?.event(React)
-      return <Component event={event} />
-    }
-  }
-
   return (
-    <div>
-      <ReactJson
-        src={data}
-        iconStyle="circle"
-        collapsed={2}
-        style={{
-          fontFamily:
-            'JetBrains Mono, -apple-system, BlinkMacSystemFont, monospace, Roboto',
-          background: 'none',
-          maxHeight: '60vh',
-          overflowY: 'auto',
-        }}
-      />
-    </div>
+    <iframe
+      className={styles.frame}
+      ref={ref}
+      title="ohbug-event-iframe"
+      src={frameURL}
+      frameBorder="0"
+    />
   )
 }
 
