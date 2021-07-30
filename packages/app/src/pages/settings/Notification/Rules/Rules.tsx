@@ -94,7 +94,7 @@ const Rules: React.FC<RouteComponentProps> = () => {
                 onChange={(checked) => {
                   setCurrentSwitch(item?.id)
                   notificationModel.dispatch.updateRules({
-                    rule_id: item.id!,
+                    ruleId: item.id!,
                     open: checked,
                   })
                 }}
@@ -129,7 +129,7 @@ const Rules: React.FC<RouteComponentProps> = () => {
                       cancelText: '取消',
                       onOk() {
                         notificationModel.dispatch.deleteRule({
-                          rule_id: item.id!,
+                          ruleId: item.id!,
                         })
                       },
                     })

@@ -20,8 +20,9 @@ async function main({ config, to, title, text, html }: SendMail) {
 
   const verify = await transporter.verify()
   if (verify) {
-    return await transporter.sendMail(info)
+    return transporter.sendMail(info)
   }
+  return null
 }
 
 export default main

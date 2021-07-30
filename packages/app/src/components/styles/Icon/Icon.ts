@@ -1,8 +1,9 @@
 import { createFromIconfontCN } from '@ant-design/icons'
-import { ICONFONT_URL } from '@/config'
+// eslint-disable-next-line import/extensions
+import iconfontURL from '@/static/icons/iconfont.js?url'
 
 const Icon = createFromIconfontCN({
-  scriptUrl: ICONFONT_URL,
+  scriptUrl: iconfontURL,
   extraCommonProps: {
     style: {
       fontSize: 16,

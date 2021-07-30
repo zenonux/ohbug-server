@@ -22,7 +22,7 @@ const TimePicker: React.FC = () => {
   React.useEffect(() => {
     if (project) {
       issueModel.dispatch.searchIssues({
-        project_id: project.id,
+        projectId: project.id,
         page: 0,
         start: (defaultValue[0].toISOString() as unknown) as Date,
         end: (defaultValue[1].toISOString() as unknown) as Date,
@@ -35,7 +35,7 @@ const TimePicker: React.FC = () => {
     const [start, end] = dates
     if (project) {
       issueModel.dispatch.searchIssues({
-        project_id: project.id,
+        projectId: project.id,
         page: 0,
         start: (start.toISOString() as unknown) as Date,
         end: (end.toISOString() as unknown) as Date,

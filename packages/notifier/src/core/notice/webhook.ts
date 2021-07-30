@@ -1,4 +1,5 @@
-import { HttpService } from '@nestjs/common'
+import { HttpService } from '@nestjs/axios'
+import { lastValueFrom } from 'rxjs'
 import type { AxiosResponse } from 'axios'
 import type { NotificationSettingWebHook } from '@ohbug-server/common'
 
@@ -55,7 +56,8 @@ export async function main(
     { title, text, markdown },
     webhook
   )
-  return await httpService.post(webhook.link, result).toPromise()
+  const source$ = httpService.post(webhook.link, result)
+  return lastValueFrom(source$)
 }
 
 export default main

@@ -10,8 +10,8 @@ import logo from '@/static/logo.svg'
 
 import styles from './Sider.module.less'
 
-function generateMenuItemData(routes: Route[]): Route[] {
-  return routes
+function generateMenuItemData(data: Route[]): Route[] {
+  return data
     .map((route) => {
       if (route.menu) {
         return route

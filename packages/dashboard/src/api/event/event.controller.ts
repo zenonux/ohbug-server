@@ -17,25 +17,25 @@ export class EventController {
   constructor(private readonly eventService: EventService) {}
 
   /**
-   * 根据 event_id 取到对应 event 以及受影响的用户数
+   * 根据 eventId 取到对应 event 以及受影响的用户数
    *
-   * @param event_id
-   * @param issue_id
+   * @param eventId
+   * @param issueId
    * @param event_index
    */
-  @Get(':event_id')
+  @Get(':eventId')
   @UseInterceptors(ClassSerializerInterceptor)
   async get(
     @Param()
-    { event_id }: GetEventByEventIdDto,
+    { eventId }: GetEventByEventIdDto,
     @Query()
-    { issue_id }: GetEventsDto
+    { issueId }: GetEventsDto
   ): Promise<OhbugEventLike | null> {
-    if (issue_id) {
-      if (event_id === 'latest') {
-        return await this.eventService.getLatestEventByIssueId(issue_id)
+    if (issueId) {
+      if (eventId === 'latest') {
+        return this.eventService.getLatestEventByIssueId(issueId)
       }
-      return await this.eventService.getEventByEventId(event_id, issue_id)
+      return this.eventService.getEventByEventId(eventId, issueId)
     }
     return null
   }

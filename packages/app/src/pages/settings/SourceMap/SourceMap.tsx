@@ -72,7 +72,7 @@ const SourceMapCompnent: React.FC<RouteComponentProps> = () => {
                       cancelText: '取消',
                       onOk() {
                         sourceMapModel.dispatch.delete({
-                          sourceMap_id: item?.id,
+                          sourceMapId: item?.id,
                         })
                       },
                     })

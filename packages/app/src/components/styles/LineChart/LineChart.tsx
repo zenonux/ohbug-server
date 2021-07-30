@@ -12,9 +12,9 @@ export function switchTimeRange(
   start: Data | undefined,
   end: Data | undefined
 ) {
-  const time_start = dayjs(start?.timestamp)
-  const time_end = dayjs(end?.timestamp)
-  const diff = time_end.diff(time_start, 'hour')
+  const timeStart = dayjs(start?.timestamp)
+  const timeEnd = dayjs(end?.timestamp)
+  const diff = timeEnd.diff(timeStart, 'hour')
   // 312 23
   switch (diff) {
     // 14天

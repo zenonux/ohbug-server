@@ -5,7 +5,7 @@ interface GetMany {
   page?: number
 }
 interface Get {
-  extension_id: number
+  extensionId: number
 }
 
 export const extension = {
@@ -14,7 +14,7 @@ export const extension = {
     method: 'get',
   }),
   get: createApi<Get, Extension>({
-    url: ({ extension_id }) => `/extensions/${extension_id}`,
+    url: ({ extensionId }) => `/extensions/${extensionId}`,
     method: 'get',
     params: () => ({}),
   }),

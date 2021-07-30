@@ -23,15 +23,15 @@ export class IssueService {
   private readonly managerClient: ClientProxy
 
   /**
-   * 根据 issue_id 取到对应 issue
+   * 根据 issueId 取到对应 issue
    *
-   * @param issue_id
+   * @param issueId
    */
-  @Get('/:issue_id')
-  async getIssueByIssueId({ issue_id }: GetIssueByIssueIdParams) {
-    return await this.managerClient
+  @Get('/:issueId')
+  async getIssueByIssueId({ issueId }: GetIssueByIssueIdParams) {
+    return this.managerClient
       .send(TOPIC_DASHBOARD_MANAGER_GET_ISSUE, {
-        issue_id,
+        issueId,
       })
       .toPromise()
   }
@@ -39,19 +39,19 @@ export class IssueService {
   /**
    * 查询 issues
    *
-   * @param project_id
+   * @param projectId
    * @param searchCondition
    * @param limit
    * @param skip
    */
   async searchIssues({
-    project_id,
+    projectId,
     searchCondition,
     limit,
     skip,
   }: GetIssuesByProjectIdParams) {
-    const { apiKey } = await this.projectService.getProject({ project_id })
-    return await this.managerClient
+    const { apiKey } = await this.projectService.getProject({ projectId })
+    return this.managerClient
       .send(TOPIC_DASHBOARD_MANAGER_SEARCH_ISSUES, {
         apiKey,
         searchCondition,
@@ -62,13 +62,13 @@ export class IssueService {
   }
 
   /**
-   * 根据 issue_id 获取 issue 对应的趋势信息
+   * 根据 issueId 获取 issue 对应的趋势信息
    *
    * @param ids
    * @param period
    */
   async getTrendByIssueId(ids: number[], period: Period) {
-    return await this.managerClient
+    return this.managerClient
       .send(TOPIC_DASHBOARD_MANAGER_GET_TREND, { ids, period })
       .toPromise()
   }

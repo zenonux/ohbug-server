@@ -37,11 +37,8 @@ const menuList: MenuList = [
     path: `/settings/sourcemap`,
   },
 ]
-function renderMenu(
-  menuList: MenuList,
-  handleItemClick: (item: MenuItem) => void
-) {
-  return menuList.map((item) =>
+function renderMenu(data: MenuList, handleItemClick: (item: MenuItem) => void) {
+  return data.map((item) =>
     Array.isArray(item.children) ? (
       <Menu.SubMenu key={item.key} title={item.label}>
         {renderMenu(item.children, handleItemClick)}

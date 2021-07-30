@@ -131,7 +131,7 @@ export class NotificationRule {
    * @memberof NotificationRule
    */
   @Exclude()
-  @ManyToOne((_) => Project, (project) => project.notificationRules, {
+  @ManyToOne(() => Project, (project) => project.notificationRules, {
     onDelete: 'CASCADE',
   })
   @JoinColumn()

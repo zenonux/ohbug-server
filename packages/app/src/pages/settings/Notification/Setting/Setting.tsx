@@ -236,73 +236,67 @@ const Setting: React.FC<RouteComponentProps> = () => {
               <Table.Column
                 title="名称"
                 width={500}
-                render={(item) => {
-                  return (
-                    <span>
-                      {/* <Avatar></Avatar> */}
-                      <span>{item.name}</span>
-                    </span>
-                  )
-                }}
+                render={(item) => (
+                  <span>
+                    {/* <Avatar></Avatar> */}
+                    <span>{item.name}</span>
+                  </span>
+                )}
               />
               <Table.Column
                 title="开关"
-                render={(item) => {
-                  return (
-                    <Switch
-                      checked={item.open}
-                      loading={switchLoading && currentSwitch === item?.id}
-                      onChange={(checked) => {
-                        setCurrentSwitch(item?.id)
-                        notificationModel.dispatch.updateWebhooksSetting({
-                          id: item.id,
-                          open: checked,
-                        })
-                      }}
-                    />
-                  )
-                }}
+                render={(item) => (
+                  <Switch
+                    checked={item.open}
+                    loading={switchLoading && currentSwitch === item?.id}
+                    onChange={(checked) => {
+                      setCurrentSwitch(item?.id)
+                      notificationModel.dispatch.updateWebhooksSetting({
+                        id: item.id,
+                        open: checked,
+                      })
+                    }}
+                  />
+                )}
               />
               <Table.Column
                 title="操作"
-                render={(item) => {
-                  return (
-                    <span>
-                      <Button
-                        className={styles.editButton}
-                        type="text"
-                        size="small"
-                        onClick={() => {
-                          setCurrentRule(item)
-                          webhookModalShow()
-                        }}
-                      >
-                        修改
-                      </Button>
-                      <Button
-                        className={styles.deleteButton}
-                        type="text"
-                        size="small"
-                        onClick={() => {
-                          Modal.confirm({
-                            title: '请确认是否删除?',
-                            content: item?.name,
-                            okText: '删除',
-                            okType: 'danger',
-                            cancelText: '取消',
-                            onOk() {
-                              notificationModel.dispatch.deleteWebhooksSetting({
-                                id: item?.id,
-                              })
-                            },
-                          })
-                        }}
-                      >
-                        删除
-                      </Button>
-                    </span>
-                  )
-                }}
+                render={(item) => (
+                  <span>
+                    <Button
+                      className={styles.editButton}
+                      type="text"
+                      size="small"
+                      onClick={() => {
+                        setCurrentRule(item)
+                        webhookModalShow()
+                      }}
+                    >
+                      修改
+                    </Button>
+                    <Button
+                      className={styles.deleteButton}
+                      type="text"
+                      size="small"
+                      onClick={() => {
+                        Modal.confirm({
+                          title: '请确认是否删除?',
+                          content: item?.name,
+                          okText: '删除',
+                          okType: 'danger',
+                          cancelText: '取消',
+                          onOk() {
+                            notificationModel.dispatch.deleteWebhooksSetting({
+                              id: item?.id,
+                            })
+                          },
+                        })
+                      }}
+                    >
+                      删除
+                    </Button>
+                  </span>
+                )}
               />
             </Table>
           </Form.Item>

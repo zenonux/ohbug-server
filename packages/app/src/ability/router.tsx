@@ -14,8 +14,8 @@ import { Loading, Sider, Footer } from '@/components'
 
 import routes, { Route } from './routes'
 
-function matchRoute(routes: Route[], location: WindowLocation): Route | null {
-  for (const route of routes) {
+function matchRoute(data: Route[], location: WindowLocation): Route | null {
+  for (const route of data) {
     const m = match(route.path)
     const result = m(location.pathname)
     if (result) {
@@ -32,7 +32,6 @@ const Container: React.FC = ({ children }) => {
   const [route, setRoute] = React.useState<Route | null>(null)
   React.useEffect(() => {
     setRoute(matchRoute(routes, location))
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location.key])
 
   const Wrapper = route?.wrapper ? route?.wrapper : React.Fragment
@@ -72,8 +71,8 @@ const Container: React.FC = ({ children }) => {
   )
 }
 
-function renderRoutes(routes: Route[]) {
-  return routes
+function renderRoutes(data: Route[]) {
+  return data
     .map((route) => {
       if (route.component) {
         const Component = route?.component
@@ -102,7 +101,8 @@ function renderRoutes(routes: Route[]) {
             {renderRoutes(route.routes)}
           </Component>
         )
-      } else if (route.redirect) {
+      }
+      if (route.redirect) {
         return (
           <Redirect
             from={route.path}

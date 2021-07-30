@@ -53,7 +53,7 @@ export class IssueService {
         },
         relations: ['events'],
       })
-      const _event = await this.eventService.createEvent(event)
+      const eventObject = await this.eventService.createEvent(event)
       if (!issue) {
         // 不存在 创建 (intro, metadata, event)
         const issueObject = this.issueRepository.create({
@@ -63,41 +63,40 @@ export class IssueService {
           metadata,
           users: event.user ? [event.user] : [],
           usersCount: event.user ? 1 : 0,
-          events: [_event],
+          events: [eventObject],
           eventsCount: 1,
         })
         return await this.issueRepository.save(issueObject)
-      } else {
-        // users 最多存储 1000，超过后只更改 usersCount
-        const MAX_USERS_NUMBER = 1000
-        const usersCount = issue.users.length
-        if (usersCount < MAX_USERS_NUMBER) {
-          issue.users = uniq(
-            event.user ? [...issue.users, event.user] : issue.users
-          )
-          issue.usersCount = issue.users.length
-        } else {
-          issue.usersCount = issue.usersCount + 1
-        }
-        // 已经存在
-        issue.events.push(_event)
-        issue.eventsCount = issue.eventsCount + 1
-        return await this.issueRepository.save(issue)
       }
+      // users 最多存储 1000，超过后只更改 usersCount
+      const MAX_USERS_NUMBER = 1000
+      const usersCount = issue.users.length
+      if (usersCount < MAX_USERS_NUMBER) {
+        issue.users = uniq(
+          event.user ? [...issue.users, event.user] : issue.users
+        )
+        issue.usersCount = issue.users.length
+      } else {
+        issue.usersCount += 1
+      }
+      // 已经存在
+      issue.events.push(eventObject)
+      issue.eventsCount += 1
+      return await this.issueRepository.save(issue)
     } catch (error) {
       throw new ForbiddenException(400400, error)
     }
   }
 
   /**
-   * 根据 issue_id 取到对应 issue
+   * 根据 issueId 取到对应 issue
    *
-   * @param issue_id
+   * @param issueId
    * @param relations
    */
-  async getIssueByIssueId({ issue_id, relations }: GetIssueByIssueIdParams) {
+  async getIssueByIssueId({ issueId, relations }: GetIssueByIssueIdParams) {
     try {
-      return await this.issueRepository.findOneOrFail(issue_id, { relations })
+      return await this.issueRepository.findOneOrFail(issueId, { relations })
     } catch (error) {
       throw new ForbiddenException(400410, error)
     }
@@ -157,13 +156,8 @@ export class IssueService {
     const result = await this.eventService.groupEvents(query, trend)
 
     const buckets = Array.from(
-      new Array(
-        dayjs(max).diff(
-          dayjs(min),
-          // @ts-ignore
-          interval
-        ) + 1
-      )
+      // @ts-ignore
+      new Array(dayjs(max).diff(dayjs(min), interval) + 1)
     ).map((_, index) => {
       const timestamp = dayjs(min)
         // @ts-ignore
@@ -192,7 +186,7 @@ export class IssueService {
   }
 
   /**
-   * 根据 issue_id 获取 issue 对应的趋势信息
+   * 根据 issueId 获取 issue 对应的趋势信息
    *
    * @param ids
    * @param period
@@ -248,11 +242,10 @@ export class IssueService {
                 issueId,
               }),
             }
-          } else {
-            return await this.getTrend(queryMap[period], trendMap[period], {
-              issueId,
-            })
           }
+          return this.getTrend(queryMap[period], trendMap[period], {
+            issueId,
+          })
         })
       )
     } catch (error) {
@@ -261,13 +254,13 @@ export class IssueService {
   }
 
   /**
-   * 根据 issue_id 获取 issue 最近的一条 event
+   * 根据 issueId 获取 issue 最近的一条 event
    *
-   * @param issue_id
+   * @param issueId
    */
-  async getLatestEventByIssueId(issue_id: number) {
+  async getLatestEventByIssueId(issueId: number) {
     try {
-      const issue = await this.issueRepository.findOne(issue_id, {
+      const issue = await this.issueRepository.findOne(issueId, {
         relations: ['events'],
       })
       const event = issue?.events[issue.events.length - 1]
@@ -303,7 +296,7 @@ export class IssueService {
       min_doc_count: 0,
       ...switchTimeRangeAndGetDateHistogram(start, end),
     }
-    return await this.getTrend(query, trend)
+    return this.getTrend(query, trend)
   }
 
   /**

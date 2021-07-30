@@ -52,9 +52,10 @@ const productionConfig: UserConfig = {
   ],
 }
 
-export default defineConfig(({ mode }) => {
-  return mergeDeepRight(
-    baseConfig,
-    mode === 'development' ? developmentConfig : productionConfig
-  ) as UserConfig
-})
+export default defineConfig(
+  ({ mode }) =>
+    mergeDeepRight(
+      baseConfig,
+      mode === 'development' ? developmentConfig : productionConfig
+    ) as UserConfig
+)

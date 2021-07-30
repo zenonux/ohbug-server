@@ -2,10 +2,10 @@ import { createApi } from '@/ability'
 import type { Issue } from '@/models'
 
 interface Get {
-  issue_id: number
+  issueId: number
 }
 interface GetMany {
-  project_id: number
+  projectId: number
   page: number
   start?: Date
   end?: Date
@@ -18,7 +18,7 @@ interface GetTrend {
 
 export const issue = {
   get: createApi<Get, Issue>({
-    url: ({ issue_id }) => `/issues/${issue_id}`,
+    url: ({ issueId }) => `/issues/${issueId}`,
     method: 'get',
     params: () => ({}),
   }),

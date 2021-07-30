@@ -6,7 +6,6 @@ import {
   ValidateIf,
   IsBoolean,
   IsObject,
-  IsUUID,
 } from 'class-validator'
 import { Type } from 'class-transformer'
 import type {
@@ -23,12 +22,12 @@ import type {
 export class BaseNotificationDto {
   @Type(() => Number)
   @IsNumber()
-  readonly project_id: number
+  readonly projectId: number
 }
 export class BaseNotificationRuleDto {
   @Type(() => Number)
   @IsNumber()
-  readonly rule_id: number
+  readonly ruleId: number
 }
 
 export class NotificationRuleDto extends BaseNotificationDto {
@@ -65,7 +64,9 @@ export class NotificationRuleDto extends BaseNotificationDto {
 
 export class NotificationSettingDto {
   readonly emails: NotificationSettingEmails
+
   readonly browser: NotificationSettingBrowser
+
   readonly webhooks: NotificationSettingWebHooks
 }
 
@@ -106,6 +107,6 @@ export class NotificationSettingWebhookDto extends BaseNotificationDto {
 }
 
 export class BaseNotificationSettingWebhookDto {
-  @IsUUID()
+  @IsString()
   readonly id: string
 }

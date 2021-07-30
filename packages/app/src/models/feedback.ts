@@ -27,14 +27,14 @@ export const feedback = createModel<RootModel>()({
   effects: (dispatch) => ({
     async searchFeedbacks({
       page = 0,
-      issue_id,
+      issueId,
       type,
       user,
       start,
       end,
     }: {
       page: number
-      issue_id?: number
+      issueId?: number
       type?: string
       user?: string
       start?: number | string
@@ -42,7 +42,7 @@ export const feedback = createModel<RootModel>()({
     }) {
       const data = await api.feedback.getMany.call({
         page,
-        issue_id,
+        issueId,
         type,
         user,
         start,

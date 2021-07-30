@@ -44,7 +44,7 @@ export class SourceMapConsumer {
           (s) => s.appVersion === appVersion && s.appType === appType
         )
         if (matchSourceMap) {
-          let data = matchSourceMap.data
+          let { data } = matchSourceMap
           // 这一步要对比新文件与老文件是否重复，若重复删除老的文件
           const oldFile = matchSourceMap.data.find(
             ({ originalname }) => originalname === file.originalname
@@ -58,16 +58,15 @@ export class SourceMapConsumer {
           // 如果有则新增 data
           matchSourceMap.data = uniq([...data, file])
           return await this.sourceMapRepository.save(matchSourceMap)
-        } else {
-          // 如果没有则新建
-          const sourceMap = await this.sourceMapRepository.create({
-            apiKey,
-            appVersion,
-            appType,
-            data: [file],
-          })
-          return await this.sourceMapRepository.save(sourceMap)
         }
+        // 如果没有则新建
+        const sourceMap = await this.sourceMapRepository.create({
+          apiKey,
+          appVersion,
+          appType,
+          data: [file],
+        })
+        return await this.sourceMapRepository.save(sourceMap)
       }
     } catch (error) {
       throw new ForbiddenException(400900, error)

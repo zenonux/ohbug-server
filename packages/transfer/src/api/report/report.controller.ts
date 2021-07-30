@@ -16,21 +16,21 @@ export class ReportController {
    * 上报接口 (Post)
    *
    * @param event 通过上报接口拿到的 event
-   * @param ip_address
+   * @param ip
    * @param req
    */
   @Post()
   async receiveEventFromPost(
     @Body() event: OhbugEvent<any>,
-    @Ip() ip_address: string,
+    @Ip() ip: string,
     @Req() req: any
   ): Promise<void> {
     if (req.readable) {
       const raw = await rawbody(req)
       const json = raw.toString().trim()
-      this.reportService.handleEvent(JSON.parse(json), ip_address)
+      this.reportService.handleEvent(JSON.parse(json), ip)
     } else {
-      this.reportService.handleEvent(event, ip_address)
+      this.reportService.handleEvent(event, ip)
     }
   }
 }

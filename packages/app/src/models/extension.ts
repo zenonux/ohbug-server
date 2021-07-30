@@ -25,7 +25,7 @@ export interface ExtensionDetail extends Extension {
 }
 export type MarketState = Partial<{
   data: Extension[]
-  current_id: number
+  currentId: number
   current: ExtensionDetail
 }>
 
@@ -43,19 +43,19 @@ export const extension = createModel<RootModel>()({
     async getMany() {
       const [data] = await api.extension.getMany.call({ page: 0 })
       if (typeof data !== 'undefined') {
-        const current_id = data?.[0].id
+        const currentId = data?.[0].id
         dispatch.extension.setState({
           data,
-          current_id,
+          currentId,
         })
-        dispatch.extension.get({ extension_id: current_id })
+        dispatch.extension.get({ extensionId: currentId })
       }
     },
-    async get({ extension_id }: { extension_id: number }) {
+    async get({ extensionId }: { extensionId: number }) {
       dispatch.extension.setState({
-        current_id: extension_id,
+        currentId: extensionId,
       })
-      const data = await api.extension.get.call({ extension_id })
+      const data = await api.extension.get.call({ extensionId })
       if (typeof data !== 'undefined') {
         dispatch.extension.setState({
           current: data,

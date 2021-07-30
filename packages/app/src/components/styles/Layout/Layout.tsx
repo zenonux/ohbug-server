@@ -28,8 +28,8 @@ const BasicLayout: React.FC<BasicLayoutProps> = ({
   const projects = projectModel.state.data
   const project = projectModel.state.current
 
-  const handleProjectChange = usePersistFn((project_id: number) => {
-    projectModel.dispatch.setCurrentProject(project_id)
+  const handleProjectChange = usePersistFn((projectId: number) => {
+    projectModel.dispatch.setCurrentProject(projectId)
   })
   const handleScroll = usePersistFn(() => {
     const scrollTop = window.scrollY
@@ -66,9 +66,9 @@ const BasicLayout: React.FC<BasicLayoutProps> = ({
                 size="large"
                 key="project-select"
               >
-                {projects?.map((project) => (
-                  <Select.Option value={project.id} key={project.id}>
-                    {project.name}
+                {projects?.map((v) => (
+                  <Select.Option value={v.id} key={v.id}>
+                    {v.name}
                   </Select.Option>
                 ))}
               </Select>,

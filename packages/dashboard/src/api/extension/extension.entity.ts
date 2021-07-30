@@ -1,11 +1,11 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToMany } from 'typeorm'
 
+import { Project } from '@/api/project/project.entity'
 import type {
   OhbugExtension,
   OhbugExtensionRepository,
   OhbugExtensionUI,
 } from './extension.interface'
-import { Project } from '@/api/project/project.entity'
 
 @Entity()
 export class Extension implements OhbugExtension {

@@ -13,11 +13,11 @@ export class ExtensionController {
   /**
    * 根据 id 获取库里的指定 Extension
    *
-   * @param extension_id
+   * @param extensionId
    */
-  @Get(':extension_id')
-  async get(@Param() { extension_id }: GetExtensionDto): Promise<Extension> {
-    return await this.extensionService.getExtensionDetailById(extension_id)
+  @Get(':extensionId')
+  async get(@Param() { extensionId }: GetExtensionDto): Promise<Extension> {
+    return this.extensionService.getExtensionDetailById(extensionId)
   }
 
   /**
@@ -31,6 +31,6 @@ export class ExtensionController {
   ): Promise<[Extension[], number]> {
     const take = limit
     const skip = parseInt(page, 10) * limit
-    return await this.extensionService.searchExtensions({ take, skip })
+    return this.extensionService.searchExtensions({ take, skip })
   }
 }

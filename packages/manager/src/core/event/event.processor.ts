@@ -59,8 +59,8 @@ export class EventConsumer {
             rule: any
             event: any
             issue: any
-          }) => {
-            return await this.notifierClient
+          }) =>
+            this.notifierClient
               .send(TOPIC_MANAGER_NOTIFIER_DISPATCH_NOTICE, {
                 setting: notification.notificationSetting,
                 rule: result.rule,
@@ -68,7 +68,6 @@ export class EventConsumer {
                 issue: result.issue,
               })
               .toPromise()
-          }
           judgingStatus(
             eventLike,
             issue,

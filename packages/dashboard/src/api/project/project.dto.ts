@@ -4,7 +4,7 @@ import { Type } from 'class-transformer'
 export class BaseProjectDto {
   @Type(() => Number)
   @IsNumber({}, { message: 'Project ID 错误' })
-  readonly project_id: number
+  readonly projectId: number
 }
 
 export class CreateProjectDto {
@@ -26,7 +26,7 @@ export class GetTrendDto extends BaseProjectDto {
 export class SwitchExtensionDto extends BaseProjectDto {
   @Type(() => Number)
   @IsNumber({}, { message: 'Project ID 错误' })
-  readonly extension_id: number
+  readonly extensionId: number
 
   @IsBoolean()
   readonly enabled: boolean

@@ -133,10 +133,10 @@ const Detail: React.FC<DetailProps> = ({ event }) => {
         loading={loading}
       >
         <Timeline className={styles.actions}>
-          {event?.actions?.map((action, index) => {
+          {event?.actions?.map((action) => {
             const { message, icon } = getMessageAndIconByActionType(action)
             return (
-              <Timeline.Item key={action.timestamp + index} dot={icon}>
+              <Timeline.Item key={action.timestamp + action.data} dot={icon}>
                 <div className={styles.action}>
                   <div className={styles.type}>{action.type}</div>
                   <div className={styles.data}>{message}</div>

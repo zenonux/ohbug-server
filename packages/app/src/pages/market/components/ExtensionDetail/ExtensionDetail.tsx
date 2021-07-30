@@ -9,9 +9,9 @@ import type { ExtensionDetail } from '@/models'
 import { useCreation } from '@/hooks'
 import { Icon } from '@/components'
 
-import styles from './ExtensionDetail.module.less'
 import { usePersistFn } from 'ahooks'
 import { useModel } from '@/ability'
+import styles from './ExtensionDetail.module.less'
 
 interface ExtensionDetailProps {
   extension?: ExtensionDetail
@@ -22,7 +22,7 @@ const md = new MarkdownIt({
   html: true,
   linkify: true,
   typographer: true,
-  highlight: function (string, language) {
+  highlight(string, language) {
     return renderToString(
       <SyntaxHighlighter
         language={language || 'bash'}
@@ -50,11 +50,12 @@ const ExtensionDetailComponent: FC<ExtensionDetailProps> = ({
   )
 
   const handleSwitch = usePersistFn((checked) => {
-    extension &&
+    if (extension) {
       projectModel.dispatch.switchExtension({
-        extension_id: extension?.id,
+        extensionId: extension?.id,
         enabled: checked,
       })
+    }
   })
 
   const enableLoading = loadingModel.state.effects.project.enableExtension
@@ -89,6 +90,7 @@ const ExtensionDetailComponent: FC<ExtensionDetailProps> = ({
       {html && (
         <div
           className={styles.container}
+          // eslint-disable-next-line react/no-danger
           dangerouslySetInnerHTML={{ __html: html }}
         />
       )}

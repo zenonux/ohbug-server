@@ -1,4 +1,6 @@
-import { HttpService, Injectable } from '@nestjs/common'
+import { Injectable } from '@nestjs/common'
+import { HttpService } from '@nestjs/axios'
+import { lastValueFrom } from 'rxjs'
 import { InjectRepository } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
 import { Cron, CronExpression } from '@nestjs/schedule'
@@ -54,9 +56,22 @@ export class ExtensionService {
   }
 
   /**
+   * 程序启动 10 秒后检查有无 extensions
+   * 没有则拉取一次数据
+   */
+  @Cron(new Date(Date.now() + 10 * 1000))
+  async handleAppInitial() {
+    const extensionsCount = await this.extensionRepository.count()
+    if (extensionsCount > 0) {
+      return
+    }
+    return this.handleGetExtensionsFromAwesomeOhbug()
+  }
+
+  /**
    * 根据 id 获取库里的指定 Extension
    *
-   * @param id extension_id
+   * @param id extensionId
    */
   async getExtensionDetailById(id: number): Promise<Extension & any> {
     try {
@@ -66,17 +81,21 @@ export class ExtensionService {
       const { user, repo } = getRepositoryInfo(extension.repository)
       let repos
       try {
-        const { data } = await this.httpService
-          .get(`https://api.github.com/repos/${user}/${repo}`, {
+        const source$ = this.httpService.get(
+          `https://api.github.com/repos/${user}/${repo}`,
+          {
             headers: { Accept: `application/vnd.github.v3+json` },
-          })
-          .toPromise()
+          }
+        )
+        const { data } = await lastValueFrom(source$)
         repos = data
         // eslint-disable-next-line no-empty
       } catch (e) {}
-      const { data: readme } = await this.httpService
-        .get(`https://cdn.jsdelivr.net/gh/${user}/${repo}/README.md`)
-        .toPromise()
+      const source$ = this.httpService.get(
+        `https://cdn.jsdelivr.net/gh/${user}/${repo}/README.md`
+      )
+      const { data: readme } = await lastValueFrom(source$)
+
       return Object.assign(extension, { readme, repos })
     } catch (error) {
       throw new ForbiddenException(4001201, error)

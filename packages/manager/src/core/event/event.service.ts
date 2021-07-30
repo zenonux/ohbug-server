@@ -85,25 +85,25 @@ export class EventService {
   }
 
   /**
-   * 根据 event_id 查询 event
+   * 根据 eventId 查询 event
    *
-   * @param event_id
-   * @param issue_id
+   * @param eventId
+   * @param issueId
    */
   async getEventByEventId({
-    event_id,
-    issue_id,
+    eventId,
+    issueId,
   }: GetEventByEventId): Promise<Event & { previous: Event; next: Event }> {
     try {
       const issue = await this.issueService.getIssueByIssueId({
-        issue_id,
+        issueId,
         relations: ['events'],
       })
-      const event = issue.events.find((e) => e.id === event_id) as Event & {
+      const event = issue.events.find((e) => e.id === eventId) as Event & {
         previous: Event
         next: Event
       }
-      const eventIndex = issue.events.findIndex((e) => e.id === event_id)
+      const eventIndex = issue.events.findIndex((e) => e.id === eventId)
       if (event && eventIndex) {
         const previousEvent = issue.events[eventIndex - 1]
         const nextEvent = issue.events[eventIndex + 1]
@@ -134,7 +134,7 @@ export class EventService {
     }
   ) {
     if (query.issueId) {
-      return await this.eventRepository
+      return this.eventRepository
         .createQueryBuilder('event')
         .select(
           `to_char(event.createdAt AT TIME ZONE 'Asia/Shanghai', '${trend.format}')`,
@@ -153,7 +153,7 @@ export class EventService {
         .execute()
     }
     if (query.apiKey) {
-      return await this.eventRepository
+      return this.eventRepository
         .createQueryBuilder('event')
         .select(
           `to_char(event.createdAt AT TIME ZONE 'Asia/Shanghai', '${trend.format}')`,
@@ -171,7 +171,7 @@ export class EventService {
         .orderBy(`"timestamp"`)
         .execute()
     }
-    return await this.eventRepository
+    return this.eventRepository
       .createQueryBuilder('event')
       .select(
         `to_char(event.createdAt AT TIME ZONE 'Asia/Shanghai', '${trend.format}')`,

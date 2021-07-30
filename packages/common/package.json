@@ -1,6 +1,6 @@
 {
   "name": "@ohbug-server/common",
-  "version": "0.0.0",
+  "version": "1.0.0-alpha.0",
   "description": "ohbug server common",
   "author": "chenyueban",
   "files": [
@@ -18,7 +18,7 @@
     "test:watch": "jest --watch"
   },
   "dependencies": {
-    "@types/request-ip": "^0.0.35",
+    "@types/request-ip": "^0.0.37",
     "raw-body": "^2.4.1",
     "request-ip": "^2.1.3"
   },

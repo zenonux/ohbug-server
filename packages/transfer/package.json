@@ -1,6 +1,6 @@
 {
   "name": "@ohbug-server/transfer",
-  "version": "0.0.0",
+  "version": "1.0.0-alpha.0",
   "description": "ohbug server microservices transfer",
   "author": "chenyueban",
   "scripts": {
@@ -8,14 +8,14 @@
     "start": "cross-env NODE_ENV=development nest start --watch",
     "build": "nest build",
     "prettier": "prettier --write \"src/**/*.ts\"",
-    "lint": "eslint '{src,apps,libs,test}/**/*.ts' --fix",
+    "lint": "eslint **/*.ts --fix",
     "test": "jest",
     "test:watch": "jest --watch",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json"
   },
   "dependencies": {
-    "@ohbug-server/common": "^0.0.0",
+    "@ohbug-server/common": "^1.0.0-alpha.0",
     "raw-body": "^2.4.1"
   },
   "jest": {

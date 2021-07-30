@@ -30,7 +30,7 @@ export class NotificationController {
   /**
    * 创建 notification rule
    *
-   * @param project_id
+   * @param projectId
    * @param name
    * @param data
    * @param whiteList
@@ -44,7 +44,7 @@ export class NotificationController {
   async createNotificationRule(
     @Body()
     {
-      project_id,
+      projectId,
       name,
       data,
       whiteList,
@@ -54,8 +54,8 @@ export class NotificationController {
       open,
     }: NotificationRuleDto
   ): Promise<NotificationRule> {
-    return await this.notificationService.createNotificationRule({
-      project_id,
+    return this.notificationService.createNotificationRule({
+      projectId,
       name,
       data,
       whiteList,
@@ -69,21 +69,21 @@ export class NotificationController {
   /**
    * 查询 notification rules
    *
-   * @param project_id
+   * @param projectId
    */
   @Get('rules')
   @UseInterceptors(ClassSerializerInterceptor)
   async getNotificationRules(
-    @Query() { project_id }: BaseNotificationDto
+    @Query() { projectId }: BaseNotificationDto
   ): Promise<NotificationRule[]> {
-    return await this.notificationService.getNotificationRules({ project_id })
+    return this.notificationService.getNotificationRules({ projectId })
   }
 
   /**
    * 更新 notification rule
    *
-   * @param rule_id
-   * @param project_id
+   * @param ruleId
+   * @param projectId
    * @param name
    * @param data
    * @param whiteList
@@ -92,13 +92,13 @@ export class NotificationController {
    * @param interval
    * @param open
    */
-  @Patch('rules/:rule_id')
+  @Patch('rules/:ruleId')
   @UseInterceptors(ClassSerializerInterceptor)
   async updateNotificationRule(
-    @Param() { rule_id }: BaseNotificationRuleDto,
+    @Param() { ruleId }: BaseNotificationRuleDto,
     @Body()
     {
-      project_id,
+      projectId,
       name,
       data,
       whiteList,
@@ -108,9 +108,9 @@ export class NotificationController {
       open,
     }: NotificationRuleDto
   ): Promise<NotificationRule> {
-    return await this.notificationService.updateNotificationRule({
-      rule_id,
-      project_id,
+    return this.notificationService.updateNotificationRule({
+      ruleId,
+      projectId,
       name,
       data,
       whiteList,
@@ -124,39 +124,39 @@ export class NotificationController {
   /**
    * 删除 notification rule
    *
-   * @param rule_id
-   * @param project_id
+   * @param ruleId
+   * @param projectId
    */
-  @Delete('rules/:rule_id')
+  @Delete('rules/:ruleId')
   @UseInterceptors(ClassSerializerInterceptor)
   async deleteNotificationRule(
     @Param()
-    { rule_id }: BaseNotificationRuleDto,
-    @Query() { project_id }: BaseNotificationDto
+    { ruleId }: BaseNotificationRuleDto,
+    @Query() { projectId }: BaseNotificationDto
   ): Promise<boolean> {
-    return await this.notificationService.deleteNotificationRule({
-      rule_id,
-      project_id,
+    return this.notificationService.deleteNotificationRule({
+      ruleId,
+      projectId,
     })
   }
 
   /**
    * 获取 notification setting
    *
-   * @param project_id
+   * @param projectId
    */
   @Get('setting')
   @UseInterceptors(ClassSerializerInterceptor)
   async getNotificationSetting(
-    @Query() { project_id }: BaseNotificationDto
+    @Query() { projectId }: BaseNotificationDto
   ): Promise<NotificationSetting> {
-    return await this.notificationService.getNotificationSetting({ project_id })
+    return this.notificationService.getNotificationSetting({ projectId })
   }
 
   /**
    * 更新 notification setting
    *
-   * @param project_id
+   * @param projectId
    * @param emails
    * @param browser
    * @param webhooks
@@ -165,10 +165,10 @@ export class NotificationController {
   @UseInterceptors(ClassSerializerInterceptor)
   async updateNotificationSetting(
     @Body()
-    { project_id, emails, browser, webhooks }: UpdateNotificationSettingDto
+    { projectId, emails, browser, webhooks }: UpdateNotificationSettingDto
   ): Promise<NotificationSetting> {
-    return await this.notificationService.updateNotificationSetting({
-      project_id,
+    return this.notificationService.updateNotificationSetting({
+      projectId,
       emails,
       browser,
       webhooks,
@@ -178,7 +178,7 @@ export class NotificationController {
   /**
    * 创建 notification setting webhooks
    *
-   * @param project_id
+   * @param projectId
    * @param type
    * @param name
    * @param link
@@ -189,10 +189,10 @@ export class NotificationController {
   @UseInterceptors(ClassSerializerInterceptor)
   async createNotificationSettingWebhook(
     @Body()
-    { project_id, type, name, link, open, at }: NotificationSettingWebhookDto
+    { projectId, type, name, link, open, at }: NotificationSettingWebhookDto
   ) {
-    return await this.notificationService.createNotificationSettingWebhook({
-      project_id,
+    return this.notificationService.createNotificationSettingWebhook({
+      projectId,
       type,
       name,
       link,
@@ -204,7 +204,7 @@ export class NotificationController {
   /**
    * 更新 notification setting webhooks
    *
-   * @param project_id
+   * @param projectId
    * @param id
    * @param type
    * @param name
@@ -217,10 +217,10 @@ export class NotificationController {
   async updateNotificationSettingWebhook(
     @Param() { id }: BaseNotificationSettingWebhookDto,
     @Body()
-    { project_id, type, name, link, open, at }: NotificationSettingWebhookDto
+    { projectId, type, name, link, open, at }: NotificationSettingWebhookDto
   ) {
-    return await this.notificationService.updateNotificationSettingWebhook({
-      project_id,
+    return this.notificationService.updateNotificationSettingWebhook({
+      projectId,
       id,
       type,
       name,
@@ -233,18 +233,18 @@ export class NotificationController {
   /**
    * 删除 notification setting webhooks
    *
-   * @param project_id
+   * @param projectId
    * @param id
    */
   @Delete('setting/webhooks/:id')
   @UseInterceptors(ClassSerializerInterceptor)
   async deleteNotificationSettingWebhook(
     @Param() { id }: BaseNotificationSettingWebhookDto,
-    @Query() { project_id }: BaseNotificationDto
+    @Query() { projectId }: BaseNotificationDto
   ) {
-    return await this.notificationService.deleteNotificationSettingWebhook({
+    return this.notificationService.deleteNotificationSettingWebhook({
       id,
-      project_id,
+      projectId,
     })
   }
 }

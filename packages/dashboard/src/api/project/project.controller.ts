@@ -18,7 +18,7 @@ export class ProjectController {
    */
   @Post()
   async create(@Body() { name, type }: CreateProjectDto): Promise<Project> {
-    return await this.projectService.createProject({ name, type })
+    return this.projectService.createProject({ name, type })
   }
 
   /**
@@ -26,35 +26,35 @@ export class ProjectController {
    */
   @Get()
   async getMany(): Promise<Project[]> {
-    return await this.projectService.getProjects()
+    return this.projectService.getProjects()
   }
 
   /**
    * 查询 project
-   * @param project_id {number}
+   * @param projectId {number}
    */
-  @Get(':project_id')
+  @Get(':projectId')
   async get(
     @Param()
-    { project_id }: BaseProjectDto
+    { projectId }: BaseProjectDto
   ): Promise<Project> {
-    return await this.projectService.getProject({ project_id })
+    return this.projectService.getProject({ projectId })
   }
 
   /**
    * 获取指定时间段内的 trend
    *
-   * @param project_id
+   * @param projectId
    * @param start
    * @param end
    */
   @Post('trend')
   async getProjectTrend(
     @Body()
-    { project_id, start, end }: GetTrendDto
+    { projectId, start, end }: GetTrendDto
   ) {
-    return await this.projectService.getProjectTrend({
-      project_id,
+    return this.projectService.getProjectTrend({
+      projectId,
       start,
       end,
     })
@@ -63,18 +63,18 @@ export class ProjectController {
   /**
    * 绑定/解绑项目与扩展
    *
-   * @param project_id
-   * @param extension_id
+   * @param projectId
+   * @param extensionId
    * @param enabled
    */
   @Post('switchExtension')
   async switchExtension(
     @Body()
-    { project_id, extension_id, enabled }: SwitchExtensionDto
+    { projectId, extensionId, enabled }: SwitchExtensionDto
   ) {
-    return await this.projectService.switchExtension({
-      project_id,
-      extension_id,
+    return this.projectService.switchExtension({
+      projectId,
+      extensionId,
       enabled,
     })
   }

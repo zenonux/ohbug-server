@@ -15,9 +15,9 @@ export function createApi<T = any, R = any | void>({
   params,
 }: CreateApiParam<T>) {
   async function call(value: T, options?: AxiosRequestConfig) {
-    options = options || {}
-    let _body = data?.(value) || {}
-    let _params = params?.(value) || {}
+    const config = options || {}
+    let parsedBody = data?.(value) || {}
+    let parsedParam = params?.(value) || {}
 
     if (!data && !params) {
       const hasBody: Method[] = [
@@ -31,9 +31,9 @@ export function createApi<T = any, R = any | void>({
         'put',
       ]
       if (hasBody.includes(method)) {
-        _body = value
+        parsedBody = value
       } else {
-        _params = value
+        parsedParam = value
       }
     }
 
@@ -41,10 +41,10 @@ export function createApi<T = any, R = any | void>({
       const result = await request(
         typeof url === 'string' ? url : url?.(value),
         {
-          ...options,
+          ...config,
           method,
-          data: _body,
-          params: _params,
+          data: parsedBody,
+          params: parsedParam,
         }
       )
       if (result.data) {

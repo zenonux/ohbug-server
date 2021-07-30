@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+      html,
+      body,
+      #root {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+    </style>
+    <title>Ohbug Plugin</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module">
+      import React from 'react'
+      import ReactDOM from 'react-dom'
+      import { Spin } from 'antd'
+      import ReactJson from 'react-json-view'
+
+      import { useMount, useBoolean } from '@/hooks'
+
+      function App() {
+        const [event, setEvent] = React.useState({})
+        const [data, setData] = React.useState({})
+        const [extension, setExtension] = React.useState(null)
+        const [loading, { toggle: toggleLoading }] = useBoolean(false)
+        React.useEffect(() => {
+          window.addEventListener('message', (e) => {
+            const result = e.data
+            if (result.event) {
+              setEvent(result.event)
+            }
+            if (result.data) {
+              setData(result.data)
+            }
+            if (result.extension) {
+              setExtension(result.extension)
+              toggleLoading(true)
+              import(
+                'https://cdn.jsdelivr.net/npm/@ohbug/extension-rrweb@latest/dist/ui.esm.min.js'
+              )
+                .then((res) => {
+                  const module = res.default
+                  console.log(module)
+                  if (module)
+                    module.component(
+                      result.event,
+                      document.getElementById('root')
+                    )
+                })
+                .finally(() => {
+                  toggleLoading(false)
+                })
+            }
+          })
+        }, [])
+
+        if (loading) {
+          return React.createElement(Spin)
+        }
+
+        if (extension) {
+          return null
+        }
+
+        return React.createElement(ReactJson, {
+          src: data,
+          iconStyle: 'circle',
+          collapsed: 2,
+          style: {
+            height: '100%',
+            fontFamily:
+              'JetBrains Mono, -apple-system, BlinkMacSystemFont, monospace, Roboto',
+            background: 'none',
+            overflowY: 'auto',
+          },
+        })
+      }
+
+      ReactDOM.render(React.createElement(App), document.getElementById('root'))
+    </script>
+  </body>
+</html>
