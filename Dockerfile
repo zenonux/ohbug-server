@@ -4,13 +4,9 @@ LABEL maintainer="chenyueban <jasonchan0527@gmail.com>"
 
 USER root
 
-RUN apt-get update && \
-    apt-get upgrade -y && \
-    apt-get install -y git
-
 WORKDIR /usr/src/ohbug
 
-RUN npm install -g pm2
+RUN yarn global add pm2
 
 COPY package.json /usr/src/ohbug/package.json
 COPY lerna.json /usr/src/ohbug/lerna.json

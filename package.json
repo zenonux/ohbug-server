@@ -4,7 +4,7 @@
     "packages/*"
   ],
   "name": "ohbug-server",
-  "version": "1.0.0",
+  "version": "0.0.0",
   "description": "Ohbug Server",
   "author": "chenyueban <jasonchan0527@gmail.com>",
   "homepage": "https://github.com/ohbug-org/ohbug-server",
@@ -29,7 +29,8 @@
     "lint": "lerna run lint",
     "test": "jest",
     "test:watch": "lerna run test:watch --parallel",
-    "update:deps": "yarn upgrade-interactive --latest"
+    "update:deps": "yarn upgrade-interactive --latest",
+    "release": "lerna version"
   },
   "dependencies": {
     "@nestjs/axios": "^0.0.1",
