@@ -4,7 +4,6 @@
     "packages/*"
   ],
   "name": "ohbug-server",
-  "version": "0.0.0",
   "description": "Ohbug Server",
   "author": "chenyueban <jasonchan0527@gmail.com>",
   "homepage": "https://github.com/ohbug-org/ohbug-server",
@@ -57,7 +56,7 @@
     "ramda": "^0.27.0",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.3.0",
-    "typeorm": "^0.2.35"
+    "typeorm": "^0.2.36"
   },
   "devDependencies": {
     "@chenyueban/lint": "^0.2.13",
@@ -67,7 +66,7 @@
     "@types/bull": "^3.15.3",
     "@types/express": "^4.17.13",
     "@types/jest": "^26.0.24",
-    "@types/node": "^16.4.7",
+    "@types/node": "^16.4.8",
     "@types/ramda": "^0.27.44",
     "@types/react": "^17.0.15",
     "@types/supertest": "^2.0.11",
