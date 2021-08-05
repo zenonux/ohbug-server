@@ -11,6 +11,7 @@ import {
   navigate,
 } from '@/ability'
 import { Loading, Sider, Footer } from '@/components'
+import { useBoolean } from '@/hooks'
 
 import routes, { Route } from './routes'
 
@@ -27,14 +28,17 @@ function matchRoute(data: Route[], location: WindowLocation): Route | null {
   }
   return null
 }
+const siderCollapsedWidth = 80
+const siderWidth = 220
 const Container: React.FC = ({ children }) => {
   const location = useLocation()
   const [route, setRoute] = React.useState<Route | null>(null)
   React.useEffect(() => {
     setRoute(matchRoute(routes, location))
   }, [location.key])
+  const [collapsed, { toggle: toggleCollapsed }] = useBoolean(false)
 
-  const Wrapper = route?.wrapper ? route?.wrapper : React.Fragment
+  const Wrapper = route?.wrapper ?? React.Fragment
   // wrapper 和 redirect 同时存在时优先处理 redirect
   if (route?.wrapper && route.redirect) {
     navigate(route.redirect, { replace: true })
@@ -46,23 +50,35 @@ const Container: React.FC = ({ children }) => {
         <Layout>
           {!(route?.layout?.hideNav === true) && (
             <Layout.Sider
-              width={65}
+              theme="light"
               style={{
                 overflow: 'auto',
                 height: '100vh',
                 position: 'fixed',
                 left: 0,
               }}
+              width={siderWidth}
+              collapsedWidth={siderCollapsedWidth}
+              collapsible
+              collapsed={collapsed}
+              onCollapse={toggleCollapsed}
             >
-              <Sider />
+              <Sider collapsed={collapsed} />
             </Layout.Sider>
           )}
-
           <React.Suspense fallback={<Loading />}>
-            <Layout style={{ marginLeft: 65 }}>
+            <Layout
+              style={{
+                marginLeft: collapsed ? siderCollapsedWidth : siderWidth,
+                transition: 'margin 0.3s cubic-bezier(0.645, 0.045, 0.355, 1)',
+              }}
+            >
               <Layout.Content>{children}</Layout.Content>
-
-              {!(route?.layout?.hideFooter === true) && <Footer />}
+              {!(route?.layout?.hideFooter === true) && (
+                <Layout.Footer style={{ padding: 0 }}>
+                  <Footer />
+                </Layout.Footer>
+              )}
             </Layout>
           </React.Suspense>
         </Layout>

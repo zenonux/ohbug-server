@@ -103,19 +103,19 @@ const MiniChart: React.FC<MiniChartProps> = React.memo(
                 colorStops: [
                   {
                     offset: 0,
-                    color: 'rgba(255,111,97,0.5)',
+                    color: 'rgba(78,163,151,0.5)',
                   },
                   {
                     offset: 0.333,
-                    color: 'rgba(255,111,97,0.3)',
+                    color: 'rgba(78,163,151,0.3)',
                   },
                   {
                     offset: 0.666,
-                    color: 'rgba(255,111,97,0.1)',
+                    color: 'rgba(78,163,151,0.1)',
                   },
                   {
                     offset: 1,
-                    color: 'rgba(255,111,97,0)',
+                    color: 'rgba(78,163,151,0)',
                   },
                 ],
               },

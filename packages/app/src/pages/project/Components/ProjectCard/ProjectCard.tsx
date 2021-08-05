@@ -20,8 +20,8 @@ interface ProjectCardProps {
 }
 
 function getTrend(projectId: number) {
-  const start = (dayjs().subtract(13, 'day').toISOString() as unknown) as Date
-  const end = (dayjs().toISOString() as unknown) as Date
+  const start = dayjs().subtract(13, 'day').toISOString() as unknown as Date
+  const end = dayjs().toISOString() as unknown as Date
   return () =>
     api.project.trend.call({
       projectId,

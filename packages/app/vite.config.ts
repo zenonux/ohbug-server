@@ -30,6 +30,8 @@ const baseConfig: UserConfig = {
 
 const developmentConfig: UserConfig = {
   server: {
+    port: 8888,
+    open: true,
     proxy: {
       '/api/v1': {
         target: 'http://localhost:6666',

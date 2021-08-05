@@ -1,12 +1,14 @@
 import React from 'react'
-import { Button, Avatar, Tooltip } from 'antd'
+import { Menu } from 'antd'
 import clsx from 'clsx'
 
-import { Link } from '@/ability'
 import routes, { Route } from '@/ability/routes'
-import { Icon } from '@/components'
-import { useCreation } from '@/hooks'
-import logo from '@/static/logo.svg'
+import { Icon, Image } from '@/components'
+import { useCreation, usePersistFn } from '@/hooks'
+import { navigate, useLocation } from '@/ability'
+import figure from '@/static/images/designer.svg'
+
+import ProjectSelector from './ProjectSelector'
 
 import styles from './Sider.module.less'
 
@@ -21,38 +23,53 @@ function generateMenuItemData(data: Route[]): Route[] {
     .filter((v) => !!v) as Route[]
 }
 
-const Sider: React.FC = () => {
+interface SiderProps {
+  collapsed: boolean
+}
+
+const Sider: React.FC<SiderProps> = ({ collapsed }) => {
+  const location = useLocation()
   const menuItemData = useCreation(() => generateMenuItemData(routes), [])
+  const handleNavigate = usePersistFn((path: string) => {
+    navigate(path)
+  })
 
   return (
-    <div className={styles.root}>
-      <header className={styles.head}>
-        <Button
-          className={styles.logo}
-          type="link"
-          href="https://ohbug.net"
-          target="_blank"
-        >
-          <Avatar src={logo} />
-        </Button>
-      </header>
+    <div
+      className={clsx(styles.root, {
+        [styles.collapsed]: collapsed,
+      })}
+    >
+      <div
+        className={clsx(styles.head, {
+          [styles.collapsed]: collapsed,
+        })}
+      >
+        {!collapsed && (
+          <Image className={styles.figure} src={figure} alt="figure" />
+        )}
 
-      <nav className={styles.menu}>
+        <div className={styles.right}>
+          <ProjectSelector collapsed={collapsed} />
+        </div>
+      </div>
+
+      <Menu className={styles.menu} selectedKeys={[location.pathname]}>
         {menuItemData.map((item) => (
-          <Tooltip placement="right" title={item.menu!.name} key={item.path}>
-            <Link
-              to={item.path}
-              getProps={({ isPartiallyCurrent }) => ({
-                className: clsx(styles['menu-item'], {
-                  [styles['menu-item-active']]: isPartiallyCurrent,
-                }),
-              })}
-            >
-              <Icon type={item.menu!.icon} style={{ fontSize: 24 }} />
-            </Link>
-          </Tooltip>
+          <Menu.Item
+            key={item.redirect || item.path}
+            icon={
+              <Icon
+                type={item.menu!.icon}
+                style={{ fontSize: collapsed ? 18 : 14 }}
+              />
+            }
+            onClick={() => handleNavigate(item.path)}
+          >
+            {item.menu?.name}
+          </Menu.Item>
         ))}
-      </nav>
+      </Menu>
     </div>
   )
 }

@@ -1,7 +1,7 @@
 import React from 'react'
 import { Button } from 'antd'
 
-import { Layout } from '@/components'
+import { Layout, Icon } from '@/components'
 import { RouteComponentProps, useModel, navigate } from '@/ability'
 
 import ProjectCard from './Components/ProjectCard'
@@ -20,18 +20,19 @@ const Project: React.FC<RouteComponentProps> = () => {
 
   if (projects) {
     return (
-      <Layout
-        className={styles.root}
-        title="项目"
-        extra={
-          <Button key="createProject" onClick={handleToCreateProject}>
-            创建项目
-          </Button>
-        }
-      >
+      <Layout className={styles.root} title="项目">
         {projects.map((v) => (
           <ProjectCard project={v} active={v.id === project?.id} key={v.id} />
         ))}
+        <div className={styles.add}>
+          <Button
+            icon={<Icon type="icon-ohbug-add-line" size={24} />}
+            type="primary"
+            shape="circle"
+            size="large"
+            onClick={handleToCreateProject}
+          />
+        </div>
       </Layout>
     )
   }

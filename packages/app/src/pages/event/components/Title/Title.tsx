@@ -4,7 +4,7 @@ import { Row, Col, Skeleton, Typography, Card, Statistic } from 'antd'
 
 import type { EventState, IssueState } from '@/models'
 import { Image } from '@/components'
-import figure from '@/static/images/issue_title_figure.png'
+import figure from '@/static/images/issue_title_figure.svg'
 
 import styles from './Title.module.less'
 

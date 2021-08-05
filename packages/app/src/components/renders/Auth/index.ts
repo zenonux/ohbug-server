@@ -1,7 +1,7 @@
 import React from 'react'
 
 import { Loading } from '@/components'
-import { RouteComponentProps, useModel, navigate } from '@/ability'
+import { RouteComponentProps, useModel, Redirect } from '@/ability'
 import { useMount, useBoolean } from '@/hooks'
 
 const Auth: React.FC<RouteComponentProps> = ({ children }) => {
@@ -24,8 +24,7 @@ const Auth: React.FC<RouteComponentProps> = ({ children }) => {
     }
   }
 
-  navigate('/getting-started')
-  return null
+  return React.createElement(Redirect, { to: '/getting-started' })
 }
 
 export default Auth

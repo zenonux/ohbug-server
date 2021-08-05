@@ -38,11 +38,15 @@ export const project = createModel<RootModel>()({
       }
     },
     setCurrentProject(state, payload: number) {
-      const current = state.data!.find((v) => v.id === payload)
-      return {
-        ...state,
-        current,
+      // eslint-disable-next-line eqeqeq
+      const current = state.data!.find((v) => v.id == payload)
+      if (current) {
+        return {
+          ...state,
+          current,
+        }
       }
+      return state
     },
   },
   effects: (dispatch) => ({

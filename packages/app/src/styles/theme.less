@@ -1,27 +1,32 @@
-@primary-color: #ff6f61;
-@success-color: #389e0d;
+@import 'antd/lib/style/themes/default.less';
+
+@primary-color: #232e44;
+@success-color: #4ea397;
 @info-color: #018be0;
 @warning-color: #fa8c16;
 @error-color: #cf1322;
-@highlight-color: #ff8c81;
-@body-background: #ffffff;
-@layout-body-background: #fbfbfb;
-@layout-header-background: #fff;
-@font-size-base: 14px;
-@border-radius-base: 2px;
-@border-radius-sm: 1px;
-@form-item-margin-bottom: 16px;
-@progress-radius: 1px;
-@table-row-hover-bg: #fafafa;
-@table-padding-vertical: 14px;
-@tabs-card-tab-active-border-top: 2px solid @primary-color;
-@switch-color: @info-color;
-@wave-animation-width: 5px;
+@highlight-color: #ff7163;
+@text-color: @primary-color;
+@text-selection-bg: @success-color;
+@component-background: #ffffff;
+@layout-body-background: #f6fafd;
+@layout-header-background: @primary-color;
+@layout-trigger-background: @primary-color;
+@layout-trigger-background-light: transparent;
+@layout-sider-background-light: transparent;
+@border-radius-base: 4px;
+@input-height-lg: 36px;
+@alert-success-border-color: ~`colorPalette('@{success-color}', 1) `;
+@alert-info-border-color: ~`colorPalette('@{info-color}', 1) `;
+@alert-warning-border-color: ~`colorPalette('@{warning-color}', 1) `;
+@alert-error-border-color: ~`colorPalette('@{error-color}', 1) `;
+@menu-item-active-border-width: 0px;
+@menu-item-active-bg: transparent;
 
 // base colors
 @light-color: #f6f8fc;
 @white: #fff;
-@black: #333;
+@black: @primary-color;
 @secondary-color: #fdc8c4;
 
 // text

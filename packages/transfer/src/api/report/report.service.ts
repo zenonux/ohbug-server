@@ -51,7 +51,7 @@ export class ReportService {
     if (!('type' in event && typeof event.type === 'string')) {
       throw new Error(`不合法的 Event 数据 收到 event.type 为 ${event.type}`)
     }
-    if (!('sdk' in event && typeof event.sdk === 'string')) {
+    if (!('sdk' in event && event.sdk instanceof Object)) {
       throw new Error(`不合法的 Event 数据 收到 event.sdk 为 ${event.sdk}`)
     }
     if (!('detail' in event)) {

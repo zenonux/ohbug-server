@@ -5,6 +5,9 @@
   margin-bottom: @space;
 
   &.active {
-    background-color: lighten(@secondary-color, 10%);
+    background-color: @primary-color;
+    :global(.ant-card-head) {
+      color: @white;
+    }
   }
 }

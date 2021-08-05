@@ -1,17 +1,24 @@
 .root {
-  .container {
-    padding: 10px 16px;
-    overflow: hidden;
+  padding: 10px 16px;
+  overflow: hidden;
+  position: relative;
 
-    .right {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      float: right;
-      .link {
-        font-weight: 500;
-        font-size: 16px;
-      }
+  .logo {
+    width: 32px;
+    display: inline-flex;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  .right {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    float: right;
+    .link {
+      font-weight: 500;
+      font-size: 16px;
     }
   }
 }
