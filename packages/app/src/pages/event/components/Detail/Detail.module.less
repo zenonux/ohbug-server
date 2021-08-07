@@ -1,42 +1,39 @@
 .root {
   :global {
     .ant-timeline-item-head-custom {
-      left: 8px;
-      font-size: 20px;
+      @apply left-2 text-xl;
     }
     .ant-timeline-item-tail {
-      left: 7px;
+      @apply left-2;
     }
   }
 
   .descriptions {
-    margin-bottom: @space;
+    @apply mb-3;
   }
 
   .actions {
+    @apply overflow-hidden pt-1;
     max-height: 400px;
-    overflow: auto;
-    padding-top: 3px;
 
     :global {
       .ant-timeline-item {
-        line-height: 1.8;
+        @apply leading-relaxed;
       }
     }
 
     .action {
-      .flex-between();
+      @apply flex justify-between;
 
       .type {
+        @apply font-bold;
         width: 106px;
-        font-weight: bold;
       }
       .data {
-        flex: 1;
+        @apply flex-1;
       }
       .time {
-        width: 80px;
-        color: @text-color-secondary;
+        @apply w-20 text-black text-opacity-80;
       }
     }
   }

@@ -1,14 +1,14 @@
 .root {
   .extensions {
     .extension {
-      margin-bottom: @space;
+      @apply mb-3 border-0 border-b-4 border-solid border-transparent;
       &.current {
-        border-bottom: 2px solid @primary-color;
+        @apply border-gray-800;
       }
     }
   }
 
   .extension-detail {
-    flex: 1;
+    @apply flex-1;
   }
 }

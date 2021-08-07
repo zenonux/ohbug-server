@@ -1,4 +1,4 @@
-import { FC } from 'react'
+import React from 'react'
 import clsx from 'clsx'
 import { Spin, Row, Col, Card, Avatar } from 'antd'
 
@@ -11,7 +11,7 @@ import ExtensionDetail from './components/ExtensionDetail'
 
 import styles from './market.module.less'
 
-const Market: FC<RouteComponentProps> = () => {
+const Market: React.FC<RouteComponentProps> = () => {
   const extensionModel = useModel('extension')
   const loadingModel = useModel('loading')
 
@@ -42,6 +42,7 @@ const Market: FC<RouteComponentProps> = () => {
                   [styles.current]: v.id === extensionId,
                 })}
                 onClick={() => handleSelectExtension(v.id)}
+                hoverable
                 key={v.key}
               >
                 <Card.Meta

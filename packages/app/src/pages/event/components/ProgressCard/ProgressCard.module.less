@@ -5,63 +5,46 @@
 .root {
   :global {
     .ant-card-body {
-      padding: 0;
+      @apply p-0;
     }
   }
 
-  display: inline-block;
+  @apply inline-block;
   width: @card-width;
   min-width: @card-width;
   height: @card-height;
   &:not(:last-child) {
-    margin-right: @space;
+    @apply mr-3;
   }
 
   .container {
     width: @card-width;
     min-width: @card-width;
     height: @card-height;
-    overflow: hidden;
+    @apply overflow-hidden;
 
     .content {
-      flex-direction: column;
-      justify-content: space-around;
-      .flex();
-
-      float: left;
-      height: 100%;
-      padding: 6px 20px;
+      @apply flex flex-col justify-around float-left h-full px-5 py-1;
 
       .title {
-        margin: 0;
-        font-size: 16px;
+        @apply m-0 text-base;
       }
       .description {
-        font-size: 12px;
+        @apply text-xs;
       }
     }
     .progress {
-      position: relative;
-      float: right;
+      @apply relative float-right h-full text-sm flex items-center justify-center text-black bg-gray-300;
       width: @progress-width;
-      height: 100%;
-      color: @black;
-      font-size: 14px;
-      background-color: @light-color;
-      .flex-center();
       &.white {
-        color: @white;
+        @apply text-white;
       }
 
       .line {
-        position: absolute;
-        bottom: 0;
-        z-index: 1;
-        width: 100%;
-        background-color: @primary-color;
+        @apply absolute bottom-0 z-10 w-full bg-gray-800;
       }
       .number {
-        z-index: 2;
+        @apply z-20;
       }
     }
   }

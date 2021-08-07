@@ -1,15 +1,14 @@
 .root {
+  @apply flex flex-col items-center justify-center;
   min-height: 800px;
-  .flex-center();
-  flex-direction: column;
 
   pre {
+    @apply rounded-md;
     padding: 16px !important;
     background: #f6f8fa !important;
-    border-radius: 6px;
   }
 
   .tips {
-    margin-bottom: @space-2;
+    @apply mb-6;
   }
 }

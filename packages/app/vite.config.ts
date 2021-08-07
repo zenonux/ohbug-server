@@ -1,15 +1,9 @@
 import path from 'path'
-import fs from 'fs'
 import { defineConfig, UserConfig } from 'vite'
 import reactRefresh from '@vitejs/plugin-react-refresh'
 import vitePluginImp from 'vite-plugin-imp'
-// @ts-ignore
-import lessToJS from 'less-vars-to-js'
 import { mergeDeepRight } from 'ramda'
 
-const themeVariables = lessToJS(
-  fs.readFileSync(path.resolve(__dirname, './src/styles/theme.less'), 'utf8')
-)
 const baseConfig: UserConfig = {
   resolve: {
     alias: {
@@ -19,9 +13,14 @@ const baseConfig: UserConfig = {
   css: {
     preprocessorOptions: {
       less: {
-        modifyVars: themeVariables,
+        css: true,
+        modifyVars: {
+          hack: `true; @import "${path.resolve(
+            __dirname,
+            'src/styles/theme.less'
+          )}";`,
+        },
         javascriptEnabled: true,
-        additionalData: `@import 'src/styles/theme.less';`,
       },
     },
   },

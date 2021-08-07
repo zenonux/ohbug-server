@@ -1,19 +1,11 @@
 .tooltip {
   &-time {
-    padding-bottom: 3px;
+    @apply pb-1;
   }
   &-value {
-    position: relative;
-    padding-top: 3px;
+    @apply relative pt-1;
     &::before {
-      position: absolute;
-      top: 0;
-      left: 50%;
-      display: block;
-      width: 20px;
-      height: 2px;
-      margin-left: -10px;
-      background: #666;
+      @apply absolute top-0 left-1/2 block w-6 h-1 -ml-3 bg-gray-100;
       content: '';
     }
   }
