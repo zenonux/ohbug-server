@@ -1,17 +1,13 @@
 .root {
   :global {
     .ant-tag {
-      max-width: 240px;
-      overflow: hidden;
-      white-space: nowrap;
-      text-overflow: ellipsis;
-      cursor: pointer;
+      @apply max-w-xs overflow-hidden truncate cursor-pointer;
     }
   }
 
-  margin-bottom: @space;
+  @apply mb-3;
 
   .progressBox {
-    margin-bottom: @space;
+    @apply mb-3;
   }
 }

@@ -1,31 +1,24 @@
 .root {
   :global {
     .ant-radio-button-wrapper-checked:not(.ant-radio-button-wrapper-disabled) {
-      color: @info-color;
+      @apply text-green-600;
       &:focus-within {
-        box-shadow: none;
+        @apply shadow-none;
       }
     }
   }
   :global(.ant-radio-button-wrapper) {
-    height: auto;
-    border: none;
-    outline: none;
+    @apply h-auto border-none outline-none !important;
     &::before {
-      content: none;
+      @apply outline-none !important;
+      content: none !important;
     }
-    &:hover {
-      color: fade(@info-color, 65%);
-      .button {
-        color: fade(@info-color, 65%);
-      }
+    span:last-child {
+      @apply flex flex-col items-center !important;
     }
   }
-  .button {
-    flex-direction: column;
-    .flex-center();
-  }
+
   .buttonLabel {
-    color: @text-color;
+    @apply text-black;
   }
 }

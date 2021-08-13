@@ -46,7 +46,7 @@ const Sider: React.FC<SiderProps> = ({ collapsed }) => {
         })}
       >
         {!collapsed && (
-          <Image className={styles.figure} src={figure} alt="figure" />
+          <Image className={styles.figure} src={figure} alt="figure" center />
         )}
 
         <div className={styles.right}>

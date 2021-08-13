@@ -1,4 +1,4 @@
-import { FC } from 'react'
+import React from 'react'
 import { renderToString } from 'react-dom/server'
 import { Card, Avatar, Switch } from 'antd'
 import MarkdownIt from 'markdown-it'
@@ -34,15 +34,16 @@ const md = new MarkdownIt({
   },
 })
 
-const ExtensionDetailComponent: FC<ExtensionDetailProps> = ({
+const ExtensionDetailComponent: React.FC<ExtensionDetailProps> = ({
   extension,
   loading,
 }) => {
   const projectModel = useModel('project')
   const loadingModel = useModel('loading')
-  const html = useCreation(() => extension && md.render(extension?.readme), [
-    extension,
-  ])
+  const html = useCreation(
+    () => extension && md.render(extension?.readme),
+    [extension]
+  )
   const project = projectModel.state.current
   const enabled = useCreation(
     () => !!project?.extensions?.find((v) => v.id === extension?.id),

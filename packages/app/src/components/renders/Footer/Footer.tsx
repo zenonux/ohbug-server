@@ -51,7 +51,8 @@ const Footer: React.FC = () => (
           </div>
         }
       >
-        <Button className={styles.link} type="link" href="#">
+        {/* eslint-disable-next-line no-script-url */}
+        <Button className={styles.link} type="link" href="javascript:void(0)">
           Feedback
         </Button>
       </Popover>

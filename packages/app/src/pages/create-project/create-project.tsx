@@ -26,12 +26,12 @@ const CreateProject: React.FC = () => {
               message: '请输入项目名称！',
             },
             {
-              max: 12,
-              message: '项目名称最大为12个字符',
+              max: 50,
+              message: '项目名称最大为50个字符',
             },
           ]}
         >
-          <Input placeholder="例如：Project1" maxLength={12} />
+          <Input placeholder="例如：Project1" maxLength={50} />
         </Form.Item>
 
         <Form.Item

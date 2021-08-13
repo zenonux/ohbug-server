@@ -1,24 +1,17 @@
 .root {
-  margin-bottom: @space-2;
+  @apply mb-6;
 
   .title {
-    padding-bottom: @space;
-    font-weight: 400;
-    font-size: 24px;
-    border-bottom: 1px solid @light-color;
-    .flex-between();
+    @apply pb-3 font-normal text-2xl flex items-center justify-between;
     &.danger {
-      margin: 0;
-      color: @error-color;
-      font-weight: 600;
-      border-bottom: none;
+      @apply m-0 font-semibold border-b-0 text-red-500;
     }
   }
 
   .container {
-    border-radius: @radius;
+    @apply rounded-md;
     &.danger {
-      border: 1px solid @error-color;
+      @apply border-2 border-solid border-red-500;
     }
   }
 }

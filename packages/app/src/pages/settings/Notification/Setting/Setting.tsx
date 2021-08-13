@@ -3,7 +3,7 @@ import { Form, Switch, Input, Space, Button, Table, Modal } from 'antd'
 
 import { RouteComponentProps, useModel } from '@/ability'
 import type { NotificationSetting, NotificationSettingWebHook } from '@/models'
-import { Zone, IconButton } from '@/components'
+import { Icon, Zone } from '@/components'
 import { useUpdateEffect, useBoolean, usePersistFn } from '@/hooks'
 import { registerServiceWorker, askNotificationPermission } from '@/utils'
 
@@ -129,8 +129,7 @@ const Setting: React.FC<RouteComponentProps> = () => {
                         />
                       </Form.Item>
                       {fields.length > 1 ? (
-                        <IconButton
-                          style={{ marginBottom: 16 }}
+                        <Button
                           onClick={() => {
                             const emails = form.getFieldValue('emails')
                             // 判断当前行是否输入内容
@@ -150,17 +149,20 @@ const Setting: React.FC<RouteComponentProps> = () => {
                               })
                             }
                           }}
-                          icon="icon-ohbug-indeterminate-circle-line"
+                          icon={
+                            <Icon type="icon-ohbug-indeterminate-circle-line" />
+                          }
+                          type="text"
                           size="small"
                         />
                       ) : null}
                       {fields.length < 3 && index === fields.length - 1 && (
-                        <IconButton
-                          style={{ marginBottom: 16 }}
+                        <Button
                           onClick={() => {
                             operation.add()
                           }}
-                          icon="icon-ohbug-add-circle-line"
+                          icon={<Icon type="icon-ohbug-add-circle-line" />}
+                          type="text"
                           size="small"
                         />
                       )}
@@ -180,12 +182,12 @@ const Setting: React.FC<RouteComponentProps> = () => {
                   </div>
                 ))}
                 {fields.length === 0 && (
-                  <IconButton
-                    style={{ marginBottom: 16 }}
+                  <Button
                     onClick={() => {
                       operation.add()
                     }}
-                    icon="icon-ohbug-add-circle-line"
+                    icon={<Icon type="icon-ohbug-add-circle-line" />}
+                    type="text"
                     size="small"
                   />
                 )}
@@ -219,16 +221,15 @@ const Setting: React.FC<RouteComponentProps> = () => {
         <Zone
           title="第三方通知"
           extra={
-            <IconButton
+            <Button
               className={styles.addWebhook}
-              icon="icon-ohbug-add-circle-line"
+              icon={<Icon type="icon-ohbug-add-circle-line" />}
+              type="text"
               onClick={() => {
                 setCurrentRule(undefined)
                 webhookModalShow()
               }}
-            >
-              +
-            </IconButton>
+            />
           }
         >
           <Form.Item name="webhooks" valuePropName="dataSource">

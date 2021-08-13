@@ -1,47 +1,39 @@
 .root {
   .list {
     :global {
-      .ant-list-item {
-        margin-bottom: calc(@space / 2);
-        padding: @space;
-        background-color: @white;
-        border-radius: @radius;
-        box-shadow: @box-shadow;
-        .hoverAnimation();
-      }
       .ant-list-header {
-        padding-top: 0;
-        border: none !important;
+        @apply pt-0 border-none;
       }
-      .ant-list-item-meta {
-        padding-right: @space;
-        overflow: hidden;
-      }
-      .ant-list-item-meta-content {
-        overflow: hidden;
+      .ant-list-item {
+        @apply mb-2 p-3 bg-white rounded-md border-2 border-solid border-transparent hover:bg-green-50 transition-all !important;
+
+        .ant-list-item-meta {
+          @apply pr-3 overflow-hidden;
+
+          .ant-list-item-meta-content {
+            @apply overflow-hidden;
+          }
+        }
       }
     }
 
     .message {
-      margin-bottom: @space;
+      @apply mb-3;
     }
     .header {
-      padding: 0 @space;
-      font-weight: bold;
-      .flex-between();
+      @apply px-3 font-bold flex items-center justify-between;
       .title {
-        flex: 1;
+        @apply flex-1;
       }
     }
     .title {
-      line-height: 1.2;
+      @apply leading-tight truncate;
       .type {
-        margin-right: @space;
-        font-size: 16px;
+        @apply mr-3 text-base;
       }
     }
     .desc {
-      margin-bottom: 0;
+      @apply mb-0;
     }
 
     .content {

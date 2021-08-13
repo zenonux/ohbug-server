@@ -33,12 +33,10 @@ const RadioIconButton: React.FC<RadioIconButtonProps> = ({
           )
         return (
           <Radio.Button value={item.value} key={item.value}>
-            <div className={styles.button}>
-              {icon}
-              {item.label && (
-                <span className={styles.buttonLabel}>{item.label}</span>
-              )}
-            </div>
+            {icon}
+            {item.label && (
+              <span className={styles.buttonLabel}>{item.label}</span>
+            )}
           </Radio.Button>
         )
       })}

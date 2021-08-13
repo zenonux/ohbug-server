@@ -1,54 +1,43 @@
 .root {
   .playground {
-    margin-top: @space;
-    white-space: pre-wrap;
-    word-wrap: break-word;
+    @apply mt-3 whitespace-pre-wrap break-words;
 
     .collapse {
-      background: none;
+      @apply bg-none;
       :global {
         .ant-collapse-header {
-          padding: 4px @space-2;
-          background: fade(@light-color, 60%);
-          &:hover {
-            background: @light-color;
-          }
+          @apply px-6 py-1 bg-gray-200 hover:bg-gray-400;
         }
         .ant-collapse-item {
-          border: none;
+          @apply border-none;
         }
         .ant-collapse-content-box {
-          padding: 0;
+          @apply p-0;
         }
       }
       .title {
         .strong {
-          font-weight: 600;
+          @apply font-semibold;
         }
         & > span {
-          margin: 0 4px;
-          opacity: 0.6;
+          @apply m-0 mx-1 opacity-60;
         }
       }
 
       .codes {
-        margin: 0;
-        padding: 8px 0;
-        list-style-position: inside;
+        @apply m-0 py-2 list-inside;
 
         .line {
-          padding-left: @space-2;
-          line-height: @space-2;
+          @apply pl-6 leading-6;
           &.highlight {
-            color: @white;
-            background-color: @primary-color;
+            @apply text-white bg-gray-800;
+
             & > .code {
-              color: @white;
+              @apply text-white;
             }
           }
           .code {
-            padding-left: @space-2;
-            color: @text-color;
+            @apply pl-6 text-black;
           }
         }
       }

@@ -1,13 +1,8 @@
 .root {
   .content {
-    font-weight: 500;
-    cursor: pointer;
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
+    @apply font-medium cursor-pointer truncate;
   }
   .sub {
-    font-size: 12px;
-    opacity: 0.8;
+    @apply text-xs opacity-80;
   }
 }

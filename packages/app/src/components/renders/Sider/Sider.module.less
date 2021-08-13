@@ -1,61 +1,37 @@
 .root {
-  height: 100%;
-  .flex-center();
-  flex-direction: column;
-  padding: @space-2;
-  overflow: hidden;
+  @apply h-full flex flex-col items-center justify-center p-6 overflow-hidden;
   &.collapsed {
-    padding: @space-2 0 0 0;
+    @apply p-0 pt-6;
   }
 
   .head {
-    width: 100%;
-    background-color: @primary-color;
-    color: @white;
-    border-radius: @radius;
-    box-shadow: @box-shadow-2;
-    margin-bottom: @space-2;
-    padding: @space;
-    overflow: hidden;
-    .flex-between();
+    @apply w-full text-white rounded-md shadow mb-6 p-3 overflow-hidden flex justify-between bg-gray-800;
     &.collapsed {
-      width: 80%;
+      @apply w-4/5;
     }
 
     .figure {
-      width: 40px;
+      @apply w-10;
     }
 
     .right {
-      flex: 1;
-      .flex();
-      flex-direction: column;
-      padding-left: @space;
-      overflow: hidden;
+      @apply flex-1 flex flex-col pl-3 overflow-hidden;
     }
   }
 
   .menu {
-    flex: 1;
-    width: 100%;
-    .flex();
-    flex-direction: column;
+    @apply w-full flex-1 flex flex-col;
 
     &-item {
-      height: 50px;
-      margin-bottom: 8px;
-      //color: #c7c7c7;
-      transition: @transition;
-      .flex-center();
+      @apply h-12 mb-2 transition flex items-center justify-center;
 
       &-active {
-        color: @success-color;
-        //border-left: 3px solid @primary-color;
+        @apply text-green-600;
       }
     }
 
     .select-project {
-      height: 70px;
+      @apply h-20;
     }
   }
 }

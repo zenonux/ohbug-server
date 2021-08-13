@@ -8,12 +8,13 @@ import {
   Tag,
   Space,
   Tooltip,
+  Button,
 } from 'antd'
 import { types } from '@ohbug/browser'
 
 import { useModel } from '@/ability'
 import type { NotificationRule, NotificationRuleLevel } from '@/models'
-import { IconButton } from '@/components'
+import { Icon } from '@/components'
 import { usePersistFn, useUpdateEffect } from '@/hooks'
 
 import { levelList, intervalList } from './Rules.core'
@@ -273,20 +274,24 @@ const EditRule: React.FC<EditRuleProps> = ({
                         />
                       </Form.Item>
                       {fields.length > 0 ? (
-                        <IconButton
+                        <Button
                           onClick={() => {
                             operation.remove(field.name)
                           }}
-                          icon="icon-ohbug-indeterminate-circle-line"
+                          icon={
+                            <Icon type="icon-ohbug-indeterminate-circle-line" />
+                          }
+                          type="text"
                           size="small"
                         />
                       ) : null}
                       {fields.length < 3 && index === fields.length - 1 && (
-                        <IconButton
+                        <Button
                           onClick={() => {
                             operation.add()
                           }}
-                          icon="icon-ohbug-add-circle-line"
+                          icon={<Icon type="icon-ohbug-add-circle-line" />}
+                          type="text"
                           size="small"
                         />
                       )}
@@ -294,11 +299,12 @@ const EditRule: React.FC<EditRuleProps> = ({
                   ))}
                 </Space>
                 {fields.length === 0 && (
-                  <IconButton
+                  <Button
                     onClick={() => {
                       operation.add()
                     }}
-                    icon="icon-ohbug-add-circle-line"
+                    icon={<Icon type="icon-ohbug-add-circle-line" />}
+                    type="text"
                     size="small"
                   />
                 )}

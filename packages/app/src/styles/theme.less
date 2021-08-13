@@ -1,20 +1,14 @@
-@import 'antd/lib/style/themes/default.less';
-
-@primary-color: #232e44;
-@success-color: #4ea397;
-@info-color: #018be0;
-@warning-color: #fa8c16;
-@error-color: #cf1322;
-@highlight-color: #ff7163;
-@text-color: @primary-color;
-@text-selection-bg: @success-color;
-@component-background: #ffffff;
+@primary-color: #1f2937;
+@success-color: #10b981;
+@info-color: #3b82f6;
+@warning-color: #f59e0b;
+@error-color: #ef4444;
 @layout-body-background: #f6fafd;
 @layout-header-background: @primary-color;
 @layout-trigger-background: @primary-color;
 @layout-trigger-background-light: transparent;
 @layout-sider-background-light: transparent;
-@border-radius-base: 4px;
+@border-radius-base: 6px;
 @input-height-lg: 36px;
 @alert-success-border-color: ~`colorPalette('@{success-color}', 1) `;
 @alert-info-border-color: ~`colorPalette('@{info-color}', 1) `;
@@ -22,74 +16,3 @@
 @alert-error-border-color: ~`colorPalette('@{error-color}', 1) `;
 @menu-item-active-border-width: 0px;
 @menu-item-active-bg: transparent;
-
-// base colors
-@light-color: #f6f8fc;
-@white: #fff;
-@black: @primary-color;
-@secondary-color: #fdc8c4;
-
-// text
-@text-color: fade(@black, 65%);
-@text-color-secondary: fade(@black, 45%);
-@text-color-active: fade(@black, 75%);
-@text-color-inverse: @white;
-
-// shadow
-@shadow-color: fade(@black, 6%);
-@shadow-color-2: fade(@black, 40%);
-@box-shadow: 0 2px 6px @shadow-color;
-@box-shadow-2: 0px 2px 6px @shadow-color-2;
-@box-shadow-3: 0px 10px 45px 4px @shadow-color;
-
-// space
-@space: 12px;
-@space-2: 24px;
-@space-3: 36px;
-
-@radius: 4px;
-@radius-2: 8px;
-@radius-3: 16px;
-
-// transition
-@transition: all 0.3s ease;
-
-// flex
-.flex {
-  display: flex;
-}
-.flex-center {
-  .flex();
-
-  align-items: center;
-  justify-content: center;
-}
-.flex-between {
-  .flex();
-
-  align-items: center;
-  justify-content: space-between;
-}
-.flex-around {
-  .flex();
-
-  align-items: center;
-  justify-content: space-around;
-}
-
-.form-width {
-  min-width: 320px;
-  max-width: 400px;
-}
-
-.hoverAnimation {
-  position: relative;
-  width: 100%;
-  overflow: hidden;
-  border-right: 0 solid @primary-color !important;
-  transition: @transition;
-
-  &:hover {
-    border-right-width: 30px !important;
-  }
-}

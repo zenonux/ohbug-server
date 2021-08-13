@@ -1,13 +1,13 @@
 .root {
   &:not(:nth-child(3n)) {
-    margin-right: @space;
+    @apply mr-3;
   }
-  margin-bottom: @space;
+  @apply mb-3 rounded-md;
 
   &.active {
-    background-color: @primary-color;
+    @apply bg-gray-800;
     :global(.ant-card-head) {
-      color: @white;
+      @apply text-white;
     }
   }
 }

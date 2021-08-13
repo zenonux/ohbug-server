@@ -1,6 +1,5 @@
 export { default as Layout } from './Layout'
 export { default as Icon } from './Icon'
-export { default as IconButton } from './IconButton'
 export { default as Image } from './Image'
 export { default as LineChart } from './LineChart'
 export { default as Loading } from './Loading'

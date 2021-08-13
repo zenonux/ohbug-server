@@ -4,7 +4,7 @@ import { Modal, Form, Input, Space, Tooltip, Button } from 'antd'
 import { useModel } from '@/ability'
 import { NotificationSettingWebHook } from '@/models'
 import { usePersistFn, useUpdateEffect } from '@/hooks'
-import { IconButton, RadioIconButton, Icon } from '@/components'
+import { RadioIconButton, Icon } from '@/components'
 
 import styles from './EditWebhook.module.less'
 
@@ -152,20 +152,24 @@ const EditWebhook: React.FC<EditWebhookProps> = ({
                       <Input maxLength={100} />
                     </Form.Item>
                     {fields.length > 0 ? (
-                      <IconButton
+                      <Button
                         onClick={() => {
                           operation.remove(field.name)
                         }}
-                        icon="icon-ohbug-indeterminate-circle-line"
+                        icon={
+                          <Icon type="icon-ohbug-indeterminate-circle-line" />
+                        }
+                        type="text"
                         size="small"
                       />
                     ) : null}
                     {fields.length < 3 && index === fields.length - 1 && (
-                      <IconButton
+                      <Button
                         onClick={() => {
                           operation.add()
                         }}
-                        icon="icon-ohbug-add-circle-line"
+                        icon={<Icon type="icon-ohbug-add-circle-line" />}
+                        type="text"
                         size="small"
                       />
                     )}
@@ -173,11 +177,12 @@ const EditWebhook: React.FC<EditWebhookProps> = ({
                 ))}
               </Space>
               {fields.length === 0 && (
-                <IconButton
+                <Button
                   onClick={() => {
                     operation.add()
                   }}
-                  icon="icon-ohbug-add-circle-line"
+                  icon={<Icon type="icon-ohbug-add-circle-line" />}
+                  type="text"
                   size="small"
                 />
               )}

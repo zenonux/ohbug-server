@@ -43,7 +43,7 @@ const Issue: React.FC<RouteComponentProps> = ({ children }) => {
 
   return (
     <Layout className={styles.root} title="问题">
-      <Space size="middle" direction="vertical">
+      <Space size="middle" direction="vertical" style={{ width: '100%' }}>
         {projectTrend && (
           <Card className={styles.chart}>
             <LineChart data={projectTrend.buckets} />
@@ -102,13 +102,13 @@ const Issue: React.FC<RouteComponentProps> = ({ children }) => {
               )?.buckets
 
               return (
-                <List.Item>
-                  <Skeleton title loading={loading} active>
-                    <List.Item.Meta
-                      title={
-                        <div className={styles.title}>
-                          {/* 获取此 issue 所对应的最新 event */}
-                          <Link to={`/issue/${item.id}/event/latest`}>
+                // 获取此 issue 所对应的最新 event
+                <Link to={`/issue/${item.id}/event/latest`}>
+                  <List.Item>
+                    <Skeleton title loading={loading} active>
+                      <List.Item.Meta
+                        title={
+                          <div className={styles.title}>
                             <Typography.Text className={styles.type} strong>
                               {item.type}
                             </Typography.Text>
@@ -117,59 +117,60 @@ const Issue: React.FC<RouteComponentProps> = ({ children }) => {
                                 {item.metadata.filename}
                               </Typography.Text>
                             )}
-                          </Link>
-                        </div>
-                      }
-                      description={
-                        <Typography.Paragraph className={styles.desc} ellipsis>
-                          {item.metadata.message && (
-                            <Typography.Text>
-                              {typeof item.metadata.message === 'string'
-                                ? item.metadata.message
-                                : JSON.stringify(item.metadata.message)}
-                            </Typography.Text>
-                          )}
-                          {item.metadata.others && (
-                            <Typography.Text>
-                              {item.metadata.others}
-                            </Typography.Text>
-                          )}
-                          {!item.metadata.message &&
-                            !item.metadata.others &&
-                            item.metadata.stack && (
+                          </div>
+                        }
+                        description={
+                          <Typography.Paragraph
+                            className={styles.desc}
+                            ellipsis
+                          >
+                            {item.metadata.message && (
                               <Typography.Text>
-                                {typeof item.metadata.stack === 'string'
-                                  ? item.metadata.stack
-                                  : JSON.stringify(item.metadata.stack)}
+                                {typeof item.metadata.message === 'string'
+                                  ? item.metadata.message
+                                  : JSON.stringify(item.metadata.message)}
                               </Typography.Text>
                             )}
-                        </Typography.Paragraph>
-                      }
-                    />
-                    <Row className={styles.content} gutter={8}>
-                      <Col span={6}>
-                        {dayjs(item.createdAt).fromNow()}-
-                        {dayjs(item.updatedAt).fromNow()}
-                      </Col>
+                            {item.metadata.others && (
+                              <Typography.Text>
+                                {item.metadata.others}
+                              </Typography.Text>
+                            )}
+                            {!item.metadata.message &&
+                              !item.metadata.others &&
+                              item.metadata.stack && (
+                                <Typography.Text>
+                                  {typeof item.metadata.stack === 'string'
+                                    ? item.metadata.stack
+                                    : JSON.stringify(item.metadata.stack)}
+                                </Typography.Text>
+                              )}
+                          </Typography.Paragraph>
+                        }
+                      />
+                      <Row className={styles.content} gutter={8}>
+                        <Col span={6}>
+                          {dayjs(item.createdAt).fromNow()}-
+                          {dayjs(item.updatedAt).fromNow()}
+                        </Col>
 
-                      <Col span={4}>
-                        <Link to={`/issue/${item.id}/event/latest`}>
+                        <Col className="text-green-600" span={4}>
                           {item.eventsCount}
-                        </Link>
-                      </Col>
+                        </Col>
 
-                      <Col span={4}>{item.usersCount}</Col>
+                        <Col span={4}>{item.usersCount}</Col>
 
-                      <Col span={10}>
-                        <MiniChart
-                          data={chartData}
-                          trend={trendValue}
-                          loading={trendChartLoading}
-                        />
-                      </Col>
-                    </Row>
-                  </Skeleton>
-                </List.Item>
+                        <Col span={10}>
+                          <MiniChart
+                            data={chartData}
+                            trend={trendValue}
+                            loading={trendChartLoading}
+                          />
+                        </Col>
+                      </Row>
+                    </Skeleton>
+                  </List.Item>
+                </Link>
               )
             }}
           />
