@@ -8,6 +8,7 @@ import {
   OneToOne,
   ManyToMany,
   JoinTable,
+  Index,
 } from 'typeorm'
 import { Exclude } from 'class-transformer'
 
@@ -24,6 +25,7 @@ export class Project {
   apiKey: string
 
   @Column({ type: 'text' })
+  @Index({ unique: true })
   name: string
 
   @Column({ type: 'text' })
