@@ -6,11 +6,10 @@ import SyntaxHighlighter from 'react-syntax-highlighter'
 import { githubGist as highlighterStyles } from 'react-syntax-highlighter/dist/esm/styles/hljs'
 
 import type { ExtensionDetail } from '@/models'
-import { useCreation } from '@/hooks'
+import { useCreation, usePersistFn } from '@/hooks'
 import { Icon } from '@/components'
-
-import { usePersistFn } from 'ahooks'
 import { useModel } from '@/ability'
+
 import styles from './ExtensionDetail.module.less'
 
 interface ExtensionDetailProps {
@@ -59,7 +58,7 @@ const ExtensionDetailComponent: React.FC<ExtensionDetailProps> = ({
     }
   })
 
-  const enableLoading = loadingModel.state.effects.project.enableExtension
+  const enableLoading = loadingModel.state.effects.project.switchExtension
 
   return (
     <Card className={styles.root} loading={loading}>

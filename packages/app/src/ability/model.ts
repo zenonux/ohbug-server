@@ -25,7 +25,7 @@ export const store = init<RootModel, FullModel>({
 
 export type Store = typeof store
 export type Dispatch = RematchDispatch<RootModel>
-export type RootState = RematchRootState<RootModel>
+export type RootState = RematchRootState<RootModel, FullModel>
 
 export * from 'redux'
 export * from 'react-redux'

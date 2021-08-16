@@ -42,6 +42,7 @@ const EditWebhook: React.FC<EditWebhookProps> = ({
     initialValues ? 'update' : 'create'
   )
   const confirmLoading =
+    // @ts-ignore
     loadingModel.state.effects.notification[`${type}WebhooksSetting`]
 
   useUpdateEffect(() => {

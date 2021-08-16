@@ -31,28 +31,30 @@ const Title: React.FC<TitleProps> = ({ event, issue }) => {
   return (
     <Row className={styles.root} gutter={24}>
       <Col className={styles.left} xs={24} sm={24} md={18}>
-        <Skeleton loading={leftLoading}>
-          <Typography className={styles.content}>
-            <Typography.Title>{event?.type}</Typography.Title>
-            {event?.detail?.message && (
-              <Typography.Text ellipsis strong style={{ fontSize: 16 }}>
-                {typeof event.detail.message === 'string'
-                  ? event.detail.message
-                  : JSON.stringify(event.detail.message)}
-              </Typography.Text>
-            )}
-            {event?.detail?.filename && (
-              <Typography.Paragraph ellipsis strong style={{ fontSize: 16 }}>
-                {event.detail.filename}
-              </Typography.Paragraph>
-            )}
-          </Typography>
-          <Image
-            className={styles.figure}
-            src={figure}
-            alt="issue_title_figure"
-          />
-        </Skeleton>
+        <div className={styles.wrapper}>
+          <Skeleton loading={leftLoading}>
+            <Typography className={styles.content}>
+              <Typography.Title>{event?.type}</Typography.Title>
+              {event?.detail?.message && (
+                <Typography.Text ellipsis strong style={{ fontSize: 16 }}>
+                  {typeof event.detail.message === 'string'
+                    ? event.detail.message
+                    : JSON.stringify(event.detail.message)}
+                </Typography.Text>
+              )}
+              {event?.detail?.filename && (
+                <Typography.Paragraph ellipsis strong style={{ fontSize: 16 }}>
+                  {event.detail.filename}
+                </Typography.Paragraph>
+              )}
+            </Typography>
+            <Image
+              className={styles.figure}
+              src={figure}
+              alt="issue_title_figure"
+            />
+          </Skeleton>
+        </div>
       </Col>
 
       <Col className={styles.right} xs={24} sm={24} md={6}>

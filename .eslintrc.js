@@ -18,5 +18,6 @@ module.exports = {
         ],
       },
     ],
+    'import/extensions': 'off',
   },
 }

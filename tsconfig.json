@@ -1,5 +1,5 @@
 {
-  "extends": "@chenyueban/tsconfig",
+  "extends": "./node_modules/@chenyueban/tsconfig/tsconfig.json",
   "compilerOptions": {
     "module": "CommonJS",
     "noEmit": false,

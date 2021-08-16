@@ -59,13 +59,13 @@
     "typeorm": "^0.2.36"
   },
   "devDependencies": {
-    "@chenyueban/lint": "^0.2.13",
+    "@chenyueban/lint": "^0.2.14",
     "@chenyueban/tsconfig": "^0.1.8",
     "@nestjs/cli": "^8.1.0",
     "@nestjs/testing": "^8.0.5",
     "@types/bull": "^3.15.3",
     "@types/express": "^4.17.13",
-    "@types/jest": "^26.0.24",
+    "@types/jest": "^27.0.1",
     "@types/node": "^16.4.8",
     "@types/ramda": "^0.27.44",
     "@types/react": "^17.0.15",

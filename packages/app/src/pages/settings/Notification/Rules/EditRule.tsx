@@ -81,6 +81,7 @@ const EditRule: React.FC<EditRuleProps> = ({
   const [type, setType] = React.useState(() =>
     initialValues ? 'update' : 'create'
   )
+  // @ts-ignore
   const confirmLoading = loadingModel.state.effects.notification[`${type}Rules`]
 
   useUpdateEffect(() => {

@@ -1,6 +1,9 @@
 module.export = {
   mode: 'jit',
-  purge: ['./src/**/*.{js,ts,jsx,tsx}', './*.html'],
+  purge: {
+    enabled: process.env.NODE_ENV === 'production',
+    content: ['./src/**/*.{js,ts,jsx,tsx}'],
+  },
   darkMode: false, // or 'media' or 'class'
   theme: {
     extend: {},

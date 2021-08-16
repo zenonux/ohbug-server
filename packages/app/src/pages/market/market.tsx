@@ -18,7 +18,7 @@ const Market: React.FC<RouteComponentProps> = () => {
   const extensions = extensionModel.state.data
   const extensionId = extensionModel.state.currentId
   const extension = extensionModel.state.current
-  const loading = loadingModel.state.effects.extension.getExtensions
+  const loading = loadingModel.state.effects.extension.getMany
   const detailLoading = loadingModel.state.effects.extension.get
 
   useMount(() => {
