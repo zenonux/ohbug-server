@@ -1,7 +1,13 @@
 @layer base {
-  html,
-  body {
-    background-color: #f6fafd;
+  :root {
+    --primary-color: #1f2937;
+    --success-color: #10b981;
+    --info-color: #3b82f6;
+    --warning-color: #f59e0b;
+    --error-color: #ef4444;
+    --layout-body-background: #f6fafd;
+
+    background-color: var(--layout-body-background);
   }
   #root {
     @apply min-h-screen;
@@ -17,7 +23,7 @@
     @apply font-semibold;
   }
   a {
-    @apply hover:text-green-600 !important;
+    @apply hover:text-success !important;
   }
 }
 
@@ -40,9 +46,9 @@
     }
   }
   &-badge-status-processing {
-    @apply bg-gray-800 !important;
+    @apply bg-primary !important;
     &::after {
-      @apply border-gray-800 !important;
+      @apply border-primary !important;
     }
   }
   &-layout-header {
@@ -76,18 +82,18 @@
       }
       &:hover {
         & > .ant-menu-item-icon {
-          @apply text-green-600;
+          @apply text-success;
         }
         & > .ant-menu-title-content {
-          @apply text-green-600;
+          @apply text-success;
         }
       }
       &.ant-menu-item-selected {
         & > .ant-menu-item-icon {
-          @apply text-green-600;
+          @apply text-success;
         }
         & > .ant-menu-title-content {
-          @apply text-green-600;
+          @apply text-success;
         }
       }
     }

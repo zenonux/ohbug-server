@@ -1,62 +1,78 @@
+/* eslint-disable import/no-extraneous-dependencies */
 import path from 'path'
 import { defineConfig, UserConfig } from 'vite'
+import WindiCSS from 'vite-plugin-windicss'
+import reactJsx from 'vite-react-jsx'
 import reactRefresh from '@vitejs/plugin-react-refresh'
 import vitePluginImp from 'vite-plugin-imp'
-import { mergeDeepRight } from 'ramda'
+import visualizer from 'rollup-plugin-visualizer'
 
-const baseConfig: UserConfig = {
-  resolve: {
-    alias: {
-      '@': path.resolve(__dirname, 'src'),
-    },
-  },
-  css: {
-    preprocessorOptions: {
-      less: {
-        css: true,
-        modifyVars: {
-          hack: `true; @import "${path.resolve(
-            __dirname,
-            'src/styles/theme.less'
-          )}";`,
-        },
-        javascriptEnabled: true,
+export default defineConfig(({ mode }) => {
+  const config: UserConfig = {
+    resolve: {
+      alias: {
+        '@': path.resolve(__dirname, 'src'),
       },
     },
-  },
-  plugins: [reactRefresh()],
-}
-
-const developmentConfig: UserConfig = {
-  server: {
-    port: 8888,
-    open: true,
-    proxy: {
-      '/api/v1': {
-        target: 'http://localhost:6666',
-        changeOrigin: true,
+    css: {
+      preprocessorOptions: {
+        less: {
+          modifyVars: {
+            hack: `true; @import "${path.resolve(
+              __dirname,
+              'src/styles/theme.less'
+            )}";`,
+          },
+          javascriptEnabled: true,
+        },
       },
     },
-  },
-}
-
-const productionConfig: UserConfig = {
-  plugins: [
-    vitePluginImp({
-      libList: [
-        {
-          libName: 'antd',
-          style: (name) => `antd/es/${name}/style`,
+    plugins: [
+      WindiCSS(),
+      reactJsx(),
+      reactRefresh(),
+      vitePluginImp({
+        libList: [
+          {
+            libName: 'antd',
+            style: (name) => `antd/es/${name}/style`,
+          },
+        ],
+      }),
+    ],
+    build: {
+      rollupOptions: {
+        output: {
+          manualChunks: {
+            react: ['react'],
+            'react-dom': ['react-dom'],
+          },
         },
-      ],
-    }),
-  ],
-}
+      },
+    },
+  }
+  if (mode === 'development') {
+    config.server = {
+      port: 8888,
+      open: true,
+      proxy: {
+        '/api/v1': {
+          target: 'http://localhost:6666',
+          changeOrigin: true,
+        },
+      },
+    }
+  }
+  if (mode === 'analyze') {
+    config.plugins?.push(
+      visualizer({
+        filename: './node_modules/.cache/visualizer/stats.html',
+        open: true,
+        gzipSize: true,
+        brotliSize: true,
+      })
+    )
+  }
 
-export default defineConfig(
-  ({ mode }) =>
-    mergeDeepRight(
-      baseConfig,
-      mode === 'development' ? developmentConfig : productionConfig
-    ) as UserConfig
-)
+  return config
+})

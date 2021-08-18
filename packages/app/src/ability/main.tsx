@@ -1,4 +1,4 @@
-import React from 'react'
+import type { FC } from 'react'
 import { render } from 'react-dom'
 import { ConfigProvider } from 'antd'
 import * as echarts from 'echarts'
@@ -11,8 +11,7 @@ import Router from '@/ability/router'
 import { Provider, store } from '@/ability/model'
 import chartTheme from '@/styles/chart.json'
 
-import 'tailwindcss/tailwind.css'
-import 'antd/dist/antd.less'
+import 'virtual:windi.css'
 import '@/styles/theme.less'
 import '@/styles/reset.less'
 
@@ -21,7 +20,7 @@ dayjs.locale('zh-cn')
 dayjs().locale('zh-cn').format()
 echarts.registerTheme('ohbug', chartTheme.theme)
 
-const App: React.FC = () => (
+const App: FC = () => (
   <ConfigProvider renderEmpty={renderEmpty}>
     <Provider store={store as any}>
       <Router />

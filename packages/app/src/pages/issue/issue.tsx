@@ -154,7 +154,7 @@ const Issue: React.FC<RouteComponentProps> = ({ children }) => {
                           {dayjs(item.updatedAt).fromNow()}
                         </Col>
 
-                        <Col className="text-green-600" span={4}>
+                        <Col className="text-success" span={4}>
                           {item.eventsCount}
                         </Col>
 
