@@ -4,12 +4,12 @@ import { InjectRepository } from '@nestjs/typeorm'
 import { ClientProxy } from '@nestjs/microservices'
 import * as crypto from 'crypto'
 
-import { NotificationService } from '@/api/notification/notification.service'
-import { ExtensionService } from '@/api/extension/extension.service'
 import {
   ForbiddenException,
   TOPIC_DASHBOARD_MANAGER_GET_PROJECT_TREND,
 } from '@ohbug-server/common'
+import { NotificationService } from '@/api/notification/notification.service'
+import { ExtensionService } from '@/api/extension/extension.service'
 
 import { Project } from './project.entity'
 import {
@@ -50,16 +50,15 @@ export class ProjectService {
   async createProject({ name, type }: CreateProjectDto): Promise<Project> {
     try {
       const apiKey = ProjectService.createApiKey({ name, type })
-      const notificationSetting = this.notificationService.createNotificationSetting(
-        {
+      const notificationSetting =
+        this.notificationService.createNotificationSetting({
           emails: [],
           browser: {
             open: false,
             data: null,
           },
           webhooks: [],
-        }
-      )
+        })
       const project = this.projectRepository.create({
         apiKey,
         name,

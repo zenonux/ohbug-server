@@ -2,7 +2,7 @@ import React from 'react'
 import { Menu } from 'antd'
 import clsx from 'clsx'
 
-import routes, { Route } from '@/ability/routes'
+import { routes, Route } from '@/config'
 import { Icon, Image } from '@/components'
 import { useCreation, usePersistFn } from '@/hooks'
 import { navigate, useLocation } from '@/ability'

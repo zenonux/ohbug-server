@@ -13,7 +13,7 @@ import {
 import { Loading, Sider, Footer } from '@/components'
 import { useBoolean } from '@/hooks'
 
-import routes, { Route } from './routes'
+import { routes, Route } from '@/config'
 
 function matchRoute(data: Route[], location: WindowLocation): Route | null {
   for (const route of data) {

@@ -1,8 +1,8 @@
 import React from 'react'
 import { Card, Table } from 'antd'
 
-import { useModel, useQuery } from '@/ability'
-import { useMount, usePersistFn } from '@/hooks'
+import { useModel } from '@/ability'
+import { useMount, usePersistFn, useQuery } from '@/hooks'
 import type { Event } from '@/models'
 import { RelativeTime } from '@/components'
 

@@ -56,7 +56,7 @@ const NotAuthorized = React.lazy<React.FC<RouteComponentProps>>(
   () => import('../pages/not-authorized')
 )
 
-const routes: Route[] = [
+export const routes: Route[] = [
   {
     path: '/',
     wrapper: Auth,
@@ -148,5 +148,3 @@ const routes: Route[] = [
     },
   },
 ]
-
-export default routes
