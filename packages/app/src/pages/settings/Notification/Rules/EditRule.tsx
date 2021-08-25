@@ -10,11 +10,11 @@ import {
   Tooltip,
   Button,
 } from 'antd'
+import { MinusCircleOutlined, PlusCircleOutlined } from '@ant-design/icons'
 import { types } from '@ohbug/browser'
 
 import { useModel } from '@/ability'
 import type { NotificationRule, NotificationRuleLevel } from '@/models'
-import { Icon } from '@/components'
 import { usePersistFn, useUpdateEffect } from '@/hooks'
 
 import { levelList, intervalList } from './Rules.core'
@@ -279,9 +279,7 @@ const EditRule: React.FC<EditRuleProps> = ({
                           onClick={() => {
                             operation.remove(field.name)
                           }}
-                          icon={
-                            <Icon type="icon-ohbug-indeterminate-circle-line" />
-                          }
+                          icon={<MinusCircleOutlined />}
                           type="text"
                           size="small"
                         />
@@ -291,7 +289,7 @@ const EditRule: React.FC<EditRuleProps> = ({
                           onClick={() => {
                             operation.add()
                           }}
-                          icon={<Icon type="icon-ohbug-add-circle-line" />}
+                          icon={<PlusCircleOutlined />}
                           type="text"
                           size="small"
                         />
@@ -304,7 +302,7 @@ const EditRule: React.FC<EditRuleProps> = ({
                     onClick={() => {
                       operation.add()
                     }}
-                    icon={<Icon type="icon-ohbug-add-circle-line" />}
+                    icon={<PlusCircleOutlined />}
                     type="text"
                     size="small"
                   />

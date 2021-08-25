@@ -1,9 +1,19 @@
 import React from 'react'
 import { Skeleton } from 'antd'
 import dayjs from 'dayjs'
+import {
+  ClockCircleOutlined,
+  CloudOutlined,
+  DesktopOutlined,
+  FontSizeOutlined,
+  GlobalOutlined,
+  IdcardOutlined,
+  PaperClipOutlined,
+  PushpinOutlined,
+} from '@ant-design/icons'
 
 import type { EventState } from '@/models'
-import { Icon, RelativeTime } from '@/components'
+import { RelativeTime } from '@/components'
 import { useCreation } from '@/hooks'
 
 import Cards from './components/Cards'
@@ -24,7 +34,7 @@ const Profile: React.FC<ProfileProps> = ({ event }) => {
           `YYYY-MM-DD HH:mm:ss`
         )}`,
         value: <RelativeTime time={event.timestamp} />,
-        icon: <Icon type="icon-ohbug-time-line" />,
+        icon: <ClockCircleOutlined />,
       })
     }
     if (event?.user?.uuid) {
@@ -32,7 +42,7 @@ const Profile: React.FC<ProfileProps> = ({ event }) => {
         key: 'uuid',
         title: `UUID: ${event?.user?.uuid}`,
         value: event?.user?.uuid,
-        icon: <Icon type="icon-ohbug-id-line" />,
+        icon: <IdcardOutlined />,
       })
     }
     if (event?.user?.ip) {
@@ -40,7 +50,7 @@ const Profile: React.FC<ProfileProps> = ({ event }) => {
         key: 'ip',
         title: `IP: ${event?.user?.ip}`,
         value: event?.user?.ip,
-        icon: <Icon type="icon-ohbug-ip-line" />,
+        icon: <CloudOutlined />,
       })
     }
     if (event?.device?.title) {
@@ -48,7 +58,7 @@ const Profile: React.FC<ProfileProps> = ({ event }) => {
         key: 'title',
         title: `标题: ${event.device.title}`,
         value: event.device.title,
-        icon: <Icon type="icon-ohbug-title-fill" />,
+        icon: <FontSizeOutlined />,
       })
     }
     if (event?.device?.url) {
@@ -56,7 +66,7 @@ const Profile: React.FC<ProfileProps> = ({ event }) => {
         key: 'url',
         title: `URL: ${event.device.url}`,
         value: event.device.url,
-        icon: <Icon type="icon-ohbug-links-line" />,
+        icon: <PaperClipOutlined />,
       })
     }
     if (event?.device?.language) {
@@ -64,7 +74,7 @@ const Profile: React.FC<ProfileProps> = ({ event }) => {
         key: 'language',
         title: `Language: ${event.device.language}`,
         value: event.device.language,
-        icon: <Icon type="icon-ohbug-global-line" />,
+        icon: <GlobalOutlined />,
       })
     }
     if (event?.appVersion) {
@@ -72,7 +82,7 @@ const Profile: React.FC<ProfileProps> = ({ event }) => {
         key: 'appVersion',
         title: `AppVersion: ${event.appVersion}`,
         value: event.appVersion,
-        icon: <Icon type="icon-ohbug-leaf-line" />,
+        icon: <PushpinOutlined />,
       })
     }
     if (event?.appType) {
@@ -80,7 +90,7 @@ const Profile: React.FC<ProfileProps> = ({ event }) => {
         key: 'appType',
         title: `AppType: ${event.appType}`,
         value: event.appType,
-        icon: <Icon type="icon-ohbug-leaf-line" />,
+        icon: <PushpinOutlined />,
       })
     }
     if (event?.releaseStage) {
@@ -88,7 +98,7 @@ const Profile: React.FC<ProfileProps> = ({ event }) => {
         key: 'releaseStage',
         title: `ReleaseStage: ${event.releaseStage}`,
         value: event.releaseStage,
-        icon: <Icon type="icon-ohbug-leaf-line" />,
+        icon: <PushpinOutlined />,
       })
     }
     if (
@@ -100,7 +110,7 @@ const Profile: React.FC<ProfileProps> = ({ event }) => {
         key: 'dpi',
         title: `分辨率: ${event?.device?.device?.screenWidth} × ${event?.device?.device?.screenHeight} @ ${event?.device?.device?.pixelRatio}x`,
         value: `${event?.device?.device?.screenWidth} × ${event?.device?.device?.screenHeight} @ ${event?.device?.device?.pixelRatio}x`,
-        icon: <Icon type="icon-ohbug-computer-line" />,
+        icon: <DesktopOutlined />,
       })
     }
 

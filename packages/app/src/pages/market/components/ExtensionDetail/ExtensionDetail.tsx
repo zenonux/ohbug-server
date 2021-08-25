@@ -4,10 +4,10 @@ import { Card, Avatar, Switch } from 'antd'
 import MarkdownIt from 'markdown-it'
 import SyntaxHighlighter from 'react-syntax-highlighter'
 import { githubGist as highlighterStyles } from 'react-syntax-highlighter/dist/esm/styles/hljs'
+import { GithubOutlined } from '@ant-design/icons'
 
 import type { ExtensionDetail } from '@/models'
 import { useCreation, usePersistFn } from '@/hooks'
-import { Icon } from '@/components'
 import { useModel } from '@/ability'
 
 import styles from './ExtensionDetail.module.less'
@@ -70,7 +70,7 @@ const ExtensionDetailComponent: React.FC<ExtensionDetailProps> = ({
             target="_blank"
             rel="noreferrer"
           >
-            <Icon type="icon-ohbug-github-fill" style={{ fontSize: 24 }} />
+            <GithubOutlined />
             <span>{extension?.repository.url}</span>
           </a>
           <div className={styles.line}>

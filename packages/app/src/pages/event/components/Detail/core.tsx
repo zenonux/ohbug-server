@@ -1,12 +1,14 @@
 import React from 'react'
 import type { OhbugAction } from '@ohbug/types'
 import { Typography } from 'antd'
+import {
+  BulbOutlined,
+  CodeOutlined,
+  PaperClipOutlined,
+  SendOutlined,
+} from '@ant-design/icons'
 
-import { Icon } from '@/components'
-
-export function getMessageAndIconByActionType(
-  action: OhbugAction
-): {
+export function getMessageAndIconByActionType(action: OhbugAction): {
   message: React.ReactNode
   icon: React.ReactNode
 } {
@@ -16,7 +18,7 @@ export function getMessageAndIconByActionType(
       if (action.data?.selector) {
         return {
           message: action.data?.selector,
-          icon: <Icon type="icon-ohbug-click-line" style={{ fontSize: 20 }} />,
+          icon: <BulbOutlined />,
         }
       }
       return {
@@ -26,7 +28,7 @@ export function getMessageAndIconByActionType(
             <Typography.Text type="secondary">{action.data}</Typography.Text>
           </Typography>
         ),
-        icon: <Icon type="icon-ohbug-click-line" style={{ fontSize: 20 }} />,
+        icon: <BulbOutlined />,
       }
     case 'navigation':
       return {
@@ -36,7 +38,7 @@ export function getMessageAndIconByActionType(
             <strong>To:</strong> <em>{action.data?.to}</em>
           </>
         ),
-        icon: <Icon type="icon-ohbug-links-line" style={{ fontSize: 20 }} />,
+        icon: <PaperClipOutlined />,
       }
     case 'ajax':
       return {
@@ -48,12 +50,10 @@ export function getMessageAndIconByActionType(
           </>
         ),
         icon: (
-          <Icon
-            type="icon-ohbug-send-plane-fill"
+          <SendOutlined
             style={{
               // eslint-disable-next-line no-nested-ternary
               color: status > 400 ? 'red' : status <= 200 ? 'green' : 'grey',
-              fontSize: 20,
             }}
           />
         ),
@@ -68,12 +68,10 @@ export function getMessageAndIconByActionType(
           </>
         ),
         icon: (
-          <Icon
-            type="icon-ohbug-send-plane-fill"
+          <SendOutlined
             style={{
               // eslint-disable-next-line no-nested-ternary
               color: status > 400 ? 'red' : status <= 200 ? 'green' : 'grey',
-              fontSize: 20,
             }}
           />
         ),
@@ -81,9 +79,7 @@ export function getMessageAndIconByActionType(
     case 'console':
       return {
         message: `[${action.message}] ${JSON.stringify(action.data)}`,
-        icon: (
-          <Icon type="icon-ohbug-terminal-box-line" style={{ fontSize: 20 }} />
-        ),
+        icon: <CodeOutlined />,
       }
     default:
       return {

@@ -1,9 +1,9 @@
 import React from 'react'
 import { Card, Descriptions, Timeline, Tooltip } from 'antd'
 import dayjs from 'dayjs'
+import { WarningOutlined } from '@ant-design/icons'
 
 import type { EventState } from '@/models'
-import { Icon } from '@/components'
 
 import StackInfo from '../StackInfo'
 import { getMessageAndIconByActionType } from './core'
@@ -152,10 +152,7 @@ const Detail: React.FC<DetailProps> = ({ event }) => {
             )
           })}
           {event && (
-            <Timeline.Item
-              dot={<Icon type="icon-ohbug-error-warning-line" />}
-              color="red"
-            >
+            <Timeline.Item dot={<WarningOutlined />} color="red">
               <div className={styles.action}>
                 <div className={styles.type}>exception</div>
                 <div className={styles.data}>

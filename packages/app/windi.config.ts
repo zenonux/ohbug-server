@@ -11,6 +11,7 @@ export default defineConfig({
         info: 'var(--info-color)',
         warning: 'var(--warning-color)',
         error: 'var(--error-color)',
+        secondary: 'var(--text-color-secondary)',
       },
     },
   },

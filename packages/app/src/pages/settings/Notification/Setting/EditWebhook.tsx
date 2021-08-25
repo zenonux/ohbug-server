@@ -1,10 +1,18 @@
 import React from 'react'
 import { Modal, Form, Input, Space, Tooltip, Button } from 'antd'
+import {
+  DingdingOutlined,
+  MinusCircleOutlined,
+  PlusCircleOutlined,
+  QuestionCircleOutlined,
+  RobotOutlined,
+  WechatOutlined,
+} from '@ant-design/icons'
 
 import { useModel } from '@/ability'
 import { NotificationSettingWebHook } from '@/models'
 import { usePersistFn, useUpdateEffect } from '@/hooks'
-import { RadioIconButton, Icon } from '@/components'
+import { RadioIconButton } from '@/components'
 
 import styles from './EditWebhook.module.less'
 
@@ -12,17 +20,17 @@ const typeList = [
   {
     label: '钉钉',
     value: 'dingtalk',
-    icon: 'icon-ohbug-dingtalk',
+    icon: <DingdingOutlined />,
   },
   {
     label: '企业微信',
     value: 'wechat_work',
-    icon: 'icon-ohbug-wechat-work',
+    icon: <WechatOutlined />,
   },
   {
     label: '自定义',
     value: 'others',
-    icon: 'icon-ohbug-webhook-others',
+    icon: <RobotOutlined />,
   },
 ]
 interface EditWebhookProps {
@@ -138,10 +146,7 @@ const EditWebhook: React.FC<EditWebhookProps> = ({
                 <Tooltip title="负责人的联系方式，多用于@对应负责人，通常为手机号。">
                   <span>
                     负责人
-                    <Icon
-                      className={styles.tip}
-                      type="icon-ohbug-question-fill"
-                    />
+                    <QuestionCircleOutlined />
                   </span>
                 </Tooltip>
               }
@@ -157,9 +162,7 @@ const EditWebhook: React.FC<EditWebhookProps> = ({
                         onClick={() => {
                           operation.remove(field.name)
                         }}
-                        icon={
-                          <Icon type="icon-ohbug-indeterminate-circle-line" />
-                        }
+                        icon={<MinusCircleOutlined />}
                         type="text"
                         size="small"
                       />
@@ -169,7 +172,7 @@ const EditWebhook: React.FC<EditWebhookProps> = ({
                         onClick={() => {
                           operation.add()
                         }}
-                        icon={<Icon type="icon-ohbug-add-circle-line" />}
+                        icon={<PlusCircleOutlined />}
                         type="text"
                         size="small"
                       />
@@ -182,7 +185,7 @@ const EditWebhook: React.FC<EditWebhookProps> = ({
                   onClick={() => {
                     operation.add()
                   }}
-                  icon={<Icon type="icon-ohbug-add-circle-line" />}
+                  icon={<PlusCircleOutlined />}
                   type="text"
                   size="small"
                 />

@@ -1,9 +1,10 @@
 import React from 'react'
 import { Form, Switch, Input, Space, Button, Table, Modal } from 'antd'
+import { MinusCircleOutlined, PlusCircleOutlined } from '@ant-design/icons'
 
 import { RouteComponentProps, useModel } from '@/ability'
 import type { NotificationSetting, NotificationSettingWebHook } from '@/models'
-import { Icon, Zone } from '@/components'
+import { Zone } from '@/components'
 import { useUpdateEffect, useBoolean, usePersistFn } from '@/hooks'
 import { registerServiceWorker, askNotificationPermission } from '@/utils'
 
@@ -149,9 +150,7 @@ const Setting: React.FC<RouteComponentProps> = () => {
                               })
                             }
                           }}
-                          icon={
-                            <Icon type="icon-ohbug-indeterminate-circle-line" />
-                          }
+                          icon={<MinusCircleOutlined />}
                           type="text"
                           size="small"
                         />
@@ -161,7 +160,7 @@ const Setting: React.FC<RouteComponentProps> = () => {
                           onClick={() => {
                             operation.add()
                           }}
-                          icon={<Icon type="icon-ohbug-add-circle-line" />}
+                          icon={<PlusCircleOutlined />}
                           type="text"
                           size="small"
                         />
@@ -186,7 +185,7 @@ const Setting: React.FC<RouteComponentProps> = () => {
                     onClick={() => {
                       operation.add()
                     }}
-                    icon={<Icon type="icon-ohbug-add-circle-line" />}
+                    icon={<PlusCircleOutlined />}
                     type="text"
                     size="small"
                   />
@@ -223,7 +222,7 @@ const Setting: React.FC<RouteComponentProps> = () => {
           extra={
             <Button
               className={styles.addWebhook}
-              icon={<Icon type="icon-ohbug-add-circle-line" />}
+              icon={<PlusCircleOutlined />}
               type="text"
               onClick={() => {
                 setCurrentRule(undefined)

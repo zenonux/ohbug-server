@@ -89,7 +89,7 @@ const MiniChart: React.FC<MiniChartProps> = React.memo(
           {
             name: 'events',
             type: 'line',
-            // smooth: true,
+            smooth: true,
             symbol: 'emptyCircle',
             symbolSize: 2,
             showSymbol: false,
@@ -103,19 +103,19 @@ const MiniChart: React.FC<MiniChartProps> = React.memo(
                 colorStops: [
                   {
                     offset: 0,
-                    color: 'rgba(78,163,151,0.5)',
+                    color: 'rgba(28,25,23,0.5)',
                   },
                   {
                     offset: 0.333,
-                    color: 'rgba(78,163,151,0.3)',
+                    color: 'rgba(28,25,23,0.3)',
                   },
                   {
                     offset: 0.666,
-                    color: 'rgba(78,163,151,0.1)',
+                    color: 'rgba(28,25,23,0.1)',
                   },
                   {
                     offset: 1,
-                    color: 'rgba(78,163,151,0)',
+                    color: 'rgba(28,25,23,0)',
                   },
                 ],
               },
@@ -129,10 +129,10 @@ const MiniChart: React.FC<MiniChartProps> = React.memo(
     return option ? (
       <div>
         {title && (
-          <div>
+          <Typography.Title level={5}>
             <Badge status="processing" />
-            <Typography.Text strong>{title}</Typography.Text>
-          </div>
+            {title}
+          </Typography.Title>
         )}
         <ReactEcharts
           option={option}

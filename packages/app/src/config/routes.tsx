@@ -1,6 +1,11 @@
 import React from 'react'
-import type { RouteComponentProps } from '@/ability'
+import {
+  DashboardOutlined,
+  IssuesCloseOutlined,
+  ShopOutlined,
+} from '@ant-design/icons'
 
+import type { RouteComponentProps } from '@/ability'
 import Auth from '@/components/renders/Auth'
 
 export interface Route {
@@ -10,11 +15,10 @@ export interface Route {
   component?: React.FC<RouteComponentProps>
   menu?: {
     name: string
-    icon: string
+    icon: React.ReactNode
   }
   layout?: {
     hideNav?: boolean
-    hideFooter?: boolean
   }
   routes?: Route[]
   default?: boolean
@@ -25,8 +29,8 @@ const GettingStarted = React.lazy<React.FC<RouteComponentProps>>(
 const CreateProject = React.lazy<React.FC<RouteComponentProps>>(
   () => import('../pages/create-project')
 )
-const Project = React.lazy<React.FC<RouteComponentProps>>(
-  () => import('../pages/project')
+const Overview = React.lazy<React.FC<RouteComponentProps>>(
+  () => import('../pages/overview')
 )
 const Issue = React.lazy<React.FC<RouteComponentProps>>(
   () => import('../pages/issue')
@@ -71,13 +75,13 @@ export const routes: Route[] = [
     component: CreateProject,
   },
   {
-    path: '/project',
-    component: Project,
+    path: '/overview',
+    component: Overview,
     wrapper: Auth,
     // layout
     menu: {
-      name: '项目',
-      icon: 'icon-ohbug-projector-line',
+      name: '总览',
+      icon: <DashboardOutlined />,
     },
   },
   {
@@ -87,7 +91,7 @@ export const routes: Route[] = [
     // layout
     menu: {
       name: '问题',
-      icon: 'icon-ohbug-error-warning-line',
+      icon: <IssuesCloseOutlined />,
     },
   },
   {
@@ -102,7 +106,7 @@ export const routes: Route[] = [
     // layout
     menu: {
       name: '插件市场',
-      icon: 'icon-ohbug-store-line',
+      icon: <ShopOutlined />,
     },
   },
   {
@@ -110,11 +114,6 @@ export const routes: Route[] = [
     component: Settings,
     wrapper: Auth,
     redirect: '/settings/notification_rules',
-    // layout
-    menu: {
-      name: '设置',
-      icon: 'icon-ohbug-settings-3-line',
-    },
     routes: [
       {
         path: 'notification_rules',
@@ -136,7 +135,6 @@ export const routes: Route[] = [
     component: NotFound,
     layout: {
       hideNav: true,
-      hideFooter: true,
     },
   },
   {
@@ -144,7 +142,6 @@ export const routes: Route[] = [
     component: NotAuthorized,
     layout: {
       hideNav: true,
-      hideFooter: true,
     },
   },
 ]

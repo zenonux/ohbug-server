@@ -51,7 +51,9 @@ const Issue: React.FC<RouteComponentProps> = ({ children }) => {
         )}
 
         <Card
+          className={styles.card}
           title={`问题列表 ${issue ? `(${issue.length})` : ''}`}
+          hoverable
           extra={
             <Space size="middle">
               <TimePicker />
@@ -73,7 +75,7 @@ const Issue: React.FC<RouteComponentProps> = ({ children }) => {
                 : false
             }
             header={
-              <div className={styles.header} style={{ paddingLeft: 0 }}>
+              <div className={styles.header}>
                 <div className={styles.title}>异常信息</div>
                 <Row className={styles.content} gutter={8}>
                   <Col span={6}>时间</Col>
@@ -154,7 +156,7 @@ const Issue: React.FC<RouteComponentProps> = ({ children }) => {
                           {dayjs(item.updatedAt).fromNow()}
                         </Col>
 
-                        <Col className="text-success" span={4}>
+                        <Col className="text-error" span={4}>
                           {item.eventsCount}
                         </Col>
 

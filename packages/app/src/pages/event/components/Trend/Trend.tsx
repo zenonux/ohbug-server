@@ -7,8 +7,6 @@ import type { IssueState } from '@/models'
 import { MiniChart } from '@/components'
 import { useCreation } from '@/hooks'
 
-import HoverCard from '../HoverCard'
-
 import styles from './Trend.module.less'
 
 interface TrendProps {
@@ -39,32 +37,36 @@ const Trend: React.FC<TrendProps> = ({ issue }) => {
         {data24h && <MiniChart data={data24h} trend="24h" title="过去24小时" />}
       </Card>
 
-      <HoverCard className={styles.card}>
+      <Card className={styles.card}>
         <p>
-          <Typography.Text strong>首次发生</Typography.Text>
+          <Typography.Title level={5}>首次发生</Typography.Title>
         </p>
         <div>
-          <Typography.Text>{dayjs(issue?.createdAt).fromNow()}</Typography.Text>
+          <Typography.Text type="secondary">
+            {dayjs(issue?.createdAt).fromNow()}
+          </Typography.Text>
         </div>
         <div>
-          <Typography.Text>
+          <Typography.Text type="secondary">
             {dayjs(issue?.createdAt).format(`YYYY-MM-DD HH:mm:ss A`)}
           </Typography.Text>
         </div>
-      </HoverCard>
-      <HoverCard className={styles.card}>
+      </Card>
+      <Card className={styles.card}>
         <p>
-          <Typography.Text strong>最近发生</Typography.Text>
+          <Typography.Title level={5}>最近发生</Typography.Title>
         </p>
         <div>
-          <Typography.Text>{dayjs(issue?.updatedAt).fromNow()}</Typography.Text>
+          <Typography.Text type="secondary">
+            {dayjs(issue?.updatedAt).fromNow()}
+          </Typography.Text>
         </div>
         <div>
-          <Typography.Text>
+          <Typography.Text type="secondary">
             {dayjs(issue?.updatedAt).format(`YYYY-MM-DD HH:mm:ss A`)}
           </Typography.Text>
         </div>
-      </HoverCard>
+      </Card>
     </div>
   )
 }

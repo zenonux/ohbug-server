@@ -6,10 +6,7 @@ import clsx from 'clsx'
 import { useRequest, usePersistFn } from '@/hooks'
 import { navigate, useModel } from '@/ability'
 import * as api from '@/api'
-import {
-  MiniChart,
-  // Icon
-} from '@/components'
+import { MiniChart } from '@/components'
 import type { Project } from '@/models'
 
 import styles from './ProjectCard.module.less'
@@ -48,7 +45,6 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project, active }) => {
       })}
       hoverable
       title={project.name}
-      // actions={[<Icon type="icon-ohbug-settings-3-line" key="setting" />]}
       onClick={handleToIssue}
     >
       <MiniChart trend="14d" loading={loading} data={data.buckets} />

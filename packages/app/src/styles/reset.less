@@ -1,40 +1,38 @@
 @layer base {
   :root {
-    --primary-color: #1f2937;
-    --success-color: #10b981;
-    --info-color: #3b82f6;
-    --warning-color: #f59e0b;
-    --error-color: #ef4444;
-    --layout-body-background: #f6fafd;
-
-    background-color: var(--layout-body-background);
+    --primary-color: @primary-color;
+    --success-color: @success-color;
+    --info-color: @info-color;
+    --warning-color: @warning-color;
+    --error-color: @error-color;
+    --text-color-secondary: @text-color-secondary;
+    --layout-body-background: @layout-body-background;
   }
   #root {
     @apply min-h-screen;
-
-    & > * {
+    & > section {
       @apply min-h-screen;
     }
   }
   img {
     @apply block;
   }
-  label {
-    @apply font-semibold;
-  }
-  a {
-    @apply hover:text-success !important;
-  }
 }
 
 .ant {
-  &-btn {
-    @apply inline-flex items-center justify-center;
+  &icon {
+    @apply align-middle;
   }
+  // &-btn {
+  //   @apply inline-flex items-center justify-center;
+  // }
   &-card {
-    @apply overflow-hidden shadow;
+    @apply overflow-hidden;
     &.ant-card-bordered {
       @apply border-none;
+    }
+    &.ant-card-hoverable:hover {
+      @apply shadow-2xl;
     }
     & > .ant-card-head {
       @apply border-b-0;
@@ -51,12 +49,6 @@
       @apply border-primary !important;
     }
   }
-  &-layout-header {
-    @apply flex flex-col justify-center px-6 bg-none;
-    .ant-page-header {
-      @apply p-0 bg-none;
-    }
-  }
   &-form-item-explain,
   &-form-item-extra {
     @apply m-0;
@@ -68,33 +60,10 @@
     @apply font-semibold !important;
   }
   &-menu {
-    @apply bg-transparent !important;
-    &-inline,
-    &-vertical,
-    &-vertical-left {
-      @apply border-none !important;
-    }
-
+    @apply bg-transparent border-none !important;
     &-item {
-      @apply flex items-center;
-      .ant-menu-title-content {
-        @apply text-sm font-medium;
-      }
-      &:hover {
-        & > .ant-menu-item-icon {
-          @apply text-success;
-        }
-        & > .ant-menu-title-content {
-          @apply text-success;
-        }
-      }
-      &.ant-menu-item-selected {
-        & > .ant-menu-item-icon {
-          @apply text-success;
-        }
-        & > .ant-menu-title-content {
-          @apply text-success;
-        }
+      &::after {
+        border-bottom-width: 3px !important;
       }
     }
   }

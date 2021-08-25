@@ -121,19 +121,19 @@ const LineChart: React.FC<LineChartProps> = React.memo(
                   colorStops: [
                     {
                       offset: 0,
-                      color: 'rgba(78,163,151,0.25)',
+                      color: 'rgba(28,25,23,0.25)',
                     },
                     {
                       offset: 0.333,
-                      color: 'rgba(78,163,151,0.2)',
+                      color: 'rgba(28,25,23,0.2)',
                     },
                     {
                       offset: 0.666,
-                      color: 'rgba(78,163,151,0.1)',
+                      color: 'rgba(28,25,23,0.1)',
                     },
                     {
                       offset: 1,
-                      color: 'rgba(78,163,151,0)',
+                      color: 'rgba(28,25,23,0)',
                     },
                   ],
                 },

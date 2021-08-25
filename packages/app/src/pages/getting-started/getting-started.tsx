@@ -2,10 +2,10 @@ import React from 'react'
 import { Typography, Button } from 'antd'
 import SyntaxHighlighter from 'react-syntax-highlighter'
 import { githubGist as highlighterStyles } from 'react-syntax-highlighter/dist/esm/styles/hljs'
+import { PushpinOutlined } from '@ant-design/icons'
 
 import { RouteComponentProps, useModel, navigate } from '@/ability'
 import { useMount, usePersistFn } from '@/hooks'
-import { Icon } from '@/components'
 
 import styles from './getting-started.module.less'
 
@@ -63,7 +63,7 @@ Ohbug.init({ apiKey: '${project?.apiKey}' })`}
       <Button
         type="primary"
         size="large"
-        icon={<Icon type="icon-ohbug-leaf-line" />}
+        icon={<PushpinOutlined />}
         loading={loading}
         onClick={handleCreateProject}
       >
