@@ -1,5 +1,6 @@
 .root {
   @apply flex-1 flex items-center justify-between overflow-hidden;
+  font-size: 15px;
 
   .switch {
     // @apply text-white;
@@ -16,6 +17,18 @@
       top: 33%;
       bottom: 33%;
       z-index: 1;
+    }
+
+    .item {
+      @apply inline-block h-full text-black text-opacity-60 px-4 border-t-2 border-transparent transition-all;
+      &:hover,
+      &.active {
+        @apply text-opacity-100 border-t-2 border-primary;
+      }
+
+      & > :first-child {
+        @apply mr-2;
+      }
     }
   }
 }

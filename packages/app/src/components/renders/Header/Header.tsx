@@ -1,10 +1,11 @@
 import type { FC } from 'react'
-import { Menu, Button, Space, Tooltip } from 'antd'
+import { Button, Space, Tooltip } from 'antd'
 import { ReadOutlined, SettingFilled } from '@ant-design/icons'
+import clsx from 'clsx'
 
 import { routes, Route } from '@/config'
-import { useCreation, usePersistFn } from '@/hooks'
-import { navigate, useLocation } from '@/ability'
+import { useCreation } from '@/hooks'
+import { Link, navigate } from '@/ability'
 
 import ProjectSelector from './ProjectSelector'
 
@@ -22,11 +23,7 @@ function generateMenuItemData(data: Route[]): Route[] {
 }
 
 const Header: FC = () => {
-  const location = useLocation()
   const menuItemData = useCreation(() => generateMenuItemData(routes), [])
-  const handleNavigate = usePersistFn((path: string) => {
-    navigate(path)
-  })
 
   return (
     <div className={styles.root}>
@@ -35,32 +32,31 @@ const Header: FC = () => {
       </div>
 
       <div className={styles.menu}>
-        <Menu
-          mode="horizontal"
-          theme="light"
-          selectedKeys={[location.pathname]}
-        >
-          {menuItemData.map((item) => (
-            <Menu.Item
-              key={item.redirect || item.path}
-              icon={item.menu!.icon}
-              onClick={() => handleNavigate(item.path)}
-            >
-              {item.menu?.name}
-            </Menu.Item>
-          ))}
-        </Menu>
+        {menuItemData.map((item) => (
+          <Link
+            key={item.redirect || item.path}
+            to={item.path}
+            getProps={({ isPartiallyCurrent }) => ({
+              className: clsx(styles.item, {
+                [styles.active]: isPartiallyCurrent,
+              }),
+            })}
+          >
+            {item.menu!.icon}
+            <span>{item.menu?.name}</span>
+          </Link>
+        ))}
       </div>
 
       <Space>
-        <Tooltip title="项目设置">
+        <Tooltip title="项目设置" placement="bottom">
           <Button
             type="text"
             icon={<SettingFilled />}
             onClick={() => navigate('/settings')}
           />
         </Tooltip>
-        <Tooltip title="文档">
+        <Tooltip title="文档" placement="bottom">
           <Button
             type="link"
             icon={<ReadOutlined />}
