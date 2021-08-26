@@ -1,5 +1,6 @@
+import { Extension, ExtensionDetail } from '@ohbug-server/types'
+
 import { createApi } from '@/ability'
-import { Extension, ExtensionDetail } from '@/models'
 
 interface GetMany {
   page?: number

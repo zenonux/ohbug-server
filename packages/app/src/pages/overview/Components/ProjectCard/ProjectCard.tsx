@@ -3,11 +3,12 @@ import dayjs from 'dayjs'
 import { Card } from 'antd'
 import clsx from 'clsx'
 
+import type { Project } from '@ohbug-server/types'
+
 import { useRequest, usePersistFn } from '@/hooks'
 import { navigate, useModel } from '@/ability'
 import * as api from '@/api'
 import { MiniChart } from '@/components'
-import type { Project } from '@/models'
 
 import styles from './ProjectCard.module.less'
 
@@ -29,12 +30,12 @@ function getTrend(projectId: number) {
 
 const ProjectCard: React.FC<ProjectCardProps> = ({ project, active }) => {
   const projectModel = useModel('project')
-  const { data, loading } = useRequest(getTrend(project.id), {
+  const { data, loading } = useRequest(getTrend(project.id!), {
     initialData: { buckets: [] },
   })
 
   const handleToIssue = usePersistFn(() => {
-    projectModel.dispatch.setCurrentProject(project.id)
+    projectModel.dispatch.setCurrentProject(project.id!)
     navigate(`/issue`)
   })
 

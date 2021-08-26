@@ -1,28 +1,10 @@
 import { createModel } from '@rematch/core'
 
+import { Extension, ExtensionDetail } from '@ohbug-server/types'
+
 import type { RootModel } from '@/models'
 import * as api from '@/api'
 
-export interface Extension {
-  id: number
-  name: string
-  description: string
-  author: string
-  repository: {
-    type: string
-    url: string
-  }
-  key: string
-  logo?: string
-  ui?: {
-    name: string
-    cdn: string
-  }
-  verified: boolean
-}
-export interface ExtensionDetail extends Extension {
-  readme: string
-}
 export type MarketState = Partial<{
   data: Extension[]
   currentId: number
@@ -43,7 +25,7 @@ export const extension = createModel<RootModel>()({
     async getMany() {
       const [data] = await api.extension.getMany.call({ page: 0 })
       if (typeof data !== 'undefined') {
-        const currentId = data?.[0].id
+        const currentId = data?.[0].id!
         dispatch.extension.setState({
           data,
           currentId,

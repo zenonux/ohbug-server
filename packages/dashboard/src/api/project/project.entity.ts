@@ -12,12 +12,14 @@ import {
 } from 'typeorm'
 import { Exclude } from 'class-transformer'
 
+import { Project as IProject } from '@ohbug-server/types'
+
 import { NotificationRule } from '@/api/notification/notification.rule.entity'
 import { NotificationSetting } from '@/api/notification/notification.setting.entity'
 import { Extension } from '@/api/extension/extension.entity'
 
 @Entity()
-export class Project {
+export class Project implements IProject {
   @PrimaryGeneratedColumn()
   id: number
 
@@ -57,7 +59,7 @@ export class Project {
    * @memberof Project
    */
   @OneToMany(() => NotificationRule, (notification) => notification.project)
-  notificationRules: Notification[]
+  notificationRules: NotificationRule[]
 
   /**
    * project 所拥有的 notification settings (一对一)

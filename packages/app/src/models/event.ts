@@ -1,33 +1,18 @@
 import { createModel } from '@rematch/core'
-import type { OhbugEvent } from '@ohbug/types'
-import type { Result } from 'source-map-trace/dist/interfaces'
+
+import type { EventInAPP } from '@ohbug-server/types'
 
 import type { RootModel } from '@/models'
 import * as api from '@/api'
 
-interface Document {
-  id: string
-  index: string
-}
-export interface Event<T> extends OhbugEvent<T> {
-  // replay
-  replay?: {
-    data: any
-  }
-  // source
-  source?: Result
-  next?: Document
-  previous?: Document
-}
-
 export interface EventState {
-  current?: Event<any>
+  current?: EventInAPP<any>
 }
 
 export const event = createModel<RootModel>()({
   state: {} as EventState,
   reducers: {
-    setCurrentEvent(state, payload: Event<any>) {
+    setCurrentEvent(state, payload: EventInAPP<any>) {
       return {
         ...state,
         current: payload,

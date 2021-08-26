@@ -7,7 +7,7 @@ import { getStackFrame, getTheSourceByError } from 'source-map-trace'
 import { unlinkSync } from 'fs'
 
 import { ForbiddenException } from '@ohbug-server/common'
-import type { OhbugEventLike } from '@ohbug-server/types'
+import type { OhbugEventLike, ReceiveSourceMapFile } from '@ohbug-server/types'
 import { ProjectService } from '@/api/project/project.service'
 
 import { SourceMap } from './sourceMap.entity'
@@ -16,7 +16,6 @@ import {
   GetSourceMapsDto,
   ReceiveSourceMapDto,
 } from './sourceMap.dto'
-import type { ReceiveSourceMapFile } from './sourceMap.interface'
 
 @Injectable()
 export class SourceMapService {

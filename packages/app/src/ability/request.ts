@@ -11,8 +11,6 @@ import { ResponseStructure, ErrorShowType } from '@ohbug-server/types'
 
 import { navigate } from '@/ability'
 
-import { store } from './model'
-
 export const request = axios.create({
   baseURL: '/api/v1',
   timeout: 10000,
@@ -58,10 +56,6 @@ export const request = axios.create({
     },
   ],
 })
-
-async function getCurrentPlatform() {
-  return store.getState().platform.current
-}
 interface CreateApiParam<T> {
   url: string | ((data: T) => string)
   method: Method
@@ -97,12 +91,11 @@ export function createApi<T = {}, R = {} | void>({
       }
     }
 
-    const platform = await getCurrentPlatform()
     const result = await request(typeof url === 'string' ? url : url?.(value), {
       ...config,
       method,
       data: parsedBody,
-      params: { ...parsedParam, platform },
+      params: parsedParam,
     })
     const info = result.data as ResponseStructure<R>
     // 若 success 为 true 直接返回 data

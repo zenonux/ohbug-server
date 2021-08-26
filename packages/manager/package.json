@@ -9,6 +9,7 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
+    "tsc": "tsc",
     "prebuild": "rimraf dist",
     "start": "cross-env NODE_ENV=development nest start --watch --debug",
     "build": "nest build",

@@ -6,7 +6,7 @@ export interface MetaData {
 }
 
 export interface Issue {
-  id: string | number
+  id?: string | number
   intro: string
   apiKey: string
   type: string

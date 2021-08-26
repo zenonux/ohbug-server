@@ -15,6 +15,7 @@ const ProjectSelector: FC = () => {
   const handleProjectChange = usePersistFn(({ key: projectId }) => {
     if (projectId !== 'create') {
       projectModel.dispatch.setCurrentProject(projectId)
+      toggle(false)
     }
   })
   const handleNavigateToCreateProject = usePersistFn(() => {
@@ -53,7 +54,7 @@ const ProjectSelector: FC = () => {
         {project ? (
           <Menu
             selectable
-            selectedKeys={[project.id.toString()]}
+            selectedKeys={[project.id!.toString()]}
             onSelect={handleProjectChange}
           >
             {projects?.map((v) => (

@@ -7,10 +7,10 @@ import {
 } from 'typeorm'
 import { Exclude } from 'class-transformer'
 
-import type { SourceMapData } from './sourceMap.interface'
+import { SourceMap as ISourceMap, SourceMapData } from '@ohbug-server/types'
 
 @Entity()
-export class SourceMap {
+export class SourceMap implements ISourceMap {
   @PrimaryGeneratedColumn()
   id: number
 

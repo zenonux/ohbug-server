@@ -1,9 +1,10 @@
 import React from 'react'
 import { Card, Table } from 'antd'
 
+import type { EventInAPP } from '@ohbug-server/types'
+
 import { useModel } from '@/ability'
 import { useMount, usePersistFn, useQuery } from '@/hooks'
-import type { Event } from '@/models'
 import { RelativeTime } from '@/components'
 
 import styles from './List.module.less'
@@ -29,7 +30,7 @@ const List: React.FC = () => {
   return (
     <Card className={styles.root}>
       {feedbacks && (
-        <Table<Event<any>>
+        <Table<EventInAPP<any>>
           className={styles.table}
           dataSource={feedbacks}
           rowKey={(record): string => record.timestamp}
@@ -40,28 +41,37 @@ const List: React.FC = () => {
           }}
           loading={loading}
         >
-          <Table.Column<Event<any>>
+          <Table.Column<EventInAPP<any>>
             title="name"
             dataIndex={['detail', 'name']}
           />
-          <Table.Column<Event<any>>
+          <Table.Column<EventInAPP<any>>
             title="email"
             dataIndex={['detail', 'email']}
           />
-          <Table.Column<Event<any>>
+          <Table.Column<EventInAPP<any>>
             title="comments"
             dataIndex={['detail', 'comments']}
           />
-          <Table.Column<Event<any>>
+          <Table.Column<EventInAPP<any>>
             title="time"
             key="time"
             render={(item): React.ReactNode => (
               <RelativeTime time={item.time} />
             )}
           />
-          <Table.Column<Event<any>> title="user" dataIndex={['user', 'ip']} />
-          <Table.Column<Event<any>> title="platform" dataIndex="platform" />
-          <Table.Column<Event<any>> title="language" dataIndex="language" />
+          <Table.Column<EventInAPP<any>>
+            title="user"
+            dataIndex={['user', 'ip']}
+          />
+          <Table.Column<EventInAPP<any>>
+            title="platform"
+            dataIndex="platform"
+          />
+          <Table.Column<EventInAPP<any>>
+            title="language"
+            dataIndex="language"
+          />
         </Table>
       )}
     </Card>

@@ -4,6 +4,7 @@
   "description": "ohbug server microservices transfer",
   "author": "chenyueban",
   "scripts": {
+    "tsc": "tsc",
     "prebuild": "rimraf dist",
     "start": "cross-env NODE_ENV=development nest start --watch --debug",
     "build": "nest build",

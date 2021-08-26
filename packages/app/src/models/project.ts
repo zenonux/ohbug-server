@@ -1,24 +1,11 @@
 import { createModel } from '@rematch/core'
 
-import type { Extension, RootModel } from '@/models'
+import { Project, ProjectTrend } from '@ohbug-server/types'
+
+import type { RootModel } from '@/models'
 import * as api from '@/api'
 import { navigate } from '@/ability'
 
-export interface ProjectTrend {
-  'event.apiKey': string
-  buckets: {
-    timestamp: number
-    count: number
-  }[]
-}
-export interface Project {
-  id: number
-  name: string
-  type: string
-  apiKey: string
-  createdAt: string
-  extensions?: Extension[]
-}
 export interface ProjectState {
   data?: Project[]
   current?: Project
@@ -51,9 +38,8 @@ export const project = createModel<RootModel>()({
   },
   effects: (dispatch) => ({
     async create({ name, type }: { name: string; type: string }, state) {
-      const data = await api.project.create.call({ name, type })
-
-      if (data) {
+      try {
+        const data = await api.project.create.call({ name, type })
         if (data) {
           dispatch.project.setState({
             data: [...(state.project.data || []), data],
@@ -61,25 +47,25 @@ export const project = createModel<RootModel>()({
           })
         }
         navigate('/issue')
+      } catch (error) {
+        console.error(error)
       }
     },
 
-    async get(_, state) {
-      if (!state.project.data) {
-        try {
-          const data = await api.project.getMany.call(null)
+    async get() {
+      try {
+        const data = await api.project.getMany.call(null)
 
-          dispatch.project.setState({ data, current: data[0] })
-        } catch (error) {
-          // 不存在 project 进入引导
-          if (error.errorCode === 400202) {
-            if (window.location.pathname !== '/getting-started') {
-              return navigate('/getting-started')
-            }
+        dispatch.project.setState({ data, current: data[0] })
+      } catch (error) {
+        // 不存在 project 进入引导
+        if (error.errorCode === 400202) {
+          if (window.location.pathname !== '/getting-started') {
+            return navigate('/getting-started')
           }
-          if (error.success === false) {
-            dispatch.project.setState({ data: undefined })
-          }
+        }
+        if (error.success === false) {
+          dispatch.project.setState({ data: undefined })
         }
       }
     },
@@ -91,7 +77,7 @@ export const project = createModel<RootModel>()({
       const currentProject = state.project.current
       if (projectId || currentProject) {
         const data = await api.project.trend.call({
-          projectId: projectId || currentProject!.id,
+          projectId: projectId! || currentProject!.id!,
           start,
           end,
         })
@@ -110,7 +96,7 @@ export const project = createModel<RootModel>()({
       const currentProject = state.project.current
       if (currentProject) {
         const data = await api.project.switchExtension.call({
-          projectId: currentProject.id,
+          projectId: currentProject.id!,
           extensionId,
           enabled,
         })

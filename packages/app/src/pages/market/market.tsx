@@ -41,7 +41,7 @@ const Market: React.FC<RouteComponentProps> = () => {
                 className={clsx(styles.extension, {
                   [styles.current]: v.id === extensionId,
                 })}
-                onClick={() => handleSelectExtension(v.id)}
+                onClick={() => handleSelectExtension(v.id!)}
                 hoverable
                 key={v.key}
               >

@@ -4,6 +4,7 @@
   "description": "ohbug dashboard server",
   "author": "chenyueban",
   "scripts": {
+    "tsc": "tsc",
     "prebuild": "rimraf dist",
     "start": "cross-env NODE_ENV=development nest start --watch --debug --preserveWatchOutput\t",
     "build": "nest build",

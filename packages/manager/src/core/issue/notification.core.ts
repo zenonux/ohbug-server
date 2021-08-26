@@ -179,7 +179,7 @@ export function judgingStatus(
             issue,
           }
           callback(result)
-          updateNotificationRule(rule.id)
+          updateNotificationRule(rule.id!)
         }
       }
     }

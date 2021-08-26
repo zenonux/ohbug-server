@@ -6,9 +6,9 @@ import { Repository } from 'typeorm'
 import { Cron, CronExpression } from '@nestjs/schedule'
 
 import { ForbiddenException } from '@ohbug-server/common'
+import { Extension as IExtension } from '@ohbug-server/types'
 
 import { Extension } from './extension.entity'
-import type { OhbugExtension } from './extension.interface'
 import { getRepositoryInfo } from './extension.util'
 
 @Injectable()
@@ -31,7 +31,7 @@ export class ExtensionService {
           `https://cdn.jsdelivr.net/gh/ohbug-org/awesome-ohbug/extensions/list.json`
         )
       )
-      const awesomeExtensions = result?.data as OhbugExtension[]
+      const awesomeExtensions = result?.data as IExtension[]
       if (
         awesomeExtensions &&
         Array.isArray(awesomeExtensions) &&

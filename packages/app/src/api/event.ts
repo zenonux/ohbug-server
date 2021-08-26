@@ -1,5 +1,6 @@
+import type { EventInAPP } from '@ohbug-server/types'
+
 import { createApi } from '@/ability'
-import type { Event } from '@/models'
 
 interface Get {
   eventId: string | number
@@ -10,14 +11,14 @@ interface GetLatest {
 }
 
 export const event = {
-  get: createApi<Get, Event<any>>({
+  get: createApi<Get, EventInAPP<any>>({
     url: ({ eventId }) => `/events/${eventId}`,
     method: 'get',
     params: ({ issueId }) => ({
       issueId,
     }),
   }),
-  getLatest: createApi<GetLatest, Event<any>>({
+  getLatest: createApi<GetLatest, EventInAPP<any>>({
     url: '/events/latest',
     method: 'get',
     params: ({ issueId }) => ({

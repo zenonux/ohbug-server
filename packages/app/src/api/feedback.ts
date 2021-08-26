@@ -1,5 +1,6 @@
+import type { EventInAPP } from '@ohbug-server/types'
+
 import { createApi } from '@/ability'
-import type { Event } from '@/models'
 
 interface GetMany {
   page: number
@@ -11,7 +12,7 @@ interface GetMany {
 }
 
 export const feedback = {
-  getMany: createApi<GetMany, [Event<any>[], number]>({
+  getMany: createApi<GetMany, [EventInAPP<any>[], number]>({
     url: '/feedback',
     method: 'get',
   }),

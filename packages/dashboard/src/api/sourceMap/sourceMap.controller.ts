@@ -11,13 +11,14 @@ import {
 } from '@nestjs/common'
 import { FileInterceptor } from '@nestjs/platform-express'
 
+import type { ReceiveSourceMapFile } from '@ohbug-server/types'
+
 import { SourceMapService } from './sourceMap.service'
 import {
   ReceiveSourceMapDto,
   GetSourceMapsDto,
   DeleteSourceMapsDto,
 } from './sourceMap.dto'
-import type { ReceiveSourceMapFile } from './sourceMap.interface'
 import { SourceMap } from './sourceMap.entity'
 
 /**

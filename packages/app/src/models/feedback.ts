@@ -1,9 +1,10 @@
 import { createModel } from '@rematch/core'
-import type { RootModel, Event } from '@/models'
+import type { EventInAPP } from '@ohbug-server/types'
+import type { RootModel } from '@/models'
 import * as api from '@/api'
 
 export interface FeedbackState {
-  data?: Event<any>[]
+  data?: EventInAPP<any>[]
   count?: number
   hasMore?: boolean
 }
@@ -11,7 +12,7 @@ export interface FeedbackState {
 export const feedback = createModel<RootModel>()({
   state: {} as FeedbackState,
   reducers: {
-    setFeedbacks(state, payload: [Event<any>[], number, boolean?]) {
+    setFeedbacks(state, payload: [EventInAPP<any>[], number, boolean?]) {
       const feedbacks = payload
       const data = feedbacks[0]
       const count = feedbacks[1]

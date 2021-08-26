@@ -10,3 +10,13 @@ export interface ReceiveSourceMapFile {
 }
 
 export type SourceMapData = ReceiveSourceMapFile[]
+
+export interface SourceMap {
+  id?: number
+  apiKey: string
+  appVersion: string
+  appType?: string
+  data: SourceMapData
+  createdAt: Date
+  updatedAt: Date
+}

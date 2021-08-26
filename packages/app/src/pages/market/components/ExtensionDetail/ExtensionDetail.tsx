@@ -6,7 +6,8 @@ import SyntaxHighlighter from 'react-syntax-highlighter'
 import { githubGist as highlighterStyles } from 'react-syntax-highlighter/dist/esm/styles/hljs'
 import { GithubOutlined } from '@ant-design/icons'
 
-import type { ExtensionDetail } from '@/models'
+import type { ExtensionDetail } from '@ohbug-server/types'
+
 import { useCreation, usePersistFn } from '@/hooks'
 import { useModel } from '@/ability'
 
@@ -52,7 +53,7 @@ const ExtensionDetailComponent: React.FC<ExtensionDetailProps> = ({
   const handleSwitch = usePersistFn((checked) => {
     if (extension) {
       projectModel.dispatch.switchExtension({
-        extensionId: extension?.id,
+        extensionId: extension?.id!,
         enabled: checked,
       })
     }

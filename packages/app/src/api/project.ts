@@ -1,5 +1,6 @@
+import type { Project } from '@ohbug-server/types'
+
 import { createApi } from '@/ability'
-import type { Project } from '@/models'
 
 interface Get {
   projectId: number

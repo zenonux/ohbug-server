@@ -1,6 +1,6 @@
-import type { OhbugExtensionRepository } from './extension.interface'
+import type { ExtensionRepository } from '@ohbug-server/types'
 
-export function getRepositoryInfo(repository: OhbugExtensionRepository) {
+export function getRepositoryInfo(repository: ExtensionRepository) {
   const { url } = repository
   const reg = /(https:\/\/github.com)(\/)([^:/\s]+)(\/)([^:/\s]+)/g
   const result = reg.exec(url.replace(/.git$/, ''))

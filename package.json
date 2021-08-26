@@ -17,6 +17,7 @@
   "license": "Apache-2.0",
   "scripts": {
     "bootstrap": "lerna bootstrap",
+    "tsc": "lerna run tsc",
     "build": "lerna run build --stream",
     "dev": "lerna run start --parallel",
     "start": "concurrently \"npm run docker:dev\" \"npm run dev\" --kill-others",

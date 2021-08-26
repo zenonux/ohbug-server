@@ -43,7 +43,7 @@ export type NotificationSettingWebHookType =
   | 'wechat_work'
   | 'others'
 export interface NotificationSettingWebHook {
-  id: string
+  id?: string
   type: NotificationSettingWebHookType
   name: string
   link: string
@@ -53,7 +53,7 @@ export interface NotificationSettingWebHook {
 export type NotificationSettingWebHooks = NotificationSettingWebHook[]
 
 export interface NotificationRule {
-  id: number
+  id?: number
   name: string
   data: NotificationRuleData
   whiteList?: NotificationRuleWhiteList
@@ -66,7 +66,7 @@ export interface NotificationRule {
 }
 
 export interface NotificationSetting {
-  id: number
+  id?: number
   emails: NotificationSettingEmails
   browser: NotificationSettingBrowser
   webhooks: NotificationSettingWebHooks
