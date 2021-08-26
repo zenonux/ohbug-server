@@ -1,9 +1,10 @@
-import { IsNumber, IsString, IsOptional } from 'class-validator'
-import { Type } from 'class-transformer'
+import { IsNumber, ValidateIf, IsOptional } from 'class-validator'
+import { Type, Transform } from 'class-transformer'
 
 export class GetEventByEventIdDto {
-  @IsString()
-  readonly eventId: number | string
+  @ValidateIf((value) => value === 'latest' || typeof value === 'number')
+  @Transform(({ value }) => (value === 'latest' ? value : parseInt(value, 10)))
+  readonly eventId: number | 'latest'
 }
 
 export class GetEventsDto {

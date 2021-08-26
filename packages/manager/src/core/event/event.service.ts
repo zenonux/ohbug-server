@@ -36,13 +36,8 @@ export class EventService {
       const { type, detail, apiKey } = event
       if (typeof detail === 'string') {
         const formatDetail: OhbugEventDetail = JSON.parse(detail)
-        const {
-          agg,
-          metadata,
-        } = switchErrorDetailAndGetAggregationDataAndMetaData(
-          type,
-          formatDetail
-        )
+        const { agg, metadata } =
+          switchErrorDetailAndGetAggregationDataAndMetaData(type, formatDetail)
         const intro = getMd5FromAggregationData(apiKey, ...agg)
         return { intro, metadata }
       }
@@ -104,7 +99,7 @@ export class EventService {
         next: Event
       }
       const eventIndex = issue.events.findIndex((e) => e.id === eventId)
-      if (event && eventIndex) {
+      if (event && eventIndex > -1) {
         const previousEvent = issue.events[eventIndex - 1]
         const nextEvent = issue.events[eventIndex + 1]
         if (previousEvent) event.previous = previousEvent

@@ -20,7 +20,7 @@ export class EventService {
    * @param eventId
    * @param issueId
    */
-  async getEventByEventId(eventId: number | string, issueId: number) {
+  async getEventByEventId(eventId: number, issueId: number) {
     const event = await this.managerClient
       .send(TOPIC_DASHBOARD_MANAGER_GET_EVENT, { eventId, issueId })
       .toPromise()

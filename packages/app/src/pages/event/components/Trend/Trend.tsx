@@ -38,9 +38,7 @@ const Trend: React.FC<TrendProps> = ({ issue }) => {
       </Card>
 
       <Card className={styles.card}>
-        <p>
-          <Typography.Title level={5}>首次发生</Typography.Title>
-        </p>
+        <Typography.Title level={5}>首次发生</Typography.Title>
         <div>
           <Typography.Text type="secondary">
             {dayjs(issue?.createdAt).fromNow()}
@@ -53,9 +51,7 @@ const Trend: React.FC<TrendProps> = ({ issue }) => {
         </div>
       </Card>
       <Card className={styles.card}>
-        <p>
-          <Typography.Title level={5}>最近发生</Typography.Title>
-        </p>
+        <Typography.Title level={5}>最近发生</Typography.Title>
         <div>
           <Typography.Text type="secondary">
             {dayjs(issue?.updatedAt).fromNow()}

@@ -5,7 +5,7 @@
   "author": "chenyueban",
   "scripts": {
     "prebuild": "rimraf dist",
-    "start": "cross-env NODE_ENV=development nest start --watch --preserveWatchOutput\t",
+    "start": "cross-env NODE_ENV=development nest start --watch --debug --preserveWatchOutput\t",
     "build": "nest build",
     "prettier": "prettier --write \"src/**/*.ts\"",
     "lint": "eslint '{src,apps,libs,test}/**/*.ts' --fix",
