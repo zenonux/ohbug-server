@@ -17,7 +17,7 @@ import type {
   NotificationSettingBrowser,
   NotificationSettingWebHooks,
   NotificationSettingWebHookType,
-} from '@ohbug-server/common'
+} from '@ohbug-server/types'
 
 export class BaseNotificationDto {
   @Type(() => Number)

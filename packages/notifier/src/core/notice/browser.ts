@@ -1,5 +1,5 @@
 import webpush from 'web-push'
-import { NotificationSettingBrowser } from '@ohbug-server/common'
+import { NotificationSettingBrowser } from '@ohbug-server/types'
 
 interface SendBrowserNotification {
   subscription: NotificationSettingBrowser['data']

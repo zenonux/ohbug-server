@@ -1,6 +1,6 @@
 import type { FindOperator } from 'typeorm'
 
-import type { OhbugEventLike } from '@ohbug-server/common'
+import type { OhbugEventLike } from '@ohbug-server/types'
 
 import type { MetaData } from '@/core/event/event.interface'
 

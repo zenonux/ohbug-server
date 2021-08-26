@@ -16,6 +16,7 @@
   },
   "dependencies": {
     "@ohbug-server/common": "^1.0.0-alpha.0",
+    "@ohbug-server/types": "^1.0.0-alpha.0",
     "raw-body": "^2.4.1"
   },
   "jest": {

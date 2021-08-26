@@ -3,7 +3,7 @@ import type {
   OhbugEventLike,
   Issue,
   NotificationRule,
-} from '@ohbug-server/common'
+} from '@ohbug-server/types'
 
 export interface DispatchNotice {
   setting: NotificationSetting

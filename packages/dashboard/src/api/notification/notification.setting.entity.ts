@@ -13,7 +13,7 @@ import type {
   NotificationSettingEmails,
   NotificationSettingBrowser,
   NotificationSettingWebHooks,
-} from '@ohbug-server/common'
+} from '@ohbug-server/types'
 import { Project } from '@/api/project/project.entity'
 
 @Entity()

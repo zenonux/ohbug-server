@@ -1,7 +1,7 @@
 import { getManager } from 'typeorm'
 import dayjs from 'dayjs'
 
-import type { NotificationRule, OhbugEventLike } from '@ohbug-server/common'
+import type { NotificationRule, OhbugEventLike } from '@ohbug-server/types'
 import { Issue } from '@/core/issue/issue.entity'
 
 /**

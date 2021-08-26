@@ -2,7 +2,7 @@ import dayjs from 'dayjs'
 import markdownIt from 'markdown-it'
 
 import { getHost } from '@ohbug-server/common'
-import type { NotificationRuleLevel } from '@ohbug-server/common'
+import type { NotificationRuleLevel } from '@ohbug-server/types'
 import { DispatchNotice } from '@/core/notice/notice.interface'
 
 interface Content {

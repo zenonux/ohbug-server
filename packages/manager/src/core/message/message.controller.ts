@@ -14,7 +14,7 @@ import {
   TOPIC_DASHBOARD_MANAGER_GET_EVENT,
   TOPIC_DASHBOARD_MANAGER_GET_PROJECT_TREND,
 } from '@ohbug-server/common'
-import type { OhbugEventLike } from '@ohbug-server/common'
+import type { OhbugEventLike } from '@ohbug-server/types'
 
 import { EventService } from '@/core/event/event.service'
 import { IssueService } from '@/core/issue/issue.service'

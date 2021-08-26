@@ -1,5 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common'
 import { ClientProxy } from '@nestjs/microservices'
+import { lastValueFrom } from 'rxjs'
 
 import {
   TOPIC_DASHBOARD_MANAGER_GET_LATEST_EVENT,
@@ -21,9 +22,12 @@ export class EventService {
    * @param issueId
    */
   async getEventByEventId(eventId: number, issueId: number) {
-    const event = await this.managerClient
-      .send(TOPIC_DASHBOARD_MANAGER_GET_EVENT, { eventId, issueId })
-      .toPromise()
+    const event = await lastValueFrom(
+      this.managerClient.send(TOPIC_DASHBOARD_MANAGER_GET_EVENT, {
+        eventId,
+        issueId,
+      })
+    )
 
     try {
       const source = await this.sourceMapService.getSource(event)
@@ -45,9 +49,9 @@ export class EventService {
    * @param issueId
    */
   async getLatestEventByIssueId(issueId: number) {
-    const event = await this.managerClient
-      .send(TOPIC_DASHBOARD_MANAGER_GET_LATEST_EVENT, issueId)
-      .toPromise()
+    const event = await lastValueFrom(
+      this.managerClient.send(TOPIC_DASHBOARD_MANAGER_GET_LATEST_EVENT, issueId)
+    )
 
     try {
       const source = await this.sourceMapService.getSource(event)

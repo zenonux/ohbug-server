@@ -3,8 +3,8 @@ import { Repository } from 'typeorm'
 import { InjectRepository } from '@nestjs/typeorm'
 import { nanoid } from 'nanoid'
 
-import type { NotificationSettingWebHook } from '@ohbug-server/common'
 import { ForbiddenException } from '@ohbug-server/common'
+import type { NotificationSettingWebHook } from '@ohbug-server/types'
 import { ProjectService } from '@/api/project/project.service'
 
 import { NotificationRule } from './notification.rule.entity'
@@ -328,7 +328,7 @@ export class NotificationService {
           }
         }
       )
-      return this.notificationSettingRepository.save(notificationSetting)
+      return await this.notificationSettingRepository.save(notificationSetting)
     } catch (error) {
       throw new ForbiddenException(4001114, error)
     }

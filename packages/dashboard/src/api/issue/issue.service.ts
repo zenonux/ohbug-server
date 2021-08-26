@@ -1,5 +1,6 @@
 import { Get, Inject, Injectable } from '@nestjs/common'
 import { ClientProxy } from '@nestjs/microservices'
+import { lastValueFrom } from 'rxjs'
 
 import {
   TOPIC_DASHBOARD_MANAGER_GET_ISSUE,
@@ -29,11 +30,11 @@ export class IssueService {
    */
   @Get('/:issueId')
   async getIssueByIssueId({ issueId }: GetIssueByIssueIdParams) {
-    return this.managerClient
-      .send(TOPIC_DASHBOARD_MANAGER_GET_ISSUE, {
+    return lastValueFrom(
+      this.managerClient.send(TOPIC_DASHBOARD_MANAGER_GET_ISSUE, {
         issueId,
       })
-      .toPromise()
+    )
   }
 
   /**
@@ -51,14 +52,14 @@ export class IssueService {
     skip,
   }: GetIssuesByProjectIdParams) {
     const { apiKey } = await this.projectService.getProject({ projectId })
-    return this.managerClient
-      .send(TOPIC_DASHBOARD_MANAGER_SEARCH_ISSUES, {
+    return lastValueFrom(
+      this.managerClient.send(TOPIC_DASHBOARD_MANAGER_SEARCH_ISSUES, {
         apiKey,
         searchCondition,
         limit,
         skip,
       })
-      .toPromise()
+    )
   }
 
   /**
@@ -68,8 +69,11 @@ export class IssueService {
    * @param period
    */
   async getTrendByIssueId(ids: number[], period: Period) {
-    return this.managerClient
-      .send(TOPIC_DASHBOARD_MANAGER_GET_TREND, { ids, period })
-      .toPromise()
+    return lastValueFrom(
+      this.managerClient.send(TOPIC_DASHBOARD_MANAGER_GET_TREND, {
+        ids,
+        period,
+      })
+    )
   }
 }

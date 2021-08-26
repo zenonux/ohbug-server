@@ -26,11 +26,11 @@ export class ExtensionService {
   @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)
   async handleGetExtensionsFromAwesomeOhbug() {
     try {
-      const result = await this.httpService
-        .get(
+      const result = await lastValueFrom(
+        this.httpService.get(
           `https://cdn.jsdelivr.net/gh/ohbug-org/awesome-ohbug/extensions/list.json`
         )
-        .toPromise()
+      )
       const awesomeExtensions = result?.data as OhbugExtension[]
       if (
         awesomeExtensions &&

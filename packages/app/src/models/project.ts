@@ -66,19 +66,20 @@ export const project = createModel<RootModel>()({
 
     async get(_, state) {
       if (!state.project.data) {
-        const data = await api.project.getMany.call(null)
+        try {
+          const data = await api.project.getMany.call(null)
 
-        // 不存在 project 进入引导
-        if (data.errorCode === 400202) {
-          if (window.location.pathname !== '/getting-started') {
-            return navigate('/getting-started')
-          }
-        }
-
-        if (data.success === false) {
-          dispatch.project.setState({ data: undefined })
-        } else {
           dispatch.project.setState({ data, current: data[0] })
+        } catch (error) {
+          // 不存在 project 进入引导
+          if (error.errorCode === 400202) {
+            if (window.location.pathname !== '/getting-started') {
+              return navigate('/getting-started')
+            }
+          }
+          if (error.success === false) {
+            dispatch.project.setState({ data: undefined })
+          }
         }
       }
     },

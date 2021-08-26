@@ -1,6 +1,8 @@
 import { Catch, HttpException, HttpStatus, Logger } from '@nestjs/common'
 import type { ExceptionFilter, ArgumentsHost } from '@nestjs/common'
 
+import type { ResponseStructure } from '@ohbug-server/types'
+
 import { ForbiddenException } from '../exceptions'
 
 @Catch(HttpException)
@@ -16,7 +18,7 @@ export class ForbiddenExceptionFilter implements ExceptionFilter {
     const errorMessage = exception.message
     const errorCode = exception.code || 40000
 
-    const error = {
+    const error: ResponseStructure = {
       errorMessage,
       errorCode,
       success: false,

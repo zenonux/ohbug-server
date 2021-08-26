@@ -7,7 +7,7 @@ import {
   Param,
 } from '@nestjs/common'
 
-import type { OhbugEventLike } from '@ohbug-server/common'
+import type { OhbugEventLike } from '@ohbug-server/types'
 
 import { EventService } from './event.service'
 import { GetEventByEventIdDto, GetEventsDto } from './event.dto'

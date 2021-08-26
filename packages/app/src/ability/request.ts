@@ -1,53 +1,57 @@
-import axios, { AxiosRequestConfig, Method } from 'axios'
+/**
+ * 封装 request
+ * 根据服务端返回的 showType 自动展示对应的提示
+ */
+
+import axios from 'axios'
 import { message, notification } from 'antd'
+import type { AxiosRequestConfig, Method } from 'axios'
+
+import { ResponseStructure, ErrorShowType } from '@ohbug-server/types'
 
 import { navigate } from '@/ability'
 
-enum ErrorShowType {
-  SILENT = 0,
-  WARN_MESSAGE = 1,
-  ERROR_MESSAGE = 2,
-  NOTIFICATION = 4,
-  REDIRECT = 9,
-}
+import { store } from './model'
 
 export const request = axios.create({
   baseURL: '/api/v1',
   timeout: 10000,
   transformResponse: [
     (json) => {
-      const data = JSON.parse(json)
+      const data: ResponseStructure = JSON.parse(json)
 
       if (data.success && typeof data.data !== 'undefined') {
-        return data.data
+        return data
       }
       if (data) {
-        const errorMessage = data?.errorMessage
-        const errorCode = data?.errorCode
-
-        switch (data?.showType) {
+        const { errorMessage, errorCode } = data
+        const msg =
+          errorCode !== undefined
+            ? `[${errorCode}]: ${errorMessage}`
+            : errorMessage
+        switch (data.showType) {
           case ErrorShowType.SILENT:
             break
           case ErrorShowType.WARN_MESSAGE:
-            message.warn(errorMessage)
+            message.warn(msg)
             break
           case ErrorShowType.ERROR_MESSAGE:
-            message.error(errorMessage)
+            message.error(msg)
             break
           case ErrorShowType.NOTIFICATION:
             notification.open({
-              message: errorMessage,
+              message: msg,
             })
             break
           case ErrorShowType.REDIRECT:
             navigate('/403', { state: errorCode })
             break
           default:
-            message.error(errorMessage)
+            message.error(msg)
             break
         }
       } else {
-        message.error(data.errorMessage || 'Request error, please retry.')
+        message.error('Request error, please retry.')
       }
 
       return data
@@ -55,14 +59,16 @@ export const request = axios.create({
   ],
 })
 
+async function getCurrentPlatform() {
+  return store.getState().platform.current
+}
 interface CreateApiParam<T> {
   url: string | ((data: T) => string)
   method: Method
-  data?: (data: T) => any
-  params?: (data: T) => any
+  data?: (data: T) => {}
+  params?: (data: T) => {}
 }
-
-export function createApi<T = any, R = any | void>({
+export function createApi<T = {}, R = {} | void>({
   url,
   method,
   data,
@@ -91,28 +97,21 @@ export function createApi<T = any, R = any | void>({
       }
     }
 
-    try {
-      const result = await request(
-        typeof url === 'string' ? url : url?.(value),
-        {
-          ...config,
-          method,
-          data: parsedBody,
-          params: parsedParam,
-        }
-      )
-      if (result.data) {
-        if (result.data.success) {
-          return result.data.data as R
-        }
-      }
-      return result.data as R
-    } catch (err) {
-      if (err.response) {
-        return err.response.data
-      }
-      throw err
+    const platform = await getCurrentPlatform()
+    const result = await request(typeof url === 'string' ? url : url?.(value), {
+      ...config,
+      method,
+      data: parsedBody,
+      params: { ...parsedParam, platform },
+    })
+    const info = result.data as ResponseStructure<R>
+    // 若 success 为 true 直接返回 data
+    if (info.success) {
+      return info.data as R
     }
+    // 通常是 success 为 false 的情况 抛出异常
+    // eslint-disable-next-line @typescript-eslint/no-throw-literal
+    throw info
   }
 
   return {

@@ -1,7 +1,7 @@
 import { HttpService } from '@nestjs/axios'
 import { lastValueFrom } from 'rxjs'
 import type { AxiosResponse } from 'axios'
-import type { NotificationSettingWebHook } from '@ohbug-server/common'
+import type { NotificationSettingWebHook } from '@ohbug-server/types'
 
 interface Content {
   title: string

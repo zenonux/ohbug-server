@@ -1,5 +1,5 @@
 import { createApi } from '@/ability'
-import { Extension } from '@/models'
+import { Extension, ExtensionDetail } from '@/models'
 
 interface GetMany {
   page?: number
@@ -13,7 +13,7 @@ export const extension = {
     url: '/extensions',
     method: 'get',
   }),
-  get: createApi<Get, Extension>({
+  get: createApi<Get, ExtensionDetail>({
     url: ({ extensionId }) => `/extensions/${extensionId}`,
     method: 'get',
     params: () => ({}),

@@ -6,8 +6,8 @@ import type { Queue } from 'bull'
 import { getStackFrame, getTheSourceByError } from 'source-map-trace'
 import { unlinkSync } from 'fs'
 
-import type { OhbugEventLike } from '@ohbug-server/common'
 import { ForbiddenException } from '@ohbug-server/common'
+import type { OhbugEventLike } from '@ohbug-server/types'
 import { ProjectService } from '@/api/project/project.service'
 
 import { SourceMap } from './sourceMap.entity'

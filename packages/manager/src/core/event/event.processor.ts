@@ -2,13 +2,14 @@ import { Inject } from '@nestjs/common'
 import { ClientProxy } from '@nestjs/microservices'
 import { Process, Processor } from '@nestjs/bull'
 import { Job } from 'bull'
+import { lastValueFrom } from 'rxjs'
 
 import {
   ForbiddenException,
   TOPIC_MANAGER_NOTIFIER_DISPATCH_NOTICE,
 } from '@ohbug-server/common'
 
-import type { OhbugEventLike } from '@ohbug-server/common'
+import type { OhbugEventLike } from '@ohbug-server/types'
 import { IssueService } from '@/core/issue/issue.service'
 import {
   getNotificationByApiKey,
@@ -60,14 +61,14 @@ export class EventConsumer {
             event: any
             issue: any
           }) =>
-            this.notifierClient
-              .send(TOPIC_MANAGER_NOTIFIER_DISPATCH_NOTICE, {
+            lastValueFrom(
+              this.notifierClient.send(TOPIC_MANAGER_NOTIFIER_DISPATCH_NOTICE, {
                 setting: notification.notificationSetting,
                 rule: result.rule,
                 event: result.event,
                 issue: result.issue,
               })
-              .toPromise()
+            )
           judgingStatus(
             eventLike,
             issue,

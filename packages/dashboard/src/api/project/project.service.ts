@@ -3,6 +3,7 @@ import { Repository } from 'typeorm'
 import { InjectRepository } from '@nestjs/typeorm'
 import { ClientProxy } from '@nestjs/microservices'
 import * as crypto from 'crypto'
+import { lastValueFrom } from 'rxjs'
 
 import {
   ForbiddenException,
@@ -123,13 +124,13 @@ export class ProjectService {
    */
   async getProjectTrend({ projectId, start, end }: GetTrendDto) {
     const { apiKey } = await this.getProject({ projectId })
-    return this.managerClient
-      .send(TOPIC_DASHBOARD_MANAGER_GET_PROJECT_TREND, {
+    return lastValueFrom(
+      this.managerClient.send(TOPIC_DASHBOARD_MANAGER_GET_PROJECT_TREND, {
         apiKey,
         start,
         end,
       })
-      .toPromise()
+    )
   }
 
   /**

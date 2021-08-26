@@ -6,7 +6,7 @@ import {
   ForbiddenException,
   TOPIC_TRANSFER_MANAGER_EVENT,
 } from '@ohbug-server/common'
-import type { OhbugEventLike } from '@ohbug-server/common'
+import type { OhbugEventLike } from '@ohbug-server/types'
 
 import { formatter } from '@/utils'
 

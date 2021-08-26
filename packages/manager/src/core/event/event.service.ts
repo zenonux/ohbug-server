@@ -5,7 +5,7 @@ import type { Queue } from 'bull'
 import { InjectQueue } from '@nestjs/bull'
 
 import { ForbiddenException } from '@ohbug-server/common'
-import type { OhbugEventLike } from '@ohbug-server/common'
+import type { OhbugEventLike } from '@ohbug-server/types'
 import { IssueService } from '@/core/issue/issue.service'
 
 import type { GetEventByEventId, OhbugEventDetail } from './event.interface'
@@ -108,7 +108,7 @@ export class EventService {
 
       return event
     } catch (error) {
-      throw new ForbiddenException(400305, error)
+      throw new ForbiddenException(400305, error, 9)
     }
   }
 
