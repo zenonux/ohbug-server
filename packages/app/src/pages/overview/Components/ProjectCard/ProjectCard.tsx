@@ -1,7 +1,6 @@
 import React from 'react'
 import dayjs from 'dayjs'
-import { Card, Button, Image } from 'antd'
-import { SettingOutlined } from '@ant-design/icons'
+import { Card, Image } from 'antd'
 import clsx from 'clsx'
 
 import type { Project } from '@ohbug-server/types'
@@ -54,7 +53,6 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project, active }) => {
             <Image className="w-8 mr-3" src={jsPlatform} preview={false} />
             <span>{project.name}</span>
           </div>
-          <Button icon={<SettingOutlined />} type="text" />
         </div>
       }
       onClick={handleToIssue}

@@ -44,6 +44,9 @@ const Market = React.lazy<React.FC<RouteComponentProps>>(
 const Settings = React.lazy<React.FC<RouteComponentProps>>(
   () => import('../pages/settings')
 )
+const Profile = React.lazy<React.FC<RouteComponentProps>>(
+  () => import('../pages/settings/Profile')
+)
 const NotificationRules = React.lazy<React.FC<RouteComponentProps>>(
   () => import('../pages/settings/Notification/Rules')
 )
@@ -113,8 +116,12 @@ export const routes: Route[] = [
     path: '/settings',
     component: Settings,
     wrapper: Auth,
-    redirect: '/settings/notification_rules',
+    redirect: '/settings/profile',
     routes: [
+      {
+        path: 'profile',
+        component: Profile,
+      },
       {
         path: 'notification_rules',
         component: NotificationRules,

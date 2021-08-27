@@ -16,6 +16,11 @@ interface MenuItem {
 type MenuList = MenuItem[]
 const menuList: MenuList = [
   {
+    label: 'Profile',
+    key: `profile`,
+    path: `/settings/profile`,
+  },
+  {
     label: '通知',
     key: `notification`,
     children: [

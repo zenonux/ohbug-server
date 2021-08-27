@@ -10,9 +10,10 @@ import visualizer from 'rollup-plugin-visualizer'
 export default defineConfig(({ mode }) => {
   const config: UserConfig = {
     resolve: {
-      alias: {
-        '@': path.resolve(__dirname, 'src'),
-      },
+      alias: [
+        { find: /^~/, replacement: '' },
+        { find: '@', replacement: path.resolve(__dirname, 'src') },
+      ],
     },
     css: {
       preprocessorOptions: {

@@ -1,6 +1,6 @@
 import type { FC } from 'react'
 import { Button, Space, Tooltip } from 'antd'
-import { ReadOutlined, SettingFilled } from '@ant-design/icons'
+import { ReadOutlined, SettingOutlined } from '@ant-design/icons'
 import clsx from 'clsx'
 
 import { routes, Route } from '@/config'
@@ -52,7 +52,7 @@ const Header: FC = () => {
         <Tooltip title="项目设置" placement="bottom">
           <Button
             type="text"
-            icon={<SettingFilled />}
+            icon={<SettingOutlined />}
             onClick={() => navigate('/settings')}
           />
         </Tooltip>
