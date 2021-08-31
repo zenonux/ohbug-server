@@ -1,4 +1,4 @@
-import React from 'react'
+import type { FC } from 'react'
 import { Row, Col, Skeleton, Typography, Card, Statistic } from 'antd'
 // import clsx from 'clsx';
 
@@ -11,7 +11,7 @@ import styles from './Title.module.less'
 // interface TrendProps {
 //   data: number;
 // }
-// const Trend: React.FC<TrendProps> = ({ data }) => {
+// const Trend: FC<TrendProps> = ({ data }) => {
 //   const type = data <= 0 ? 'down' : 'up';
 //   const classes = clsx(styles.trend, {
 //     [styles.up]: type === 'up',
@@ -25,7 +25,7 @@ interface TitleProps {
   event: EventState['current']
   issue: IssueState['current']
 }
-const Title: React.FC<TitleProps> = ({ event, issue }) => {
+const Title: FC<TitleProps> = ({ event, issue }) => {
   const leftLoading = !event
   const rightLoading = !issue
   return (

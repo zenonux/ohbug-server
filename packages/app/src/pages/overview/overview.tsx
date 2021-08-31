@@ -1,9 +1,9 @@
-import React from 'react'
+import type { FC } from 'react'
 import { Typography, Button } from 'antd'
 import { PlusOutlined } from '@ant-design/icons'
 
 import { Layout } from '@/components'
-import { RouteComponentProps, useModel, navigate } from '@/ability'
+import { RouteComponentProps, navigate, useModelState } from '@/ability'
 
 import ProjectCard from './Components/ProjectCard'
 
@@ -13,11 +13,9 @@ function handleToCreateProject() {
   navigate('/create-project')
 }
 
-const Overview: React.FC<RouteComponentProps> = () => {
-  const projectModel = useModel('project')
-
-  const projects = projectModel.state.data
-  const project = projectModel.state.current
+const Overview: FC<RouteComponentProps> = () => {
+  const projects = useModelState((state) => state.project.data)
+  const project = useModelState((state) => state.project.current)
 
   if (projects) {
     return (

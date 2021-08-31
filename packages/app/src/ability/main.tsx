@@ -15,6 +15,10 @@ import 'virtual:windi.css'
 import '@/styles/theme.less'
 import '@/styles/reset.less'
 
+if (import.meta.env.DEV) {
+  import('antd/dist/antd.less')
+}
+
 dayjs.extend(relativeTime)
 dayjs.locale('zh-cn')
 dayjs().locale('zh-cn').format()

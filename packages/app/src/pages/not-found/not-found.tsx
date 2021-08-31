@@ -1,9 +1,9 @@
-import React from 'react'
+import type { FC } from 'react'
 import { Result, Button } from 'antd'
 
 import { RouteComponentProps, Link } from '@/ability'
 
-const NotFound: React.FC<RouteComponentProps> = () => (
+const NotFound: FC<RouteComponentProps> = () => (
   <Result
     status="404"
     title="404"

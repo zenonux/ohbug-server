@@ -1,8 +1,8 @@
-import React from 'react'
+import { FC, useEffect } from 'react'
 import { Card, Typography } from 'antd'
 import dayjs from 'dayjs'
 
-import { useModel } from '@/ability'
+import { useModelEffect } from '@/ability'
 import type { IssueState } from '@/models'
 import { MiniChart } from '@/components'
 import { useCreation } from '@/hooks'
@@ -12,21 +12,22 @@ import styles from './Trend.module.less'
 interface TrendProps {
   issue: IssueState['current']
 }
-const Trend: React.FC<TrendProps> = ({ issue }) => {
-  const issueModel = useModel('issue')
-  const loadingModel = useModel('loading')
+const Trend: FC<TrendProps> = ({ issue }) => {
+  const {
+    data,
+    loading,
+    run: getCurrentTrend,
+  } = useModelEffect((dispatch) => dispatch.issue.getCurrentTrend)
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (issue) {
       const ids = [issue.id]
-      issueModel.dispatch.getCurrentTrend({ ids, period: 'all' })
+      getCurrentTrend({ ids, period: 'all' })
     }
   }, [issue])
 
-  const { trend } = issueModel.state
-  const loading = loadingModel.state.effects.issue.getCurrentTrend
-  const data14d = useCreation(() => trend?.current?.['14d']?.buckets, [trend])
-  const data24h = useCreation(() => trend?.current?.['24h']?.buckets, [trend])
+  const data14d = useCreation(() => data?.current?.['14d']?.buckets, [data])
+  const data24h = useCreation(() => data?.current?.['24h']?.buckets, [data])
 
   return (
     <div className={styles.root}>

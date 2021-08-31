@@ -18,19 +18,19 @@
   <body>
     <div id="root"></div>
     <script type="module">
-      import React from 'react'
-      import ReactDOM from 'react-dom'
+      import { useState, useEffect, createElement } from 'react'
+      import { render } from 'react-dom'
       import { Spin } from 'antd'
       import ReactJson from 'react-json-view'
 
       import { useMount, useBoolean } from '@/hooks'
 
       function App() {
-        const [event, setEvent] = React.useState({})
-        const [data, setData] = React.useState({})
-        const [extension, setExtension] = React.useState(null)
+        const [event, setEvent] = useState({})
+        const [data, setData] = useState({})
+        const [extension, setExtension] = useState(null)
         const [loading, { toggle: toggleLoading }] = useBoolean(false)
-        React.useEffect(() => {
+        useEffect(() => {
           window.addEventListener('message', (e) => {
             const result = e.data
             if (result.event) {
@@ -62,14 +62,14 @@
         }, [])
 
         if (loading) {
-          return React.createElement(Spin)
+          return createElement(Spin)
         }
 
         if (extension) {
           return null
         }
 
-        return React.createElement(ReactJson, {
+        return createElement(ReactJson, {
           src: data,
           iconStyle: 'circle',
           collapsed: 2,
@@ -83,7 +83,7 @@
         })
       }
 
-      ReactDOM.render(React.createElement(App), document.getElementById('root'))
+      render(createElement(App), document.getElementById('root'))
     </script>
   </body>
 </html>

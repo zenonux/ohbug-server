@@ -48,7 +48,7 @@ export class SourceMapService {
         })
       }
     } catch (error) {
-      if (error.name === 'EntityNotFound') {
+      if ((error as Error).name === 'EntityNotFound') {
         throw new ForbiddenException(400901)
       } else {
         throw new ForbiddenException(400902, error)

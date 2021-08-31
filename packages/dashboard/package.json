@@ -31,7 +31,7 @@
     "winston": "^3.2.1"
   },
   "devDependencies": {
-    "@nestjs/schematics": "^8.0.2",
+    "@nestjs/schematics": "^8.0.3",
     "@types/cookie-parser": "^1.4.2",
     "@types/passport-jwt": "^3.0.4"
   },

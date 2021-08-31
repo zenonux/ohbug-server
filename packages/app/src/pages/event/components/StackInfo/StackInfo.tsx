@@ -1,4 +1,4 @@
-import React from 'react'
+import { FC, useState, ReactNode, ReactElement } from 'react'
 import { Radio, Collapse } from 'antd'
 import clsx from 'clsx'
 import type { Result } from 'source-map-trace/dist/interfaces'
@@ -12,8 +12,8 @@ interface StackInfoProps {
   source?: Result
 }
 
-const StackInfo: React.FC<StackInfoProps> = ({ stack, source }) => {
-  const [toggle, setToggle] = React.useState('raw')
+const StackInfo: FC<StackInfoProps> = ({ stack, source }) => {
+  const [toggle, setToggle] = useState('raw')
   const handleToggleChange = usePersistFn((e) => {
     setToggle(e.target.value)
   })
@@ -30,7 +30,7 @@ const StackInfo: React.FC<StackInfoProps> = ({ stack, source }) => {
     ),
     [source]
   )
-  const content = useCreation((): React.ReactNode => {
+  const content = useCreation((): ReactNode => {
     switch (toggle) {
       case 'raw':
         return typeof stack === 'string' ? stack : JSON.stringify(stack)
@@ -45,7 +45,7 @@ const StackInfo: React.FC<StackInfoProps> = ({ stack, source }) => {
             <Collapse.Panel className={styles.panel} header={title} key={1}>
               <ol className={styles.codes} start={source?.code?.[0].number}>
                 {source?.code?.map(
-                  ({ code, number, highlight }): React.ReactElement => {
+                  ({ code, number, highlight }): ReactElement => {
                     const classes = clsx(styles.line, {
                       [styles.highlight]: highlight,
                     })

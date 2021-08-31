@@ -1,4 +1,4 @@
-import React from 'react'
+import type { FC } from 'react'
 import { Input } from 'antd'
 import { types } from '@ohbug/browser'
 
@@ -39,7 +39,7 @@ const SEARCH_OPTIONS = [
   },
 ]
 
-const Search: React.FC = () => {
+const Search: FC = () => {
   const handleSearch = usePersistFn((value) => {
     // eslint-disable-next-line no-console
     console.log(SEARCH_OPTIONS, value)

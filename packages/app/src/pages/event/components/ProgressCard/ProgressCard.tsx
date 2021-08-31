@@ -1,4 +1,4 @@
-import React from 'react'
+import type { FC, ReactNode } from 'react'
 import { Card, Typography } from 'antd'
 import clsx from 'clsx'
 
@@ -7,12 +7,12 @@ import { useCreation } from '@/hooks'
 import styles from './ProgressCard.module.less'
 
 interface ProgressCardProps {
-  icon?: React.ReactNode
+  icon?: ReactNode
   title: string
   description: string
   percent?: number
 }
-const ProgressCard: React.FC<ProgressCardProps> = ({
+const ProgressCard: FC<ProgressCardProps> = ({
   icon,
   title,
   description,

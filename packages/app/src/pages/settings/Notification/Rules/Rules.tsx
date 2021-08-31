@@ -1,8 +1,13 @@
-import React from 'react'
+import { FC, useState } from 'react'
 import { Table, Tag, Switch, Button, Modal } from 'antd'
 import dayjs from 'dayjs'
 
-import { RouteComponentProps, useModel } from '@/ability'
+import {
+  RouteComponentProps,
+  useModelDispatch,
+  useModelEffect,
+  useModelState,
+} from '@/ability'
 import type { NotificationRule } from '@/models'
 import { Zone } from '@/components'
 import { useBoolean } from '@/hooks'
@@ -12,25 +17,25 @@ import { levelList } from './Rules.core'
 
 import styles from './Rules.module.less'
 
-const Rules: React.FC<RouteComponentProps> = () => {
-  const notificationModel = useModel('notification')
-  const loadingModel = useModel('loading')
-  const projectModel = useModel('project')
-  const [
-    modalVisible,
-    { setTrue: modalShow, setFalse: modalOnCancel },
-  ] = useBoolean(false)
-  const [currentRule, setCurrentRule] = React.useState<
-    NotificationRule | undefined
-  >(undefined)
-  const [currentSwitch, setCurrentSwitch] = React.useState<number>()
-
-  React.useEffect(() => {
-    notificationModel.dispatch.getRules()
-    // eslint-disable-next-line
-  }, [projectModel.state.current])
-  const rules = notificationModel.state.ruleData
-  const switchLoading = loadingModel.state.effects.notification.updateRules
+const Rules: FC<RouteComponentProps> = () => {
+  const currentProject = useModelState((state) => state.project.current)
+  const { data } = useModelEffect(
+    (dispatch) => dispatch.notification.getRules,
+    { refreshDeps: [currentProject] }
+  )
+  const { loading: switchLoading, run: updateRules } = useModelEffect(
+    (dispatch) => dispatch.notification.updateRules,
+    { manual: true }
+  )
+  const deleteRule = useModelDispatch(
+    (dispatch) => dispatch.notification.deleteRule
+  )
+  const [modalVisible, { setTrue: modalShow, setFalse: modalOnCancel }] =
+    useBoolean(false)
+  const [currentRule, setCurrentRule] = useState<NotificationRule | undefined>(
+    undefined
+  )
+  const [currentSwitch, setCurrentSwitch] = useState<number>()
 
   return (
     <section className={styles.root}>
@@ -53,7 +58,7 @@ const Rules: React.FC<RouteComponentProps> = () => {
         }
       >
         <Table<NotificationRule>
-          dataSource={rules}
+          dataSource={data}
           rowKey={(record) => record.id!}
           pagination={false}
         >
@@ -93,7 +98,7 @@ const Rules: React.FC<RouteComponentProps> = () => {
                 loading={switchLoading && currentSwitch === item?.id}
                 onChange={(checked) => {
                   setCurrentSwitch(item?.id)
-                  notificationModel.dispatch.updateRules({
+                  updateRules({
                     ruleId: item.id!,
                     open: checked,
                   })
@@ -128,7 +133,7 @@ const Rules: React.FC<RouteComponentProps> = () => {
                       okType: 'danger',
                       cancelText: '取消',
                       onOk() {
-                        notificationModel.dispatch.deleteRule({
+                        deleteRule({
                           ruleId: item.id!,
                         })
                       },

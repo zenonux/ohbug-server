@@ -28,19 +28,7 @@ export default defineConfig(({ mode }) => {
         },
       },
     },
-    plugins: [
-      WindiCSS(),
-      reactJsx(),
-      reactRefresh(),
-      vitePluginImp({
-        libList: [
-          {
-            libName: 'antd',
-            style: (name) => `antd/es/${name}/style`,
-          },
-        ],
-      }),
-    ],
+    plugins: [reactJsx(), reactRefresh(), WindiCSS()],
     build: {
       rollupOptions: {
         output: {
@@ -63,6 +51,18 @@ export default defineConfig(({ mode }) => {
         },
       },
     }
+  }
+  if (mode === 'production') {
+    config.plugins?.push(
+      vitePluginImp({
+        libList: [
+          {
+            libName: 'antd',
+            style: (name) => `antd/es/${name}/style`,
+          },
+        ],
+      })
+    )
   }
   if (mode === 'analyze') {
     config.plugins?.push(

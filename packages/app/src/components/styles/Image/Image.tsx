@@ -1,4 +1,4 @@
-import React from 'react'
+import type { FC, CSSProperties, MouseEvent as IMouseEvent } from 'react'
 import clsx from 'clsx'
 
 import styles from './Image.module.less'
@@ -7,11 +7,11 @@ interface ImageProps {
   src: string
   alt: string
   className?: string
-  style?: React.CSSProperties
-  onClick?: (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => void
+  style?: CSSProperties
+  onClick?: (event: IMouseEvent<HTMLDivElement, MouseEvent>) => void
   center?: boolean
 }
-const Image: React.FC<ImageProps> = ({
+const Image: FC<ImageProps> = ({
   src,
   alt,
   className,

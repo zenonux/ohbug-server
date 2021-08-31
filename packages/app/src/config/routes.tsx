@@ -1,4 +1,4 @@
-import React from 'react'
+import { FC, ReactNode, lazy } from 'react'
 import {
   DashboardOutlined,
   IssuesCloseOutlined,
@@ -10,12 +10,12 @@ import Auth from '@/components/renders/Auth'
 
 export interface Route {
   path: string
-  wrapper?: React.FC
+  wrapper?: FC
   redirect?: string
-  component?: React.FC<RouteComponentProps>
+  component?: FC<RouteComponentProps>
   menu?: {
     name: string
-    icon: React.ReactNode
+    icon: ReactNode
   }
   layout?: {
     hideNav?: boolean
@@ -23,43 +23,37 @@ export interface Route {
   routes?: Route[]
   default?: boolean
 }
-const GettingStarted = React.lazy<React.FC<RouteComponentProps>>(
+const GettingStarted = lazy<FC<RouteComponentProps>>(
   () => import('../pages/getting-started')
 )
-const CreateProject = React.lazy<React.FC<RouteComponentProps>>(
+const CreateProject = lazy<FC<RouteComponentProps>>(
   () => import('../pages/create-project')
 )
-const Overview = React.lazy<React.FC<RouteComponentProps>>(
+const Overview = lazy<FC<RouteComponentProps>>(
   () => import('../pages/overview')
 )
-const Issue = React.lazy<React.FC<RouteComponentProps>>(
-  () => import('../pages/issue')
-)
-const Event = React.lazy<React.FC<RouteComponentProps>>(
-  () => import('../pages/event')
-)
-const Market = React.lazy<React.FC<RouteComponentProps>>(
-  () => import('../pages/market')
-)
-const Settings = React.lazy<React.FC<RouteComponentProps>>(
+const Issue = lazy<FC<RouteComponentProps>>(() => import('../pages/issue'))
+const Event = lazy<FC<RouteComponentProps>>(() => import('../pages/event'))
+const Market = lazy<FC<RouteComponentProps>>(() => import('../pages/market'))
+const Settings = lazy<FC<RouteComponentProps>>(
   () => import('../pages/settings')
 )
-const Profile = React.lazy<React.FC<RouteComponentProps>>(
+const Profile = lazy<FC<RouteComponentProps>>(
   () => import('../pages/settings/Profile')
 )
-const NotificationRules = React.lazy<React.FC<RouteComponentProps>>(
+const NotificationRules = lazy<FC<RouteComponentProps>>(
   () => import('../pages/settings/Notification/Rules')
 )
-const NotificationSetting = React.lazy<React.FC<RouteComponentProps>>(
+const NotificationSetting = lazy<FC<RouteComponentProps>>(
   () => import('../pages/settings/Notification/Setting')
 )
-const SourceMap = React.lazy<React.FC<RouteComponentProps>>(
+const SourceMap = lazy<FC<RouteComponentProps>>(
   () => import('../pages/settings/SourceMap')
 )
-const NotFound = React.lazy<React.FC<RouteComponentProps>>(
+const NotFound = lazy<FC<RouteComponentProps>>(
   () => import('../pages/not-found')
 )
-const NotAuthorized = React.lazy<React.FC<RouteComponentProps>>(
+const NotAuthorized = lazy<FC<RouteComponentProps>>(
   () => import('../pages/not-authorized')
 )
 

@@ -2,6 +2,7 @@ import { createModel } from '@rematch/core'
 
 import type { RootModel } from '@/models'
 import * as api from '@/api'
+import type { EffectReturn } from '@/ability'
 
 export interface SourceMap {
   id?: number
@@ -38,27 +39,31 @@ export const sourceMap = createModel<RootModel>()({
     },
   },
   effects: (dispatch) => ({
-    async get(_, state) {
+    async get(_, state): EffectReturn<SourceMapState['data']> {
       const project = state.project.current
       if (project) {
         const data = await api.sourceMap.get.call(project.apiKey)
 
-        if (data) {
-          dispatch.sourceMap.setState({
-            data,
-          })
-        }
+        dispatch.sourceMap.setState({
+          data,
+        })
+
+        return (_state) => _state.sourceMap.data
       }
+      return undefined
     },
 
-    async delete({ sourceMapId }: { sourceMapId: number }) {
+    async delete({
+      sourceMapId,
+    }: {
+      sourceMapId: number
+    }): EffectReturn<SourceMapState['data']> {
       if (sourceMapId) {
-        const result = await api.sourceMap.delete.call(sourceMapId)
+        await api.sourceMap.delete.call(sourceMapId)
 
-        if (result) {
-          dispatch.sourceMap.get()
-        }
+        return dispatch.sourceMap.get()
       }
+      return undefined
     },
   }),
 })

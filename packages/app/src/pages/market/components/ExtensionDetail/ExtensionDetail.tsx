@@ -1,4 +1,4 @@
-import React from 'react'
+import type { FC } from 'react'
 import { renderToString } from 'react-dom/server'
 import { Card, Avatar, Switch } from 'antd'
 import MarkdownIt from 'markdown-it'
@@ -9,7 +9,7 @@ import { GithubOutlined } from '@ant-design/icons'
 import type { ExtensionDetail } from '@ohbug-server/types'
 
 import { useCreation, usePersistFn } from '@/hooks'
-import { useModel } from '@/ability'
+import { useModelEffect, useModelState } from '@/ability'
 
 import styles from './ExtensionDetail.module.less'
 
@@ -34,32 +34,32 @@ const md = new MarkdownIt({
   },
 })
 
-const ExtensionDetailComponent: React.FC<ExtensionDetailProps> = ({
+const ExtensionDetailComponent: FC<ExtensionDetailProps> = ({
   extension,
   loading,
 }) => {
-  const projectModel = useModel('project')
-  const loadingModel = useModel('loading')
   const html = useCreation(
     () => extension && md.render(extension?.readme),
     [extension]
   )
-  const project = projectModel.state.current
+  const project = useModelState((state) => state.project.current)
   const enabled = useCreation(
     () => !!project?.extensions?.find((v) => v.id === extension?.id),
     [project, extension]
   )
+  const { loading: enableLoading, run: switchExtension } = useModelEffect(
+    (dispatch) => dispatch.project.switchExtension,
+    { manual: true }
+  )
 
   const handleSwitch = usePersistFn((checked) => {
     if (extension) {
-      projectModel.dispatch.switchExtension({
+      switchExtension({
         extensionId: extension?.id!,
         enabled: checked,
       })
     }
   })
-
-  const enableLoading = loadingModel.state.effects.project.switchExtension
 
   return (
     <Card className={styles.root} loading={loading}>

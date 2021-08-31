@@ -1,32 +1,29 @@
-import React from 'react'
+import type { FC } from 'react'
 import clsx from 'clsx'
 import { Spin, Row, Col, Card, Avatar } from 'antd'
 
-import { RouteComponentProps, useModel } from '@/ability'
+import { RouteComponentProps, useModelEffect } from '@/ability'
 import { Layout } from '@/components'
-import { useMount, usePersistFn } from '@/hooks'
+import { usePersistFn } from '@/hooks'
 import logo from '@/static/logo.svg'
 
 import ExtensionDetail from './components/ExtensionDetail'
 
 import styles from './market.module.less'
 
-const Market: React.FC<RouteComponentProps> = () => {
-  const extensionModel = useModel('extension')
-  const loadingModel = useModel('loading')
-
-  const extensions = extensionModel.state.data
-  const extensionId = extensionModel.state.currentId
-  const extension = extensionModel.state.current
-  const loading = loadingModel.state.effects.extension.getMany
-  const detailLoading = loadingModel.state.effects.extension.get
-
-  useMount(() => {
-    extensionModel.dispatch.getMany()
-  })
+const Market: FC<RouteComponentProps> = () => {
+  const { data, loading } = useModelEffect(
+    (dispatch) => dispatch.extension.getMany
+  )
+  const { loading: detailLoading, run: getDetail } = useModelEffect(
+    (dispatch) => dispatch.extension.get,
+    {
+      manual: true,
+    }
+  )
 
   const handleSelectExtension = usePersistFn((id: number) => {
-    extensionModel.dispatch.get({ extensionId: id })
+    getDetail({ extensionId: id })
   })
 
   return (
@@ -36,10 +33,10 @@ const Market: React.FC<RouteComponentProps> = () => {
       ) : (
         <Row gutter={24}>
           <Col className={styles.extensions} span={6}>
-            {extensions?.map((v) => (
+            {data?.data?.map((v) => (
               <Card
                 className={clsx(styles.extension, {
-                  [styles.current]: v.id === extensionId,
+                  [styles.current]: v.id === data?.currentId,
                 })}
                 onClick={() => handleSelectExtension(v.id!)}
                 hoverable
@@ -54,7 +51,10 @@ const Market: React.FC<RouteComponentProps> = () => {
             ))}
           </Col>
           <Col className={styles['extension-detail']} span={18}>
-            <ExtensionDetail extension={extension} loading={detailLoading} />
+            <ExtensionDetail
+              extension={data?.current}
+              loading={detailLoading}
+            />
           </Col>
         </Row>
       )}

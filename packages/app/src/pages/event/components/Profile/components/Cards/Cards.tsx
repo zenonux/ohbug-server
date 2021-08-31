@@ -1,4 +1,4 @@
-import React from 'react'
+import type { FC } from 'react'
 import { Skeleton } from 'antd'
 import type { OhbugEvent } from '@ohbug/types'
 
@@ -10,7 +10,7 @@ interface CardsProps {
   event?: OhbugEvent<any>
 }
 
-const Cards: React.FC<CardsProps> = ({ event }) => {
+const Cards: FC<CardsProps> = ({ event }) => {
   const deviceInfo = useCreation(() => getDeviceInfo(event), [event])
   const loading = !event
 

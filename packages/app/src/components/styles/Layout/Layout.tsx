@@ -1,4 +1,4 @@
-import React from 'react'
+import type { FC } from 'react'
 import { Layout } from 'antd'
 import clsx from 'clsx'
 
@@ -13,7 +13,7 @@ interface BasicLayoutProps {
   title?: string
 }
 
-const BasicLayout: React.FC<BasicLayoutProps> = ({ children, className }) => {
+const BasicLayout: FC<BasicLayoutProps> = ({ children, className }) => {
   const classes = clsx(styles.content, className)
   const [isTop, { toggle: toggleIsTop }] = useBoolean(true)
 

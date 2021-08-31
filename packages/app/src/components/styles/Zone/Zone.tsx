@@ -1,16 +1,16 @@
-import React from 'react'
+import type { FC, ReactNode } from 'react'
 import clsx from 'clsx'
 
 import styles from './Zone.module.less'
 
 interface ZoneProps {
   className?: string
-  title?: React.ReactNode
-  extra?: React.ReactNode
-  children?: React.ReactNode
+  title?: ReactNode
+  extra?: ReactNode
+  children?: ReactNode
   type?: 'normal' | 'danger'
 }
-const Zone: React.FC<ZoneProps> = ({
+const Zone: FC<ZoneProps> = ({
   className,
   title,
   extra,

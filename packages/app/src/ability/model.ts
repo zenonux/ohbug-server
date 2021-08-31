@@ -1,43 +1,53 @@
 import { init, RematchDispatch, RematchRootState } from '@rematch/core'
-import loading, { ExtraModelsFromLoading } from '@rematch/loading'
-import updated, { ExtraModelsFromUpdated } from '@rematch/updated'
-import persist from '@rematch/persist'
-import storage from 'redux-persist/lib/storage/session'
-import { useSelector, useDispatch } from 'react-redux'
+import { useSelector, useDispatch, shallowEqual } from 'react-redux'
+import type { BaseOptions } from '@ahooksjs/use-request/lib/types'
 
+import { useRequest } from '@/hooks'
 import { models, RootModel } from '@/models'
 
-type FullModel = ExtraModelsFromLoading<RootModel> &
-  ExtraModelsFromUpdated<RootModel>
-export const store = init<RootModel, FullModel>({
+export const store = init<RootModel>({
   models,
-  plugins: [
-    loading(),
-    updated(),
-    persist({
-      timeout: 1000,
-      key: 'redux-storage',
-      storage,
-      // whitelist: ['project'],
-    }),
-  ],
 })
 
 export type Store = typeof store
 export type Dispatch = RematchDispatch<RootModel>
-export type RootState = RematchRootState<RootModel, FullModel>
+export type RootState = RematchRootState<RootModel>
 
 export * from 'redux'
 export * from 'react-redux'
 
-export function useModel<T extends keyof RootModel>(modelName: T) {
-  const state = useSelector<RootState, RootState[T]>(
-    (_state) => _state[modelName]
+export type EffectReturn<T> = Promise<((state: RootState) => T) | undefined>
+
+export function useModelState<T>(selector: (state: RootState) => T) {
+  return useSelector<RootState, T>(selector)
+}
+
+export function useModelDispatch<T>(selector: (dispatch: Dispatch) => T) {
+  const dispatch = useDispatch<Dispatch>()
+  return selector(dispatch)
+}
+
+/**
+ * @description 对 rematch 的 model 使用进行封装，结合 model 与 useRequest 的能力。
+ * 一个 hook 管理一个 dispatch 的 状态，完美取代了 rematch loading plugin 的能力，并且更加易用。
+ * @example const { data, error, loading } = useModelEffect(dispatch => dispatch.project.get)
+ */
+export function useModelEffect<R, P extends any[]>(
+  mapDispatch: (dispatch: Dispatch) => (...params: P) => EffectReturn<R>,
+  options?: BaseOptions<R, P>
+) {
+  const dispatch = useDispatch<Dispatch>()
+  const targetDispatch = mapDispatch(dispatch)
+
+  const { data, ...otherResult } = useRequest<R, P>(targetDispatch, options)
+
+  const state = useSelector<RootState, R>(
+    data ?? ((() => {}) as any),
+    shallowEqual
   )
-  const dispatch = useDispatch<Dispatch>()[modelName]
 
   return {
-    state,
-    dispatch,
+    data: state,
+    ...otherResult,
   }
 }

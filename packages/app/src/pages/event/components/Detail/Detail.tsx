@@ -1,4 +1,4 @@
-import React from 'react'
+import type { FC } from 'react'
 import { Card, Descriptions, Timeline, Tooltip } from 'antd'
 import dayjs from 'dayjs'
 import { WarningOutlined } from '@ant-design/icons'
@@ -13,7 +13,7 @@ import styles from './Detail.module.less'
 interface DetailProps {
   event: EventState['current']
 }
-const Detail: React.FC<DetailProps> = ({ event }) => {
+const Detail: FC<DetailProps> = ({ event }) => {
   const loading = !event
 
   return (

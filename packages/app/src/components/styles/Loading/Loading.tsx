@@ -1,9 +1,9 @@
-import React from 'react'
+import type { FC } from 'react'
 import { Spin } from 'antd'
 
 import styles from './Loading.module.less'
 
-const Loading: React.FC = () => (
+const Loading: FC = () => (
   <div className={styles.root}>
     <Spin />
   </div>

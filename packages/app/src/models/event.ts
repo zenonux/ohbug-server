@@ -4,6 +4,7 @@ import type { EventInAPP } from '@ohbug-server/types'
 
 import type { RootModel } from '@/models'
 import * as api from '@/api'
+import { EffectReturn } from '@/ability'
 
 export interface EventState {
   current?: EventInAPP<any>
@@ -20,23 +21,35 @@ export const event = createModel<RootModel>()({
     },
   },
   effects: (dispatch) => ({
-    async get({ eventId, issueId }: { eventId: number; issueId: number }) {
+    async get({
+      eventId,
+      issueId,
+    }: {
+      eventId: number
+      issueId: number
+    }): EffectReturn<EventState['current']> {
       const data = await api.event.get.call({
         eventId,
         issueId,
       })
-      if (data) {
-        dispatch.event.setCurrentEvent(data)
-      }
+
+      dispatch.event.setCurrentEvent(data)
+
+      return (state) => state.event.current
     },
 
-    async getLatestEvent({ issueId }: { issueId: number }) {
+    async getLatestEvent({
+      issueId,
+    }: {
+      issueId: number
+    }): EffectReturn<EventState['current']> {
       const data = await api.event.getLatest.call({
         issueId,
       })
-      if (data) {
-        dispatch.event.setCurrentEvent(data)
-      }
+
+      dispatch.event.setCurrentEvent(data)
+
+      return (state) => state.event.current
     },
   }),
 })

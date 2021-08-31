@@ -1,4 +1,4 @@
-import React from 'react'
+import type { FC } from 'react'
 import { Button, Popover } from 'antd'
 
 import { Image } from '@/components'
@@ -7,7 +7,7 @@ import logo from '@/static/logo.svg'
 import qrcode from './images/wechatQrcode.jpg'
 import styles from './Footer.module.less'
 
-const Footer: React.FC = () => (
+const Footer: FC = () => (
   <div className={styles.root}>
     <a
       className={styles.logo}

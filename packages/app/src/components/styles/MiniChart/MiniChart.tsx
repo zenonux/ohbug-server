@@ -1,4 +1,4 @@
-import React from 'react'
+import { FC, memo } from 'react'
 import { Typography, Badge } from 'antd'
 import ReactEcharts, { EChartsOption } from 'echarts-for-react'
 import dayjs from 'dayjs'
@@ -18,7 +18,7 @@ interface MiniChartProps {
   title?: string
 }
 
-const MiniChart: React.FC<MiniChartProps> = React.memo(
+const MiniChart: FC<MiniChartProps> = memo(
   ({ trend, data, loading, title }) => {
     const option = useCreation<EChartsOption | null>(
       () => ({

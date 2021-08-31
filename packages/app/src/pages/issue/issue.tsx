@@ -1,8 +1,13 @@
-import React from 'react'
-import { Card, Space, List, Skeleton, Radio, Typography, Row, Col } from 'antd'
+import { FC, useEffect, useState } from 'react'
+import { Card, Space, List, Radio, Typography, Row, Col } from 'antd'
 import dayjs from 'dayjs'
 
-import { RouteComponentProps, useModel, Link } from '@/ability'
+import {
+  RouteComponentProps,
+  Link,
+  useModelEffect,
+  useModelState,
+} from '@/ability'
 import { Layout, MiniChart, LineChart } from '@/components'
 import { usePersistFn } from '@/hooks'
 
@@ -10,36 +15,46 @@ import TimePicker from './components/TimePicker'
 
 import styles from './issue.module.less'
 
-const Issue: React.FC<RouteComponentProps> = ({ children }) => {
-  const issueModel = useModel('issue')
-  const projectModel = useModel('project')
-  const loadingModel = useModel('loading')
-  const issue = issueModel.state.data!
-  const { count } = issueModel.state
-  const { trend } = issueModel.state
-  const project = projectModel.state.current
+const Issue: FC<RouteComponentProps> = ({ children }) => {
+  const {
+    data,
+    loading,
+    run: searchIssues,
+  } = useModelEffect((dispatch) => dispatch.issue.searchIssues, {
+    manual: true,
+  })
+  const { loading: trendChartLoading, run: getTrends } = useModelEffect(
+    (dispatch) => dispatch.issue.getTrends,
+    { manual: true }
+  )
+  const project = useModelState((state) => state.project.current)
+  const projectTrend = useModelState((state) => state.project.currentTrend)
 
+  useEffect(() => {
+    if (project) {
+      searchIssues({
+        projectId: project.id,
+        page: 0,
+      })
+    }
+  }, [project])
   const handleTablePaginationChange = usePersistFn((current) => {
     if (project) {
-      issueModel.dispatch.searchIssues({
+      searchIssues({
         projectId: project.id,
         page: current - 1,
       })
     }
   })
 
-  const [trendValue, setTrendValue] = React.useState<'24h' | '14d'>('24h')
+  const [trendValue, setTrendValue] = useState<'24h' | '14d'>('24h')
   const handleTrendChange = usePersistFn((e) => {
     const period = e.target.value
     setTrendValue(period)
 
-    const ids = issue?.map((v) => v.id)
-    issueModel.dispatch.getTrends({ ids, period })
+    const ids = data?.data?.map((v) => v.id)!
+    getTrends({ ids, period })
   })
-
-  const loading = loadingModel.state.effects.issue.searchIssues
-  const trendChartLoading = loadingModel.state.effects.issue.getTrends
-  const projectTrend = projectModel.state.currentTrend
 
   return (
     <Layout className={styles.root} title="问题">
@@ -52,8 +67,9 @@ const Issue: React.FC<RouteComponentProps> = ({ children }) => {
 
         <Card
           className={styles.card}
-          title={`问题列表 ${issue ? `(${issue.length})` : ''}`}
+          title={`问题列表 ${data?.data ? `(${data?.data.length})` : ''}`}
           hoverable
+          loading={loading}
           extra={
             <Space size="middle">
               <TimePicker />
@@ -63,14 +79,13 @@ const Issue: React.FC<RouteComponentProps> = ({ children }) => {
           <List
             className={styles.list}
             itemLayout="horizontal"
-            loading={loading}
-            dataSource={issue}
+            dataSource={data?.data}
             pagination={
-              count
+              data?.count
                 ? {
                     onChange: handleTablePaginationChange,
                     pageSize: 20,
-                    total: count,
+                    total: data?.count,
                   }
                 : false
             }
@@ -99,7 +114,7 @@ const Issue: React.FC<RouteComponentProps> = ({ children }) => {
               </div>
             }
             renderItem={(item) => {
-              const chartData = trend?.data?.find(
+              const chartData = data?.trend?.data?.find(
                 (v) => parseInt(v?.issueId, 10) === item.id
               )?.buckets
 
@@ -107,70 +122,65 @@ const Issue: React.FC<RouteComponentProps> = ({ children }) => {
                 // 获取此 issue 所对应的最新 event
                 <Link to={`/issue/${item.id}/event/latest`}>
                   <List.Item>
-                    <Skeleton title loading={loading} active>
-                      <List.Item.Meta
-                        title={
-                          <div className={styles.title}>
-                            <Typography.Text className={styles.type} strong>
-                              {item.type}
+                    <List.Item.Meta
+                      title={
+                        <div className={styles.title}>
+                          <Typography.Text className={styles.type} strong>
+                            {item.type}
+                          </Typography.Text>
+                          {item.metadata.filename && (
+                            <Typography.Text type="secondary">
+                              {item.metadata.filename}
                             </Typography.Text>
-                            {item.metadata.filename && (
-                              <Typography.Text type="secondary">
-                                {item.metadata.filename}
-                              </Typography.Text>
-                            )}
-                          </div>
-                        }
-                        description={
-                          <Typography.Paragraph
-                            className={styles.desc}
-                            ellipsis
-                          >
-                            {item.metadata.message && (
+                          )}
+                        </div>
+                      }
+                      description={
+                        <Typography.Paragraph className={styles.desc} ellipsis>
+                          {item.metadata.message && (
+                            <Typography.Text>
+                              {typeof item.metadata.message === 'string'
+                                ? item.metadata.message
+                                : JSON.stringify(item.metadata.message)}
+                            </Typography.Text>
+                          )}
+                          {item.metadata.others && (
+                            <Typography.Text>
+                              {item.metadata.others}
+                            </Typography.Text>
+                          )}
+                          {!item.metadata.message &&
+                            !item.metadata.others &&
+                            item.metadata.stack && (
                               <Typography.Text>
-                                {typeof item.metadata.message === 'string'
-                                  ? item.metadata.message
-                                  : JSON.stringify(item.metadata.message)}
+                                {typeof item.metadata.stack === 'string'
+                                  ? item.metadata.stack
+                                  : JSON.stringify(item.metadata.stack)}
                               </Typography.Text>
                             )}
-                            {item.metadata.others && (
-                              <Typography.Text>
-                                {item.metadata.others}
-                              </Typography.Text>
-                            )}
-                            {!item.metadata.message &&
-                              !item.metadata.others &&
-                              item.metadata.stack && (
-                                <Typography.Text>
-                                  {typeof item.metadata.stack === 'string'
-                                    ? item.metadata.stack
-                                    : JSON.stringify(item.metadata.stack)}
-                                </Typography.Text>
-                              )}
-                          </Typography.Paragraph>
-                        }
-                      />
-                      <Row className={styles.content} gutter={8}>
-                        <Col span={6}>
-                          {dayjs(item.createdAt).fromNow()}-
-                          {dayjs(item.updatedAt).fromNow()}
-                        </Col>
+                        </Typography.Paragraph>
+                      }
+                    />
+                    <Row className={styles.content} gutter={8}>
+                      <Col span={6}>
+                        {dayjs(item.createdAt).fromNow()}-
+                        {dayjs(item.updatedAt).fromNow()}
+                      </Col>
 
-                        <Col className="text-error" span={4}>
-                          {item.eventsCount}
-                        </Col>
+                      <Col className="text-error" span={4}>
+                        {item.eventsCount}
+                      </Col>
 
-                        <Col span={4}>{item.usersCount}</Col>
+                      <Col span={4}>{item.usersCount}</Col>
 
-                        <Col span={10}>
-                          <MiniChart
-                            data={chartData}
-                            trend={trendValue}
-                            loading={trendChartLoading}
-                          />
-                        </Col>
-                      </Row>
-                    </Skeleton>
+                      <Col span={10}>
+                        <MiniChart
+                          data={chartData}
+                          trend={trendValue}
+                          loading={trendChartLoading}
+                        />
+                      </Col>
+                    </Row>
                   </List.Item>
                 </Link>
               )

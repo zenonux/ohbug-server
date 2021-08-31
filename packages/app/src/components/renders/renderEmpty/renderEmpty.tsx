@@ -1,4 +1,4 @@
-import React from 'react'
+import type { ReactNode } from 'react'
 import { Empty, Button } from 'antd'
 
 import { useLocation } from '@/ability'
@@ -8,8 +8,8 @@ import styles from './renderEmpty.module.less'
 const renderEmpty = (componentName?: string) => {
   const location = useLocation()
 
-  let description: React.ReactNode
-  let children: React.ReactNode
+  let description: ReactNode
+  let children: ReactNode
   if (componentName === 'List' && location.pathname === '/issue') {
     // issue
     description = <span>Ohbug 正等待接收您的第一个事件。</span>

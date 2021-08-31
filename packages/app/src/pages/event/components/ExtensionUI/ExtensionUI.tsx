@@ -1,11 +1,9 @@
-import React from 'react'
-
+import { FC, useRef } from 'react'
 import type { OhbugEvent } from '@ohbug/types'
 
 import { useCreation, useMount } from '@/hooks'
-import { useModel } from '@/ability'
+import { useModelState } from '@/ability'
 
-// eslint-disable-next-line import/extensions
 import frameURL from './frame.html?url'
 
 import styles from './ExtensionUI.module.less'
@@ -16,20 +14,14 @@ interface ExtensionUIProps {
   event: OhbugEvent<any>
 }
 
-const ExtensionUI: React.FC<ExtensionUIProps> = ({
-  extensionKey,
-  data,
-  event,
-}) => {
-  const projectModel = useModel('project')
+const ExtensionUI: FC<ExtensionUIProps> = ({ extensionKey, data, event }) => {
+  const currentProject = useModelState((state) => state.project.current)
   const extension = useCreation(
     () =>
-      (projectModel.state.current?.extensions || []).find(
-        (v) => v.key === extensionKey
-      ),
-    [extensionKey, projectModel.state.current]
+      (currentProject?.extensions || []).find((v) => v.key === extensionKey),
+    [extensionKey, currentProject]
   )
-  const ref = React.useRef<HTMLIFrameElement>(null)
+  const ref = useRef<HTMLIFrameElement>(null)
 
   useMount(() => {
     const window = ref.current?.contentWindow

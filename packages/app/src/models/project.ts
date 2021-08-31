@@ -4,7 +4,7 @@ import { Project, ProjectTrend } from '@ohbug-server/types'
 
 import type { RootModel } from '@/models'
 import * as api from '@/api'
-import { navigate } from '@/ability'
+import { EffectReturn, navigate } from '@/ability'
 
 export interface ProjectState {
   data?: Project[]
@@ -37,43 +37,39 @@ export const project = createModel<RootModel>()({
     },
   },
   effects: (dispatch) => ({
-    async create({ name, type }: { name: string; type: string }, state) {
-      try {
-        const data = await api.project.create.call({ name, type })
-        if (data) {
-          dispatch.project.setState({
-            data: [...(state.project.data || []), data],
-            current: data,
-          })
-        }
-        navigate('/issue')
-      } catch (error) {
-        console.error(error)
-      }
+    async create(
+      { name, type }: { name: string; type: string },
+      state
+    ): EffectReturn<ProjectState['current']> {
+      const data = await api.project.create.call({ name, type })
+      dispatch.project.setState({
+        data: [...(state.project.data || []), data],
+        current: data,
+      })
+      navigate('/issue')
+
+      return (_state) => _state.project.current
     },
 
-    async get() {
+    async get(): EffectReturn<ProjectState['current']> {
       try {
         const data = await api.project.getMany.call(null)
 
-        dispatch.project.setState({ data, current: data[0] })
+        const current = data[0]
+        dispatch.project.setState({ data, current })
+
+        return (state) => state.project.current
       } catch (error) {
-        // 不存在 project 进入引导
-        if (error.errorCode === 400202) {
-          if (window.location.pathname !== '/getting-started') {
-            return navigate('/getting-started')
-          }
-        }
-        if (error.success === false) {
-          dispatch.project.setState({ data: undefined })
-        }
+        dispatch.project.setState({ data: undefined })
+
+        return undefined
       }
     },
 
     async trend(
       { projectId, start, end }: { projectId?: number; start: Date; end: Date },
       state
-    ) {
+    ): EffectReturn<ProjectState['currentTrend']> {
       const currentProject = state.project.current
       if (projectId || currentProject) {
         const data = await api.project.trend.call({
@@ -81,18 +77,20 @@ export const project = createModel<RootModel>()({
           start,
           end,
         })
-        if (data) {
-          dispatch.project.setState({
-            currentTrend: data,
-          })
-        }
+
+        dispatch.project.setState({
+          currentTrend: data,
+        })
+
+        return (_state) => _state.project.currentTrend
       }
+      return undefined
     },
 
     async switchExtension(
       { extensionId, enabled }: { extensionId: number; enabled: boolean },
       state
-    ) {
+    ): EffectReturn<ProjectState['current']> {
       const currentProject = state.project.current
       if (currentProject) {
         const data = await api.project.switchExtension.call({
@@ -100,12 +98,14 @@ export const project = createModel<RootModel>()({
           extensionId,
           enabled,
         })
-        if (data) {
-          dispatch.project.setState({
-            current: data,
-          })
-        }
+
+        dispatch.project.setState({
+          current: data,
+        })
+
+        return (_state) => _state.project.current
       }
+      return undefined
     },
   }),
 })

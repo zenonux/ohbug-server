@@ -1,4 +1,4 @@
-import React from 'react'
+import { FC, useState } from 'react'
 import { Modal, Form, Input, Space, Tooltip, Button } from 'antd'
 import {
   DingdingOutlined,
@@ -9,7 +9,7 @@ import {
   WechatOutlined,
 } from '@ant-design/icons'
 
-import { useModel } from '@/ability'
+import { useModelEffect } from '@/ability'
 import { NotificationSettingWebHook } from '@/models'
 import { usePersistFn, useUpdateEffect } from '@/hooks'
 import { RadioIconButton } from '@/components'
@@ -38,20 +38,23 @@ interface EditWebhookProps {
   onCancel: () => void
   initialValues?: NotificationSettingWebHook
 }
-const EditWebhook: React.FC<EditWebhookProps> = ({
+const EditWebhook: FC<EditWebhookProps> = ({
   visible,
   onCancel,
   initialValues,
 }) => {
-  const notificationModel = useModel('notification')
-  const loadingModel = useModel('loading')
+  const { loading: createWebhooksSettingLoading, run: createWebhooksSetting } =
+    useModelEffect((dispatch) => dispatch.notification.createWebhooksSetting, {
+      manual: true,
+    })
+  const { loading: updateWebhooksSettingLoading, run: updateWebhooksSetting } =
+    useModelEffect((dispatch) => dispatch.notification.updateWebhooksSetting, {
+      manual: true,
+    })
   const [form] = Form.useForm()
-  const [type, setType] = React.useState(() =>
-    initialValues ? 'update' : 'create'
-  )
+  const [type, setType] = useState(() => (initialValues ? 'update' : 'create'))
   const confirmLoading =
-    // @ts-ignore
-    loadingModel.state.effects.notification[`${type}WebhooksSetting`]
+    createWebhooksSettingLoading || updateWebhooksSettingLoading
 
   useUpdateEffect(() => {
     setType(initialValues ? 'update' : 'create')
@@ -75,10 +78,10 @@ const EditWebhook: React.FC<EditWebhookProps> = ({
       payload.id = initialValues?.id
     }
     if (type === 'create') {
-      notificationModel.dispatch.createWebhooksSetting(payload)
+      createWebhooksSetting(payload)
     }
     if (type === 'update') {
-      notificationModel.dispatch.updateWebhooksSetting(payload)
+      updateWebhooksSetting(payload)
     }
     onCancel?.()
   })

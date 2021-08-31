@@ -1,13 +1,13 @@
 import { FC } from 'react'
 import { Collapse, Typography } from 'antd'
+
 import { Zone } from '@/components'
+import { useModelState } from '@/ability'
 
 import styles from './Profile.module.less'
-import { useModel } from '@/ability'
 
 const Profile: FC = () => {
-  const projectModel = useModel('project')
-  const { current: currentProject } = projectModel.state
+  const currentProject = useModelState((state) => state.project.current)
 
   return (
     <section className={styles.root}>

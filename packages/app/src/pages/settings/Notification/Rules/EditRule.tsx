@@ -1,4 +1,4 @@
-import React from 'react'
+import { FC, useState } from 'react'
 import {
   Modal,
   Form,
@@ -13,7 +13,7 @@ import {
 import { MinusCircleOutlined, PlusCircleOutlined } from '@ant-design/icons'
 import { types } from '@ohbug/browser'
 
-import { useModel } from '@/ability'
+import { useModelEffect } from '@/ability'
 import type { NotificationRule, NotificationRuleLevel } from '@/models'
 import { usePersistFn, useUpdateEffect } from '@/hooks'
 
@@ -23,7 +23,7 @@ interface LevelComponentProps {
   value?: NotificationRuleLevel
   onChange?: (key: NotificationRuleLevel) => void
 }
-const LevelComponent: React.FC<LevelComponentProps> = ({ value, onChange }) => {
+const LevelComponent: FC<LevelComponentProps> = ({ value, onChange }) => {
   const handleChange = usePersistFn((tag, checked) => {
     if (checked) onChange?.(tag)
   })
@@ -67,22 +67,25 @@ function getRuleDataType(
   }
   return undefined
 }
-const EditRule: React.FC<EditRuleProps> = ({
-  visible,
-  onCancel,
-  initialValues,
-}) => {
-  const notificationModel = useModel('notification')
-  const loadingModel = useModel('loading')
+const EditRule: FC<EditRuleProps> = ({ visible, onCancel, initialValues }) => {
+  const { loading: createRulesLoading, run: createRules } = useModelEffect(
+    (dispatch) => dispatch.notification.createRules,
+    {
+      manual: true,
+    }
+  )
+  const { loading: updateRulesLoading, run: updateRules } = useModelEffect(
+    (dispatch) => dispatch.notification.updateRules,
+    {
+      manual: true,
+    }
+  )
   const [form] = Form.useForm()
-  const [data, setData] = React.useState<'indicator' | 'range'>(
+  const [data, setData] = useState<'indicator' | 'range'>(
     getRuleDataType(initialValues) || 'range'
   )
-  const [type, setType] = React.useState(() =>
-    initialValues ? 'update' : 'create'
-  )
-  // @ts-ignore
-  const confirmLoading = loadingModel.state.effects.notification[`${type}Rules`]
+  const [type, setType] = useState(() => (initialValues ? 'update' : 'create'))
+  const confirmLoading = createRulesLoading || updateRulesLoading
 
   useUpdateEffect(() => {
     setData(getRuleDataType(initialValues) || 'range')
@@ -114,10 +117,10 @@ const EditRule: React.FC<EditRuleProps> = ({
       payload.ruleId = initialValues?.id
     }
     if (type === 'create') {
-      notificationModel.dispatch.createRules(payload)
+      createRules(payload)
     }
     if (type === 'update') {
-      notificationModel.dispatch.updateRules(payload)
+      updateRules(payload)
     }
     onCancel?.()
   })

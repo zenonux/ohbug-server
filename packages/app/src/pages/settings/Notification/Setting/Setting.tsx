@@ -1,8 +1,13 @@
-import React from 'react'
+import { FC, useState } from 'react'
 import { Form, Switch, Input, Space, Button, Table, Modal } from 'antd'
 import { MinusCircleOutlined, PlusCircleOutlined } from '@ant-design/icons'
 
-import { RouteComponentProps, useModel } from '@/ability'
+import {
+  RouteComponentProps,
+  useModelDispatch,
+  useModelEffect,
+  useModelState,
+} from '@/ability'
 import type { NotificationSetting, NotificationSettingWebHook } from '@/models'
 import { Zone } from '@/components'
 import { useUpdateEffect, useBoolean, usePersistFn } from '@/hooks'
@@ -12,41 +17,46 @@ import EditWebhook from './EditWebhook'
 
 import styles from './Setting.module.less'
 
-const Setting: React.FC<RouteComponentProps> = () => {
-  const notificationModel = useModel('notification')
-  const appModel = useModel('app')
-  const loadingModel = useModel('loading')
-  const projectModel = useModel('project')
+const Setting: FC<RouteComponentProps> = () => {
+  const currentProject = useModelState((state) => state.project.current)
+  const { data } = useModelEffect(
+    (dispatch) => dispatch.notification.getSetting,
+    { refreshDeps: [currentProject] }
+  )
+  const { loading: browserSwitchLoading, run: updateSetting } = useModelEffect(
+    (dispatch) => dispatch.notification.updateSetting,
+    {
+      manual: true,
+    }
+  )
+  const { loading: switchLoading, run: updateWebhooksSetting } = useModelEffect(
+    (dispatch) => dispatch.notification.updateWebhooksSetting,
+    { manual: true }
+  )
+  const deleteWebhooksSetting = useModelDispatch(
+    (dispatch) => dispatch.notification.deleteWebhooksSetting
+  )
+  const error = useModelDispatch((dispatch) => dispatch.app.error)
   const [form] = Form.useForm()
-  const [currentRule, setCurrentRule] = React.useState<
+  const [currentRule, setCurrentRule] = useState<
     NotificationSettingWebHook | undefined
   >(undefined)
-  const [currentSwitch, setCurrentSwitch] = React.useState<number>()
-  const [browserDisabled] = React.useState<boolean>(() => {
+  const [currentSwitch, setCurrentSwitch] = useState<number>()
+  const [browserDisabled] = useState<boolean>(() => {
     if ('serviceWorker' in navigator && 'PushManager' in window) {
       return false
     }
     return true
   })
 
-  React.useEffect(() => {
-    notificationModel.dispatch.getSetting()
-    // eslint-disable-next-line
-  }, [projectModel.state.current])
-  const setting = notificationModel.state.settingData
-  const browserSwitchLoading =
-    loadingModel.state.effects.notification.updateSetting
-  const switchLoading =
-    loadingModel.state.effects.notification.updateWebhooksSetting
-
   useUpdateEffect(() => {
-    if (setting) {
+    if (data) {
       form.setFieldsValue({
-        ...setting,
-        browser: setting?.browser?.open,
+        ...data,
+        browser: data?.browser?.open,
       })
     }
-  }, [setting])
+  }, [data])
 
   const [
     webhookModalVisible,
@@ -60,7 +70,7 @@ const Setting: React.FC<RouteComponentProps> = () => {
         .then(() => {
           registerServiceWorker().then((subscribeOptions) => {
             if (subscribeOptions) {
-              notificationModel.dispatch.updateSetting({
+              updateSetting({
                 browser: {
                   open: checked,
                   data: JSON.parse(JSON.stringify(subscribeOptions)),
@@ -70,13 +80,13 @@ const Setting: React.FC<RouteComponentProps> = () => {
           })
         })
         .catch((err) => {
-          appModel.dispatch.error(err.message)
+          error(err.message)
           form.setFieldsValue({
             browser: false,
           })
         })
     } else {
-      notificationModel.dispatch.updateSetting({
+      updateSetting({
         browser: {
           open: checked,
           data: null,
@@ -88,7 +98,7 @@ const Setting: React.FC<RouteComponentProps> = () => {
     const payload: NotificationSetting = {}
     if (form.isFieldTouched('emails')) {
       payload.emails = values.emails
-      notificationModel.dispatch.updateSetting({
+      updateSetting({
         ...payload,
       })
     }
@@ -251,7 +261,7 @@ const Setting: React.FC<RouteComponentProps> = () => {
                     loading={switchLoading && currentSwitch === item?.id}
                     onChange={(checked) => {
                       setCurrentSwitch(item?.id)
-                      notificationModel.dispatch.updateWebhooksSetting({
+                      updateWebhooksSetting({
                         id: item.id,
                         open: checked,
                       })
@@ -286,7 +296,7 @@ const Setting: React.FC<RouteComponentProps> = () => {
                           okType: 'danger',
                           cancelText: '取消',
                           onOk() {
-                            notificationModel.dispatch.deleteWebhooksSetting({
+                            deleteWebhooksSetting({
                               id: item?.id,
                             })
                           },

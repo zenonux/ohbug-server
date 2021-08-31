@@ -1,30 +1,20 @@
-import React from 'react'
+import { FC, createElement, isValidElement } from 'react'
 
 import { Loading } from '@/components'
-import { RouteComponentProps, useModel, Redirect } from '@/ability'
-import { useMount, useBoolean } from '@/hooks'
+import { RouteComponentProps, useModelEffect, Redirect } from '@/ability'
 
-const Auth: React.FC<RouteComponentProps> = ({ children }) => {
-  const projectModel = useModel('project')
-  const [loading, { toggle: setLoading }] = useBoolean(true)
-
-  useMount(async () => {
-    setLoading(true)
-    await projectModel.dispatch.get()
-    setLoading(false)
-  })
+const Auth: FC<RouteComponentProps> = ({ children }) => {
+  const { data, loading } = useModelEffect((dispatch) => dispatch.project.get)
 
   if (loading) {
-    return React.createElement(Loading)
+    return createElement(Loading)
   }
 
-  if (!loading && projectModel.state.current) {
-    if (React.isValidElement(children)) {
-      return children
-    }
+  if (data && isValidElement(children)) {
+    return children
   }
 
-  return React.createElement(Redirect, { to: '/getting-started' })
+  return createElement(Redirect, { to: '/getting-started' })
 }
 
 export default Auth

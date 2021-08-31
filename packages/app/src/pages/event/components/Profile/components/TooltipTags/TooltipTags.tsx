@@ -1,12 +1,12 @@
-import React from 'react'
+import type { FC, ReactChild, ReactNode } from 'react'
 import { Tag, Tooltip } from 'antd'
 
 interface TooltipTagsProps {
-  title: React.ReactChild
+  title: ReactChild
   value: any
-  icon: React.ReactNode
+  icon: ReactNode
 }
-const TooltipTags: React.FC<TooltipTagsProps> = ({ title, value, icon }) => (
+const TooltipTags: FC<TooltipTagsProps> = ({ title, value, icon }) => (
   <Tooltip title={title}>
     <Tag icon={icon} color="default">
       {value}

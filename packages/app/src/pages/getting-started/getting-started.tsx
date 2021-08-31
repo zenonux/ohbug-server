@@ -1,29 +1,22 @@
-import React from 'react'
+import type { FC } from 'react'
 import { Typography, Button } from 'antd'
 import SyntaxHighlighter from 'react-syntax-highlighter'
 import { githubGist as highlighterStyles } from 'react-syntax-highlighter/dist/esm/styles/hljs'
 import { PushpinOutlined } from '@ant-design/icons'
 
-import { RouteComponentProps, useModel, navigate } from '@/ability'
-import { useMount, usePersistFn } from '@/hooks'
+import { RouteComponentProps, navigate, useModelEffect } from '@/ability'
+import { usePersistFn } from '@/hooks'
 
 import styles from './getting-started.module.less'
 
-const GettingStarted: React.FC<RouteComponentProps> = () => {
-  const projectModel = useModel('project')
-  const loadingModel = useModel('loading')
-  const project = projectModel.state.current
-  const loading = loadingModel.state.effects.project.create
-
-  useMount(() => {
-    projectModel.dispatch.get()
-  })
+const GettingStarted: FC<RouteComponentProps> = () => {
+  const { data, loading } = useModelEffect((dispatch) => dispatch.project.get)
 
   const handleCreateProject = usePersistFn(() => {
     navigate('create-project')
   })
 
-  if (project) {
+  if (data) {
     return (
       <div className={styles.root}>
         <div>
@@ -43,7 +36,7 @@ yarn add @ohbug/browser`}
           <SyntaxHighlighter language="javascript" style={highlighterStyles}>
             {`import Ohbug from '@ohbug/browser'
 
-Ohbug.init({ apiKey: '${project?.apiKey}' })`}
+Ohbug.init({ apiKey: '${data?.apiKey}' })`}
           </SyntaxHighlighter>
 
           <Button type="link" size="large" href="/issue">

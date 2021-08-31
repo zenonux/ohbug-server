@@ -1,4 +1,4 @@
-import React from 'react'
+import { FC, useState, useEffect, Fragment, Suspense } from 'react'
 import { match } from 'path-to-regexp'
 import { Layout } from 'antd'
 
@@ -27,36 +27,36 @@ function matchRoute(data: Route[], location: WindowLocation): Route | null {
   }
   return null
 }
-const Container: React.FC = ({ children }) => {
+const Container: FC = ({ children }) => {
   const location = useLocation()
-  const [route, setRoute] = React.useState<Route | null>(null)
-  React.useEffect(() => {
+  const [route, setRoute] = useState<Route | null>(null)
+  useEffect(() => {
     setRoute(matchRoute(routes, location))
   }, [location.key])
 
-  const Wrapper = route?.wrapper ?? React.Fragment
+  const Wrapper = route?.wrapper ?? Fragment
   // wrapper 和 redirect 同时存在时优先处理 redirect
   if (route?.wrapper && route.redirect) {
     navigate(route.redirect, { replace: true })
   }
 
   return (
-    <React.Suspense fallback={<Loading />}>
+    <Suspense fallback={<Loading />}>
       <Wrapper>
         <Layout>
           {!(route?.layout?.hideNav === true) && (
-            <Layout.Header className="w-full fixed top-0 z-100 backdrop-filter backdrop-blur shadow-sm bg-white bg-opacity-90">
+            <Layout.Header className="w-full fixed top-0 z-100 backdrop-filter backdrop-blur shadow-sm !bg-white bg-opacity-90">
               <Header />
             </Layout.Header>
           )}
-          <React.Suspense fallback={<Loading />}>
+          <Suspense fallback={<Loading />}>
             <Layout.Content style={{ paddingTop: 60 }}>
               {children}
             </Layout.Content>
-          </React.Suspense>
+          </Suspense>
         </Layout>
       </Wrapper>
-    </React.Suspense>
+    </Suspense>
   )
 }
 
@@ -106,7 +106,7 @@ function renderRoutes(data: Route[]) {
     .filter((v) => !!v)
 }
 
-const RouterComponent: React.FC = () => (
+const RouterComponent: FC = () => (
   <Location>
     {({ location }) => (
       <Container>

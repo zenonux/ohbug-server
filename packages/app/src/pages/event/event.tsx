@@ -1,8 +1,13 @@
-import React from 'react'
+import { FC, useEffect } from 'react'
 import { Row, Col, Tabs, Radio } from 'antd'
 import ReactJson from 'react-json-view'
 
-import { RouteComponentProps, useModel, navigate, useParams } from '@/ability'
+import {
+  RouteComponentProps,
+  navigate,
+  useParams,
+  useModelEffect,
+} from '@/ability'
 import { Layout } from '@/components'
 import type { EventState, IssueState } from '@/models'
 import { useCreation, usePersistFn } from '@/hooks'
@@ -17,7 +22,7 @@ interface EventTabProps {
   event: EventState['current']
   issue: IssueState['current']
 }
-const EventTab: React.FC<EventTabProps> = ({ event, issue }) => {
+const EventTab: FC<EventTabProps> = ({ event, issue }) => {
   const tabList = useCreation(() => {
     const base = [
       {
@@ -109,33 +114,46 @@ const EventTab: React.FC<EventTabProps> = ({ event, issue }) => {
   )
 }
 
-const Event: React.FC<RouteComponentProps> = () => {
-  const eventModel = useModel('event')
-  const issueModel = useModel('issue')
+const Event: FC<RouteComponentProps> = () => {
+  const { data: lastEvent, run: getLatestEvent } = useModelEffect(
+    (dispatch) => dispatch.event.getLatestEvent,
+    {
+      manual: true,
+    }
+  )
+  const { data: event, run: getEvent } = useModelEffect(
+    (dispatch) => dispatch.event.get,
+    {
+      manual: true,
+    }
+  )
+  const { data: issue, run: getIssue } = useModelEffect(
+    (dispatch) => dispatch.issue.get,
+    {
+      manual: true,
+    }
+  )
   const { issueId, eventId } = useParams()
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (eventId === 'latest' && issueId) {
-      eventModel.dispatch.getLatestEvent({ issueId })
+      getLatestEvent({ issueId })
     } else {
-      eventModel.dispatch.get({
+      getEvent({
         eventId,
         issueId,
       })
     }
-    issueModel.dispatch.get({ issueId })
+    getIssue({ issueId })
   }, [eventId, issueId])
-
-  const event = eventModel.state.current
-  const issue = issueModel.state.current
 
   return (
     <Layout title="事件">
       {/* 标题信息 */}
-      {event && issue && <Title event={event} issue={issue} />}
+      <Title event={lastEvent || event} issue={issue} />
 
       {/* tab */}
-      {event && issue && <EventTab event={event} issue={issue} />}
+      <EventTab event={lastEvent || event} issue={issue} />
     </Layout>
   )
 }

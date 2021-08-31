@@ -1,18 +1,15 @@
-import React from 'react'
+import type { FC } from 'react'
 import { Form, Input, Button, Select } from 'antd'
 
 import { Layout } from '@/components'
 import { usePersistFn } from '@/hooks'
-import { useModel } from '@/ability'
+import { useModelDispatch } from '@/ability'
 
 import styles from './create-project.module.less'
 
-const CreateProject: React.FC = () => {
-  const projectModel = useModel('project')
-
-  const handleFinish = usePersistFn(async (values) => {
-    projectModel.dispatch.create(values)
-  })
+const CreateProject: FC = () => {
+  const create = useModelDispatch((dispatch) => dispatch.project.create)
+  const handleFinish = usePersistFn((values) => create(values))
 
   return (
     <Layout className={styles.root} title="创建项目">

@@ -1,4 +1,4 @@
-import React from 'react'
+import type { FC } from 'react'
 import dayjs from 'dayjs'
 import { Card, Image } from 'antd'
 import clsx from 'clsx'
@@ -6,7 +6,7 @@ import clsx from 'clsx'
 import type { Project } from '@ohbug-server/types'
 
 import { useRequest, usePersistFn } from '@/hooks'
-import { navigate, useModel } from '@/ability'
+import { navigate, useModelDispatch } from '@/ability'
 import * as api from '@/api'
 import { MiniChart } from '@/components'
 
@@ -30,14 +30,16 @@ function getTrend(projectId: number) {
     })
 }
 
-const ProjectCard: React.FC<ProjectCardProps> = ({ project, active }) => {
-  const projectModel = useModel('project')
+const ProjectCard: FC<ProjectCardProps> = ({ project, active }) => {
   const { data, loading } = useRequest(getTrend(project.id!), {
     initialData: { buckets: [] },
   })
 
+  const setCurrentProject = useModelDispatch(
+    (dispatch) => dispatch.project.setCurrentProject
+  )
   const handleToIssue = usePersistFn(() => {
-    projectModel.dispatch.setCurrentProject(project.id!)
+    setCurrentProject(project.id!)
     navigate(`/issue`)
   })
 
@@ -50,7 +52,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project, active }) => {
       title={
         <div className={styles.title}>
           <div className="flex items-center">
-            <Image className="w-8 mr-3" src={jsPlatform} preview={false} />
+            <Image className="!w-8 mr-3" src={jsPlatform} preview={false} />
             <span>{project.name}</span>
           </div>
         </div>

@@ -1,31 +1,35 @@
-import React from 'react'
+import type { FC } from 'react'
 import { Button, Modal, Table } from 'antd'
 import dayjs from 'dayjs'
 
-import { RouteComponentProps, useModel } from '@/ability'
+import {
+  RouteComponentProps,
+  useModelDispatch,
+  useModelEffect,
+  useModelState,
+} from '@/ability'
 import type { SourceMap } from '@/models'
 import { Zone } from '@/components'
 
 import styles from './SourceMap.module.less'
 
-const SourceMapCompnent: React.FC<RouteComponentProps> = () => {
-  const sourceMapModel = useModel('sourceMap')
-  const projectModel = useModel('project')
-  const loadingModel = useModel('loading')
-
-  const dataSource = sourceMapModel.state.data
-  const loading = loadingModel.state.effects.sourceMap.get
-
-  React.useEffect(() => {
-    sourceMapModel.dispatch.get()
-    // eslint-disable-next-line
-  }, [projectModel.state.current])
+const SourceMapCompnent: FC<RouteComponentProps> = () => {
+  const currentProject = useModelState((state) => state.project.current)
+  const { data, loading } = useModelEffect(
+    (dispatch) => dispatch.sourceMap.get,
+    {
+      refreshDeps: [currentProject],
+    }
+  )
+  const deleteSourceMap = useModelDispatch(
+    (dispatch) => dispatch.sourceMap.delete
+  )
 
   return (
     <section className={styles.root}>
       <Zone title="SourceMap">
         <Table<SourceMap>
-          dataSource={dataSource}
+          dataSource={data}
           loading={loading}
           rowKey={(record) => record.id!}
           pagination={false}
@@ -71,7 +75,7 @@ const SourceMapCompnent: React.FC<RouteComponentProps> = () => {
                       okType: 'danger',
                       cancelText: '取消',
                       onOk() {
-                        sourceMapModel.dispatch.delete({
+                        deleteSourceMap({
                           sourceMapId: item?.id,
                         })
                       },

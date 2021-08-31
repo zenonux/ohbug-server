@@ -1,4 +1,4 @@
-import React from 'react'
+import type { ReactNode } from 'react'
 import type { OhbugAction } from '@ohbug/types'
 import { Typography } from 'antd'
 import {
@@ -9,8 +9,8 @@ import {
 } from '@ant-design/icons'
 
 export function getMessageAndIconByActionType(action: OhbugAction): {
-  message: React.ReactNode
-  icon: React.ReactNode
+  message: ReactNode
+  icon: ReactNode
 } {
   const status = action.data?.res?.status
   switch (action.type) {

@@ -1,4 +1,4 @@
-import React from 'react'
+import type { FC } from 'react'
 import { Skeleton } from 'antd'
 import dayjs from 'dayjs'
 import {
@@ -24,7 +24,7 @@ import styles from './Profile.module.less'
 interface ProfileProps {
   event: EventState['current']
 }
-const Profile: React.FC<ProfileProps> = ({ event }) => {
+const Profile: FC<ProfileProps> = ({ event }) => {
   const tooltipTagsList = useCreation(() => {
     const result = []
     if (event?.timestamp) {

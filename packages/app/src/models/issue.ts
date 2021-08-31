@@ -1,7 +1,9 @@
 import { createModel } from '@rematch/core'
+import dayjs, { Dayjs } from 'dayjs'
 
 import type { RootModel } from '@/models'
 import * as api from '@/api'
+import type { EffectReturn } from '@/ability'
 
 interface MetaData {
   type: string
@@ -29,6 +31,11 @@ export interface Trend {
   }[]
 }
 export interface IssueState {
+  ranges: {
+    当日: [Dayjs, Dayjs]
+    近两周: [Dayjs, Dayjs]
+  }
+  searchRange: [Date, Date]
   current?: Issue
   data?: Issue[]
   count?: number
@@ -41,9 +48,27 @@ export interface IssueState {
   }
 }
 
+const today = [dayjs().subtract(23, 'hour'), dayjs()]
+const twoWeeks = [dayjs().subtract(13, 'day'), dayjs()]
+const defaultValue = twoWeeks
 export const issue = createModel<RootModel>()({
-  state: {} as IssueState,
+  state: {
+    ranges: {
+      当日: today,
+      近两周: twoWeeks,
+    },
+    searchRange: [
+      defaultValue[0].toISOString() as unknown as Date,
+      defaultValue[1].toISOString() as unknown as Date,
+    ],
+  } as IssueState,
   reducers: {
+    setRange(state, payload: IssueState['searchRange']) {
+      return {
+        ...state,
+        searchRange: payload,
+      }
+    },
     setIssues(state, payload: { data: Issue[]; count: number }) {
       return {
         ...state,
@@ -83,14 +108,18 @@ export const issue = createModel<RootModel>()({
     },
   },
   effects: (dispatch) => ({
-    async get({ issueId }: { issueId: number }) {
+    async get({
+      issueId,
+    }: {
+      issueId: number
+    }): EffectReturn<IssueState['current']> {
       const data = await api.issue.get.call({
         issueId,
       })
 
-      if (data) {
-        dispatch.issue.setCurrentIssue(data)
-      }
+      dispatch.issue.setCurrentIssue(data)
+
+      return (state) => state.issue.current
     },
 
     async searchIssues(
@@ -106,35 +135,39 @@ export const issue = createModel<RootModel>()({
         end?: Date
       },
       state
-    ) {
+    ): EffectReturn<IssueState | undefined> {
+      const id = projectId || state.project.current?.id!
       if (start && end) {
-        // eslint-disable-next-line
-        const id = projectId || state.project.current?.id!
-        await dispatch.project.trend({
-          projectId: id,
-          start,
-          end,
-        })
-
-        const result = await api.issue.getMany.call({
-          projectId: id,
-          page,
-          start,
-          end,
-        })
-        if (result) {
-          const [data, count] = result
-          dispatch.issue.setIssues({
-            data,
-            count,
-          })
-          const ids = data.map((v: Issue) => v.id)
-          await dispatch.issue.getTrends({
-            ids,
-            period: '24h',
-          })
-        }
+        dispatch.issue.setRange([start, end])
       }
+      const s = start ?? state.issue.searchRange[0]
+      const e = end ?? state.issue.searchRange[1]
+
+      await dispatch.project.trend({
+        projectId: id,
+        start: s,
+        end: e,
+      })
+
+      const result = await api.issue.getMany.call({
+        projectId: id,
+        page,
+        start: s,
+        end: e,
+      })
+
+      const [data, count] = result
+      dispatch.issue.setIssues({
+        data,
+        count,
+      })
+      const ids = data.map((v: Issue) => v.id)
+      await dispatch.issue.getTrends({
+        ids,
+        period: '24h',
+      })
+
+      return (_state) => _state.issue
     },
 
     async getTrends({
@@ -143,13 +176,15 @@ export const issue = createModel<RootModel>()({
     }: {
       ids: number[]
       period: '24h' | '14d' | 'all'
-    }) {
+    }): EffectReturn<IssueState['trend']> {
       const result = await api.issue.getTrend.call({
         ids,
         period,
       })
 
       dispatch.issue.setTrends(result)
+
+      return (state) => state.issue.trend
     },
 
     async getCurrentTrend({
@@ -158,12 +193,15 @@ export const issue = createModel<RootModel>()({
     }: {
       ids: number[]
       period: '24h' | '14d' | 'all'
-    }) {
+    }): EffectReturn<IssueState['trend']> {
       const [result] = await api.issue.getTrend.call({
         ids,
         period,
       })
+
       dispatch.issue.setCurrentTrend(result)
+
+      return (state) => state.issue.trend
     },
   }),
 })

@@ -1,4 +1,4 @@
-import React from 'react'
+import type { FC, ReactNode } from 'react'
 import { Radio } from 'antd'
 import { RadioGroupProps } from 'antd/lib/radio'
 import clsx from 'clsx'
@@ -10,12 +10,12 @@ import styles from './RadioIconButton.module.less'
 interface Data {
   label: string
   value: string | number
-  icon: React.ReactNode
+  icon: ReactNode
 }
 interface RadioIconButtonProps extends RadioGroupProps {
   dataSource: Data[]
 }
-const RadioIconButton: React.FC<RadioIconButtonProps> = ({
+const RadioIconButton: FC<RadioIconButtonProps> = ({
   className,
   dataSource,
   ...args

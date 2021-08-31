@@ -2,19 +2,21 @@ import type { FC } from 'react'
 import { Menu, Drawer, Image, Button, Divider } from 'antd'
 import { MenuOutlined, PlusOutlined } from '@ant-design/icons'
 
-import { useModel, navigate } from '@/ability'
+import { navigate, useModelDispatch, useModelState } from '@/ability'
 import { usePersistFn, useBoolean } from '@/hooks'
 import logo from '@/static/logo-desc.svg'
 
 const ProjectSelector: FC = () => {
-  const projectModel = useModel('project')
-  const projects = projectModel.state.data
-  const project = projectModel.state.current
+  const projects = useModelState((state) => state.project.data)
+  const project = useModelState((state) => state.project.current)
+  const setCurrentProject = useModelDispatch(
+    (dispatch) => dispatch.project.setCurrentProject
+  )
   const [visible, { toggle }] = useBoolean(false)
 
   const handleProjectChange = usePersistFn(({ key: projectId }) => {
     if (projectId !== 'create') {
-      projectModel.dispatch.setCurrentProject(projectId)
+      setCurrentProject(projectId)
       toggle(false)
     }
   })

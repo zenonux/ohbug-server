@@ -1,4 +1,4 @@
-import React from 'react'
+import type { FC } from 'react'
 import { Card, Menu } from 'antd'
 
 import { RouteComponentProps, useLocation, navigate } from '@/ability'
@@ -56,7 +56,7 @@ function renderMenu(data: MenuList, handleItemClick: (item: MenuItem) => void) {
   )
 }
 
-const Settings: React.FC<RouteComponentProps> = ({ children }) => {
+const Settings: FC<RouteComponentProps> = ({ children }) => {
   const location = useLocation()
   const selectedKeys = useCreation(() => {
     const [, key] = location.pathname.split(`/settings/`)
