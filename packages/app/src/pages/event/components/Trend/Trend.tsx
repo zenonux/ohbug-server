@@ -17,7 +17,9 @@ const Trend: FC<TrendProps> = ({ issue }) => {
     data,
     loading,
     run: getCurrentTrend,
-  } = useModelEffect((dispatch) => dispatch.issue.getCurrentTrend)
+  } = useModelEffect((dispatch) => dispatch.issue.getCurrentTrend, {
+    manual: true,
+  })
 
   useEffect(() => {
     if (issue) {

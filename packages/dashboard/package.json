@@ -23,7 +23,7 @@
     "@ohbug-server/types": "^1.0.0-alpha.0",
     "cookie-parser": "^1.4.5",
     "nanoid": "^3.1.23",
-    "nest-winston": "^1.5.0",
+    "nest-winston": "^1.6.0",
     "passport": "^0.4.1",
     "passport-jwt": "^4.0.0",
     "passport-local": "^1.0.0",
