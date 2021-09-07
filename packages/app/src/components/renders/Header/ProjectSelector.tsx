@@ -4,7 +4,7 @@ import { MenuOutlined, PlusOutlined } from '@ant-design/icons'
 
 import { navigate, useModelDispatch, useModelState } from '@/ability'
 import { usePersistFn, useBoolean } from '@/hooks'
-import logo from '@/static/logo-desc.svg'
+import logo from '@/static/logo.svg'
 
 const ProjectSelector: FC = () => {
   const projects = useModelState((state) => state.project.data)

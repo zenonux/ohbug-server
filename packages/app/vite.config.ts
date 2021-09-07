@@ -1,14 +1,20 @@
 /* eslint-disable import/no-extraneous-dependencies */
 import path from 'path'
 import { defineConfig, UserConfig } from 'vite'
-import WindiCSS from 'vite-plugin-windicss'
 import reactJsx from 'vite-react-jsx'
 import reactRefresh from '@vitejs/plugin-react-refresh'
+import WindiCSS from 'vite-plugin-windicss'
+import antdDayjs from 'antd-dayjs-vite-plugin'
 import vitePluginImp from 'vite-plugin-imp'
 import visualizer from 'rollup-plugin-visualizer'
 
+import pkg from './package.json'
+
 export default defineConfig(({ mode }) => {
   const config: UserConfig = {
+    define: {
+      'import.meta.env.APP_VERSION': JSON.stringify(pkg.version.toString()),
+    },
     resolve: {
       alias: [
         { find: /^~/, replacement: '' },
@@ -28,13 +34,14 @@ export default defineConfig(({ mode }) => {
         },
       },
     },
-    plugins: [reactJsx(), reactRefresh(), WindiCSS()],
+    plugins: [reactJsx(), reactRefresh(), WindiCSS(), antdDayjs()],
     build: {
       rollupOptions: {
         output: {
           manualChunks: {
             react: ['react'],
             'react-dom': ['react-dom'],
+            antd: ['antd'],
           },
         },
       },
@@ -63,8 +70,6 @@ export default defineConfig(({ mode }) => {
         ],
       })
     )
-  }
-  if (mode === 'analyze') {
     config.plugins?.push(
       visualizer({
         filename: './node_modules/.cache/visualizer/stats.html',
