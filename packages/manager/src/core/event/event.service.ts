@@ -63,6 +63,8 @@ export class EventService {
   async handleEvent(eventLike: OhbugEventLike): Promise<void> {
     await this.documentQueue.add('event', eventLike, {
       delay: 3000,
+      removeOnComplete: true,
+      removeOnFail: true,
     })
   }
 
