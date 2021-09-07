@@ -4,7 +4,6 @@ import { defineConfig, UserConfig } from 'vite'
 import reactJsx from 'vite-react-jsx'
 import reactRefresh from '@vitejs/plugin-react-refresh'
 import WindiCSS from 'vite-plugin-windicss'
-import antdDayjs from 'antd-dayjs-vite-plugin'
 import vitePluginImp from 'vite-plugin-imp'
 import visualizer from 'rollup-plugin-visualizer'
 
@@ -34,7 +33,7 @@ export default defineConfig(({ mode }) => {
         },
       },
     },
-    plugins: [reactJsx(), reactRefresh(), WindiCSS(), antdDayjs()],
+    plugins: [reactJsx(), reactRefresh(), WindiCSS()],
     build: {
       rollupOptions: {
         output: {

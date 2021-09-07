@@ -10,8 +10,6 @@ import { navigate, useModelDispatch } from '@/ability'
 import * as api from '@/api'
 import { MiniChart } from '@/components'
 
-import jsPlatform from '@/static/images/js.platform.png'
-
 import styles from './ProjectCard.module.less'
 
 interface ProjectCardProps {
@@ -52,7 +50,11 @@ const ProjectCard: FC<ProjectCardProps> = ({ project, active }) => {
       title={
         <div className={styles.title}>
           <div className="flex items-center">
-            <Image className="!w-8 mr-3" src={jsPlatform} preview={false} />
+            <Image
+              className="!w-8 mr-3"
+              src="/images/js.platform.png"
+              preview={false}
+            />
             <span>{project.name}</span>
           </div>
         </div>

@@ -4,7 +4,6 @@ import { MenuOutlined, PlusOutlined } from '@ant-design/icons'
 
 import { navigate, useModelDispatch, useModelState } from '@/ability'
 import { usePersistFn, useBoolean } from '@/hooks'
-import logo from '@/static/logo.svg'
 
 const ProjectSelector: FC = () => {
   const projects = useModelState((state) => state.project.data)
@@ -39,7 +38,7 @@ const ProjectSelector: FC = () => {
         placement="left"
         title={
           <Button type="link" href="https://ohbug.net" target="_blank">
-            <Image src={logo} width={86} preview={false} />
+            <Image src="/logo.svg" width={86} preview={false} />
           </Button>
         }
         onClose={() => toggle(false)}

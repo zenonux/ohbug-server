@@ -1,7 +1,7 @@
 let url = ''
 
 // eslint-disable-next-line no-restricted-globals
-self.addEventListener('push', function (event) {
+self.addEventListener('push', (event) => {
   const { title, body, link, icon } = event.data.json()
   url = link
   event.waitUntil(
@@ -14,7 +14,7 @@ self.addEventListener('push', function (event) {
 })
 
 // eslint-disable-next-line no-restricted-globals
-self.addEventListener('notificationclick', function (event) {
+self.addEventListener('notificationclick', (event) => {
   event.notification.close()
   event.waitUntil(
     // eslint-disable-next-line no-undef

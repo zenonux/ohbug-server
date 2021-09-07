@@ -4,7 +4,6 @@ import { Row, Col, Skeleton, Typography, Card, Statistic } from 'antd'
 
 import type { EventState, IssueState } from '@/models'
 import { Image } from '@/components'
-import figure from '@/static/images/issue_title_figure.svg'
 
 import styles from './Title.module.less'
 
@@ -50,7 +49,7 @@ const Title: FC<TitleProps> = ({ event, issue }) => {
             </Typography>
             <Image
               className={styles.figure}
-              src={figure}
+              src="/images/issue_title_figure.svg"
               alt="issue_title_figure"
             />
           </Skeleton>

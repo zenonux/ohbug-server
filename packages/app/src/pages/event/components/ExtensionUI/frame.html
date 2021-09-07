@@ -43,11 +43,11 @@
               setExtension(result.extension)
               toggleLoading(true)
               import(
+                // result.extension?.ui?.cdn
                 'https://cdn.jsdelivr.net/npm/@ohbug/extension-rrweb@latest/dist/ui.esm.min.js'
               )
                 .then((res) => {
                   const module = res.default
-                  console.log(module)
                   if (module)
                     module.component(
                       result.event,
