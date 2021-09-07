@@ -42,6 +42,8 @@ export default defineConfig(({ mode }) => {
             react: ['react'],
             'react-dom': ['react-dom'],
             antd: ['antd'],
+            echarts: ['echarts'],
+            'markdown-it': ['markdown-it'],
           },
         },
       },

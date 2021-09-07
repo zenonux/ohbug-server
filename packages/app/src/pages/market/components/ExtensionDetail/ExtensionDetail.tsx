@@ -1,15 +1,14 @@
 import type { FC } from 'react'
-import { renderToString } from 'react-dom/server'
+import { renderToStaticMarkup } from 'react-dom/server'
 import { Card, Avatar, Switch } from 'antd'
 import MarkdownIt from 'markdown-it'
-import SyntaxHighlighter from 'react-syntax-highlighter'
-import { githubGist as highlighterStyles } from 'react-syntax-highlighter/dist/esm/styles/hljs'
 import { GithubOutlined } from '@ant-design/icons'
-
 import type { ExtensionDetail } from '@ohbug-server/types'
+import type { Language } from 'prism-react-renderer'
 
 import { useCreation, usePersistFn } from '@/hooks'
 import { useModelEffect, useModelState } from '@/ability'
+import { Highlight } from '@/components'
 
 import styles from './ExtensionDetail.module.less'
 
@@ -22,14 +21,9 @@ const md = new MarkdownIt({
   html: true,
   linkify: true,
   typographer: true,
-  highlight(string, language) {
-    return renderToString(
-      <SyntaxHighlighter
-        language={language || 'bash'}
-        style={highlighterStyles}
-      >
-        {string}
-      </SyntaxHighlighter>
+  highlight(code, language) {
+    return renderToStaticMarkup(
+      <Highlight code={code} language={language as Language} />
     )
   },
 })

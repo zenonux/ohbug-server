@@ -1,5 +1,6 @@
-export { default as Layout } from './Layout'
+export { default as Highlight } from './Highlight'
 export { default as Image } from './Image'
+export { default as Layout } from './Layout'
 export { default as LineChart } from './LineChart'
 export { default as Loading } from './Loading'
 export { default as MiniChart } from './MiniChart'
