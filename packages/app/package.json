@@ -57,9 +57,9 @@
     "less": "^4.1.1",
     "mockjs": "^1.1.0",
     "rollup-plugin-visualizer": "^5.5.2",
-    "vite": "^2.5.3",
+    "vite": "^2.5.5",
     "vite-plugin-imp": "^2.0.8",
-    "vite-plugin-windicss": "^1.4.1",
+    "vite-plugin-windicss": "^1.4.2",
     "vite-react-jsx": "^1.1.2",
     "windicss": "^3.1.7",
     "windicss-analysis": "^0.3.4"

@@ -1,0 +1,20 @@
+{
+  "extends": "./node_modules/@chenyueban/lint/src/eslint.js",
+  "rules": {
+    // 导入未安装的依赖
+    "import/no-extraneous-dependencies": [
+      "error",
+      {
+        "packageDir": [
+          "packages/app",
+          "packages/common",
+          "packages/dashboard",
+          "packages/manager",
+          "packages/notifier",
+          "packages/transfer"
+        ]
+      }
+    ],
+    "import/extensions": "off"
+  }
+}

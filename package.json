@@ -48,7 +48,7 @@
     "@ohbug/react": "^1.0.13",
     "@ohbug/types": "^1.1.4",
     "@ohbug/vue": "^1.0.12",
-    "bull": "^3.29.1",
+    "bull": "^3.29.2",
     "class-transformer": "^0.4.0",
     "class-validator": "^0.13.1",
     "dayjs": "^1.10.6",
@@ -60,8 +60,8 @@
     "typeorm": "^0.2.36"
   },
   "devDependencies": {
-    "@chenyueban/lint": "^0.2.14",
-    "@chenyueban/tsconfig": "^0.1.8",
+    "@chenyueban/lint": "^1.0.9",
+    "@chenyueban/tsconfig": "^0.2.0",
     "@nestjs/cli": "^8.1.0",
     "@nestjs/testing": "^8.0.5",
     "@types/bull": "^3.15.4",
