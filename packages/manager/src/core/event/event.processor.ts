@@ -10,11 +10,11 @@ import {
 } from '@ohbug-server/common'
 
 import type { OhbugEventLike } from '@ohbug-server/types'
-import { IssueService } from '@/core/issue/issue.service'
+import { IssueService } from '../issue/issue.service'
 import {
   getNotificationByApiKey,
   judgingStatus,
-} from '@/core/issue/notification.core'
+} from '../issue/notification.core'
 import { EventService } from './event.service'
 
 @Processor('document')

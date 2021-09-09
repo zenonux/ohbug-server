@@ -5,7 +5,7 @@ import { nanoid } from 'nanoid'
 
 import { ForbiddenException } from '@ohbug-server/common'
 import type { NotificationSettingWebHook } from '@ohbug-server/types'
-import { ProjectService } from '@/api/project/project.service'
+import { ProjectService } from '../project/project.service'
 
 import { NotificationRule } from './notification.rule.entity'
 import { NotificationSetting } from './notification.setting.entity'

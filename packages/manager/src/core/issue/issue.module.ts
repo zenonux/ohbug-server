@@ -1,7 +1,7 @@
 import { forwardRef, Module } from '@nestjs/common'
 import { TypeOrmModule } from '@nestjs/typeorm'
 
-import { EventModule } from '@/core/event/event.module'
+import { EventModule } from '../event/event.module'
 import { Issue } from './issue.entity'
 import { IssueService } from './issue.service'
 

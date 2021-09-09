@@ -8,7 +8,7 @@ import { unlinkSync } from 'fs'
 
 import { ForbiddenException } from '@ohbug-server/common'
 import type { OhbugEventLike, ReceiveSourceMapFile } from '@ohbug-server/types'
-import { ProjectService } from '@/api/project/project.service'
+import { ProjectService } from '../project/project.service'
 
 import { SourceMap } from './sourceMap.entity'
 import {

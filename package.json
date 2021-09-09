@@ -1,8 +1,5 @@
 {
   "private": true,
-  "workspaces": [
-    "packages/*"
-  ],
   "name": "ohbug-server",
   "description": "Ohbug Server",
   "author": "chenyueban <jasonchan0527@gmail.com>",
@@ -18,19 +15,27 @@
   "scripts": {
     "bootstrap": "lerna bootstrap",
     "tsc": "lerna run tsc",
-    "build": "lerna run build --stream",
-    "dev": "lerna run start --parallel",
-    "start": "concurrently \"npm run docker:dev\" \"npm run dev\" --kill-others",
-    "start:debug": "cross-env pm2 start ./ecosystem.config.js --env production",
-    "start:prod": "cross-env pm2-runtime start ./ecosystem.config.js --env production",
+    "build": "",
+    "build:dashboard": "nest build dashboard",
+    "build:manager": "nest build manager",
+    "build:notifier": "nest build notifier",
+    "build:transfer": "nest build transfer",
+    "start": "",
+    "start:dashboard": "nest start dashboard --watch",
+    "start:manager": "nest start manager --watch",
+    "start:notifier": "nest start notifier --watch",
+    "start:transfer": "nest start transfer --watch",
+    "dev": "",
+    "dev:dashboard": "nest start dashboard --debug --watch",
+    "dev:manager": "nest start manager --debug --watch",
+    "dev:notifier": "nest start notifier --debug --watch",
+    "dev:transfer": "nest start transfer --debug --watch",
+    "docker": "",
     "docker:dev": "docker-compose -f ./docker-compose.dev.yml up --build",
     "docker:prod": "docker-compose --env-file .env.production -f ./docker-compose.prod.yml up --build -d",
     "prettier": "lerna run prettier",
     "lint": "lerna run lint",
-    "test": "jest",
-    "test:watch": "lerna run test:watch --parallel",
-    "update:deps": "yarn upgrade-interactive --latest",
-    "release": "lerna version"
+    "test": "jest"
   },
   "dependencies": {
     "@nestjs/axios": "^0.0.1",
@@ -57,9 +62,27 @@
     "ramda": "^0.27.0",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.3.0",
-    "typeorm": "^0.2.36"
+    "typeorm": "^0.2.36",
+    "raw-body": "^2.4.1",
+    "@nestjs/jwt": "^8.0.0",
+    "@nestjs/passport": "^8.0.0",
+    "@nestjs/serve-static": "^2.2.2",
+    "cookie-parser": "^1.4.5",
+    "nanoid": "^3.1.23",
+    "nest-winston": "^1.6.0",
+    "passport": "^0.4.1",
+    "passport-jwt": "^4.0.0",
+    "passport-local": "^1.0.0",
+    "source-map-trace": "^0.1.3",
+    "winston": "^3.2.1",
+    "markdown-it": "^12.1.0",
+    "nodemailer": "^6.6.3",
+    "web-push": "^3.4.5"
   },
   "devDependencies": {
+    "@types/markdown-it": "^12.2.1",
+    "@types/nodemailer": "^6.4.0",
+    "@types/web-push": "^3.3.0",
     "@chenyueban/lint": "^1.0.9",
     "@chenyueban/tsconfig": "^0.2.0",
     "@nestjs/cli": "^8.1.0",
@@ -84,16 +107,10 @@
     "ts-loader": "^9.2.4",
     "ts-node": "^10.2.1",
     "tsconfig-paths": "^3.11.0",
-    "typescript": "^4.4.2"
-  },
-  "jest": {
-    "preset": "ts-jest",
-    "transform": {
-      "^.+\\.(t|j)s$": "ts-jest"
-    },
-    "projects": [
-      "<rootDir>/packages/*"
-    ]
+    "typescript": "^4.4.2",
+    "@nestjs/schematics": "^8.0.3",
+    "@types/cookie-parser": "^1.4.2",
+    "@types/passport-jwt": "^3.0.4"
   },
   "config": {
     "commitizen": {

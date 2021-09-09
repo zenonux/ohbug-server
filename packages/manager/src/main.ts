@@ -17,7 +17,7 @@ async function bootstrap() {
     }
   )
 
-  app.listen()
+  await app.listen()
 }
 bootstrap().catch((error) => {
   console.error(error)

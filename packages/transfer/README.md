@@ -1,3 +1,0 @@
-# @ohbug-server/transfer
-
-## description

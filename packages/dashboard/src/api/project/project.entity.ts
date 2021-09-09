@@ -14,9 +14,9 @@ import { Exclude } from 'class-transformer'
 
 import { Project as IProject } from '@ohbug-server/types'
 
-import { NotificationRule } from '@/api/notification/notification.rule.entity'
-import { NotificationSetting } from '@/api/notification/notification.setting.entity'
-import { Extension } from '@/api/extension/extension.entity'
+import { NotificationRule } from '../notification/notification.rule.entity'
+import { NotificationSetting } from '../notification/notification.setting.entity'
+import { Extension } from '../extension/extension.entity'
 
 @Entity()
 export class Project implements IProject {

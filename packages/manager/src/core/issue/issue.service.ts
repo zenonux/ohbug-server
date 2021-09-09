@@ -3,11 +3,11 @@ import { InjectRepository } from '@nestjs/typeorm'
 import type { FindConditions } from 'typeorm'
 import { Repository } from 'typeorm'
 import { uniq } from 'ramda'
-import dayjs from 'dayjs'
-import duration from 'dayjs/plugin/duration'
+import * as dayjs from 'dayjs'
+import * as duration from 'dayjs/plugin/duration'
 import { ForbiddenException } from '@ohbug-server/common'
 
-import { EventService } from '@/core/event/event.service'
+import { EventService } from '../event/event.service'
 
 import { Issue } from './issue.entity'
 import type {

@@ -4,8 +4,8 @@ import { ConfigService } from '@nestjs/config'
 import { Raw } from 'typeorm'
 
 import { ForbiddenException } from '@ohbug-server/common'
-import { EventService } from '@/core/event/event.service'
-import { IssueService } from '@/core/issue/issue.service'
+import { EventService } from '../event/event.service'
+import { IssueService } from '../issue/issue.service'
 
 @Injectable()
 export class ScheduleService {

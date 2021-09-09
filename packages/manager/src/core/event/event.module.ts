@@ -8,7 +8,7 @@ import {
   MicroserviceNotifierClientModule,
 } from '@ohbug-server/common'
 
-import { IssueModule } from '@/core/issue/issue.module'
+import { IssueModule } from '../issue/issue.module'
 
 import { EventService } from './event.service'
 import { EventConsumer } from './event.processor'

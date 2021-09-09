@@ -10,8 +10,8 @@ import {
   TOPIC_MANAGER_NOTIFIER_DISPATCH_NOTICE,
 } from '@ohbug-server/common'
 
-import { NoticeService } from '@/core/notice/notice.service'
-import type { DispatchNotice, SendEmail } from '@/core/notice/notice.interface'
+import { NoticeService } from '../notice/notice.service'
+import type { DispatchNotice, SendEmail } from '../notice/notice.interface'
 
 @Controller()
 export class MessageController {

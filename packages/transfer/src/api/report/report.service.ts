@@ -8,7 +8,7 @@ import {
 } from '@ohbug-server/common'
 import type { OhbugEventLike } from '@ohbug-server/types'
 
-import { formatter } from '@/utils'
+import { formatter } from '../../utils'
 
 @Injectable()
 export class ReportService {

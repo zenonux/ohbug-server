@@ -6,7 +6,7 @@ import {
   TOPIC_DASHBOARD_MANAGER_GET_LATEST_EVENT,
   TOPIC_DASHBOARD_MANAGER_GET_EVENT,
 } from '@ohbug-server/common'
-import { SourceMapService } from '@/api/sourceMap/sourceMap.service'
+import { SourceMapService } from '../sourceMap/sourceMap.service'
 
 @Injectable()
 export class EventService {

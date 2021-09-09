@@ -7,7 +7,7 @@ import { unlinkSync } from 'fs'
 import { uniq } from 'ramda'
 
 import { ForbiddenException } from '@ohbug-server/common'
-import { SourceMap } from '@/api/sourceMap/sourceMap.entity'
+import { SourceMap } from './sourceMap.entity'
 
 @Processor('sourceMap')
 export class SourceMapConsumer {

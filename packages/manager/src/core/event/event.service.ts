@@ -6,7 +6,7 @@ import { InjectQueue } from '@nestjs/bull'
 
 import { ForbiddenException } from '@ohbug-server/common'
 import type { OhbugEventLike } from '@ohbug-server/types'
-import { IssueService } from '@/core/issue/issue.service'
+import { IssueService } from '../issue/issue.service'
 
 import type { GetEventByEventId, OhbugEventDetail } from './event.interface'
 import {

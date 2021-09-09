@@ -8,7 +8,7 @@ import {
   TOPIC_DASHBOARD_MANAGER_GET_TREND,
 } from '@ohbug-server/common'
 
-import { ProjectService } from '@/api/project/project.service'
+import { ProjectService } from '../project/project.service'
 
 import type {
   GetIssueByIssueIdParams,
