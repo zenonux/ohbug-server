@@ -6,8 +6,7 @@ import { Job } from 'bull'
 import { unlinkSync } from 'fs'
 import { uniq } from 'ramda'
 
-import { ForbiddenException } from '@ohbug-server/common'
-import { SourceMap } from './sourceMap.entity'
+import { ForbiddenException, SourceMap } from '@ohbug-server/common'
 
 @Processor('sourceMap')
 export class SourceMapConsumer {

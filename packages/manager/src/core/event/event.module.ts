@@ -6,13 +6,12 @@ import { ConfigService } from '@nestjs/config'
 import {
   ConfigModule,
   MicroserviceNotifierClientModule,
+  Event,
 } from '@ohbug-server/common'
 
 import { IssueModule } from '../issue/issue.module'
-
 import { EventService } from './event.service'
 import { EventConsumer } from './event.processor'
-import { Event } from './event.entity'
 
 @Module({
   imports: [

@@ -15,7 +15,8 @@ import type {
   NotificationRuleBlackList,
   NotificationRuleLevel,
 } from '@ohbug-server/types'
-import { Project } from '../project/project.entity'
+
+import { Project } from './project.entity'
 
 @Entity()
 export class NotificationRule {

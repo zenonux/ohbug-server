@@ -4,16 +4,15 @@ import { InjectRepository } from '@nestjs/typeorm'
 import type { Queue } from 'bull'
 import { InjectQueue } from '@nestjs/bull'
 
-import { ForbiddenException } from '@ohbug-server/common'
+import { ForbiddenException, Event } from '@ohbug-server/common'
 import type { OhbugEventLike } from '@ohbug-server/types'
-import { IssueService } from '../issue/issue.service'
 
+import { IssueService } from '../issue/issue.service'
 import type { GetEventByEventId, OhbugEventDetail } from './event.interface'
 import {
   getMd5FromAggregationData,
   switchErrorDetailAndGetAggregationDataAndMetaData,
 } from './event.core'
-import { Event } from './event.entity'
 
 @Injectable()
 export class EventService {

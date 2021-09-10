@@ -7,7 +7,10 @@ import {
 } from 'typeorm'
 import { Exclude } from 'class-transformer'
 
-import { SourceMap as ISourceMap, SourceMapData } from '@ohbug-server/types'
+import type {
+  SourceMap as ISourceMap,
+  SourceMapData,
+} from '@ohbug-server/types'
 
 @Entity()
 export class SourceMap implements ISourceMap {

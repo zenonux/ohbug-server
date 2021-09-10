@@ -5,11 +5,10 @@ import { Repository } from 'typeorm'
 import { uniq } from 'ramda'
 import dayjs from 'dayjs'
 import duration from 'dayjs/plugin/duration'
-import { ForbiddenException } from '@ohbug-server/common'
+
+import { ForbiddenException, Issue } from '@ohbug-server/common'
 
 import { EventService } from '../event/event.service'
-
-import { Issue } from './issue.entity'
 import type {
   CreateOrUpdateIssueByIntroParams,
   GetIssueByIssueIdParams,

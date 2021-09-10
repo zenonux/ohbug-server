@@ -12,6 +12,7 @@ import {
 import { FileInterceptor } from '@nestjs/platform-express'
 
 import type { ReceiveSourceMapFile } from '@ohbug-server/types'
+import { SourceMap } from '@ohbug-server/common'
 
 import { SourceMapService } from './sourceMap.service'
 import {
@@ -19,7 +20,6 @@ import {
   GetSourceMapsDto,
   DeleteSourceMapsDto,
 } from './sourceMap.dto'
-import { SourceMap } from './sourceMap.entity'
 
 /**
  * 用于接受上报 SourceMap，经过处理后入库

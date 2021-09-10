@@ -1,10 +1,9 @@
 import { Module, forwardRef } from '@nestjs/common'
 import { TypeOrmModule } from '@nestjs/typeorm'
 
-import { ProjectModule } from '../project/project.module'
+import { NotificationRule, NotificationSetting } from '@ohbug-server/common'
 
-import { NotificationRule } from './notification.rule.entity'
-import { NotificationSetting } from './notification.setting.entity'
+import { ProjectModule } from '../project/project.module'
 import { NotificationController } from './notification.controller'
 import { NotificationService } from './notification.service'
 
