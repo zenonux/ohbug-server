@@ -6,7 +6,6 @@ import {
 import { MessagePattern, Payload } from '@nestjs/microservices'
 
 import {
-  TOPIC_TRANSFER_MANAGER_EVENT,
   TOPIC_DASHBOARD_MANAGER_GET_ISSUE,
   TOPIC_DASHBOARD_MANAGER_SEARCH_ISSUES,
   TOPIC_DASHBOARD_MANAGER_GET_TREND,
@@ -14,7 +13,6 @@ import {
   TOPIC_DASHBOARD_MANAGER_GET_EVENT,
   TOPIC_DASHBOARD_MANAGER_GET_PROJECT_TREND,
 } from '@ohbug-server/common'
-import type { OhbugEventLike } from '@ohbug-server/types'
 
 import { EventService } from '../event/event.service'
 import { IssueService } from '../issue/issue.service'
@@ -32,11 +30,6 @@ export class MessageController {
     private readonly eventService: EventService,
     private readonly issueService: IssueService
   ) {}
-
-  @MessagePattern(TOPIC_TRANSFER_MANAGER_EVENT)
-  async handleEvent(@Payload() payload: OhbugEventLike) {
-    return this.eventService.handleEvent(payload)
-  }
 
   @UseInterceptors(ClassSerializerInterceptor)
   @MessagePattern(TOPIC_DASHBOARD_MANAGER_GET_ISSUE)

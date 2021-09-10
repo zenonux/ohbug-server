@@ -1,50 +1,22 @@
 import { forwardRef, Inject, Injectable } from '@nestjs/common'
 import { FindConditions, Repository } from 'typeorm'
 import { InjectRepository } from '@nestjs/typeorm'
-import type { Queue } from 'bull'
-import { InjectQueue } from '@nestjs/bull'
 
 import { ForbiddenException, Event } from '@ohbug-server/common'
 import type { OhbugEventLike } from '@ohbug-server/types'
 
 import { IssueService } from '../issue/issue.service'
-import type { GetEventByEventId, OhbugEventDetail } from './event.interface'
-import {
-  getMd5FromAggregationData,
-  switchErrorDetailAndGetAggregationDataAndMetaData,
-} from './event.core'
+import type { GetEventByEventId } from './event.interface'
 
 @Injectable()
 export class EventService {
   constructor(
     @InjectRepository(Event)
     private readonly eventRepository: Repository<Event>,
-    @InjectQueue('document') private documentQueue: Queue,
+
     @Inject(forwardRef(() => IssueService))
     private readonly issueService: IssueService
   ) {}
-
-  /**
-   * 对 event 进行聚合 生成 issue
-   * 根据堆栈信息进行 md5 加密得到 hash
-   *
-   * @param event
-   */
-  aggregation(event: OhbugEventLike) {
-    try {
-      const { type, detail, apiKey } = event
-      if (typeof detail === 'string') {
-        const formatDetail: OhbugEventDetail = JSON.parse(detail)
-        const { agg, metadata } =
-          switchErrorDetailAndGetAggregationDataAndMetaData(type, formatDetail)
-        const intro = getMd5FromAggregationData(apiKey, ...agg)
-        return { intro, metadata }
-      }
-      return null
-    } catch (error) {
-      throw new ForbiddenException(4001003, error)
-    }
-  }
 
   /**
    * 创建 event
@@ -57,14 +29,6 @@ export class EventService {
     } catch (error) {
       throw new ForbiddenException(4001001, error)
     }
-  }
-
-  async handleEvent(eventLike: OhbugEventLike): Promise<void> {
-    await this.documentQueue.add('event', eventLike, {
-      delay: 3000,
-      removeOnComplete: true,
-      removeOnFail: true,
-    })
   }
 
   /**
