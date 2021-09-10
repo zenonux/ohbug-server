@@ -1,6 +1,7 @@
 {
   "private": true,
   "name": "ohbug-server",
+  "version": "0.0.0",
   "description": "Ohbug Server",
   "author": "chenyueban <jasonchan0527@gmail.com>",
   "homepage": "https://github.com/ohbug-org/ohbug-server",
@@ -36,7 +37,8 @@
     "test:ui": "npx majestic",
     "test": "jest",
     "lint": "eslint **/*.ts --fix",
-    "update:deps": "yarn upgrade-interactive --latest"
+    "update:deps": "yarn upgrade-interactive --latest",
+    "release": "release-it"
   },
   "dependencies": {
     "@nestjs/axios": "^0.0.1",
@@ -86,6 +88,7 @@
     "@nestjs/cli": "^8.1.0",
     "@nestjs/schematics": "^8.0.3",
     "@nestjs/testing": "^8.0.5",
+    "@release-it/conventional-changelog": "^3.3.0",
     "@types/bull": "^3.15.4",
     "@types/cookie-parser": "^1.4.2",
     "@types/express": "^4.17.13",
@@ -105,6 +108,7 @@
     "cz-conventional-changelog": "3.3.0",
     "jest": "^27.1.0",
     "majestic": "^1.8.1",
+    "release-it": "^14.11.5",
     "rimraf": "^3.0.2",
     "supertest": "^6.1.6",
     "ts-jest": "^27.0.5",
