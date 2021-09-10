@@ -1,4 +1,4 @@
-import * as dayjs from 'dayjs'
+import dayjs from 'dayjs'
 import { Between } from 'typeorm'
 
 import { SearchCondition, WhereOptions } from './issue.interface'

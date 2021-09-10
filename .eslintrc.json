@@ -2,11 +2,6 @@
   "extends": "./node_modules/@chenyueban/lint/src/eslint.js",
   "rules": {
     "import/extensions": "off",
-    "import/no-cycle": [
-      "error",
-      {
-        "maxDepth": "∞"
-      }
-    ]
+    "import/no-cycle": "off"
   }
 }

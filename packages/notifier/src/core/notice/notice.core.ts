@@ -1,5 +1,5 @@
-import * as dayjs from 'dayjs'
-import * as markdownIt from 'markdown-it'
+import dayjs from 'dayjs'
+import markdownIt from 'markdown-it'
 
 import { getHost } from '@ohbug-server/common'
 import type { NotificationRuleLevel } from '@ohbug-server/types'
