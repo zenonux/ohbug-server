@@ -14,7 +14,7 @@
   "license": "Apache-2.0",
   "scripts": {
     "prebuild": "rimraf dist",
-    "build": "npm run build:dashboard && npm run build:manager && npm run build:notifier && npm run build:transfer",
+    "build": "npm run lint && npm run build:dashboard && npm run build:manager && npm run build:notifier && npm run build:transfer",
     "build:dashboard": "cross-env NODE_ENV=production nest build dashboard",
     "build:manager": "cross-env NODE_ENV=production nest build manager",
     "build:notifier": "cross-env NODE_ENV=production nest build notifier",
@@ -34,7 +34,9 @@
     "docker:dev": "docker-compose -f ./docker-compose.dev.yml up --build",
     "docker:prod": "docker-compose --env-file .env.production -f ./docker-compose.prod.yml up --build -d",
     "test:ui": "npx majestic",
-    "test": "jest"
+    "test": "jest",
+    "lint": "eslint **/*.ts --fix",
+    "update:deps": "yarn upgrade-interactive --latest"
   },
   "dependencies": {
     "@nestjs/axios": "^0.0.1",
@@ -79,7 +81,7 @@
     "winston": "^3.2.1"
   },
   "devDependencies": {
-    "@chenyueban/lint": "^1.0.9",
+    "@chenyueban/lint": "^1.1.0",
     "@chenyueban/tsconfig": "^0.2.0",
     "@nestjs/cli": "^8.1.0",
     "@nestjs/schematics": "^8.0.3",

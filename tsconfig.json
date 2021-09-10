@@ -8,18 +8,7 @@
     "declarationMap": false,
     "sourceMap": true,
     "paths": {
-      "@ohbug-server/common": ["packages/common/src"],
-      "@ohbug-server/common/*": ["packages/common/src/*"],
-      "@ohbug-server/dashboard": ["packages/dashboard/src"],
-      "@ohbug-server/dashboard/*": ["packages/dashboard/src/*"],
-      "@ohbug-server/manager": ["packages/manager/src"],
-      "@ohbug-server/manager/*": ["packages/manager/src/*"],
-      "@ohbug-server/notifier": ["packages/notifier/src"],
-      "@ohbug-server/notifier/*": ["packages/notifier/src/*"],
-      "@ohbug-server/transfer": ["packages/transfer/src"],
-      "@ohbug-server/transfer/*": ["packages/transfer/src/*"],
-      "@ohbug-server/types": ["packages/types/src"],
-      "@ohbug-server/types/*": ["packages/types/src/*"]
+      "@ohbug-server/*": ["packages/*/src"]
     }
   }
 }
