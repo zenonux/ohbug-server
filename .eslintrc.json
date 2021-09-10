@@ -6,12 +6,13 @@
       "error",
       {
         "packageDir": [
-          "packages/app",
-          "packages/common",
-          "packages/dashboard",
-          "packages/manager",
-          "packages/notifier",
-          "packages/transfer"
+          "./",
+          "./packages/app",
+          "./packages/common",
+          "./packages/dashboard",
+          "./packages/manager",
+          "./packages/notifier",
+          "./packages/transfer"
         ]
       }
     ],

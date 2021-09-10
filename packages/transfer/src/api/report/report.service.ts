@@ -1,21 +1,20 @@
-import { Inject, Injectable } from '@nestjs/common'
-import { ClientProxy } from '@nestjs/microservices'
+import { Injectable } from '@nestjs/common'
 import type { OhbugEvent } from '@ohbug/types'
-
-import {
-  ForbiddenException,
-  TOPIC_TRANSFER_MANAGER_EVENT,
-} from '@ohbug-server/common'
+import type { Queue } from 'bull'
+import { InjectQueue } from '@nestjs/bull'
+import { ForbiddenException } from '@ohbug-server/common'
 import type { OhbugEventLike } from '@ohbug-server/types'
 
 import { formatter } from '@/utils'
+import {
+  getMd5FromAggregationData,
+  switchErrorDetailAndGetAggregationDataAndMetaData,
+} from './report.core'
+import type { OhbugEventDetail } from './report.interface'
 
 @Injectable()
 export class ReportService {
-  constructor(
-    @Inject('MICROSERVICE_MANAGER_CLIENT')
-    private readonly managerClient: ClientProxy
-  ) {}
+  constructor(@InjectQueue('document') private documentQueue: Queue) {}
 
   filterEvent(event: OhbugEvent<any>): OhbugEvent<any> {
     if (!('apiKey' in event && typeof event.apiKey === 'string')) {
@@ -88,7 +87,29 @@ export class ReportService {
   }
 
   /**
-   * 对 event 进行预处理后传递到 manager 进行下一步处理
+   * 对 event 进行聚合 生成 issue intro
+   * 根据堆栈信息进行 md5 加密得到 hash
+   *
+   * @param event
+   */
+  aggregation(event: OhbugEventLike) {
+    try {
+      const { type, detail, apiKey } = event
+      if (typeof detail === 'string') {
+        const formatDetail: OhbugEventDetail = JSON.parse(detail)
+        const { agg, metadata } =
+          switchErrorDetailAndGetAggregationDataAndMetaData(type, formatDetail)
+        const intro = getMd5FromAggregationData(apiKey, ...agg)
+        return { intro, metadata }
+      }
+      return null
+    } catch (error) {
+      throw new ForbiddenException(4001003, error)
+    }
+  }
+
+  /**
+   * 对 event 进行预处理后传入 redis queues 等待进行下一步处理
    *
    * @param event 通过上报接口拿到的 event
    * @param ip 用户 ip
@@ -96,8 +117,21 @@ export class ReportService {
   async handleEvent(event: OhbugEvent<any>, ip: string): Promise<void> {
     try {
       const filteredEvent = this.filterEvent(event)
-      const value = this.transferEvent(filteredEvent, ip)
-      await this.managerClient.emit(TOPIC_TRANSFER_MANAGER_EVENT, value)
+      const transferEvent = this.transferEvent(filteredEvent, ip)
+      const aggregationEvent = this.aggregation(transferEvent)
+
+      await this.documentQueue.add(
+        'event',
+        {
+          event: transferEvent,
+          ...aggregationEvent,
+        },
+        {
+          delay: 3000,
+          removeOnComplete: true,
+          removeOnFail: true,
+        }
+      )
     } catch (error) {
       throw new ForbiddenException(4001000, error)
     }

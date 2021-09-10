@@ -5,7 +5,6 @@ import { Spin, Row, Col, Card, Avatar } from 'antd'
 import { RouteComponentProps, useModelEffect } from '@/ability'
 import { Layout } from '@/components'
 import { usePersistFn } from '@/hooks'
-import logo from '@/static/logo.svg'
 
 import ExtensionDetail from './components/ExtensionDetail'
 
@@ -43,7 +42,7 @@ const Market: FC<RouteComponentProps> = () => {
                 key={v.key}
               >
                 <Card.Meta
-                  avatar={<Avatar src={v.logo ?? logo} />}
+                  avatar={<Avatar src={v.logo ?? '/logo.svg'} />}
                   title={v.name}
                   description={v.description}
                 />

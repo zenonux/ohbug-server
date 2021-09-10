@@ -2,9 +2,9 @@ import type { FC } from 'react'
 import { Button, Popover } from 'antd'
 
 import { Image } from '@/components'
-import logo from '@/static/logo.svg'
 
 import qrcode from './images/wechatQrcode.jpg'
+
 import styles from './Footer.module.less'
 
 const Footer: FC = () => (
@@ -15,7 +15,7 @@ const Footer: FC = () => (
       target="_blank"
       rel="noreferrer"
     >
-      <Image src={logo} alt="logo" />
+      <Image src="/logo.svg" alt="logo" />
     </a>
     <div className={styles.right}>
       <Button
