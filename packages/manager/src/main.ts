@@ -12,6 +12,7 @@ async function bootstrap() {
     {
       transport: Transport.TCP,
       options: {
+        host: '0.0.0.0',
         port: MICROSERVICE_MANAGER_PORT,
       },
     }
@@ -19,6 +20,7 @@ async function bootstrap() {
 
   await app.listen()
 }
+
 bootstrap().catch((error) => {
   console.error(error)
   process.exit(1)

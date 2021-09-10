@@ -23,7 +23,7 @@ services:
       - '6379:6379'
 
   manager:
-    image: ohbug/ohbug-ce:latest
+    image: ohbug:3
     restart: always
     ports:
       - '8880:8880'
@@ -34,7 +34,7 @@ services:
       - redis
 
   notifier:
-    image: ohbug/ohbug-ce:latest
+    image: ohbug:3
     restart: always
     ports:
       - '8881:8881'
@@ -45,7 +45,7 @@ services:
       - redis
 
   dashboard:
-    image: ohbug/ohbug-ce:latest
+    image: ohbug:3
     restart: always
     ports:
       - '6666:6666'
@@ -58,7 +58,7 @@ services:
       - redis
 
   transfer:
-    image: ohbug/ohbug-ce:latest
+    image: ohbug:3
     restart: always
     ports:
       - '6660:6660'
@@ -67,6 +67,13 @@ services:
     depends_on:
       - postgres
       - redis
+
+  webapp:
+    image: ohbug/ohbug-app:latest
+    ports:
+      - '8888:80'
+    depends_on:
+      - dashboard
 
 volumes:
   pgdata:
