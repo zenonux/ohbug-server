@@ -64,8 +64,6 @@ services:
       - '6660:6660'
     env_file: .env.production
     entrypoint: ['node', './ohbug/transfer/main.js']
-    healthcheck:
-      test: curl --max-time 60 --retry 60 --retry-delay 1 --retry-connrefused --show-error --silent http://localhost:6660
     depends_on:
       - postgres
       - redis
