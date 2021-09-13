@@ -2,12 +2,13 @@
   "extends": "./node_modules/@chenyueban/tsconfig/tsconfig.json",
   "compilerOptions": {
     "module": "CommonJS",
-    "noEmit": false,
-    "baseUrl": "./packages",
+    "target": "ES2017",
+    "baseUrl": "./",
+    "outDir": "./dist",
+    "declarationMap": false,
+    "sourceMap": true,
     "paths": {
       "@ohbug-server/*": ["packages/*/src"]
     }
-  },
-  "include": ["packages/**/*"],
-  "exclude": ["node_modules/", "dist/"]
+  }
 }

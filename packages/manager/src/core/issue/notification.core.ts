@@ -2,7 +2,7 @@ import { getManager } from 'typeorm'
 import dayjs from 'dayjs'
 
 import type { NotificationRule, OhbugEventLike } from '@ohbug-server/types'
-import { Issue } from '@/core/issue/issue.entity'
+import { Issue } from '@ohbug-server/common'
 
 /**
  * 根据 apiKey 拿到对应的 notification 配置

@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common'
 
-import { NoticeModule } from '@/core/notice/notice.module'
+import { NoticeModule } from '../notice/notice.module'
 
 import { MessageController } from './message.controller'
 

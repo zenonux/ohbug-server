@@ -1,5 +1,7 @@
 import { Controller, Post, Get, Param, Body } from '@nestjs/common'
 
+import { Project } from '@ohbug-server/common'
+
 import { ProjectService } from './project.service'
 import {
   BaseProjectDto,
@@ -7,7 +9,6 @@ import {
   GetTrendDto,
   SwitchExtensionDto,
 } from './project.dto'
-import { Project } from './project.entity'
 
 @Controller('projects')
 export class ProjectController {

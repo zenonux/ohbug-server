@@ -2,7 +2,7 @@ import type { FindOperator } from 'typeorm'
 
 import type { OhbugEventLike } from '@ohbug-server/types'
 
-import type { MetaData } from '@/core/event/event.interface'
+import type { MetaData } from '../event/event.interface'
 
 export interface CreateOrUpdateIssueByIntroParams {
   event: OhbugEventLike

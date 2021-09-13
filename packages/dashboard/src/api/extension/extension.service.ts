@@ -5,10 +5,9 @@ import { InjectRepository } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
 import { Cron, CronExpression } from '@nestjs/schedule'
 
-import { ForbiddenException } from '@ohbug-server/common'
+import { ForbiddenException, Extension } from '@ohbug-server/common'
 import { Extension as IExtension } from '@ohbug-server/types'
 
-import { Extension } from './extension.entity'
 import { getRepositoryInfo } from './extension.util'
 
 @Injectable()

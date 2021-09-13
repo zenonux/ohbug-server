@@ -1,0 +1,66 @@
+{
+  "collection": "@nestjs/schematics",
+  "sourceRoot": "packages/manager/src",
+  "monorepo": true,
+  "root": "packages/manager",
+  "compilerOptions": {
+    "webpack": true,
+    "tsConfigPath": "packages/manager/tsconfig.app.json"
+  },
+  "projects": {
+    "dashboard": {
+      "type": "application",
+      "root": "packages/dashboard",
+      "entryFile": "main",
+      "sourceRoot": "packages/dashboard/src",
+      "compilerOptions": {
+        "tsConfigPath": "packages/dashboard/tsconfig.app.json"
+      }
+    },
+    "manager": {
+      "type": "application",
+      "root": "packages/manager",
+      "entryFile": "main",
+      "sourceRoot": "packages/manager/src",
+      "compilerOptions": {
+        "tsConfigPath": "packages/manager/tsconfig.app.json"
+      }
+    },
+    "notifier": {
+      "type": "application",
+      "root": "packages/notifier",
+      "entryFile": "main",
+      "sourceRoot": "packages/notifier/src",
+      "compilerOptions": {
+        "tsConfigPath": "packages/notifier/tsconfig.app.json"
+      }
+    },
+    "transfer": {
+      "type": "application",
+      "root": "packages/transfer",
+      "entryFile": "main",
+      "sourceRoot": "packages/transfer/src",
+      "compilerOptions": {
+        "tsConfigPath": "packages/transfer/tsconfig.app.json"
+      }
+    },
+    "common": {
+      "type": "library",
+      "root": "packages/common",
+      "entryFile": "index",
+      "sourceRoot": "packages/common/src",
+      "compilerOptions": {
+        "tsConfigPath": "packages/common/tsconfig.lib.json"
+      }
+    },
+    "types": {
+      "type": "library",
+      "root": "packages/types",
+      "entryFile": "index",
+      "sourceRoot": "packages/types/src",
+      "compilerOptions": {
+        "tsConfigPath": "packages/types/tsconfig.lib.json"
+      }
+    }
+  }
+}

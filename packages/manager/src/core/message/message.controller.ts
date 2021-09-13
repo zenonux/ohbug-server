@@ -14,15 +14,15 @@ import {
   TOPIC_DASHBOARD_MANAGER_GET_PROJECT_TREND,
 } from '@ohbug-server/common'
 
-import { EventService } from '@/core/event/event.service'
-import { IssueService } from '@/core/issue/issue.service'
+import { EventService } from '../event/event.service'
+import { IssueService } from '../issue/issue.service'
 import type {
   GetIssueByIssueIdParams,
   GetIssuesByProjectIdParams,
   GetTrendByIssueIdParams,
   GetProjectTrendByApiKeyParams,
-} from '@/core/issue/issue.interface'
-import type { GetEventByEventId } from '@/core/event/event.interface'
+} from '../issue/issue.interface'
+import type { GetEventByEventId } from '../event/event.interface'
 
 @Controller()
 export class MessageController {

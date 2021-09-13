@@ -1,7 +1,8 @@
 import { Controller, Get, Param, Query } from '@nestjs/common'
 
+import { Extension } from '@ohbug-server/common'
+
 import { ExtensionService } from './extension.service'
-import { Extension } from './extension.entity'
 import { GetExtensionDto, SearchExtensionsDto } from './extension.dto'
 
 const limit = 20

@@ -2,13 +2,11 @@ import { forwardRef, Inject, Injectable } from '@nestjs/common'
 import { FindConditions, Repository } from 'typeorm'
 import { InjectRepository } from '@nestjs/typeorm'
 
-import { ForbiddenException } from '@ohbug-server/common'
+import { ForbiddenException, Event } from '@ohbug-server/common'
 import type { OhbugEventLike } from '@ohbug-server/types'
-import { IssueService } from '@/core/issue/issue.service'
 
+import { IssueService } from '../issue/issue.service'
 import type { GetEventByEventId } from './event.interface'
-
-import { Event } from './event.entity'
 
 @Injectable()
 export class EventService {

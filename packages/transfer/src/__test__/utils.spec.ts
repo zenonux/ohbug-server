@@ -1,4 +1,4 @@
-import { formatter } from '@/utils'
+import { formatter } from '../utils'
 
 it('should utils.formatter work ', () => {
   const result = formatter({ a: 123, b: { d: 123 } }, ['b'])

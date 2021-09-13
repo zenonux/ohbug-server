@@ -41,7 +41,7 @@ export class IssueController {
     @Query()
     { projectId, page, start, end }: GetIssueDto
   ) {
-    const skip = parseInt((page as unknown) as string, 10) * limit
+    const skip = parseInt(page as unknown as string, 10) * limit
     const searchCondition = { start, end }
     return this.issueService.searchIssues({
       projectId,

@@ -11,6 +11,8 @@ import {
   Query,
 } from '@nestjs/common'
 
+import { NotificationRule, NotificationSetting } from '@ohbug-server/common'
+
 import { NotificationService } from './notification.service'
 import {
   BaseNotificationDto,
@@ -20,8 +22,6 @@ import {
   NotificationSettingWebhookDto,
   BaseNotificationSettingWebhookDto,
 } from './notification.dto'
-import { NotificationRule } from './notification.rule.entity'
-import { NotificationSetting } from './notification.setting.entity'
 
 @Controller('notification')
 export class NotificationController {

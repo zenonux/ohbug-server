@@ -1,6 +1,6 @@
 const path = require('path')
 require('dotenv').config({
-  path: path.resolve(__dirname, `./.env.${process.env.NODE_ENV}`),
+  path: path.resolve(process.cwd(), `./.env.${process.env.NODE_ENV}`),
 })
 
 module.exports = {
@@ -20,7 +20,6 @@ module.exports = {
       database: process.env.TYPEORM_DATABASE,
       username: process.env.TYPEORM_USERNAME,
       password: process.env.TYPEORM_PASSWORD,
-      entities: ['dist/**/*.entity{.ts,.js}'],
       autoLoadEntities: true,
       synchronize: true,
       cache: {

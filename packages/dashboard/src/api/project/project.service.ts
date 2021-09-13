@@ -8,11 +8,10 @@ import { lastValueFrom } from 'rxjs'
 import {
   ForbiddenException,
   TOPIC_DASHBOARD_MANAGER_GET_PROJECT_TREND,
+  Project,
 } from '@ohbug-server/common'
-import { NotificationService } from '@/api/notification/notification.service'
-import { ExtensionService } from '@/api/extension/extension.service'
-
-import { Project } from './project.entity'
+import { NotificationService } from '../notification/notification.service'
+import { ExtensionService } from '../extension/extension.service'
 import {
   BaseProjectDto,
   CreateProjectDto,

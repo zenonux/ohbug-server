@@ -22,17 +22,58 @@ services:
     ports:
       - '6379:6379'
 
-  ohbug-ce:
+  manager:
     image: ohbug/ohbug-ce:latest
     restart: always
-    volumes:
-      - /usr/src/ohbug
     ports:
-      - 6660:6660
-      - 80:80
+      - '8880:8880'
+    env_file: .env.production
+    entrypoint: ['node', './ohbug/manager/main.js']
     depends_on:
       - postgres
       - redis
+
+  notifier:
+    image: ohbug/ohbug-ce:latest
+    restart: always
+    ports:
+      - '8881:8881'
+    env_file: .env.production
+    entrypoint: ['node', './ohbug/notifier/main.js']
+    depends_on:
+      - postgres
+      - redis
+
+  dashboard:
+    image: ohbug/ohbug-ce:latest
+    restart: always
+    ports:
+      - '6666:6666'
+    env_file: .env.production
+    entrypoint: ['node', './ohbug/dashboard/main.js']
+    volumes:
+      - /app/ohbug
+    depends_on:
+      - postgres
+      - redis
+
+  transfer:
+    image: ohbug/ohbug-ce:latest
+    restart: always
+    ports:
+      - '6660:6660'
+    env_file: .env.production
+    entrypoint: ['node', './ohbug/transfer/main.js']
+    depends_on:
+      - postgres
+      - redis
+
+  webapp:
+    image: ohbug/ohbug-app:latest
+    ports:
+      - '8888:80'
+    depends_on:
+      - dashboard
 
 volumes:
   pgdata:

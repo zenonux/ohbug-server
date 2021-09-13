@@ -5,7 +5,7 @@ import { InjectQueue } from '@nestjs/bull'
 import { ForbiddenException } from '@ohbug-server/common'
 import type { OhbugEventLike } from '@ohbug-server/types'
 
-import { formatter } from '@/utils'
+import { formatter } from '../../utils'
 import {
   getMd5FromAggregationData,
   switchErrorDetailAndGetAggregationDataAndMetaData,

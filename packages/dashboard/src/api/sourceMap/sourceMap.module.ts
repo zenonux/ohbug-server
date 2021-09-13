@@ -4,11 +4,11 @@ import { MulterModule } from '@nestjs/platform-express'
 import { BullModule } from '@nestjs/bull'
 import { ConfigService } from '@nestjs/config'
 
-import { ConfigModule } from '@ohbug-server/common'
-import { ProjectModule } from '@/api/project/project.module'
+import { ConfigModule, SourceMap } from '@ohbug-server/common'
+
+import { ProjectModule } from '../project/project.module'
 import { SourceMapController } from './sourceMap.controller'
 import { SourceMapService } from './sourceMap.service'
-import { SourceMap } from './sourceMap.entity'
 import { SourceMapConsumer } from './sourceMap.processor'
 
 @Module({

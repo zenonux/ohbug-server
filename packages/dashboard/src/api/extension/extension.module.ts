@@ -2,7 +2,8 @@ import { Module } from '@nestjs/common'
 import { HttpModule } from '@nestjs/axios'
 import { TypeOrmModule } from '@nestjs/typeorm'
 
-import { Extension } from './extension.entity'
+import { Extension } from '@ohbug-server/common'
+
 import { ExtensionController } from './extension.controller'
 import { ExtensionService } from './extension.service'
 

@@ -3,7 +3,7 @@ import markdownIt from 'markdown-it'
 
 import { getHost } from '@ohbug-server/common'
 import type { NotificationRuleLevel } from '@ohbug-server/types'
-import { DispatchNotice } from '@/core/notice/notice.interface'
+import { DispatchNotice } from './notice.interface'
 
 interface Content {
   title: string

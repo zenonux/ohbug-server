@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common'
 
-import { EventModule } from '@/core/event/event.module'
-import { IssueModule } from '@/core/issue/issue.module'
+import { EventModule } from '../event/event.module'
+import { IssueModule } from '../issue/issue.module'
 
 import { ScheduleService } from './schedule.service'
 
