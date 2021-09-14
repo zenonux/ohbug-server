@@ -8,7 +8,7 @@ import { ReportService } from './report.service'
  * 用于接收上报数据
  * 唯一对外暴露的接口
  */
-@Controller('report')
+@Controller()
 export class ReportController {
   constructor(private readonly reportService: ReportService) {}
 
