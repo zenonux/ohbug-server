@@ -1,1 +1,0 @@
-# @ohbug-server/notifier

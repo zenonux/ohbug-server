@@ -1,26 +1,24 @@
-FROM node:14-buster-slim
+FROM node:14-alpine as dependencies
+WORKDIR /app
+COPY package.json yarn.lock ./
+RUN yarn install --frozen-lockfile
 
-LABEL maintainer="chenyueban <jasonchan0527@gmail.com>"
-
-USER root
-
-WORKDIR /usr/src/ohbug
-
-RUN yarn global add pm2
-
-COPY package.json /usr/src/ohbug/package.json
-COPY lerna.json /usr/src/ohbug/lerna.json
-COPY yarn.lock /usr/src/ohbug/yarn.lock
-COPY packages/app/package.json /usr/src/ohbug/packages/app/package.json
-COPY packages/common/package.json /usr/src/ohbug/packages/common/package.json
-COPY packages/dashboard/package.json /usr/src/ohbug/packages/dashboard/package.json
-COPY packages/manager/package.json /usr/src/ohbug/packages/manager/package.json
-COPY packages/notifier/package.json /usr/src/ohbug/packages/notifier/package.json
-COPY packages/transfer/package.json /usr/src/ohbug/packages/transfer/package.json
-RUN yarn
-COPY ./ /usr/src/ohbug
+# ------------------------------------
+FROM node:14-alpine as builder
+WORKDIR /app
+COPY . .
+COPY --from=dependencies /app/node_modules ./node_modules
 RUN yarn build
 
-EXPOSE 6660 80
+# ------------------------------------
+FROM node:14-alpine as runner
+LABEL maintainer="chenyueban <jasonchan0527@gmail.com>"
+WORKDIR /app
+ENV NODE_ENV production
 
-CMD [ "yarn", "start:prod" ]
+COPY package.json yarn.lock ./
+RUN yarn install --production
+COPY --from=builder /app/dist/packages  /app/ohbug
+
+# default
+ENTRYPOINT [ "node", "./ohbug/dashboard/main.js"]

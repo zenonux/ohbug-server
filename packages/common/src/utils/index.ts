@@ -3,7 +3,7 @@ import crypto from 'crypto'
 const hostMap = [
   {
     env: 'development',
-    host: 'http://localhost:3000',
+    host: 'http://localhost:8888',
   },
   {
     env: 'production',

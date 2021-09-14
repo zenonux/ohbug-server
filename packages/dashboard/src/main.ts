@@ -8,9 +8,8 @@ import {
   TransformInterceptor,
   ForbiddenExceptionFilter,
   AllExceptionsFilter,
+  LoggerConfig,
 } from '@ohbug-server/common'
-
-import { LoggerConfig } from '@/shared/logger/logger.module'
 
 import { AppModule } from './app.module'
 
@@ -25,7 +24,7 @@ async function bootstrap() {
 
   app.setGlobalPrefix(`api/v1`)
 
-  app.useGlobalPipes(new ValidationPipe())
+  app.useGlobalPipes(new ValidationPipe({ transform: true }))
 
   app.useGlobalInterceptors(new TransformInterceptor())
 
