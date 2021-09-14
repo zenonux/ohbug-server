@@ -8,9 +8,8 @@ import {
   TransformInterceptor,
   ForbiddenExceptionFilter,
   AllExceptionsFilter,
+  LoggerConfig,
 } from '@ohbug-server/common'
-
-import { LoggerConfig } from './shared/logger/logger.module'
 
 import { AppModule } from './app.module'
 
