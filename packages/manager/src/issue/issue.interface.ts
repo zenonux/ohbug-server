@@ -18,6 +18,7 @@ export interface GetIssueByIssueIdParams {
 export interface SearchCondition {
   start?: Date
   end?: Date
+  type?: string
 }
 
 export interface GetIssuesByProjectIdParams {
@@ -40,4 +41,5 @@ export interface GetProjectTrendByApiKeyParams {
 
 export interface WhereOptions {
   updatedAt?: FindOperator<number | string>
+  type?: string
 }

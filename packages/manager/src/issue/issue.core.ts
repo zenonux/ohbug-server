@@ -11,6 +11,9 @@ export function getWhereOptions(searchCondition: SearchCondition) {
     const end = dayjs(searchCondition.end).format('YYYY-MM-DD HH:mm:ss')
     result.updatedAt = Between(start, end)
   }
+  if (searchCondition.type) {
+    result.type = searchCondition.type
+  }
 
   return result
 }

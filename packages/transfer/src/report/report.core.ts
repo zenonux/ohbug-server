@@ -1,13 +1,4 @@
-import { types as browserTypes } from '@ohbug/browser'
-
-import { md5 } from '@ohbug-server/common'
-
-import type {
-  AggregationDataAndMetaData,
-  OhbugEventDetail,
-} from './report.interface'
-
-const {
+import {
   UNCAUGHT_ERROR,
   RESOURCE_ERROR,
   UNHANDLEDREJECTION_ERROR,
@@ -15,11 +6,21 @@ const {
   FETCH_ERROR,
   WEBSOCKET_ERROR,
   UNKNOWN_ERROR,
-} = browserTypes
-const MINIAPP_ERROR = 'miniappError'
-const MINIAPP_UNHANDLEDREJECTION_ERROR = 'miniappUnhandledrejectionError'
-const MINIAPP_PAGENOTFOUND_ERROR = 'miniappPagenotfoundError'
-const MINIAPP_MEMORYWARNING_ERROR = 'miniappMemorywarningError'
+  FEEDBACK,
+  REACT,
+  VUE,
+  MINIAPP_ERROR,
+  MINIAPP_UNHANDLEDREJECTION_ERROR,
+  MINIAPP_PAGENOTFOUND_ERROR,
+  MINIAPP_MEMORYWARNING_ERROR,
+} from '@ohbug/core'
+
+import { md5 } from '@ohbug-server/common'
+
+import type {
+  AggregationDataAndMetaData,
+  OhbugEventDetail,
+} from './report.interface'
 
 /**
  * 根据不同 error detail 返回可用于聚合的字段
@@ -109,7 +110,7 @@ export function switchErrorDetailAndGetAggregationDataAndMetaData(
           message: detail.url,
         },
       }
-    case 'react':
+    case REACT:
       return {
         agg: [
           detail.name,
@@ -123,7 +124,7 @@ export function switchErrorDetailAndGetAggregationDataAndMetaData(
           others: detail.errorInfo,
         },
       }
-    case 'vue':
+    case VUE:
       return {
         agg: [
           detail.name,
@@ -178,7 +179,7 @@ export function switchErrorDetailAndGetAggregationDataAndMetaData(
           level: detail.level,
         },
       }
-    case 'feedback':
+    case FEEDBACK:
       return {
         agg: [detail.feedback, detail.selector, detail.outerHTML],
         metadata: {

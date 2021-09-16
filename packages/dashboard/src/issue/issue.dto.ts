@@ -5,8 +5,10 @@ import {
   IsDateString,
   IsArray,
   IsString,
+  ValidateIf,
 } from 'class-validator'
 import { Type } from 'class-transformer'
+import { types } from '@ohbug/core'
 
 import type { Period } from './issue.interface'
 
@@ -26,6 +28,12 @@ export class GetIssueDto {
   @IsOptional()
   @IsDateString()
   readonly end?: Date
+
+  @IsOptional()
+  @ValidateIf((v) => Object.values(types).includes(v), {
+    message: 'Issue 类型错误',
+  })
+  readonly type?: string
 }
 
 export class GetTrendByIssueIdDto {

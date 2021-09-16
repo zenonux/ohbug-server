@@ -7,6 +7,7 @@ export interface GetIssueByIssueIdParams {
 export interface SearchCondition {
   start?: Date
   end?: Date
+  type?: string
 }
 
 export interface GetIssuesByProjectIdParams {

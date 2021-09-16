@@ -35,14 +35,15 @@ export class IssueController {
    * @param page
    * @param start
    * @param end
+   * @param type
    */
   @Get()
   async getMany(
     @Query()
-    { projectId, page, start, end }: GetIssueDto
+    { projectId, page, start, end, type }: GetIssueDto
   ) {
     const skip = parseInt(page as unknown as string, 10) * limit
-    const searchCondition = { start, end }
+    const searchCondition = { start, end, type }
     return this.issueService.searchIssues({
       projectId,
       searchCondition,
