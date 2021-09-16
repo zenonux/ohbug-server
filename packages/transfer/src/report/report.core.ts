@@ -178,6 +178,16 @@ export function switchErrorDetailAndGetAggregationDataAndMetaData(
           level: detail.level,
         },
       }
+    case 'feedback':
+      return {
+        agg: [detail.feedback, detail.selector, detail.outerHTML],
+        metadata: {
+          type,
+          message: detail.feedback,
+          selector: detail.selector,
+          outerHTML: detail.outerHTML,
+        },
+      }
     default:
       return {
         agg: [detail.message],

@@ -10,7 +10,6 @@ import {
   getMd5FromAggregationData,
   switchErrorDetailAndGetAggregationDataAndMetaData,
 } from './report.core'
-import type { OhbugEventDetail } from './report.interface'
 
 @Injectable()
 export class ReportService {
@@ -95,14 +94,10 @@ export class ReportService {
   aggregation(event: OhbugEventLike) {
     try {
       const { type, detail, apiKey } = event
-      if (typeof detail === 'string') {
-        const formatDetail: OhbugEventDetail = JSON.parse(detail)
-        const { agg, metadata } =
-          switchErrorDetailAndGetAggregationDataAndMetaData(type, formatDetail)
-        const intro = getMd5FromAggregationData(apiKey, ...agg)
-        return { intro, metadata }
-      }
-      return null
+      const { agg, metadata } =
+        switchErrorDetailAndGetAggregationDataAndMetaData(type, detail)
+      const intro = getMd5FromAggregationData(apiKey, ...agg)
+      return { intro, metadata }
     } catch (error) {
       throw new ForbiddenException(4001003, error)
     }
@@ -118,8 +113,7 @@ export class ReportService {
     try {
       const filteredEvent = this.filterEvent(event)
       const transferEvent = this.transferEvent(filteredEvent, ip)
-      const aggregationEvent = this.aggregation(transferEvent)
-
+      const aggregationEvent = this.aggregation(filteredEvent)
       await this.documentQueue.add(
         'event',
         {
