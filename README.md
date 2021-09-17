@@ -22,9 +22,9 @@ This project exists thanks to all the people who contribute.
 
 ## Feedback
 
-| Github Issue                                                                      | 微信群                                                                                                                |
-| --------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------- |
-| [ohbug-org/ohbug-server/issues](https://github.com/ohbug-org/ohbug-server/issues) | <img src="https://github.com/ohbug-org/blog/blob/master/images/qrcode.jpg?raw=true" width="60" /> 关注后回复「ohbug」 |
+| Github Issue                                                                      | 微信群                                                                                                                 |
+| --------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------- |
+| [ohbug-org/ohbug-server/issues](https://github.com/ohbug-org/ohbug-server/issues) | <img src="https://github.com/ohbug-org/blog/blob/master/images/qrcode.jpg?raw=true" width="200" /> 关注后回复「ohbug」 |
 
 ## License
 
