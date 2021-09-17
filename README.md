@@ -20,6 +20,10 @@ This project exists thanks to all the people who contribute.
 
 <a href="https://github.com/ohbug-org/ohbug-server/graphs/contributors"><img src="https://opencollective.com/ohbug/contributors.svg?width=890&button=false" /></a>
 
+## ChangeLog
+
+[ChangeLog](./CHANGELOG.md)
+
 ## Feedback
 
 | Github Issue                                                                      | 微信群                                                                                                                 |
