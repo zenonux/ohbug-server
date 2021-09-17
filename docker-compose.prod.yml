@@ -71,7 +71,7 @@ services:
   webapp:
     image: ohbug/ohbug-app:latest
     ports:
-      - '8888:80'
+      - '80:80'
     depends_on:
       - dashboard
 
