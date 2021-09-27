@@ -1,4 +1,4 @@
-import { Controller, Get, Query, Param, Post, Body } from '@nestjs/common'
+import { Controller, Get, Query, Param } from '@nestjs/common'
 
 import { IssueService } from './issue.service'
 import {
@@ -12,6 +12,20 @@ const limit = 20
 @Controller('issues')
 export class IssueController {
   constructor(private readonly issueService: IssueService) {}
+
+  /**
+   * 根据 issueId 获取 issue 对应的趋势信息
+   *
+   * @param ids
+   * @param period
+   */
+  @Get('trend')
+  async getTrendByIssueId(
+    @Query()
+    { ids, period }: GetTrendByIssueIdDto
+  ) {
+    return this.issueService.getTrendByIssueId(ids, period)
+  }
 
   /**
    * 根据 issueId 取到对应 issue
@@ -44,25 +58,12 @@ export class IssueController {
   ) {
     const skip = parseInt(page as unknown as string, 10) * limit
     const searchCondition = { start, end, type }
+
     return this.issueService.searchIssues({
       projectId,
       searchCondition,
       limit,
       skip,
     })
-  }
-
-  /**
-   * 根据 issueId 获取 issue 对应的趋势信息
-   *
-   * @param ids
-   * @param period
-   */
-  @Post('trend')
-  async getTrendByIssueId(
-    @Body()
-    { ids, period }: GetTrendByIssueIdDto
-  ) {
-    return this.issueService.getTrendByIssueId(ids, period)
   }
 }

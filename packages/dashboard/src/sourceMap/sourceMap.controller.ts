@@ -8,6 +8,7 @@ import {
   ClassSerializerInterceptor,
   Param,
   Delete,
+  Query,
 } from '@nestjs/common'
 import { FileInterceptor } from '@nestjs/platform-express'
 
@@ -48,9 +49,9 @@ export class SourceMapController {
    *
    * @param apiKey
    */
-  @Get(':apiKey')
+  @Get()
   @UseInterceptors(ClassSerializerInterceptor)
-  async get(@Param() { apiKey }: GetSourceMapsDto): Promise<SourceMap[]> {
+  async get(@Query() { apiKey }: GetSourceMapsDto): Promise<SourceMap[]> {
     return this.sourceMapService.getSourceMapsByApiKey({ apiKey })
   }
 
@@ -58,15 +59,18 @@ export class SourceMapController {
    * 根据 id 删除 sourceMap
    *
    * @param id
+   * @param apiKey
    */
   @Delete(':id')
   @UseInterceptors(ClassSerializerInterceptor)
   async delete(
     @Param()
-    { id }: DeleteSourceMapsDto
+    { id }: DeleteSourceMapsDto,
+    @Query() { apiKey }: GetSourceMapsDto
   ): Promise<boolean> {
     return this.sourceMapService.deleteSourceMapById({
       id,
+      apiKey,
     })
   }
 }

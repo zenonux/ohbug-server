@@ -1,4 +1,4 @@
-import { Controller, Post, Get, Param, Body } from '@nestjs/common'
+import { Controller, Post, Get, Param, Body, Query } from '@nestjs/common'
 
 import { Project } from '@ohbug-server/common'
 
@@ -31,6 +31,25 @@ export class ProjectController {
   }
 
   /**
+   * 获取指定时间段内的 trend
+   *
+   * @param projectId
+   * @param start
+   * @param end
+   */
+  @Get('trend')
+  async getProjectTrend(
+    @Query()
+    { projectId, start, end }: GetTrendDto
+  ) {
+    return this.projectService.getProjectTrend({
+      projectId,
+      start,
+      end,
+    })
+  }
+
+  /**
    * 查询 project
    * @param projectId {number}
    */
@@ -40,25 +59,6 @@ export class ProjectController {
     { projectId }: BaseProjectDto
   ): Promise<Project> {
     return this.projectService.getProject({ projectId })
-  }
-
-  /**
-   * 获取指定时间段内的 trend
-   *
-   * @param projectId
-   * @param start
-   * @param end
-   */
-  @Post('trend')
-  async getProjectTrend(
-    @Body()
-    { projectId, start, end }: GetTrendDto
-  ) {
-    return this.projectService.getProjectTrend({
-      projectId,
-      start,
-      end,
-    })
   }
 
   /**

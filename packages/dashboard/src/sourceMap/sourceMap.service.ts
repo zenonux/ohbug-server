@@ -105,10 +105,19 @@ export class SourceMapService {
    * 根据 id 删除 sourceMap
    *
    * @param id
+   * @param apiKey
    */
-  async deleteSourceMapById({ id }: DeleteSourceMapsDto) {
+  async deleteSourceMapById({
+    id,
+    apiKey,
+  }: DeleteSourceMapsDto & GetSourceMapsDto) {
     try {
-      const sourceMap = await this.sourceMapRepository.findOneOrFail(id)
+      const sourceMap = await this.sourceMapRepository.findOneOrFail({
+        where: {
+          id,
+          apiKey,
+        },
+      })
 
       sourceMap.data.forEach(({ path }) => {
         unlinkSync(path)
