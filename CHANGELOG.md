@@ -1,3 +1,14 @@
+# [0.2.0](https://github.com/ohbug-org/ohbug-server/compare/0.1.0...0.2.0) (2021-10-14)
+
+### Bug Fixes
+
+- 修复 docker-compose 生产环境 app 端口配置 ([cf9e7de](https://github.com/ohbug-org/ohbug-server/commit/cf9e7de83743d117e95578d20dd5b8e76dffc4ea))
+
+### Features
+
+- **dashboard:** issue project sourceMap 路由使用更符合语义的形式 ([5c8e028](https://github.com/ohbug-org/ohbug-server/commit/5c8e0288cce91d43fe0bf65a5b31879ec98b58f5))
+- **dashboard:** 完成登录以及更新密码接口 ([3889492](https://github.com/ohbug-org/ohbug-server/commit/38894928a5575807cf0fdf6da6cc2543c0e005da))
+
 # 0.1.0 (2021-09-16)
 
 ### Bug Fixes
