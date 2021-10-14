@@ -14,8 +14,11 @@ import { SourceMapConsumer } from './sourceMap.processor'
 @Module({
   imports: [
     TypeOrmModule.forFeature([SourceMap]),
-    MulterModule.register({
-      dest: process.env.UPLOAD_SOURCEMAP_FILE_PATH,
+    MulterModule.registerAsync({
+      useFactory: (configService: ConfigService) => ({
+        dest: configService.get('business.uploadSourcemapFilePath'),
+      }),
+      inject: [ConfigService],
     }),
     BullModule.registerQueueAsync({
       name: 'sourceMap',

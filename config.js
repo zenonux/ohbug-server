@@ -68,6 +68,23 @@ module.exports = {
    */
   business: {
     /**
+     * 加密用到的 secret
+     * Secret used for encryption
+     */
+    appSecret: process.env.APP_SECRET,
+    /**
+     * 管理员账号
+     * Admin
+     */
+    admin: {
+      name: process.env.ADMIN_NAME,
+      password: process.env.ADMIN_PASSWORD,
+    },
+    /**
+     * sourceMap 文件上传后储存的位置
+     */
+    uploadSourcemapFilePath: process.env.UPLOAD_SOURCEMAP_FILE_PATH,
+    /**
      * 数据过期时间
      * Data expiration time
      */

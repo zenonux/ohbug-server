@@ -25,7 +25,7 @@ export class ScheduleService {
     try {
       const interval = this.configService.get<string>(
         'business.expiredData.interval'
-      )!
+      )
       await this.eventService.deleteEvents({
         createdAt: Raw(
           (alias) => `${alias} < CURRENT_TIMESTAMP - INTERVAL '${interval} day'`

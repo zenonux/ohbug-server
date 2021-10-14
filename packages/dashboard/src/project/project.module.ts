@@ -1,7 +1,11 @@
 import { Module, forwardRef } from '@nestjs/common'
 import { TypeOrmModule } from '@nestjs/typeorm'
 
-import { MicroserviceManagerClientModule, Project } from '@ohbug-server/common'
+import {
+  ConfigModule,
+  MicroserviceManagerClientModule,
+  Project,
+} from '@ohbug-server/common'
 
 import { NotificationModule } from '../notification/notification.module'
 import { ExtensionModule } from '../extension/extension.module'
@@ -14,6 +18,7 @@ import { ProjectService } from './project.service'
     MicroserviceManagerClientModule,
     forwardRef(() => NotificationModule),
     ExtensionModule,
+    ConfigModule,
   ],
   controllers: [ProjectController],
   providers: [ProjectService],

@@ -13,7 +13,7 @@ import sendBrowserNotification from './browser'
 export class NoticeService {
   constructor(
     private readonly httpService: HttpService,
-    private configService: ConfigService
+    private readonly configService: ConfigService
   ) {}
 
   dispatchNotice({ setting, rule, issue, event }: DispatchNotice) {

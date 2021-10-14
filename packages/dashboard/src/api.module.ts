@@ -6,6 +6,7 @@ import { IssueModule } from './issue/issue.module'
 import { NotificationModule } from './notification/notification.module'
 import { ProjectModule } from './project/project.module'
 import { SourceMapModule } from './sourceMap/sourceMap.module'
+import { UserModule } from './user/user.module'
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { SourceMapModule } from './sourceMap/sourceMap.module'
     NotificationModule,
     ProjectModule,
     SourceMapModule,
+    UserModule,
   ],
 })
 export class ApiModule {}

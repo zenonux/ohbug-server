@@ -2,6 +2,7 @@ import { Inject, Injectable, forwardRef } from '@nestjs/common'
 import { Repository } from 'typeorm'
 import { InjectRepository } from '@nestjs/typeorm'
 import { ClientProxy } from '@nestjs/microservices'
+import { ConfigService } from '@nestjs/config'
 import * as crypto from 'crypto'
 import { lastValueFrom } from 'rxjs'
 
@@ -26,15 +27,16 @@ export class ProjectService {
     private readonly projectRepository: Repository<Project>,
     @Inject(forwardRef(() => NotificationService))
     private readonly notificationService: NotificationService,
-    private readonly extensionService: ExtensionService
+    private readonly extensionService: ExtensionService,
+    private readonly configService: ConfigService
   ) {}
 
   @Inject('MICROSERVICE_MANAGER_CLIENT')
   private readonly managerClient: ClientProxy
 
-  private static createApiKey(data: CreateProjectDto): string {
+  private createApiKey(data: CreateProjectDto): string {
     try {
-      const secret = process.env.APP_SECRET
+      const secret = this.configService.get('business.appSecret')
       return crypto
         .createHmac('sha256', secret!)
         .update(JSON.stringify(data) + new Date().getTime())
@@ -49,7 +51,7 @@ export class ProjectService {
    */
   async createProject({ name, type }: CreateProjectDto): Promise<Project> {
     try {
-      const apiKey = ProjectService.createApiKey({ name, type })
+      const apiKey = this.createApiKey({ name, type })
       const notificationSetting =
         this.notificationService.createNotificationSetting({
           emails: [],

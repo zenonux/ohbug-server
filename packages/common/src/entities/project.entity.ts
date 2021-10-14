@@ -17,6 +17,7 @@ import type { Project as IProject } from '@ohbug-server/types'
 import { NotificationRule } from './notification.rule.entity'
 import { NotificationSetting } from './notification.setting.entity'
 import { Extension } from './extension.entity'
+import { User } from './user.entity'
 
 @Entity()
 export class Project implements IProject {
@@ -72,7 +73,22 @@ export class Project implements IProject {
   })
   notificationSetting: NotificationSetting
 
+  /**
+   * project 所开启的插件
+   *
+   * @type {Extension[]}
+   * @memberof Project
+   */
   @ManyToMany(() => Extension, (extension) => extension.projects)
   @JoinTable()
   extensions: Extension[]
+
+  /**
+   * project 对应的用户
+   *
+   * @type {User[]}
+   * @memberof Project
+   */
+  @ManyToMany(() => User, (user) => user.projects)
+  users: User[]
 }
