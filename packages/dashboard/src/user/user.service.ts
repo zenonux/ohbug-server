@@ -23,9 +23,11 @@ export class UserService implements OnModuleInit {
       await this.userRepository.save(
         this.userRepository.create({
           name,
-          password,
+          password: this.encrypt(password),
         })
       )
+      // eslint-disable-next-line no-console
+      console.log(`管理员账号创建成功`)
     }
   }
 
