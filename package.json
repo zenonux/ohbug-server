@@ -1,7 +1,7 @@
 {
   "private": true,
   "name": "ohbug-server",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Ohbug Server",
   "author": "chenyueban <jasonchan0527@gmail.com>",
   "homepage": "https://github.com/ohbug-org/ohbug-server",

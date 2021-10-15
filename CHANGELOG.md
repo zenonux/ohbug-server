@@ -1,3 +1,9 @@
+## [0.2.1](https://github.com/ohbug-org/ohbug-server/compare/0.2.0...0.2.1) (2021-10-15)
+
+### Bug Fixes
+
+- **dashboard:** 修复初始化时创建管理员账号明文 ([9fd13a7](https://github.com/ohbug-org/ohbug-server/commit/9fd13a74baee8ee8c20948836fe9ef22aa0626af))
+
 # [0.2.0](https://github.com/ohbug-org/ohbug-server/compare/0.1.0...0.2.0) (2021-10-14)
 
 ### Bug Fixes
